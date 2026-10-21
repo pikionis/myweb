@@ -1,0 +1,36 @@
+---
+import { person } from '../data/site';
+---
+<section id="contact" class="cta wrap">
+  <h2>Let's build<br />something <span class="a">together.</span></h2>
+  <div class="actions">
+    <button class="email" id="emailBtn" type="button" data-mail={person.email}>{person.email}</button>
+    <span class="hint" id="copyHint" aria-live="polite">Click to copy</span>
+    <div class="lines">
+      <a href={`mailto:${person.email}`}>Email</a>
+      <a href={person.phoneHref}>{person.phone}</a>
+      <a href={person.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span>{person.name}</span>
+  <span>{person.location}</span>
+  <span>© {new Date().getFullYear()}</span>
+</footer>
+
+<style>
+  .cta { text-align: center; padding-block: clamp(100px, 18vh, 200px); }
+  .cta h2 { font-size: clamp(2.8rem, 11vw, 9rem); letter-spacing: -0.04em; }
+  .a { color: var(--accent); }
+  .actions { margin-top: 44px; }
+  .email { font-weight: 700; font-size: clamp(1.2rem, 4vw, 2.4rem); border: none; border-bottom: 2px solid var(--accent); background: none; cursor: pointer; padding: 0 0 4px; letter-spacing: -0.01em; transition: color 0.2s ease; }
+  .email:hover { color: var(--accent); }
+  .hint { display: block; margin-top: 12px; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .lines { display: flex; gap: 24px; margin-top: 28px; justify-content: center; flex-wrap: wrap; font-size: 0.95rem; color: var(--muted); }
+  .lines a { text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 2px; transition: color 0.2s ease, border-color 0.2s ease; }
+  .lines a:hover { color: var(--fg); border-color: var(--fg); }
+
+  footer { border-top: 1px solid var(--line); padding-block: 40px calc(40px + env(safe-area-inset-bottom, 0px)); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+</style>

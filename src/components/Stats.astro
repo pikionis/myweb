@@ -1,0 +1,27 @@
+---
+import { stats } from '../data/site';
+---
+<section id="numbers" class="wrap">
+  <h2 class="sr-only">Impact</h2>
+  <div class="stats">
+    {stats.map((s) => (
+      <div class="st">
+        <div class="n" data-count={s.value} data-suffix={s.suffix}>{s.value}{s.suffix}</div>
+        <div class="k">{s.label}</div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--line); }
+  .st { padding: 44px 22px; border-right: 1px solid var(--line); }
+  .st:last-child { border-right: none; }
+  .n { font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 700; line-height: 0.9; letter-spacing: -0.03em; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .k { margin-top: 14px; font-size: 0.9rem; color: var(--muted); max-width: 22ch; }
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: 1fr 1fr; }
+    .st:nth-child(2) { border-right: none; }
+    .st:nth-child(1), .st:nth-child(2) { border-bottom: 1px solid var(--line); }
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+import { marquee } from '../data/site';
+const items = [...marquee, ...marquee];
+---
+<div class="marquee" aria-label={marquee.join(', ')}>
+  <div class="track" aria-hidden="true">
+    {items.map((m) => <span>{m}</span>)}
+  </div>
+</div>
+
+<style>
+  .marquee { border-block: 1px solid var(--line); overflow: hidden; padding-block: 18px; }
+  .track { display: flex; width: max-content; animation: scroll 28s linear infinite; }
+  .marquee:hover .track { animation-play-state: paused; }
+  span {
+    display: inline-flex; align-items: center; gap: 40px; padding-right: 40px; white-space: nowrap;
+    font-weight: 700; font-size: clamp(1.3rem, 4vw, 2.4rem); text-transform: uppercase; letter-spacing: -0.02em;
+  }
+  span::after { content: '/'; color: var(--accent); }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+</style>

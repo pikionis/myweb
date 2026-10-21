@@ -1,0 +1,26 @@
+---
+import { person } from '../data/site';
+---
+<nav aria-label="Main">
+  <a class="mark" href="#top">{person.name.toUpperCase()}</a>
+  <div class="links">
+    <a href="#services">Services</a>
+    <a href="#numbers">Impact</a>
+    <a href="#contact" class="talk">Let's talk</a>
+  </div>
+</nav>
+
+<style>
+  nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: calc(20px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-left, 0px)) 20px;
+    mix-blend-mode: difference; color: #fff;
+  }
+  .mark { font-weight: 700; font-size: 1.05rem; letter-spacing: 0.04em; text-decoration: none; }
+  .links { display: flex; gap: 24px; font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; }
+  .links a { text-decoration: none; opacity: 0.8; transition: opacity 0.2s ease; }
+  .links a:hover { opacity: 1; }
+  .talk { border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+  @media (max-width: 680px) { .links a:not(.talk) { display: none; } }
+</style>
