@@ -1,0 +1,46 @@
+---
+import Site from '../../layouts/Site.astro';
+import { getCollection } from 'astro:content';
+
+// drafts show while developing, never on the live site
+const posts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const day = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<Site title="Blog — Petros Pikionis" description="Notes by Petros Pikionis on building websites, booking systems and AI products." light>
+  <main class="page theme-light">
+    <header class="wrap page-head" data-rise>
+      <h1>Blog</h1>
+      <p>Notes on building websites, booking systems and AI products.</p>
+    </header>
+
+    <div class="wrap">
+      {posts.length === 0 ? (
+        <p class="empty">No posts yet.</p>
+      ) : (
+        <ul class="posts" data-rise>
+          {posts.map((p) => (
+            <li>
+              <time datetime={p.data.date.toISOString()}>{day(p.data.date)}{p.data.draft && ' · draft'}</time>
+              <a href={`/blog/${p.id}`}>{p.data.title}</a>
+              <p>{p.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </main>
+</Site>
+
+<style>
+  .posts { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(36px, 6vh, 56px); max-width: 860px; }
+  li { display: grid; grid-template-columns: 11rem 1fr; column-gap: 24px; row-gap: 8px; }
+  time { grid-row: span 2; font-size: 0.9375rem; color: var(--muted); padding-top: 0.45em; font-variant-numeric: tabular-nums; }
+  a { font-weight: 700; font-size: clamp(1.4rem, 2.2vw, 1.9rem); letter-spacing: -0.02em; line-height: 1.15; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 0.18em; text-decoration-thickness: 2px; }
+  li p { margin: 0; font-size: 1.0625rem; line-height: 1.5; max-width: 56ch; }
+  .empty { margin: 0; font-size: clamp(1.15rem, 1.6vw, 1.4rem); color: var(--muted); }
+  @media (max-width: 640px) {
+    li { grid-template-columns: 1fr; }
+    time { grid-row: auto; padding-top: 0; }
+  }
+</style>

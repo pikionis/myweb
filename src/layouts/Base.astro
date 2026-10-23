@@ -5,10 +5,12 @@ import '@fontsource/space-grotesk/700.css';
 import '../styles/global.css';
 import { person } from '../data/site';
 
-interface Props { title?: string; description?: string }
+// `light`: the page opens on the warm light ground (every page but the home page, whose dark hero comes first)
+interface Props { title?: string; description?: string; light?: boolean }
 const {
   title = `${person.name} — ${person.role}`,
   description = 'Custom websites, e-commerce, booking systems and AI services — designed, built and shipped end to end by Petros Pikionis.',
+  light = false,
 } = Astro.props;
 ---
 <!doctype html>
@@ -18,13 +20,13 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#0a0b0a" />
+    <meta name="theme-color" content={light ? '#f4f3ef' : '#0a0b0a'} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
-  <body>
+  <body class:list={{ light }}>
     <slot />
   </body>
 </html>

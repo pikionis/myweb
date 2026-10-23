@@ -1,26 +1,19 @@
 ---
-import Base from '../layouts/Base.astro';
-import Nav from '../components/Nav.astro';
+import Site from '../layouts/Site.astro';
 import Intro from '../components/Intro.astro';
 import Marquee from '../components/Marquee.astro';
 import Services from '../components/Services.astro';
 import Customers from '../components/Customers.astro';
 import Stats from '../components/Stats.astro';
-import Contact from '../components/Contact.astro';
 ---
-<Base>
-  <Nav />
+<Site>
   <main>
     <Intro />
-    <Marquee />
-    <Services />
-    <Customers />
-    <Stats />
-    <Contact />
+    <div class="sheet theme-light">
+      <Marquee />
+      <Services />
+      <Customers />
+      <Stats />
+    </div>
   </main>
-</Base>
-
-<script>
-  import { init } from '../scripts/main';
-  init();
-</script>
+</Site>

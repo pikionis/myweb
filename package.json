@@ -5,6 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
+    "github": "node scripts/github.mjs",
+    "prebuild": "node scripts/github.mjs",
     "build": "astro build",
     "preview": "astro preview"
   },

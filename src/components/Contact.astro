@@ -1,36 +1,134 @@
 ---
-import { person } from '../data/site';
+import { person, pages } from '../data/site';
+import BriefForm from './BriefForm.astro';
+// `page`: this block is the whole /contact page (a section with the page's h1 and the brief form), not the footer
+interface Props { page?: boolean }
+const { page = false } = Astro.props;
+const Root = page ? 'section' : 'footer';
+const Heading = page ? 'h1' : 'h2';
+const surname = person.name.split(' ').at(-1);
+const location = person.location.replace(' · ', ', ');
 ---
-<section id="contact" class="cta wrap">
-  <h2>Let's build<br />something <span class="a">together.</span></h2>
-  <div class="actions">
-    <button class="email" id="emailBtn" type="button" data-mail={person.email}>{person.email}</button>
-    <span class="hint" id="copyHint" aria-live="polite">Click to copy</span>
-    <div class="lines">
-      <a href={`mailto:${person.email}`}>Email</a>
-      <a href={person.phoneHref}>{person.phone}</a>
-      <a href={person.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+<!-- Contact and footer in one dark field: the invitation, the footer proper, then the surname as a dither field -->
+<Root id="contact" class:list={['close', 'theme-dark', { page }]}>
+  <div class="wrap top">
+    <div class="invite">
+      <Heading>Let's build<br />together.</Heading>
+      {page ? (
+        <p class="pitch">Pitch me your idea. A website, or AI that takes repetitive work off your team — tell me the business problem and send whatever helps: a brief, photos, screenshots.</p>
+      ) : (
+        <>
+          <button class="mail" id="emailBtn" type="button" data-mail={person.email}>{person.email}</button>
+          <span class="hint" id="copyHint" aria-live="polite">Click to copy</span>
+          <a class="to-brief" href="/contact">Pitch an idea or send a brief</a>
+        </>
+      )}
+    </div>
+    {page && (
+      <div class="direct">
+        <button class="mail" id="emailBtn" type="button" data-mail={person.email}>{person.email}</button>
+        <span class="hint" id="copyHint" aria-live="polite">Click to copy</span>
+      </div>
+    )}
+  </div>
+  {page && <div class="wrap form-wrap"><BriefForm /></div>}
+
+  <!-- the footer proper: who, where to go, how to reach me -->
+  <div class="wrap foot">
+    <div class="brand">
+      <a class="logo" href="/" aria-label={`${person.name}, home`}>
+        {person.logo ? <img src={person.logo} alt="" height="40" /> : <span>{person.name}</span>}
+      </a>
+      <p>{person.role}. Websites, booking systems and AI products, designed, built and shipped end to end.</p>
+    </div>
+    <nav class="col" aria-label="Footer">
+      <p class="ctitle">Pages</p>
+      <ul>{pages.map(({ href, name }) => <li><a href={href}>{name}</a></li>)}</ul>
+    </nav>
+    <div class="col reach">
+      <p class="ctitle">Contact</p>
+      <ul>
+        <li><a href={`mailto:${person.email}`}>{person.email}</a></li>
+        <li><a href={person.phoneHref}>{person.phone}</a></li>
+        <li><span>{location}</span></li>
+      </ul>
+    </div>
+    <div class="col">
+      <p class="ctitle">Follow</p>
+      <ul>
+        <li><a href={person.linkedin} target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href={person.github} target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
     </div>
   </div>
-</section>
-
-<footer class="wrap">
-  <span>{person.name}</span>
-  <span>{person.location}</span>
-  <span>© {new Date().getFullYear()}</span>
-</footer>
+  <div class="wrap legal">
+    <span>© {new Date().getFullYear()} {person.name}</span>
+    <a href="#" class="totop">Back to top
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" /></svg>
+    </a>
+  </div>
+  <!-- the real text keeps the size and the crop; src/scripts/dither.ts redraws it as dots -->
+  <p class="mark" aria-hidden="true" data-dither>{surname}</p>
+</Root>
 
 <style>
-  .cta { text-align: center; padding-block: clamp(100px, 18vh, 200px); }
-  .cta h2 { font-size: clamp(2.8rem, 11vw, 9rem); letter-spacing: -0.04em; }
-  .a { color: var(--accent); }
-  .actions { margin-top: 44px; }
-  .email { font-weight: 700; font-size: clamp(1.2rem, 4vw, 2.4rem); border: none; border-bottom: 2px solid var(--accent); background: none; cursor: pointer; padding: 0 0 4px; letter-spacing: -0.01em; transition: color 0.2s ease; }
-  .email:hover { color: var(--accent); }
-  .hint { display: block; margin-top: 12px; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-  .lines { display: flex; gap: 24px; margin-top: 28px; justify-content: center; flex-wrap: wrap; font-size: 0.95rem; color: var(--muted); }
-  .lines a { text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 2px; transition: color 0.2s ease, border-color 0.2s ease; }
-  .lines a:hover { color: var(--fg); border-color: var(--fg); }
+  .close { position: relative; overflow: hidden; min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; padding-block: 0; }
+  .top { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; padding-top: clamp(80px, 14vh, 160px); width: 100%; }
+  .invite { grid-column: 1 / 8; }
+  .invite > :first-child { font-size: clamp(2.4rem, 8vw, 6rem); }
+  .pitch { margin: 32px 0 0; max-width: 40ch; font-size: clamp(1.15rem, 1.6vw, 1.4rem); line-height: 1.45; }
+  .mail {
+    display: flex; align-items: center; margin-top: 40px; min-height: 52px; padding: 0 28px; border: 0; border-radius: 100px; cursor: pointer;
+    background: var(--accent); color: #0a0b0a; font-weight: 700; font-size: 1.0625rem;
+    /* press uses `scale`, not `transform`: GSAP owns transform for the entrance */
+    transition: scale 0.16s var(--ease-out), background-color 0.2s ease;
+  }
+  .mail:active { scale: 0.97; }
+  @media (hover: hover) and (pointer: fine) { .mail:hover { background: #6b92ff; } }
+  .hint { display: block; margin-top: 14px; font-size: 0.9375rem; color: var(--muted); }
+  .to-brief { display: inline-block; margin-top: 28px; font-size: 1.0625rem; text-decoration-color: var(--accent); text-underline-offset: 0.3em; }
+  .direct { grid-column: 10 / -1; }
+  .page .direct .mail { margin-top: 0; max-width: 100%; padding: 0 22px; font-size: 1rem; }
+  .form-wrap { width: 100%; margin-top: clamp(56px, 9vh, 96px); }
 
-  footer { border-top: 1px solid var(--line); padding-block: 40px calc(40px + env(safe-area-inset-bottom, 0px)); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  /* ---- the footer proper ---- */
+  .foot {
+    display: grid; grid-template-columns: 1.6fr 1fr 1.3fr 1fr; gap: 40px 32px; width: 100%;
+    margin-top: clamp(80px, 13vh, 140px); padding-top: clamp(32px, 5vh, 48px);
+    border-top: 1px solid var(--line);
+  }
+  .logo { display: inline-flex; align-items: center; min-height: 40px; text-decoration: none; }
+  .logo img { display: block; height: 40px; width: auto; }
+  .logo span { font-weight: 700; font-size: 1.25rem; letter-spacing: 0.02em; text-transform: uppercase; }
+  .brand p { margin: 16px 0 0; max-width: 34ch; font-size: 1rem; line-height: 1.55; color: var(--muted); }
+  .ctitle { margin: 0 0 14px; font-size: 0.9375rem; color: var(--muted); }
+  .col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 1.0625rem; }
+  .col a, .totop { text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.3em; transition: text-decoration-color 0.2s ease; }
+  @media (hover: hover) and (pointer: fine) { .col a:hover, .totop:hover { text-decoration-color: var(--accent); } }
+  .col span { color: var(--muted); }
+
+  .legal { margin-top: auto; padding-top: clamp(48px, 8vh, 80px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 24px; width: 100%; font-size: 0.9375rem; color: var(--muted); position: relative; z-index: 1; }
+  .totop { display: inline-flex; align-items: center; gap: 6px; color: var(--fg); }
+
+  /* ---- the surname, cut by the bottom edge; drawn as a dither field once the script runs ---- */
+  .mark {
+    position: relative; margin: 0; padding-inline: max(14px, env(safe-area-inset-left, 0px)); white-space: nowrap;
+    font-weight: 700; font-size: 26.5vw; line-height: 0.8; letter-spacing: -0.05em; text-transform: uppercase;
+    transform: translateY(26%); margin-top: 0.06em; margin-bottom: calc(-0.1em - env(safe-area-inset-bottom, 0px));
+  }
+  .mark.dithered { color: transparent; }
+  .mark :global(.dither) { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--fg); touch-action: pan-y; }
+
+  @media (max-width: 860px) {
+    .close { min-height: 0; }
+    .invite, .direct { grid-column: 1 / -1; }
+    .mail { width: 100%; justify-content: center; padding: 0 16px; font-size: 1rem; }
+    .page .direct { margin-top: 40px; }
+    .foot { grid-template-columns: 1fr 1fr; }
+    .brand { grid-column: 1 / -1; }
+    /* the email needs the full width on a phone; pages and follow sit side by side above it */
+    .reach { grid-column: 1 / -1; order: 1; }
+    .col ul { font-size: 1rem; }
+    .mark { font-size: 27vw; }
+  }
 </style>

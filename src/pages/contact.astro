@@ -1,0 +1,11 @@
+---
+import Site from '../layouts/Site.astro';
+import Contact from '../components/Contact.astro';
+import { person } from '../data/site';
+---
+<!-- the contact block is the whole page here, so it isn't repeated as a footer -->
+<Site title="Contact — Petros Pikionis" description={`Email, phone and LinkedIn for ${person.name}.`} footer={false}>
+  <main>
+    <Contact page />
+  </main>
+</Site>

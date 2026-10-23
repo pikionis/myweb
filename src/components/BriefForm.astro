@@ -1,0 +1,263 @@
+---
+// The idea / brief form on /contact. src/scripts/brief.ts runs it: the assistant asks sharper questions
+// and drafts a final brief, files ride along, and sending shows live progress in the status island.
+// Without script (or on the live site until the assistant's backend exists) it is a plain form.
+import '../styles/island.css';
+import { brief } from '../data/site';
+
+const action = `https://formsubmit.co/${brief.formsubmit}`;
+const accept = 'image/*,.pdf,.doc,.docx,.ppt,.pptx,.key,.xls,.xlsx,.csv,.txt,.md,.rtf';
+const site = Astro.site ? new URL('/contact', Astro.site).href : '/contact';
+// the final brief, section by section; names are what arrives in the email
+const sections: [string, string][] = [
+  ['problem', 'The problem'],
+  ['users', "Who it's for"],
+  ['competition', 'Competition & alternatives'],
+  ['directions', 'Possible directions'],
+  ['technical', 'Systems, data & integrations'],
+  ['open', 'Open questions'],
+];
+---
+<form class="brief" data-brief action={action} method="POST" enctype="multipart/form-data" data-max-bytes={brief.maxBytes}>
+  <!-- FormSubmit settings -->
+  <input type="hidden" name="_subject" value="New idea from pikionis.com" />
+  <input type="hidden" name="_template" value="table" />
+  <input type="hidden" name="_next" value={site} />
+  <input type="text" name="_honey" class="honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+  <fieldset class="needs">
+    <legend>What do you need?</legend>
+    <div class="chips">
+      {brief.needs.map((n) => (
+        <label class="chip"><input type="radio" name="need" value={n} /><span>{n}</span></label>
+      ))}
+    </div>
+  </fieldset>
+
+  <div class="idea">
+    <label class="field" for="brief-idea"><span class="lab">Your idea, or the business problem</span></label>
+    <div class="idea-box" data-idea-box>
+      <textarea id="brief-idea" name="message" rows="6" required placeholder="What slows your team down? What would you like to automate or build?"></textarea>
+      <span class="scan" aria-hidden="true"></span>
+    </div>
+    <div class="assist" data-assist hidden>
+      <button type="button" class="ghost" data-analyse disabled>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2.5c.5 4.6 2.4 6.9 7.5 7.5-5.1.6-7 2.9-7.5 7.5-.5-4.6-2.4-6.9-7.5-7.5 5.1-.6 7-2.9 7.5-7.5Z" /></svg>
+        <span data-analyse-label>Analyse my idea</span>
+      </button>
+      <span class="assist-hint">Write a few sentences, and I'll ask two or three sharper questions.</span>
+    </div>
+  </div>
+
+  <div class="questions" data-questions hidden>
+    {import.meta.env.DEV && (
+      <p class="preview-note" data-preview-note hidden><b>Preview.</b> Sample questions on your machine only, until the real assistant is connected.</p>
+    )}
+    <ol class="qs" data-qs aria-live="polite"></ol>
+    <button type="button" class="ghost" data-draft hidden>Draft my brief</button>
+  </div>
+
+  <template data-q-template>
+    <li class="q">
+      <span class="angle"></span>
+      <p class="qtext"></p>
+      <div class="replies"></div>
+      <input type="hidden" class="qfield" />
+      <textarea class="qanswer" rows="1" placeholder="Your answer"></textarea>
+    </li>
+  </template>
+
+  <!-- the brief, as a document the visitor can still edit -->
+  <section class="final" data-final hidden aria-labelledby="final-title">
+    <header class="final-head">
+      <h2 id="final-title">Final brief</h2>
+      <p class="final-meta"><span data-for>Your project</span> · Drafted together on <time data-date></time></p>
+    </header>
+    {sections.map(([key, label]) => (
+      <div class="sec" data-sec={key}>
+        <label for={`brief-${key}`}>{label}</label>
+        <textarea id={`brief-${key}`} name={`Brief: ${label}`} data-section={key} rows="1"></textarea>
+      </div>
+    ))}
+    <p class="final-foot">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4ZM13.5 6.5l4 4" /></svg>
+      Edit anything. It's your brief.
+    </p>
+  </section>
+
+  <div class="drop" data-drop>
+    <input id="brief-files" type="file" name="attachment" multiple accept={accept} />
+    <label for="brief-files" class="drop-label">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" /></svg>
+      <b>Add your brief, photos or screenshots</b>
+      <span>Drop files here or choose them. Images, PDF, Word, slides or sheets, up to 10 MB in total.</span>
+    </label>
+    <ul class="files" data-files aria-label="Attached files"></ul>
+  </div>
+
+  <div class="who">
+    <label class="field">
+      <span class="lab">Name</span>
+      <input name="name" required autocomplete="name" />
+    </label>
+    <label class="field">
+      <span class="lab">Email</span>
+      <input type="email" name="email" required autocomplete="email" />
+    </label>
+    <label class="field">
+      <span class="lab">Company <i>(optional)</i></span>
+      <input name="company" autocomplete="organization" />
+    </label>
+  </div>
+
+  <div class="actions" data-actions>
+    <p class="ready-note">Your brief is ready. Change anything, add your files, then submit it.</p>
+    <button class="send" type="submit"><span class="lbl">Send my idea</span></button>
+  </div>
+  <div class="island-mount" data-island></div>
+</form>
+
+<style>
+  .brief { display: grid; gap: 32px; max-width: 900px; }
+  .honey { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  legend, .lab { display: block; margin-bottom: 12px; font-size: 0.9375rem; color: var(--muted); padding: 0; }
+  .lab i { font-style: normal; opacity: 0.7; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { position: relative; cursor: pointer; }
+  .chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .chip span, .replies :global(button) {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 0; border-radius: 100px;
+    background: #161715; color: var(--fg); font: inherit; font-size: 0.9375rem; font-weight: 500; cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .chip:hover span, .replies :global(button:hover) { background: #22231f; }
+  }
+  .chip input:checked + span, .replies :global(button[aria-pressed='true']) { background: var(--fg); color: var(--bg); }
+  .chip input:focus-visible + span, .replies :global(button:focus-visible) { box-shadow: 0 0 0 2px var(--accent); outline: none; }
+
+  /* form fields are the one place a page keeps an edge: a tone step and a focus ring */
+  .field { display: block; }
+  input:not([type='radio'], [type='file'], [type='hidden']), textarea {
+    display: block; width: 100%; border: 0; border-radius: 12px; background: #161715; color: var(--fg);
+    padding: 14px 16px; font: inherit; font-size: 1.0625rem; line-height: 1.5; outline: none;
+    transition: box-shadow 0.15s ease, color 0.3s ease;
+  }
+  textarea { resize: vertical; }
+  #brief-idea { min-height: 160px; }
+  input:not([type='radio'], [type='file'], [type='hidden']):focus-visible, textarea:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
+  input:user-invalid, textarea:user-invalid { box-shadow: 0 0 0 2px #f87171; }
+  ::placeholder { color: #6b6e68; }
+  .who { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+
+  /* reading: the idea dims and a scan line passes over it while the assistant works */
+  .idea-box { position: relative; border-radius: 12px; overflow: hidden; }
+  .scan { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--accent); opacity: 0; pointer-events: none; }
+  .idea-box.reading textarea { color: color-mix(in srgb, var(--fg) 45%, transparent); }
+  .idea-box.reading .scan { opacity: 0.9; animation: scan 1.4s cubic-bezier(0.77, 0, 0.175, 1) infinite alternate; }
+  @keyframes scan { to { top: calc(100% - 2px); } }
+
+  .assist { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 16px; margin-top: 14px; }
+  .assist[hidden] { display: none; }
+  .ghost {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 100px;
+    background: transparent; color: var(--fg); box-shadow: inset 0 0 0 1.5px #3a3c36; font: inherit; font-size: 0.9375rem; font-weight: 500;
+    cursor: pointer; transition: background-color 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease, scale 0.16s var(--ease-out);
+  }
+  .ghost svg { color: var(--accent-ink); }
+  @media (hover: hover) and (pointer: fine) { .ghost:not(:disabled):hover { background: #161715; box-shadow: inset 0 0 0 1.5px var(--accent); } }
+  .ghost:active:not(:disabled) { scale: 0.97; }
+  .ghost:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--accent); }
+  .ghost:disabled { opacity: 0.45; cursor: not-allowed; }
+  .assist-hint { font-size: 0.9375rem; color: var(--muted); }
+
+  .questions { display: grid; gap: 16px; justify-items: start; }
+  .questions[hidden] { display: none; }
+  .preview-note { margin: 0; font-size: 0.9375rem; color: var(--muted); }
+  .preview-note b { color: var(--accent-ink); font-weight: 500; }
+  .qs { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; width: 100%; }
+  .q { border-radius: 16px; background: #121311; padding: 22px 24px; }
+  .angle { font-size: 0.9375rem; font-weight: 500; color: var(--accent-ink); }
+  .qtext { margin: 8px 0 0; font-size: clamp(1.1rem, 1.5vw, 1.3rem); line-height: 1.4; max-width: 60ch; min-height: 1.4em; }
+  .replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .replies :global(button) { min-height: 38px; padding: 0 14px; }
+  .qanswer { margin-top: 14px; resize: none; overflow: hidden; }
+
+  /* the final brief: a sheet of paper laid on the dark page */
+  .final {
+    scroll-margin-top: 96px; border-radius: 20px; background: var(--paper); color: #141414;
+    padding: clamp(28px, 4vw, 48px); display: grid; gap: 22px;
+  }
+  .final[hidden] { display: none; }
+  .final-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 10px; }
+  .final h2 { font-size: clamp(1.8rem, 3.2vw, 2.75rem); }
+  .final-meta { margin: 0; font-size: 0.9375rem; color: #5f5f58; }
+  .final-meta span { color: #141414; font-weight: 500; }
+  .sec { display: grid; grid-template-columns: 13rem 1fr; gap: 6px 24px; align-items: start; }
+  .sec label { padding-top: 9px; font-size: 0.9375rem; font-weight: 500; color: #5f5f58; transition: color 0.2s ease; }
+  .sec.writing label { color: #2a55d9; }
+  .final textarea {
+    background: transparent; color: #141414; resize: none; overflow: hidden; margin: 0 -10px; width: calc(100% + 20px);
+    padding: 8px 10px; border-radius: 8px; font-size: 1.0625rem; line-height: 1.6; min-height: 0;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  @media (hover: hover) and (pointer: fine) { .final textarea:hover { background: #ebe9e3; } }
+  .final textarea:focus-visible { background: #ffffff; box-shadow: 0 0 0 2px var(--accent); }
+  .final-foot { display: flex; align-items: center; gap: 8px; margin: 6px 0 0; font-size: 0.9375rem; color: #5f5f58; }
+
+  .drop {
+    position: relative; border-radius: 16px; background: #121311; outline: 1.5px dashed #3a3c36; outline-offset: -1.5px;
+    transition: outline-color 0.15s ease, background-color 0.15s ease;
+  }
+  .drop.over, .drop:focus-within { outline-color: var(--accent); background: #131726; }
+  .drop input[type='file'] { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+  .drop-label { display: grid; justify-items: start; gap: 6px; padding: 28px 24px; cursor: pointer; }
+  .drop-label svg { color: var(--accent-ink); margin-bottom: 6px; }
+  .drop-label b { font-size: 1.0625rem; }
+  .drop-label span { font-size: 0.9375rem; color: var(--muted); max-width: 52ch; }
+  .files { list-style: none; margin: 0; padding: 0 24px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .files:not(:empty) { padding-bottom: 24px; }
+  .files :global(li) {
+    display: inline-flex; align-items: center; gap: 10px; max-width: 100%; padding: 6px 6px 6px 14px; border-radius: 100px;
+    background: #1d1e1b; font-size: 0.9375rem;
+  }
+  .files :global(.fname) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+  .files :global(.fsize) { color: var(--muted); white-space: nowrap; }
+  .files :global(button) {
+    display: grid; place-items: center; width: 30px; height: 30px; border: 0; border-radius: 50%;
+    background: transparent; color: var(--muted); cursor: pointer; transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .files :global(button:hover) { background: #2a2b27; color: var(--fg); }
+  .files :global(button:focus-visible) { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  /* once the brief is ready the button slides right and says what it now does */
+  .actions { display: flex; align-items: center; gap: 16px 24px; }
+  .ready-note { display: none; margin: 0; max-width: 40ch; font-size: 1.0625rem; line-height: 1.45; }
+  .actions.ready { justify-content: space-between; }
+  .actions.ready .ready-note { display: block; }
+  .send {
+    flex-shrink: 0; min-height: 56px; padding: 0 32px; border: 0; border-radius: 100px; cursor: pointer; overflow: hidden; white-space: nowrap;
+    background: var(--accent); color: #0a0b0a; font: inherit; font-weight: 700; font-size: 1.0625rem;
+    transition: scale 0.16s var(--ease-out), background-color 0.2s ease, opacity 0.2s ease;
+  }
+  .lbl { display: inline-block; }
+  .send:active { scale: 0.97; }
+  @media (hover: hover) and (pointer: fine) { .send:hover { background: #6b92ff; } }
+  .send:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+  .send:disabled { opacity: 0.6; cursor: progress; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .idea-box.reading .scan { animation: none; opacity: 0; }
+  }
+  @media (max-width: 760px) {
+    .who { grid-template-columns: 1fr; }
+    .actions { flex-direction: column; align-items: stretch; }
+    .send { width: 100%; }
+    .files :global(.fname) { max-width: 150px; }
+    .sec { grid-template-columns: 1fr; }
+    .sec label { padding-top: 0; }
+    .q { padding: 18px; }
+  }
+</style>

@@ -1,15 +1,34 @@
 # pikioniswebdeveloper — personal site of Petros Pikionis
 
-Astro 5 + GSAP (ScrollTrigger). Static site. All content lives in `src/data/site.ts`.
+Astro 5 + GSAP (ScrollTrigger). Static, multi-page site: Home `/`, Services `/services`, Projects `/projects`,
+About me `/about`, Contact `/contact`, Blog `/blog`. Site text lives in `src/data/site.ts`; projects and posts are Markdown in `src/content/`.
 
 ## Commands
 - `npm install` → `npm run dev` (http://localhost:4321) → `npm run build` (output in `dist/`)
 
 ## Structure
-- `src/data/site.ts` — text, services, projects, brands, stats (edit content here, not in components)
-- `src/components/` — Nav, Intro (curtain + hero), Marquee, Services, Customers (brand bubbles + panel), Stats, Contact
-- `src/scripts/main.ts` — all motion: curtain, word reveal, bubbles, counters, reveals
-- `src/styles/global.css` — tokens (dark hero world → light lower page via `body.light`)
+- `src/data/site.ts` — text, services (keys `web ai booking commerce data`), brands, stats (edit content here, not in components)
+- `src/content/projects/*.md` — one file per project (`services:` lists the keys it shows under; text in the body gives it its own page). Copy `_template.md`.
+- `src/content/blog/*.md` — one file per post; `draft: true` shows only in `npm run dev`. Copy `_template.md`.
+- `src/layouts/Site.astro` — every page: Nav, the page, the Contact block as footer, and `init()` from main.ts
+- `src/components/` — Nav (split menu), Intro (curtain + hero), Marquee, Services (stacked sheets), Customers (brand bubbles + panel), Stats, Terrain (GitHub, on /about), Contact
+- `src/scripts/main.ts` — all motion: curtain, letter/word reveal, light sheet (home only), bubbles, section entrances (`data-rise`)
+- `src/scripts/splitnav.ts` — the menu (port of KokonutUI Split Nav, MIT): split on the current page, hover gaps, scrub/flick, arrow keys
+- `src/components/BriefForm.astro` + `src/scripts/brief.ts` — the idea/brief form on /contact (files by drop or picker, 10 MB total). Sending lives only in `send()`: for now FormSubmit's AJAX endpoint (`brief` in site.ts); swap it for our own backend later. Never submit it from tests: intercept `formsubmit.co` — a real send emails Petros.
+- `src/scripts/assistant.ts` — the brief assistant's interface (questions → final brief, both streamed). Only `previewAssistant` exists: templates, `npm run dev` only, never shipped. The real one (an endpoint streaming from the model, loaded with the projects and services) implements the same interface in the backend phase.
+- `src/components/Services.astro` + `src/scripts/workstack.ts` — home "What I build": service sheets stack over a pinned screen and each sheet's projects stack inside it (one scroll step per sheet/project; `--steps` must match the timeline). Without script or with reduced motion it is a plain flow. Project videos lazy-load and play only in view.
+- `src/components/Contact.astro` — the closing block on every page: invitation, a classic footer (logo slot = `person.logo` in site.ts, pages from `pages`, contact, follow), legal row, then the surname
+- `src/scripts/dither.ts` — the surname as an error-diffusion dither field with cursor push and click ripples (port of Componentry Dithered Logo, MIT); the real text stays for layout and as the fallback
+- `src/scripts/cascade.ts` — letter cascade on hover for `[data-cascade]` titles (port of Componentry Letter Cascade, MIT); its styles are the `.lc-*` rules in global.css
+- `src/pages/services.astro` + `src/scripts/flipstack.ts` — a card per service that folds up to reveal the next (port of Componentry Case Study Flip Stack, MIT); card copy is `label` / `headline` / `includes` in site.ts, projects come from the collection
+- `src/scripts/glass.ts` — liquid glass carousel + hover ripple in one WebGL2 canvas (port of Componentry Liquid Glass Carousel + Image Ripple Effect, MIT). Lens glows only light what is darker than the paper; never use `pow(x, 2.0)` with negative x in its shaders.
+- `src/scripts/projects.ts` — the /projects showcase: title cards for projects without `cover`, open/switch/close (carousel scales down and lifts, video + panel arrive), `?project=id` links
+- `src/scripts/island.ts` + `src/styles/island.css` — status island (port of KokonutUI Status Island, MIT): `createIsland(mount)` → `set / update / remove` tasks
+- `astro.config.mjs` — the dev toolbar is off: it sat on top of the island
+- `src/scripts/ink.ts` — curtain title written in WebGL ink (port of KokonutUI Ink Background, MIT)
+- `src/scripts/terrain.ts` — GitHub contribution terrain (port of KokonutUI Activity Terrain, MIT)
+- `scripts/github.mjs` — pulls the GitHub calendar into `src/data/github.json`; runs as `prebuild` (`npm run github` by hand)
+- `src/styles/global.css` — tokens (dark `:root` / `.theme-dark`; home's lower page is a `.sheet.theme-light` that slides over the hero; inner pages are `.page.theme-light`), `.page-head`, `.prose` for Markdown
 - `public/` — put `petros.jpg` (portrait) and vertical project videos here
 
 ## Design direction (the brief wins)

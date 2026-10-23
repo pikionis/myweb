@@ -1,0 +1,47 @@
+---
+import { person } from '../data/site';
+import github from '../data/github.json';
+
+const total = github.counts.reduce((s, n) => s + n, 0);
+---
+<!-- A year of GitHub contributions, drawn as terrain (src/scripts/terrain.ts) -->
+<div class="terrain" data-terrain>
+  <div class="t-top">
+    <p class="t-readout" data-readout aria-live="polite">{total.toLocaleString('en-US')} contributions in the last year</p>
+    <div class="t-views" role="group" aria-label="View">
+      <button type="button" data-view="flat" aria-pressed="false">Flat</button>
+      <button type="button" data-view="terrain" aria-pressed="true">Terrain</button>
+    </div>
+  </div>
+  <canvas tabindex="0" role="img" aria-label={`GitHub activity: ${total} contributions in the last year`}></canvas>
+  <div class="t-foot">
+    <a href={person.github} target="_blank" rel="noopener">github.com/{github.user}</a>
+    <span class="legend" aria-hidden="true">Less {[0, 1, 2, 3, 4].map((l) => <i style={`background: var(--terrain-${l})`}></i>)} More</span>
+  </div>
+  <script type="application/json" set:html={JSON.stringify({ endDate: github.endDate, counts: github.counts })} />
+</div>
+
+<style>
+  .terrain {
+    --terrain-0: #e2e0d9; --terrain-1: #bccaf3; --terrain-2: #8ba7fa; --terrain-3: #4d7cff; --terrain-4: #1d3b9e;
+    --terrain-accent: #141414; --terrain-text: #5f5f58;
+    user-select: none;
+  }
+  .t-top, .t-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .t-readout { margin: 0; font-size: clamp(1.15rem, 1.6vw, 1.4rem); font-weight: 500; font-variant-numeric: tabular-nums; min-width: 0; }
+  .t-views { display: flex; background: var(--terrain-0); border-radius: 100px; padding: 4px; }
+  .t-views button {
+    border: 0; background: transparent; border-radius: 100px; padding: 10px 18px; min-height: 44px;
+    font-size: 0.9375rem; font-weight: 500; color: var(--muted); cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .t-views button[aria-pressed='true'] { background: var(--fg); color: var(--bg); }
+  @media (hover: hover) and (pointer: fine) { .t-views button[aria-pressed='false']:hover { color: var(--fg); } }
+  canvas { display: block; width: 100%; height: clamp(260px, 32vw, 460px); touch-action: pan-y; cursor: grab; outline: none; }
+  canvas.dragging { cursor: grabbing; }
+  canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .t-foot { font-size: 0.9375rem; color: var(--muted); }
+  .t-foot a { color: var(--fg); text-decoration-color: var(--accent); text-underline-offset: 0.25em; }
+  .legend { display: inline-flex; align-items: center; gap: 5px; }
+  .legend i { width: 12px; height: 12px; border-radius: 3px; }
+</style>

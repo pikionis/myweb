@@ -1,0 +1,36 @@
+---
+import Site from '../../layouts/Site.astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft);
+  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: CollectionEntry<'blog'> };
+const { Content } = await render(post);
+const day = post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<Site title={`${post.data.title} — Petros Pikionis`} description={post.data.description} light>
+  <main class="page theme-light">
+    <article class="wrap">
+      <header class="head" data-rise>
+        <time datetime={post.data.date.toISOString()}>{day}</time>
+        <h1>{post.data.title}</h1>
+        <p>{post.data.description}</p>
+      </header>
+      <div class="prose"><Content /></div>
+      <p class="back"><a href="/blog">All posts</a></p>
+    </article>
+  </main>
+</Site>
+
+<style>
+  .head { max-width: 980px; margin-bottom: clamp(40px, 7vh, 72px); }
+  time { font-size: 0.9375rem; color: var(--muted); }
+  /* a post title is a sentence: set it at heading size, not the display size, so it stays within two lines */
+  h1 { margin-top: 14px; font-size: clamp(2rem, 4.4vw, 3.6rem); text-wrap: balance; }
+  .head p { margin: 20px 0 0; max-width: 56ch; font-size: clamp(1.15rem, 1.6vw, 1.4rem); line-height: 1.45; }
+  .back { margin: clamp(56px, 9vh, 96px) 0 0; font-size: 1.0625rem; }
+  .back a { text-decoration-color: var(--accent); text-underline-offset: 0.25em; }
+</style>

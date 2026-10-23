@@ -1,27 +1,46 @@
 ---
 import { stats } from '../data/site';
+// the first stat owns the screen; the rest answer it from the other side
+const [lead, ...rest] = stats;
 ---
-<section id="numbers" class="wrap">
-  <h2 class="sr-only">Impact</h2>
-  <div class="stats">
-    {stats.map((s) => (
-      <div class="st">
-        <div class="n" data-count={s.value} data-suffix={s.suffix}>{s.value}{s.suffix}</div>
-        <div class="k">{s.label}</div>
-      </div>
-    ))}
+<section id="numbers" class="wrap figure">
+  <h2>AI in production, daily</h2>
+  <div class="big">
+    <p class="n">{lead.value}<sup>{lead.suffix}</sup></p>
+    <p class="cap">{lead.label} — DeinDeal's internal AI product for partner data.</p>
   </div>
+  <ul class="rest">
+    {rest.map((s) => (
+      <li><b>{s.value}{s.suffix}</b> {s.label}</li>
+    ))}
+  </ul>
 </section>
 
 <style>
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--line); }
-  .st { padding: 44px 22px; border-right: 1px solid var(--line); }
-  .st:last-child { border-right: none; }
-  .n { font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 700; line-height: 0.9; letter-spacing: -0.03em; color: var(--accent); font-variant-numeric: tabular-nums; }
-  .k { margin-top: 14px; font-size: 0.9rem; color: var(--muted); max-width: 22ch; }
-  @media (max-width: 720px) {
-    .stats { grid-template-columns: 1fr 1fr; }
-    .st:nth-child(2) { border-right: none; }
-    .st:nth-child(1), .st:nth-child(2) { border-bottom: 1px solid var(--line); }
+  .figure {
+    min-height: 90vh; min-height: 90svh;
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: auto 1fr auto; column-gap: 24px;
+    padding-block: clamp(80px, 12vh, 150px);
+  }
+  h2 { grid-column: 1 / -1; font-size: clamp(1.8rem, 3.2vw, 2.75rem); }
+  .big { grid-column: 1 / 9; grid-row: 3; }
+  .n {
+    margin: 0; font-weight: 700; font-size: clamp(180px, 23vw, 380px); line-height: 0.8; letter-spacing: -0.05em;
+    font-variant-numeric: lining-nums tabular-nums; white-space: nowrap;
+  }
+  .n sup { font-size: 0.33em; vertical-align: top; position: relative; top: 0.04em; margin-left: 0.04em; color: var(--accent-ink); letter-spacing: -0.02em; }
+  .cap { margin: 28px 0 0; max-width: 32ch; font-size: 1.0625rem; line-height: 1.55; }
+  .rest { grid-column: 8 / -1; grid-row: 3; align-self: end; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .rest li { font-size: 0.9375rem; line-height: 1.4; }
+  .rest b { display: block; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1; letter-spacing: -0.03em; margin-bottom: 4px; }
+
+  @media (max-width: 860px) {
+    .figure { min-height: 80svh; grid-template-rows: auto 1fr auto auto; }
+    h2 { font-size: 1.75rem; }
+    .big, .rest { grid-column: 1 / -1; }
+    .n { font-size: 34vw; }
+    .cap { max-width: none; width: 85%; font-size: 1rem; }
+    .rest { grid-row: 4; margin-top: 48px; gap: 16px; }
+    .rest b { font-size: 1.75rem; }
   }
 </style>

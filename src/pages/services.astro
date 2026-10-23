@@ -1,0 +1,158 @@
+---
+import Site from '../layouts/Site.astro';
+import { servicesWithProjects } from '../data/projects';
+
+const services = await servicesWithProjects();
+const n = services.length;
+// each card takes the colours its projects wear in the /projects carousel
+const COLORS: Record<string, [string, string]> = {
+  web: ['#141414', '#f4f3ef'],
+  ai: ['#4d7cff', '#0a0b0a'],
+  booking: ['#1d3b9e', '#f4f3ef'],
+  commerce: ['#e2e0d9', '#141414'],
+  data: ['#2a2b27', '#f4f3ef'],
+};
+const arrow = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M5 13l7 7 7-7"/></svg>';
+---
+<Site title="Services — Petros Pikionis" description="Websites, AI services and bots, booking systems, e-commerce and marketplace feeds, data and infrastructure — what Petros Pikionis builds." light>
+  <main class="theme-light services-page">
+    <section class="intro">
+      <p class="hint"><span class="bob" set:html={arrow} /> Scroll down <span class="bob late" set:html={arrow} /></p>
+      <h1>Services</h1>
+      <p class="lede">Five things I build end to end, each with the real projects behind it.</p>
+    </section>
+
+    <!-- one screen of scroll per card; each folds up and away to show the next -->
+    <div class="flip" data-flip style={`--n: ${n}`}>
+      <div class="stage">
+        <div class="deck">
+          {services.map((s, i) => {
+            const [bg, fg] = COLORS[s.key] ?? COLORS.web;
+            return (
+              <article class="card" data-card style={`z-index: ${n - i}; --bg: ${bg}; --fg: ${fg}`} aria-labelledby={`svc-${s.key}`}>
+                <div class="inner" data-inner>
+                  <div class="copy">
+                    <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                    <div class="text">
+                      <p class="eyebrow">{s.label}</p>
+                      <h2 id={`svc-${s.key}`}>{s.headline}</h2>
+                      <p class="desc">{s.desc}</p>
+                    </div>
+                  </div>
+                  <div class="panel">
+                    <p class="ptitle">What's included</p>
+                    <ul class="includes">
+                      {s.includes.map((x) => <li>{x}</li>)}
+                    </ul>
+                    {s.projects.length > 0 && (
+                      <>
+                        <p class="ptitle">Projects</p>
+                        <ul class="projects">
+                          {s.projects.map((p) => <li><a href={`/projects?project=${p.id}`}>{p.data.title}</a></li>)}
+                        </ul>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+
+    <section class="end">
+      <p class="end-label">Your project next.</p>
+      <a class="end-cta" href="/contact">Pitch your idea</a>
+    </section>
+  </main>
+</Site>
+
+<script>
+  import { flipStack } from '../scripts/flipstack';
+  const root = document.querySelector<HTMLElement>('[data-flip]');
+  if (root) flipStack(root);
+</script>
+
+<style>
+  .services-page { padding: 0; }
+
+  .intro {
+    position: relative; min-height: max(640px, 82vh); padding: clamp(120px, 18vh, 190px) 20px 40px;
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(28px, 6vh, 64px);
+  }
+  .hint { display: flex; align-items: center; gap: clamp(14px, 2.5vw, 32px); margin: 0; font-size: clamp(1.6rem, 3.5vw, 3.25rem); font-weight: 500; letter-spacing: -0.05em; }
+  .bob { display: inline-flex; color: var(--accent-ink); animation: bob 1.4s ease-in-out infinite; }
+  .bob.late { animation-delay: 0.18s; }
+  @keyframes bob { 50% { transform: translateY(10px); } }
+  .intro h1 { font-size: clamp(3rem, 11vw, 9.5rem); letter-spacing: -0.05em; }
+  .lede { margin: 0; max-width: 34ch; font-size: clamp(1.15rem, 1.6vw, 1.4rem); line-height: 1.45; }
+
+  /* the pinned screen plus one screen of scroll for each card that folds away (all but the last) */
+  .flip { position: relative; height: calc(var(--n) * 100vh); }
+  .stage {
+    position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; padding: 84px clamp(14px, 4vw, 64px) 28px;
+  }
+  .deck { position: relative; width: min(100%, 1120px, calc((100svh - 140px) * 1.76)); aspect-ratio: 1.76 / 1; perspective: 800px; }
+  .card { position: absolute; inset: 0; transform-style: preserve-3d; backface-visibility: hidden; will-change: transform; }
+  /* the cards float in a pile, so here a shadow is earned */
+  .inner {
+    height: 100%; display: grid; grid-template-columns: 1.15fr 0.85fr; overflow: hidden;
+    border-radius: clamp(18px, 2vw, 30px); background: var(--bg); color: var(--fg);
+    box-shadow: 0 16px 50px rgb(20 17 10 / 0.18);
+  }
+  .copy { display: flex; flex-direction: column; min-width: 0; padding: clamp(24px, 3vw, 48px); }
+  .num { font-size: clamp(1.5rem, 2.5vw, 2.25rem); font-weight: 500; line-height: 1; letter-spacing: -0.06em; }
+  .text { margin-top: auto; padding-top: 24px; }
+  .eyebrow { margin: 0 0 clamp(10px, 1.5vw, 20px); font-size: 0.9375rem; font-weight: 500; opacity: 0.75; }
+  .card h2 { max-width: 16ch; font-size: clamp(1.8rem, 3.4vw, 3.25rem); line-height: 0.96; letter-spacing: -0.04em; text-wrap: balance; }
+  .desc { margin: clamp(16px, 1.8vw, 24px) 0 0; max-width: 42ch; font-size: clamp(1rem, 1.15vw, 1.125rem); line-height: 1.5; opacity: 0.9; }
+
+  .panel {
+    margin: clamp(10px, 1.2vw, 18px) clamp(10px, 1.2vw, 18px) clamp(10px, 1.2vw, 18px) 0;
+    border-radius: clamp(12px, 1.4vw, 22px); padding: clamp(20px, 2.4vw, 36px);
+    background: color-mix(in srgb, var(--fg) 9%, var(--bg));
+    display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; overflow: hidden;
+  }
+  .ptitle { margin: 0; font-size: 0.9375rem; font-weight: 500; opacity: 0.7; }
+  .ptitle + ul { margin-bottom: 18px; }
+  .panel ul:last-child { margin-bottom: 0; }
+  .includes, .projects { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .includes li { padding: 7px 13px; border-radius: 100px; background: color-mix(in srgb, var(--fg) 12%, transparent); font-size: 0.9375rem; }
+  .projects { flex-direction: column; gap: 6px; }
+  .projects a { font-size: clamp(1.05rem, 1.4vw, 1.3rem); font-weight: 700; letter-spacing: -0.01em; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--fg) 35%, transparent); text-underline-offset: 0.2em; transition: text-decoration-color 0.2s ease; }
+  @media (hover: hover) and (pointer: fine) { .projects a:hover { text-decoration-color: currentColor; } }
+
+  .end { min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 36px; padding: 80px 20px; text-align: center; }
+  .end-label { margin: 0; font-size: clamp(3rem, 9vw, 8.5rem); font-weight: 700; line-height: 0.95; letter-spacing: -0.06em; text-transform: uppercase; }
+  .end-cta {
+    display: inline-flex; align-items: center; min-height: 56px; padding: 0 32px; border-radius: 100px;
+    background: var(--accent); color: #0a0b0a; font-weight: 700; font-size: 1.0625rem; text-decoration: none;
+    transition: background-color 0.2s ease, scale 0.16s var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) { .end-cta:hover { background: #6b92ff; } }
+  .end-cta:active { scale: 0.97; }
+
+  /* a phone gets tall cards: the copy, then the panel */
+  @media (max-width: 760px) {
+    .deck { width: 100%; aspect-ratio: auto; height: calc(100svh - 130px); }
+    .inner { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    .copy { padding: 22px; }
+    .text { padding-top: 14px; }
+    .card h2 { font-size: clamp(1.6rem, 7.4vw, 2.2rem); }
+    .desc { font-size: 0.9375rem; }
+    .panel { margin: 0 10px 10px; padding: 18px; justify-content: flex-start; }
+    .includes li { padding: 5px 11px; font-size: 0.8125rem; }
+    .ptitle + ul { margin-bottom: 12px; }
+  }
+  /* reduced motion: no pile, the cards follow one another down the page */
+  @media (prefers-reduced-motion: reduce) {
+    .bob { animation: none; }
+    .flip { height: auto; }
+    .stage { position: static; height: auto; overflow: visible; display: block; }
+    .deck { width: min(100%, 1120px); margin: 0 auto; aspect-ratio: auto; height: auto; display: grid; gap: 24px; perspective: none; }
+    .card { position: relative; inset: auto; }
+    .inner { min-height: 480px; }
+  }
+</style>

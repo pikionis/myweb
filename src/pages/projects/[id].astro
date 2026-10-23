@@ -1,0 +1,41 @@
+---
+import Site from '../../layouts/Site.astro';
+import { render } from 'astro:content';
+import { getProjects, hasStory, type ProjectEntry } from '../../data/projects';
+import { services } from '../../data/site';
+
+// only projects with written text get a page
+export async function getStaticPaths() {
+  const all = await getProjects();
+  return all.filter(hasStory).map((project) => ({ params: { id: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props as { project: ProjectEntry };
+const { Content } = await render(project);
+const serviceTitles = project.data.services.map((k) => services.find((s) => s.key === k)?.title).filter(Boolean);
+---
+<Site title={`${project.data.title} — Petros Pikionis`} description={project.data.summary} light>
+  <main class="page theme-light">
+    <article class="wrap">
+      <header class="page-head" data-rise>
+        <h1>{project.data.title}</h1>
+        <p>{project.data.summary}</p>
+      </header>
+      <dl class="facts" data-rise>
+        <div><dt>Service</dt><dd>{serviceTitles.join(', ')}</dd></div>
+        {project.data.tags.length > 0 && <div><dt>Built with</dt><dd>{project.data.tags.join(' · ')}</dd></div>}
+        {project.data.url && <div><dt>Live</dt><dd><a href={project.data.url} target="_blank" rel="noopener">Visit site</a></dd></div>}
+      </dl>
+      <div class="prose"><Content /></div>
+      <p class="back"><a href="/projects">All projects</a></p>
+    </article>
+  </main>
+</Site>
+
+<style>
+  .facts { display: flex; flex-wrap: wrap; gap: 20px 56px; margin: 0 0 clamp(40px, 7vh, 72px); }
+  .facts dt { font-size: 0.9375rem; color: var(--muted); }
+  .facts dd { margin: 4px 0 0; font-size: 1.0625rem; font-weight: 500; }
+  .facts a, .back a { text-decoration-color: var(--accent); text-underline-offset: 0.25em; }
+  .back { margin: clamp(56px, 9vh, 96px) 0 0; font-size: 1.0625rem; }
+</style>

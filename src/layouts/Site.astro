@@ -1,0 +1,19 @@
+---
+// Every page: the menu, the page itself, and the closing contact block as the footer.
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Contact from '../components/Contact.astro';
+
+interface Props { title?: string; description?: string; light?: boolean; footer?: boolean }
+const { footer = true, ...base } = Astro.props;
+---
+<Base {...base}>
+  <Nav />
+  <slot />
+  {footer && <Contact />}
+</Base>
+
+<script>
+  import { init } from '../scripts/main';
+  init();
+</script>
