@@ -294,7 +294,7 @@ function hero(handoff: Promise<void>) {
     // once open, the empty curtain stops catching the pointer (the headline tilt lives underneath)
     .set('.curtain', { pointerEvents: 'none' }, 0.4)
     .from(chars, { yPercent: 60, autoAlpha: 0, ease: 'power3.out', duration: 0.3, stagger: 0.018 }, 0.45)
-    .from('.who, .hero-photo, .corner', { autoAlpha: 0, y: 30, stagger: 0.06, ease: 'power3.out', duration: 0.8 }, 0.8);
+    .from('.hero-fig, .corner', { autoAlpha: 0, y: 30, stagger: 0.06, ease: 'power3.out', duration: 0.8 }, 0.8);
 
   // 2) once the headline has landed (~0.67), the copy below lights up word by word
   ScrollTrigger.create({
