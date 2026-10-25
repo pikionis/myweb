@@ -261,8 +261,10 @@ function play(
     const head = document.querySelector<SVGSVGElement>('.brand-sym');
     const headWord = document.querySelector<SVGSVGElement>('.brand-word');
     out = gsap.timeline({ onComplete: () => { if (!over) { over = true; finish(); } } });
-    out.to([line, skipBtn], { autoAlpha: 0, duration: 0.2, ease: 'power1.out' }, 0)
-      .to(el.querySelector('.ohl-bg'), { yPercent: -100, duration: 0.8, ease: 'expo.inOut' }, 0.06);
+    // the line stays printed on the ivory and leaves with it, so it can still be read as the page arrives
+    out.to(skipBtn, { autoAlpha: 0, duration: 0.2, ease: 'power1.out' }, 0)
+      .to(el.querySelector('.ohl-bg'), { yPercent: -100, duration: 0.8, ease: 'expo.inOut' }, 0.06)
+      .to(line, { y: -window.innerHeight, duration: 0.8, ease: 'expo.inOut' }, 0.06);
     if (head) {
       // FLIP: from where the logo is to where the header's logo is
       const a = sym.getBoundingClientRect(), b = head.getBoundingClientRect();
