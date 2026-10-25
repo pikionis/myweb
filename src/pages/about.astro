@@ -15,9 +15,23 @@ const location = person.location.replace(' · ', ', ');
     <!-- the bio opens with the work itself: a year of commits -->
     <div class="wrap"><Terrain /></div>
 
-    <section class:list={['wrap', 'bio', { 'has-photo': person.photo }]} data-rise>
+    <section class="wrap bio" data-rise>
       <h2 class="sr-only">Bio</h2>
-      {person.photo && <img class="portrait" src={person.photo} alt={`Portrait of ${person.name}`} width="480" height="640" />}
+      <!-- the portrait, captioned with who this is (as in the home hero) -->
+      <figure class="portrait">
+        {person.photo ? (
+          <img src={person.photo} alt={`Portrait of ${person.name}`} width="480" height="640" />
+        ) : (
+          <div class="ph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
+            <small>public/petros.jpg</small>
+          </div>
+        )}
+        <figcaption>
+          <span class="cap-name">{person.name}</span>
+          <span class="cap-role">{person.role}</span>
+        </figcaption>
+      </figure>
       <p class="lead">{hero.intro}</p>
       <div class="side">
         <p>{hero.palette}</p>
@@ -38,14 +52,18 @@ const location = person.location.replace(' · ', ', ');
     display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: clamp(48px, 8vh, 88px);
     padding-block: clamp(80px, 12vh, 140px) 0;
   }
-  /* the main paragraph on the left, what I do on the right; with a portrait, both move beside it */
-  .lead { grid-column: 1 / 8; margin: 0; font-size: clamp(1.3rem, 2.1vw, 1.9rem); line-height: 1.35; letter-spacing: -0.01em; max-width: 32ch; }
-  .side { grid-column: 9 / -1; align-self: end; }
+  /* the captioned portrait on the left; the main paragraph and what I do beside it */
+  .lead { grid-column: 6 / -1; margin: 0; font-size: clamp(1.3rem, 2.1vw, 1.9rem); line-height: 1.35; letter-spacing: -0.01em; max-width: 32ch; }
+  .side { grid-column: 6 / -1; align-self: start; }
   .side p { margin: 0; font-size: 1.0625rem; line-height: 1.6; max-width: 44ch; }
   .side h3 { margin: 32px 0 0; font-size: clamp(1.4rem, 2.2vw, 1.9rem); }
-  .portrait { grid-column: 1 / 5; grid-row: span 2; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 14px; }
-  .has-photo .lead, .has-photo .side { grid-column: 6 / -1; }
-  .has-photo .side { align-self: start; }
+  .portrait { grid-column: 1 / 5; grid-row: span 2; margin: 0; }
+  .portrait img, .ph { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 14px; }
+  .ph { display: grid; place-content: center; justify-items: center; gap: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--accent-ink); }
+  .ph small { color: var(--muted); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; }
+  figcaption { display: grid; gap: 6px; margin-top: 16px; }
+  .cap-name { font-size: 1.125rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; line-height: 1.1; }
+  .cap-role { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
   .areas { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 10px; }
   .areas li { background: var(--surface); border-radius: 100px; padding: 10px 18px; font-size: 1.0625rem; font-weight: 500; }
   .numbers { grid-column: 1 / -1; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
@@ -54,7 +72,7 @@ const location = person.location.replace(' · ', ', ');
 
   @media (max-width: 860px) {
     .portrait { grid-column: 1 / -1; grid-row: auto; max-width: 320px; }
-    .lead, .side, .has-photo .lead, .has-photo .side { grid-column: 1 / -1; }
+    .lead, .side { grid-column: 1 / -1; }
     .numbers { grid-template-columns: 1fr 1fr; row-gap: 32px; }
   }
 </style>
