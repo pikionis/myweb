@@ -43,7 +43,7 @@ const steps = (services.length - 1) + services.reduce((s, x) => s + Math.max(x.p
                       ) : p.data.cover ? (
                         <img src={p.data.cover} alt="" loading="lazy" />
                       ) : (
-                        <span class="pfallback" aria-hidden="true">{p.data.title}</span>
+                        <span class="pfallback" aria-hidden="true" data-t={p.data.title}></span>
                       )}
                     </span>
                     <span class="pline">{p.data.summary}</span>
@@ -94,6 +94,8 @@ const steps = (services.length - 1) + services.reduce((s, x) => s + Math.max(x.p
     position: absolute; left: 22px; right: 22px; bottom: 18px; font-weight: 700; text-transform: uppercase;
     font-size: clamp(1.6rem, 3.4vw, 3rem); line-height: 0.92; letter-spacing: -0.04em;
   }
+  /* the title card repeats the name as a picture, not as text */
+  .pfallback::before { content: attr(data-t); }
   .pline { flex: none; display: block; padding: 12px 18px 16px; font-size: 0.9375rem; line-height: 1.45; color: var(--meta); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* ---- pinned: the sheets stack over a held screen, and each sheet's projects stack inside it ---- */

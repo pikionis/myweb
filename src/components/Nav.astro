@@ -18,9 +18,8 @@ const dark = here === '/' || here === '/contact';
           <a class="link" href={href} draggable="false" aria-current={i === current ? 'page' : undefined}>
             {i > 0 && <span class="cap l" aria-hidden="true"></span>}
             {i < pages.length - 1 && <span class="cap r" aria-hidden="true"></span>}
-            <span class="label">
-              {short ? <><span class="long">{name}</span><span class="short">{short}</span></> : name}
-            </span>
+            <!-- a phone shows the short name, drawn in CSS, so the page's text holds each name once -->
+            <span class="label" data-short={short}><span class="long">{name}</span></span>
             <span class="tick" aria-hidden="true"></span>
           </a>
         </div>
@@ -60,7 +59,6 @@ const dark = here === '/' || here === '/contact';
   @media (hover: hover) and (pointer: fine) { .link:hover { color: #f4f4f5; } }
   .seg.on .link { color: #ffffff; }
   .label { position: relative; white-space: nowrap; }
-  .short { display: none; }
   /* square patches hide the rounded corners while a neighbour touches */
   .cap { position: absolute; top: 0; bottom: 0; width: 12px; background: #141414; }
   .cap.l { left: -1px; transform-origin: left; }
@@ -80,8 +78,8 @@ const dark = here === '/' || here === '/contact';
     .split { margin-left: 0; margin-right: 0; }
     .home-seg { display: none; }
     .link { height: 40px; padding: 0 10px; font-size: 0.8125rem; }
-    .long { display: none; }
-    .short { display: inline; }
+    [data-short] .long { display: none; }
+    [data-short]::after { content: attr(data-short); }
   }
   /* five links and the logo across a phone */
   @media (max-width: 420px) {

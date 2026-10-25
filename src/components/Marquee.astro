@@ -1,10 +1,12 @@
 ---
 import { marquee } from '../data/site';
-const items = [...marquee, ...marquee];
 ---
-<div class="marquee" aria-label={marquee.join(', ')}>
-  <div class="track" aria-hidden="true">
-    {items.map((m) => <span>{m}</span>)}
+<!-- The strip runs two identical sets so it loops without a seam. The first set is the real list; the second
+     draws its words in CSS, so the page's text (and a screen reader) gets each word once. -->
+<div class="marquee">
+  <div class="track">
+    <ul class="set">{marquee.map((m) => <><li>{m}</li>{' '}</>)}</ul>
+    <div class="set" aria-hidden="true">{marquee.map((m) => <span data-t={m}></span>)}</div>
   </div>
 </div>
 
@@ -12,10 +14,13 @@ const items = [...marquee, ...marquee];
   .marquee { border-block: 1px solid var(--line); overflow: hidden; padding-block: 18px; }
   .track { display: flex; width: max-content; animation: scroll 28s linear infinite; }
   .marquee:hover .track { animation-play-state: paused; }
-  span {
+  .set { display: flex; margin: 0; padding: 0; list-style: none; }
+  li, span {
     display: inline-flex; align-items: center; gap: 40px; padding-right: 40px; white-space: nowrap;
     font-weight: 700; font-size: clamp(1.3rem, 4vw, 2.4rem); text-transform: uppercase; letter-spacing: -0.02em;
   }
-  span::after { content: '/'; color: var(--accent); }
+  span::before { content: attr(data-t); }
+  /* the slash is decoration: the second value is its (empty) alternative text */
+  li::after, span::after { content: '/'; content: '/' / ''; color: var(--accent); }
   @keyframes scroll { to { transform: translateX(-50%); } }
 </style>

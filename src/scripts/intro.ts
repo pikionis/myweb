@@ -152,6 +152,11 @@ function play(
   const layers = KEYS.map((k) => $<SVGSVGElement>(`[data-loop="${k}"]`));
   const pens = layers.map((l) => l.querySelector<SVGPathElement>('.ohl-pen')!);
   const says = KEYS.map((k) => $<HTMLElement>(`[data-say="${k}"]`));
+  says.forEach((say) => say.replaceChildren(...[...(say.dataset.word ?? '')].map((c) => {
+    const s = document.createElement('span');
+    s.textContent = c;
+    return s;
+  })));
   const letters = [...word.querySelectorAll('use')];
 
   // ---- measure the master lockup and lay out the first frame ----

@@ -30,19 +30,27 @@ function springEasing(stiffness = 220, damping = 16) {
 
 let spring: ReturnType<typeof springEasing> | null = null;
 
-/** Splits `el` into letters (words stay unbreakable) and plays the cascade when `trigger` is hovered. */
+/**
+ * Splits `el` into letters (words stay unbreakable) and plays the cascade when `trigger` is hovered.
+ * The text stays in the page once: the fronts are the real letters, and each echo draws its letter from
+ * a data attribute in CSS (`.lc-echo::before`), so screen readers, search engines and copy-paste never
+ * see it twice.
+ */
 export function letterCascade(el: HTMLElement, trigger: HTMLElement = el) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   spring ??= springEasing();
   const text = (el.textContent || '').trim();
-  el.setAttribute('aria-label', text);
+  // Browsers name an element from its contents with a space between boxed letters ("C u s t o m"), so
+  // whatever is named here (the heading itself, or the link or button around the title) is named with
+  // its whole text, taken before the split
+  const host = /^(H[1-6]|A|BUTTON)$/.test(el.tagName) ? el : el.closest<HTMLElement>('a, button');
+  if (host && !host.hasAttribute('aria-label')) host.setAttribute('aria-label', (host.textContent || '').replace(/\s+/g, ' ').trim());
   el.textContent = '';
   const fronts: HTMLElement[] = [];
   const echoes: HTMLElement[] = [];
   text.split(/\s+/).forEach((word, wi, words) => {
     const w = document.createElement('span');
     w.className = 'lc-word';
-    w.setAttribute('aria-hidden', 'true');
     for (const ch of word) {
       const cell = document.createElement('span');
       cell.className = 'lc-cell';
@@ -51,7 +59,8 @@ export function letterCascade(el: HTMLElement, trigger: HTMLElement = el) {
       front.textContent = ch;
       const echo = document.createElement('span');
       echo.className = 'lc-echo';
-      echo.textContent = ch;
+      echo.dataset.ch = ch;
+      echo.setAttribute('aria-hidden', 'true');
       cell.append(front, echo);
       w.append(cell);
       fronts.push(front);

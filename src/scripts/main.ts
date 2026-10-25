@@ -201,17 +201,16 @@ function copyEmail() {
   });
 }
 
-/* ---------- split hero copy into words ---------- */
+/* ---------- split hero copy into words (the words stay the paragraph's own text, read as one) ---------- */
 function splitWords(): HTMLSpanElement[] {
   const out: HTMLSpanElement[] = [];
   document.querySelectorAll<HTMLElement>('.js-words').forEach((el) => {
     const keys = (el.dataset.keywords || '').toLowerCase().split(',').filter(Boolean);
     const words = (el.textContent || '').trim().split(/\s+/);
-    el.setAttribute('aria-label', el.textContent!.trim());
     el.textContent = '';
     words.forEach((w, i) => {
       const s = document.createElement('span');
-      s.className = 'w'; s.setAttribute('aria-hidden', 'true');
+      s.className = 'w';
       if (keys.includes(w.toLowerCase().replace(/[^a-z-]/g, ''))) s.classList.add('key');
       s.textContent = w; el.append(s);
       if (i < words.length - 1) el.append(' ');
@@ -221,7 +220,7 @@ function splitWords(): HTMLSpanElement[] {
   return out;
 }
 
-/* ---------- split the headline into letters; words stay unbreakable ---------- */
+/* ---------- split the headline into letters; words stay unbreakable, the heading keeps its name ---------- */
 function splitChars(el: HTMLElement): HTMLSpanElement[] {
   const out: HTMLSpanElement[] = [];
   const words = (el.textContent || '').trim().split(/\s+/);
@@ -229,7 +228,7 @@ function splitChars(el: HTMLElement): HTMLSpanElement[] {
   el.textContent = '';
   words.forEach((w, i) => {
     const word = document.createElement('span');
-    word.className = 'word'; word.setAttribute('aria-hidden', 'true');
+    word.className = 'word';
     for (const c of w) {
       const s = document.createElement('span');
       s.className = 'ch'; s.textContent = c; word.append(s);

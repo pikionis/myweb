@@ -56,9 +56,8 @@ const PEN = Math.round(stroke * 2.4);
       </svg>
     </div>
     <p class="ohl-line">{intro.line}</p>
-    {loops.map((k, i) => (
-      <span class="ohl-say" data-say={k}>{[...intro.words[i]].map((c) => <span>{c}</span>)}</span>
-    ))}
+    <!-- the script writes each word letter by letter; the HTML only carries it as data -->
+    {loops.map((k, i) => <span class="ohl-say" data-say={k} data-word={intro.words[i]}></span>)}
   </div>
   <button class="ohl-skip" type="button">{intro.skip}</button>
 </div>

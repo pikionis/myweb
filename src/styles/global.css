@@ -75,6 +75,8 @@ h1, h2, h3 {
   position: absolute; inset: 0; transform-origin: 50% 0%; backface-visibility: hidden;
   opacity: 0; transform: translateY(6px) scale(0.8) rotateX(-90deg); filter: blur(4px);
 }
+/* the echo is drawn, not written: its letter never joins the page's text */
+.lc-echo::before { content: attr(data-ch); }
 
 /* `hidden` always wins over a component's own display */
 [hidden] { display: none !important; }
