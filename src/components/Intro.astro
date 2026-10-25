@@ -86,7 +86,7 @@ import { hero, person } from '../data/site';
   .hero-copy :global(.w.lit) { color: var(--fg); }
   .hero-copy :global(.w.key.lit) { color: var(--accent); }
 
-  .hero-fig { margin: 0; max-width: 260px; width: 100%; justify-self: end; }
+  .hero-fig { margin: 0; max-width: 300px; width: 100%; justify-self: end; }
   .hero-photo {
     position: relative; aspect-ratio: 3 / 4; width: 100%;
     border-radius: 14px; border: 1px solid var(--line); overflow: hidden;
@@ -111,7 +111,7 @@ import { hero, person } from '../data/site';
     .hero-inner { grid-template-columns: 1fr; }
     /* on a phone the portrait opens the copy, its caption beside it so the hero keeps its height */
     .hero-fig { justify-self: start; max-width: none; order: -1; display: flex; align-items: flex-end; gap: 16px; }
-    .hero-photo { width: 112px; flex: none; }
+    .hero-photo { width: 136px; flex: none; }
     .ph small { font-size: 0.56rem; letter-spacing: 0.04em; }
     figcaption { margin-top: 0; padding-bottom: 4px; }
   }
