@@ -1,0 +1,14 @@
+---
+import { parts, letters } from '../data/logo';
+---
+<!-- The logo's shapes, defined once; the header lockup and the intro draw them with <use> -->
+<svg class="ohl-defs" aria-hidden="true" focusable="false" width="0" height="0">
+  <defs>
+    {Object.entries(parts).map(([k, d]) => <path id={`ohl-${k}`} d={d} fill-rule="evenodd" />)}
+    {letters.map((l, i) => <path id={`ohl-l${i}`} d={l.d} fill-rule="evenodd" />)}
+  </defs>
+</svg>
+
+<style>
+  .ohl-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+</style>

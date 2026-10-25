@@ -1,5 +1,6 @@
 ---
 import { person, pages } from '../data/site';
+import Logo from './Logo.astro';
 
 // the split sits on the page you are on (src/scripts/splitnav.ts)
 const here = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -13,14 +14,11 @@ const dark = here === '/' || here === '/contact';
   <nav aria-label="Main" class="split" data-split>
     <div class="row">
       {pages.map(({ href, name, short }, i) => (
-        <div class:list={['seg', { on: i === current, pinned: i === current }]}>
+        <div class:list={['seg', { on: i === current, pinned: i === current, 'home-seg': href === '/' }]}>
           <a class="link" href={href} draggable="false" aria-current={i === current ? 'page' : undefined}>
             {i > 0 && <span class="cap l" aria-hidden="true"></span>}
             {i < pages.length - 1 && <span class="cap r" aria-hidden="true"></span>}
-            {href === '/' && (
-              <svg class="home" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20h-5v-6h-6v6H4z" /></svg>
-            )}
-            <span class:list={['label', { 'home-label': href === '/' }]}>
+            <span class="label">
               {short ? <><span class="long">{name}</span><span class="short">{short}</span></> : name}
             </span>
             <span class="tick" aria-hidden="true"></span>
@@ -29,6 +27,7 @@ const dark = here === '/' || here === '/contact';
       ))}
     </div>
   </nav>
+  <Logo />
 </header>
 
 <style>
@@ -37,15 +36,17 @@ const dark = here === '/' || here === '/contact';
     display: flex; align-items: center; justify-content: space-between; gap: 24px;
     padding: calc(16px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) 16px max(20px, env(safe-area-inset-left, 0px));
     --mark: #141414;
+    --logo-ink: var(--ink);
     /* the bar takes the colour of the ground under it, so it reads as no bar, yet text never runs under the name */
     background: var(--paper); transition: background-color 0.3s ease;
   }
-  /* the wordmark and the bar follow the ground; the menu keeps one look everywhere */
-  .topbar.on-dark { --mark: #f4f6f2; background: #0a0b0a; }
+  /* the name, the logo and the bar follow the ground; the menu keeps one look everywhere */
+  .topbar.on-dark { --mark: #f4f6f2; --logo-ink: var(--ivory); background: #0a0b0a; }
   .mark { pointer-events: auto; font-weight: 700; font-size: 1.05rem; letter-spacing: 0.04em; text-decoration: none; color: var(--mark); transition: color 0.3s ease; }
 
-  /* the split opens up to 8px each side of the active link; leave it room against the right margin */
-  .split { pointer-events: auto; margin-right: 8px; }
+  /* the menu sits beside the logo in the top-right corner; the split opens up to 8px each side of the
+     active link, so it keeps that much room on both sides */
+  .split { pointer-events: auto; margin-left: auto; margin-right: 8px; }
   .row { position: relative; display: flex; align-items: center; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
   .seg { position: relative; z-index: 10; }
   .seg.pinned { z-index: 20; }
@@ -60,7 +61,6 @@ const dark = here === '/' || here === '/contact';
   .seg.on .link { color: #ffffff; }
   .label { position: relative; white-space: nowrap; }
   .short { display: none; }
-  .home { display: none; position: relative; }
   /* square patches hide the rounded corners while a neighbour touches */
   .cap { position: absolute; top: 0; bottom: 0; width: 12px; background: #141414; }
   .cap.l { left: -1px; transform-origin: left; }
@@ -72,17 +72,21 @@ const dark = here === '/' || here === '/contact';
   .seg.on .tick { transform: scaleX(1); }
 
   @media (prefers-reduced-motion: reduce) { .tick { transition: none; } }
-  /* a phone has no room for the wordmark beside five links; the name opens the hero and closes every page */
-  @media (max-width: 760px) {
-    .topbar { justify-content: center; }
+  /* a phone has no room for the name beside the menu and the logo; the name opens the hero and closes
+     every page, and the logo stands in for Home */
+  @media (max-width: 820px) {
+    .topbar { gap: 12px; }
     .mark { display: none; }
-    .split { margin-right: 0; }
-    .link { height: 40px; padding: 0 9px; font-size: 0.8125rem; }
-    /* six links on a phone: Home becomes a house, its name kept for screen readers */
-    .home { display: block; }
+    .split { margin-left: 0; margin-right: 0; }
+    .home-seg { display: none; }
+    .link { height: 40px; padding: 0 10px; font-size: 0.8125rem; }
     .long { display: none; }
     .short { display: inline; }
-    .home-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   }
-  @media (max-width: 380px) { .link { padding: 0 7px; font-size: 0.78rem; } }
+  /* five links and the logo across a phone */
+  @media (max-width: 420px) {
+    .topbar { padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+    .link { padding: 0 8px; }
+  }
+  @media (max-width: 380px) { .link { padding: 0 6px; font-size: 0.78rem; } }
 </style>

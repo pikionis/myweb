@@ -1,0 +1,112 @@
+---
+import { intro } from '../data/site';
+import { symbolBox, wordBox, lockup, lines, centers, tip, stroke, letters } from '../data/logo';
+
+// The intro's logo is the master lockup: the symbol, the wordmark centred under it. Both boxes are placed
+// as shares of the lockup so the whole thing scales from one width.
+const x0 = Math.min(0, lockup.x);
+const W = Math.max(symbolBox.w, lockup.x + wordBox.w) - x0;
+const H = lockup.y + wordBox.h;
+const pct = (v: number, of: number) => `${+((v / of) * 100).toFixed(3)}%`;
+const loops = ['top', 'left', 'right'] as const;
+const vb = `0 0 ${symbolBox.w} ${symbolBox.h}`;
+// the draw-on pens are wider than the line, so they cover it even where the centerline wanders
+const PEN = Math.round(stroke * 2.4);
+---
+<!-- The opening intro (src/scripts/intro.ts). The head script in Base.astro decides, before the first paint,
+     whether it plays: in full once per session, as a still logo with reduced motion, otherwise not at all.
+     Without script it never shows, so the page underneath is always there to read. -->
+<div class="ohl" id="ohl">
+  <div class="ohl-bg"></div>
+  <div class="ohl-stage" aria-hidden="true">
+    <div class="ohl-lockup" style={`aspect-ratio: ${W} / ${H}`}>
+      <div class="ohl-sym" style={`left: ${pct(-x0, W)}; width: ${pct(symbolBox.w, W)}; height: ${pct(symbolBox.h, H)}`}>
+        <span class="ohl-glow" style={`left: ${pct(tip.x, symbolBox.w)}; top: ${pct(tip.y, symbolBox.h)}`}></span>
+        {loops.map((k) => (
+          <svg class="ohl-part" data-loop={k} viewBox={vb} focusable="false"
+            style={`transform-origin: ${pct(centers[k].x, symbolBox.w)} ${pct(centers[k].y, symbolBox.h)}`}>
+            <mask id={`ohl-m-${k}`} maskUnits="userSpaceOnUse" x="-60" y="-60" width={symbolBox.w + 120} height={symbolBox.h + 120}>
+              <path class="ohl-pen" d={lines[k]} stroke-width={PEN} />
+            </mask>
+            <use href={`#ohl-${k}`} mask={`url(#ohl-m-${k})`} />
+          </svg>
+        ))}
+        <svg class="ohl-part ohl-arc" viewBox={vb} focusable="false">
+          <mask id="ohl-m-arc" maskUnits="userSpaceOnUse" x="-60" y="-60" width={symbolBox.w + 120} height={symbolBox.h + 120}>
+            <path class="ohl-pen" d={lines.arcL} stroke-width={PEN} />
+            <path class="ohl-pen" d={lines.arcR} stroke-width={PEN} />
+          </mask>
+          <use href="#ohl-arc" mask="url(#ohl-m-arc)" />
+        </svg>
+        <!-- the light sweep: the same shapes, filled with a band of light that crosses them once -->
+        <svg class="ohl-part ohl-shine" viewBox={vb} focusable="false">
+          <linearGradient id="ohl-sweep" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2={symbolBox.w} y2={symbolBox.h}>
+            <stop offset="0.3" stop-color="#fff" stop-opacity="0" />
+            <stop offset="0.5" stop-color="#fff" stop-opacity="0.42" />
+            <stop offset="0.7" stop-color="#fff" stop-opacity="0" />
+          </linearGradient>
+          <g fill="url(#ohl-sweep)">
+            <use href="#ohl-top" /><use href="#ohl-left" /><use href="#ohl-right" /><use href="#ohl-arc" />
+          </g>
+        </svg>
+      </div>
+      <svg class="ohl-word" viewBox={`0 0 ${wordBox.w} ${wordBox.h}`} focusable="false"
+        style={`left: ${pct(lockup.x - x0, W)}; top: ${pct(lockup.y, H)}; width: ${pct(wordBox.w, W)}`}>
+        {letters.map((_, i) => <use href={`#ohl-l${i}`} />)}
+      </svg>
+    </div>
+    <p class="ohl-line">{intro.line}</p>
+    {loops.map((k, i) => (
+      <span class="ohl-say" data-say={k}>{[...intro.words[i]].map((c) => <span>{c}</span>)}</span>
+    ))}
+  </div>
+  <button class="ohl-skip" type="button">{intro.skip}</button>
+</div>
+
+<style>
+  .ohl { position: fixed; inset: 0; z-index: 100; display: none; }
+  :global(html[data-intro='full']) .ohl, :global(html[data-intro='still']) .ohl, .ohl.live { display: block; }
+  /* while it plays the page holds still; the gutter keeps the layout from shifting when the scrollbar returns */
+  :global(html.ohl-lock) { overflow: hidden; scrollbar-gutter: stable; background: var(--ivory); }
+
+  .ohl-bg { position: absolute; inset: 0; background: var(--ivory); }
+  .ohl-stage {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: clamp(22px, 4vh, 40px); padding-inline: 20px; color: var(--ink); pointer-events: none;
+  }
+  /* the full intro sets its first frame before anything shows */
+  :global(html[data-intro='full']) .ohl:not(.run) .ohl-stage,
+  :global(html[data-intro='full']) .ohl:not(.run) .ohl-skip { visibility: hidden; }
+
+  .ohl-lockup { position: relative; width: min(540px, 80vw, 72vh); }
+  .ohl-sym { position: absolute; top: 0; }
+  .ohl-part { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; fill: currentColor; }
+  .ohl-pen { fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; }
+  .ohl-arc { fill: var(--cobalt); }
+  .ohl-shine { visibility: hidden; }
+  .ohl-word { position: absolute; height: auto; overflow: visible; fill: currentColor; }
+  /* the accent beat: a cobalt bloom where the loops meet */
+  .ohl-glow {
+    position: absolute; width: 30%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; visibility: hidden;
+    background: radial-gradient(closest-side, rgb(45 73 173 / 0.5), rgb(45 73 173 / 0.16) 50%, transparent);
+  }
+  .ohl-line { margin: 0; font-size: clamp(0.95rem, 1.5vw, 1.15rem); font-weight: 500; letter-spacing: 0.01em; text-align: center; }
+
+  .ohl-say {
+    position: absolute; left: 0; top: 0; white-space: nowrap; visibility: hidden;
+    font-size: clamp(1.15rem, 1.8vw, 1.6rem); font-weight: 500; letter-spacing: -0.01em; line-height: 1;
+  }
+  .ohl-say span { display: inline-block; }
+  .run .ohl-say { visibility: visible; }
+
+  .ohl-skip {
+    position: absolute; right: max(20px, env(safe-area-inset-right, 0px)); bottom: max(20px, env(safe-area-inset-bottom, 0px));
+    min-height: 40px; padding: 0 18px; border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent); border-radius: 100px;
+    background: transparent; color: var(--ink); font-size: 0.875rem; font-weight: 500; cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  @media (hover: hover) and (pointer: fine) { .ohl-skip:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); } }
+  .ohl-skip:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; }
+  /* the still version (reduced motion) is only the logo and its line */
+  :global(html[data-intro='still']) .ohl-skip { display: none; }
+</style>

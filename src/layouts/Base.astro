@@ -25,6 +25,27 @@ const {
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Picks the opening intro before the first paint (src/scripts/intro.ts): the full intro once per session,
+         a still logo with reduced motion, otherwise only the header logo fading in. If the intro's script
+         never arrives, the failsafe takes the overlay away so the page is never left covered. -->
+    <script is:inline>
+      (function () {
+        var html = document.documentElement, mode = 'quick';
+        try {
+          if (!sessionStorage.getItem('ohl-intro')) {
+            mode = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'still' : 'full';
+          }
+        } catch (e) { /* no storage: no intro */ }
+        html.setAttribute('data-intro', mode);
+        if (mode === 'quick') return;
+        html.classList.add('ohl-lock');
+        setTimeout(function () {
+          if (window.__ohl) return;
+          html.setAttribute('data-intro', 'done');
+          html.classList.remove('ohl-lock');
+        }, 3000);
+      })();
+    </script>
   </head>
   <body class:list={{ light }}>
     <slot />

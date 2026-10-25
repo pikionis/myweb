@@ -16,6 +16,20 @@ export const person = {
   logo: '' as string,
 };
 
+// The onehub logo: the header lockup (src/components/Logo.astro) and the opening intro (LogoIntro.astro)
+export const brand = {
+  name: 'onehub',
+  /** what a screen reader hears for the header logo, which links home */
+  homeLabel: 'onehub, home',
+};
+
+// The opening intro: one word per loop (top, left, right), the line under the logo, the skip button
+export const intro = {
+  words: ['Design', 'Build', 'Automate'] as [string, string, string],
+  line: 'Design. Build. Automate. — All in one.',
+  skip: 'Skip intro',
+};
+
 // The site's pages, in menu order (the menu and the footer both read this). `short` is the name a phone shows.
 export const pages: { href: string; name: string; short?: string }[] = [
   { href: '/', name: 'Home' },

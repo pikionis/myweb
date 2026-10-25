@@ -1,16 +1,20 @@
 ---
-// Every page: the menu, the page itself, and the closing contact block as the footer.
+// Every page: the menu, the page itself, and the closing contact block as the footer; the opening intro on top.
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
 import Contact from '../components/Contact.astro';
+import LogoDefs from '../components/LogoDefs.astro';
+import LogoIntro from '../components/LogoIntro.astro';
 
 interface Props { title?: string; description?: string; light?: boolean; footer?: boolean }
 const { footer = true, ...base } = Astro.props;
 ---
 <Base {...base}>
+  <LogoDefs />
   <Nav />
   <slot />
   {footer && <Contact />}
+  <LogoIntro />
 </Base>
 
 <script>

@@ -7,6 +7,7 @@ import { briefForm } from './brief';
 import { workStack } from './workstack';
 import { letterCascade } from './cascade';
 import { ditheredText } from './dither';
+import { logoIntro } from './intro';
 
 type Brand = { name: string; cat: string; desc: string; url: string; video: string };
 
@@ -241,6 +242,8 @@ function splitChars(el: HTMLElement): HTMLSpanElement[] {
 }
 
 export function init() {
+  // the opening intro goes first; what plays on load waits for it to hand the page over
+  const intro = logoIntro();
   heroBubbles();
   lightZone();
   brandBubbles();
@@ -259,19 +262,20 @@ export function init() {
     return;
   }
   gsap.registerPlugin(ScrollTrigger);
-  if (document.querySelector('.intro-scroll')) hero();
-  entrances();
+  if (document.querySelector('.intro-scroll')) hero(intro.handoff);
+  // sections already in view rise in as the intro lifts off them, not underneath it
+  intro.handoff.then(entrances);
 }
 
 /* ---------- the home page hero: curtain, ink title, letter and word reveal, the light sheet ---------- */
-function hero() {
-  // the curtain title is written in ink (needs the real font to lay the letters over the h1)
+function hero(handoff: Promise<void>) {
+  // the curtain title is written in ink (needs the real font to lay the letters over the h1); it blooms as
+  // the intro hands the page over, so it is not spent underneath the overlay
   const curtain = document.querySelector<HTMLElement>('.curtain');
   const inkCanvas = document.getElementById('ink') as HTMLCanvasElement | null;
   const curtainTitle = curtain?.querySelector('h1');
   if (curtain && inkCanvas && curtainTitle) {
-    const draw = () => inkHeadline(curtain, inkCanvas, curtainTitle);
-    document.fonts?.ready ? document.fonts.ready.then(draw) : draw();
+    Promise.all([document.fonts?.ready, handoff]).then(() => inkHeadline(curtain, inkCanvas, curtainTitle));
   }
 
   const head = document.getElementById('headlineText');

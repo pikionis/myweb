@@ -1,0 +1,35 @@
+---
+import { brand } from '../data/site';
+import { symbolBox, wordBox, letters } from '../data/logo';
+---
+<!-- The header lockup: the symbol, then the wordmark beside it. Ink on light, ivory on dark; the arc stays
+     cobalt. The intro lands its own logo exactly on these two boxes (src/scripts/intro.ts). -->
+<a class="brand" href="/" aria-label={brand.homeLabel} data-brand>
+  <svg class="brand-sym" viewBox={`0 0 ${symbolBox.w} ${symbolBox.h}`} aria-hidden="true" focusable="false">
+    <use href="#ohl-top" /><use href="#ohl-left" /><use href="#ohl-right" /><use class="arc" href="#ohl-arc" />
+  </svg>
+  <svg class="brand-word" viewBox={`0 0 ${wordBox.w} ${wordBox.h}`} aria-hidden="true" focusable="false">
+    {letters.map((_, i) => <use href={`#ohl-l${i}`} />)}
+  </svg>
+</a>
+
+<style>
+  .brand {
+    pointer-events: auto; flex: none; display: flex; align-items: center; gap: 9px;
+    color: var(--logo-ink, var(--ink)); transition: color 0.3s ease;
+    border-radius: 6px;
+  }
+  .brand-sym, .brand-word { display: block; height: auto; fill: currentColor; overflow: visible; }
+  .brand-sym { width: 38px; }
+  .brand-word { width: 76px; margin-top: 3px; }
+  .arc { fill: var(--cobalt); }
+  .brand:focus-visible { outline-offset: 6px; }
+  /* the intro owns the logo until it lands here */
+  :global(html[data-intro='full']) .brand, :global(html[data-intro='still']) .brand { visibility: hidden; }
+  /* later page loads: the logo only fades in */
+  :global(html[data-intro='quick']) .brand { animation: brand-in 0.4s var(--ease-out) both; }
+  @keyframes brand-in { from { opacity: 0; } }
+  @media (max-width: 900px) { .brand-word { display: none; } }
+  @media (max-width: 820px) { .brand-sym { width: 32px; } }
+  @media (max-width: 420px) { .brand-sym { width: 30px; } }
+</style>
