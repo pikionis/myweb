@@ -1,7 +1,7 @@
 // /llms.txt (https://llmstxt.org): the site in plain Markdown for language models — who, the services with
 // their projects, and how to get in touch. Built from the same data as the pages, so it never drifts.
 import type { APIRoute } from 'astro';
-import { person, meta, hero, pages, brand } from '../data/site';
+import { person, meta, hero, pages, brand, bots, cardOrder } from '../data/site';
 import { servicesWithProjects, otherProjects, type ProjectEntry } from '../data/projects';
 
 export const GET: APIRoute = async ({ site }) => {
@@ -13,6 +13,9 @@ export const GET: APIRoute = async ({ site }) => {
   };
   const services = await servicesWithProjects();
   const others = await otherProjects();
+  // in the order of the /services cards, AI services & bots among them
+  const offer = cardOrder.map((key) => services.find((s) => s.key === key) ?? bots);
+  const includes = (list: readonly string[]) => [...list.map((x) => `- ${x}`), ''];
 
   const out = [
     `# ${person.name} (${brand.name})`,
@@ -23,16 +26,17 @@ export const GET: APIRoute = async ({ site }) => {
     '',
     '## Services',
     '',
-    ...services.flatMap((s) => [
+    ...offer.flatMap((s) => ('body' in s ? [
       `### ${s.title}`,
       '',
       s.lead,
       '',
       ...s.body.flatMap((b) => [b, '']),
-      ...(s.chips.length ? [`Includes: ${s.chips.join('; ')}.`, ''] : []),
+      ...includes(s.includes),
+      ...(s.chips.length ? [`Also: ${s.chips.join('; ')}.`, ''] : []),
       ...(s.projects.length ? [...s.projects.map(project), ''] : []),
       ...(s.proof ? [`${s.proof.label} (${s.proof.name}): ${s.proof.items.join('; ')}.`, ''] : []),
-    ]),
+    ] : [`### ${s.title}`, '', s.summary, '', ...includes(s.includes)])),
     ...(others.length ? ['## More work', '', ...others.map(project), ''] : []),
     '## Pages',
     '',

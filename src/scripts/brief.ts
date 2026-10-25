@@ -1,5 +1,5 @@
 import { createIsland } from './island';
-import { services } from '../data/site';
+import { services, bots } from '../data/site';
 import { previewAssistant, type Answer, type BriefAssistant, type BriefSection, type Question } from './assistant';
 
 /*
@@ -119,8 +119,8 @@ export function briefForm(form: HTMLFormElement) {
   let ready = false;
 
   const need = () => form.querySelector<HTMLInputElement>('input[name="need"]:checked')?.value ?? 'Not sure yet';
-  // a service story's "Start a project" names its service (/contact?type=project&service=web): its need starts selected
-  const wanted = services.find((s) => s.key === new URLSearchParams(location.search).get('service'))?.need;
+  // a service's "Start a project" names it (/contact?type=project&service=web): its need starts selected
+  const wanted = [...services, bots].find((s) => s.key === new URLSearchParams(location.search).get('service'))?.need;
   const preset = wanted && form.querySelector<HTMLInputElement>(`input[name="need"][value="${CSS.escape(wanted)}"]`);
   if (preset) preset.checked = true;
   const words = () => idea.value.trim().split(/\s+/).filter(Boolean).length;

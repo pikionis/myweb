@@ -104,6 +104,8 @@ export type Service = {
   background: { tone: 'light' | 'dark'; fill: 'paper' | 'ink' | 'paper-glow' | 'ink-glow'; image?: string };
   /** the "What do you need?" option its story's "Start a project" pre-selects on /contact (one of brief.needs) */
   need: string;
+  /** everything it covers, in full: the open /services card and llms.txt */
+  includes: string[];
 };
 
 export const services: Service[] = [
@@ -119,6 +121,11 @@ export const services: Service[] = [
     short: 'Web & design',
     background: { tone: 'light', fill: 'paper' },
     need: 'Website',
+    includes: [
+      'Every site is ready for AI from day one: structured data, llms.txt, clean semantic content',
+      'Built-in AI chat assistant available as an add-on',
+      'Fast, accessible, multilingual',
+    ],
   },
   {
     key: 'apps',
@@ -136,6 +143,13 @@ export const services: Service[] = [
     short: 'AI SaaS & apps',
     background: { tone: 'dark', fill: 'ink' },
     need: 'AI product or bot',
+    includes: [
+      'Booking & reservation platforms connected to your chat bot, CRM and payments',
+      'One system instead of five tools: bot, bookings, CRM, accounting and marketing share the same data',
+      'Ask your data in plain language: “How did August compare to last year?”',
+      'Demand forecasting and smart pricing suggestions',
+      'Admin dashboards to run it all',
+    ],
   },
   {
     key: 'commerce',
@@ -149,6 +163,11 @@ export const services: Service[] = [
     short: 'E-commerce',
     background: { tone: 'light', fill: 'paper' },
     need: 'E-commerce & feeds',
+    includes: [
+      'AI product descriptions and automatic translation into 20 languages',
+      'Personalised emails and offers based on what each customer bought or viewed',
+      'Automated stock, price and order sync with marketplaces across Europe and Greece',
+    ],
   },
   {
     key: 'search',
@@ -178,16 +197,68 @@ export const services: Service[] = [
     short: 'AI search & ads',
     background: { tone: 'dark', fill: 'ink' },
     need: 'AI search & marketing',
+    includes: [
+      'Visibility in ChatGPT, Claude and Gemini when customers ask for recommendations',
+      'Consistent business information everywhere (Google Business, directories)',
+      'AI-written posts, newsletters and ad copy in your brand’s voice, approved by you',
+      'Google Ads with automated A/B testing, server-side tracking and AI that shifts budget to what sells',
+      'AI replies to reviews, and spots recurring complaints (“5 guests mentioned slow Wi-Fi”)',
+      'Core Web Vitals in the green, solid SEO',
+    ],
   },
 ];
 
+/** AI services & bots: a service of its own on /services (and in llms.txt), not on the home page, where every
+ *  service carries its real projects and this one has none yet. Its card works like the others'. */
+export const bots = {
+  key: 'bots',
+  title: 'AI services & bots',
+  claim: 'Answers in seconds, at any hour, in any language.',
+  summary: 'AI chat that answers the questions you hear every day, takes bookings and orders, and hands over to a person when it should. And the back-office work nobody wants to do.',
+  need: 'AI product or bot',
+  includes: [
+    '24/7 AI chat that answers the repeat questions (hours, prices, availability, order status, cancellations) instantly, in any language',
+    'Works on your site, WhatsApp, Messenger, Instagram and Airbnb/Booking messages',
+    'Takes action, not just answers: books appointments, checks availability, creates orders, captures leads',
+    'Answers only from your own documents (FAQs, price lists, terms), so it never makes things up',
+    'Hands over to a human, with the full conversation, when it’s unsure or the customer is upset',
+    'Admin panel: review conversations, correct answers, see what customers ask most',
+    'Automates back-office work: reads invoices, sorts emails and drafts replies, with a human approving before anything is sent',
+  ],
+} as const;
+export type CardKey = ServiceKey | typeof bots.key;
+/** The /services cards, in order. */
+export const cardOrder: CardKey[] = ['web', 'bots', 'apps', 'commerce', 'search'];
+
+/** How I work: true of every service, so it runs under the /services cards. */
+export const howIWork = {
+  title: 'How I work',
+  steps: [
+    { title: 'Find the leak', text: 'Where you lose the most time or money' },
+    { title: 'Start small', text: 'One measurable pilot (e.g. a booking-questions bot)' },
+    { title: 'Connect', text: 'AI plugged into the systems you already use' },
+    { title: 'Stay safe', text: 'Human approval, limits, GDPR, cost control' },
+    { title: 'Measure, then grow', text: 'Hours saved, conversions, then expand' },
+  ],
+};
+
 /** Each service's colours (ground, ink) for its projects' title cards, here and on /projects and /services. */
-export const serviceColors: Record<ServiceKey | 'none', [string, string]> = {
+export const serviceColors: Record<CardKey | 'none', [string, string]> = {
   web: ['#141414', '#f4f3ef'],
+  bots: ['#cfdaf8', '#141414'],
   apps: ['#4d7cff', '#0a0b0a'],
   commerce: ['#e2e0d9', '#141414'],
   search: ['#1d3b9e', '#f4f3ef'],
   none: ['#2a2b27', '#f4f3ef'],
+};
+
+/** The accent in each /services card's drawing, chosen to read on its ground. */
+export const artAccent: Record<CardKey, string> = {
+  web: '#4d7cff',
+  bots: '#2a55d9',
+  apps: '#f4f3ef',
+  commerce: '#2a55d9',
+  search: '#8fb0ff',
 };
 
 // Words the service sections and project cards use around the content
@@ -223,8 +294,13 @@ export const ui = {
   servicesPage: {
     title: 'Services',
     hint: 'Scroll down',
-    lede: 'Four things I build end to end, each with the real projects behind it.',
+    lede: 'Five things I build end to end. Open a card for everything it includes.',
     included: "What's included",
+    /** the button on each card that opens it */
+    open: "See what's included",
+    close: 'Close',
+    start: 'Start a project',
+    replay: 'Play again',
     projects: 'Projects',
     end: 'Your project next.',
     cta: 'Pitch your idea',

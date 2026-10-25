@@ -5,26 +5,16 @@
 // (src/scripts/stories.ts). Each picture is drawn as its scene ends (that is also how it rests with reduced
 // motion): `data-lift` and `data-turn-from` say where a part comes from. The shared people and props are
 // symbols in StoryDefs.astro, used with <use>.
+import { r1, C, R, cls, P, D, T } from './lineart';
+
 interface Props { name: string }
 const { name } = Astro.props;
 
 type N = number;
-const r1 = (v: N) => Math.round(v * 10) / 10;
-/** a circle as a path, so it can be drawn on like any line */
-const C = (cx: N, cy: N, r: N) => `M${r1(cx - r)} ${r1(cy)}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
-/** a rounded rectangle as a path */
-const R = (x: N, y: N, w: N, h: N, r: N) =>
-  `M${x + r} ${y}h${w - 2 * r}a${r} ${r} 0 0 1 ${r} ${r}v${h - 2 * r}a${r} ${r} 0 0 1 ${-r} ${r}h${-(w - 2 * r)}a${r} ${r} 0 0 1 ${-r} ${-r}v${-(h - 2 * r)}a${r} ${r} 0 0 1 ${r} ${-r}z`;
-const cls = (base: string, extra: string) => (extra ? `${base} ${extra}` : base);
-/** a stroke that draws itself */
-const P = (d: string, extra = '', attrs = '') => `<path class="${cls('sa-d', extra)}" pathLength="1" d="${d}"${attrs ? ` ${attrs}` : ''}/>`;
 /** a shared person or prop */
 const U = (id: string, t: string, extra = '') => `<use class="${cls('sa-d', extra)}" href="#sa-${id}" transform="${t}"/>`;
-/** a dot that fades in */
-const D = (cx: N, cy: N, r: N, extra = '') => `<circle class="${cls('sa-f', extra)}" cx="${cx}" cy="${cy}" r="${r}"/>`;
 /** a group with idle motion (the motion lives on its own group, so it never fights a placement transform) */
 const I = (motion: string, inner: string, style = '') => `<g class="${motion}"${style ? ` style="${style}"` : ''}>${inner}</g>`;
-const T = (t: string, inner: string) => `<g transform="${t}">${inner}</g>`;
 /** a point on a cubic Bézier, for things placed along a curve */
 const bez = (p: N[], t: N) => {
   const u = 1 - t;
