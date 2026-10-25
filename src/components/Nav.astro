@@ -1,5 +1,5 @@
 ---
-import { person, pages } from '../data/site';
+import { pages } from '../data/site';
 import Logo from './Logo.astro';
 
 // the split sits on the page you are on (src/scripts/splitnav.ts)
@@ -10,7 +10,7 @@ const current = pages.findIndex(({ href }) => href === here || (href !== '/' && 
 const dark = here === '/' || here === '/contact';
 ---
 <header class:list={['topbar', { 'on-dark': dark }]}>
-  <a class="mark" href="/">{person.name.toUpperCase()}</a>
+  <Logo />
   <nav aria-label="Main" class="split" data-split>
     <div class="row">
       {pages.map(({ href, name, short }, i) => (
@@ -26,25 +26,23 @@ const dark = here === '/' || here === '/contact';
       ))}
     </div>
   </nav>
-  <Logo />
 </header>
 
 <style>
   .topbar {
     position: fixed; inset: 0 0 auto 0; z-index: 50; pointer-events: none;
     display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    min-height: var(--topbar-h);
     padding: calc(16px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) 16px max(20px, env(safe-area-inset-left, 0px));
-    --mark: #141414;
     --logo-ink: var(--ink);
-    /* the bar takes the colour of the ground under it, so it reads as no bar, yet text never runs under the name */
+    /* the bar takes the colour of the ground under it, so it reads as no bar, yet text never runs under the logo */
     background: var(--paper); transition: background-color 0.3s ease;
   }
-  /* the name, the logo and the bar follow the ground; the menu keeps one look everywhere */
-  .topbar.on-dark { --mark: #f4f6f2; --logo-ink: var(--ivory); background: #0a0b0a; }
-  .mark { pointer-events: auto; font-weight: 700; font-size: 1.05rem; letter-spacing: 0.04em; text-decoration: none; color: var(--mark); transition: color 0.3s ease; }
+  /* the logo and the bar follow the ground; the menu keeps one look everywhere */
+  .topbar.on-dark { --logo-ink: var(--ivory); background: #0a0b0a; }
 
-  /* the menu sits beside the logo in the top-right corner; the split opens up to 8px each side of the
-     active link, so it keeps that much room on both sides */
+  /* the logo holds the top-left corner, the menu the top right; the split opens up to 8px each side of
+     the active link, so it keeps that much room on both sides */
   .split { pointer-events: auto; margin-left: auto; margin-right: 8px; }
   .row { position: relative; display: flex; align-items: center; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
   .seg { position: relative; z-index: 10; }
@@ -70,21 +68,26 @@ const dark = here === '/' || here === '/contact';
   .seg.on .tick { transform: scaleX(1); }
 
   @media (prefers-reduced-motion: reduce) { .tick { transition: none; } }
-  /* a phone has no room for the name beside the menu and the logo; the name opens the hero and closes
-     every page, and the logo stands in for Home */
+  /* a phone: the logo keeps the top, and the menu floats at the bottom, where the thumb is; the logo
+     stands in for Home */
   @media (max-width: 820px) {
-    .topbar { gap: 12px; }
-    .mark { display: none; }
-    .split { margin-left: 0; margin-right: 0; }
+    .split {
+      position: fixed; left: 0; right: 0; bottom: max(14px, env(safe-area-inset-bottom, 0px)); margin: 0;
+      display: flex; justify-content: center; pointer-events: none;
+    }
+    .row { pointer-events: auto; }
     .home-seg { display: none; }
-    .link { height: 40px; padding: 0 10px; font-size: 0.8125rem; }
+    .link {
+      height: 48px; padding: 0 12px; font-size: 0.8125rem;
+      /* it floats over whatever is under it, light or dark: a hairline and a soft shadow keep it apart */
+      box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07), 0 14px 30px -12px rgb(0 0 0 / 0.55);
+    }
     [data-short] .long { display: none; }
     [data-short]::after { content: attr(data-short); }
   }
-  /* five links and the logo across a phone */
   @media (max-width: 420px) {
     .topbar { padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
-    .link { padding: 0 8px; }
+    .link { padding: 0 10px; }
   }
-  @media (max-width: 380px) { .link { padding: 0 6px; font-size: 0.78rem; } }
+  @media (max-width: 380px) { .link { padding: 0 8px; font-size: 0.78rem; } }
 </style>

@@ -142,7 +142,9 @@ const arrow = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" str
 
   /* a phone gets tall cards: the copy, then the panel */
   @media (max-width: 760px) {
-    .deck { width: 100%; aspect-ratio: auto; height: calc(100svh - 130px); }
+    /* the cards end above the menu that floats at the bottom of a phone */
+    .stage { padding-bottom: 92px; }
+    .deck { width: 100%; aspect-ratio: auto; height: calc(100svh - 190px); }
     .inner { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
     .copy { padding: 22px; }
     .text { padding-top: 14px; }

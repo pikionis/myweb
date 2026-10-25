@@ -8,11 +8,11 @@ import { centers, symbolBox, wordBox, type LoopKey } from '../data/logo';
  *   0–1.6s   scatter   each loop draws itself somewhere on the screen, slightly turned, scaled and out of
  *                      focus, while its word is written beside it (Design, Build, Automate)
  *   1.6–2.6  converge  the words drift off; the loops fly together on an arc and lock into the symbol
- *   2.6–3.1  lock      the blue arc draws in to the tip, the symbol pulses, a cobalt bloom where they meet
- *   3.1–3.5  shine     one band of light crosses the symbol
- *   3.3–3.9  wordmark  o n e h u b rise in
- *   3.8–4.3  line      the line under the logo
- *   4.3+     hand-off  the logo flies into the header while the ivory lifts off the page
+ *   2.55–3   lock      the blue arc draws in to the tip, the symbol pulses, a cobalt bloom where they meet
+ *   2.95–3.4 shine     one band of light crosses the symbol
+ *   3.0–4.35 wordmark  o n e h u b rise in, one letter at a time
+ *   4.0–4.5  line      the motto and its tail under the logo
+ *   4.75+    hand-off  the logo and its motto fly into the header (top left) while the ivory lifts off the page
  *
  * The head script in Base.astro picks the mode before the first paint (html[data-intro]): `full` once per
  * session, `still` with reduced motion (the logo and its line for a moment, then a fade), `quick` on later
@@ -143,6 +143,8 @@ function play(
   const sym = $<HTMLElement>('.ohl-sym');
   const word = $<SVGSVGElement>('.ohl-word');
   const line = $<HTMLElement>('.ohl-line');
+  const motto = $<HTMLElement>('.ohl-motto');
+  const tail = $<HTMLElement>('.ohl-tail');
   const skipBtn = $<HTMLElement>('.ohl-skip');
   const glow = $<HTMLElement>('.ohl-glow');
   const shine = $<SVGSVGElement>('.ohl-shine');
@@ -227,7 +229,7 @@ function play(
   });
 
   // lock: the arc draws in from both crossings and lands on the tip, which is the beat
-  const K = 2.62;
+  const K = 2.55;
   tl.set(arc, { autoAlpha: 1 }, K)
     .to(arcPens, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.in' }, K)
     .call(unmask([arc]), [], K + 0.32)
@@ -246,13 +248,14 @@ function play(
     sweep.setAttribute('gradientTransform', `translate(${t * symbolBox.w * 0.7} ${t * symbolBox.h * 0.7})`);
   };
   moveBand();
-  tl.set(shine, { autoAlpha: 1 }, 3.08)
-    .to(band, { t: 1, duration: 0.45, ease: 'power1.inOut', onUpdate: moveBand }, 3.1)
-    .set(shine, { autoAlpha: 0 }, 3.56);
+  tl.set(shine, { autoAlpha: 1 }, 2.93)
+    .to(band, { t: 1, duration: 0.45, ease: 'power1.inOut', onUpdate: moveBand }, 2.95)
+    .set(shine, { autoAlpha: 0 }, 3.42);
 
-  // wordmark, then the line under it (letters are SVG, so their rise is in wordmark units)
-  tl.fromTo(letters, { autoAlpha: 0, y: 12 / wu }, { autoAlpha: 1, y: 0, duration: 0.42, stagger: 0.05, ease: 'power3.out' }, 3.3)
-    .fromTo(line, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 3.8);
+  // wordmark, letter by letter and unhurried, then the line under it (letters are SVG, so their rise is in
+  // wordmark units)
+  tl.fromTo(letters, { autoAlpha: 0, y: 18 / wu }, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.15, ease: 'power3.out' }, 3.0)
+    .fromTo(line, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 4.0);
 
   // hand-off
   let out: gsap.core.Timeline | null = null;
@@ -260,11 +263,19 @@ function play(
     release();
     const head = document.querySelector<SVGSVGElement>('.brand-sym');
     const headWord = document.querySelector<SVGSVGElement>('.brand-word');
+    const headMotto = document.querySelector<HTMLElement>('.brand-motto');
     out = gsap.timeline({ onComplete: () => { if (!over) { over = true; finish(); } } });
-    // the line stays printed on the ivory and leaves with it, so it can still be read as the page arrives
-    out.to(skipBtn, { autoAlpha: 0, duration: 0.2, ease: 'power1.out' }, 0)
-      .to(el.querySelector('.ohl-bg'), { yPercent: -100, duration: 0.8, ease: 'expo.inOut' }, 0.06)
-      .to(line, { y: -window.innerHeight, duration: 0.8, ease: 'expo.inOut' }, 0.06);
+    // the end of the line bows out as the logo leaves (on a phone it sits on a line of its own, under the
+    // motto, so riding up with the ivory would cross it)
+    out.to([skipBtn, tail], { autoAlpha: 0, duration: 0.2, ease: 'power1.out' }, 0)
+      .to(el.querySelector('.ohl-bg'), { yPercent: -100, duration: 0.8, ease: 'expo.inOut' }, 0.06);
+    // the motto goes with the logo: it lands under the wordmark in the header, so the message stays
+    const m = motto.getBoundingClientRect(), hm = headMotto?.getBoundingClientRect();
+    if (hm && hm.width > 0) {
+      out.to(motto, { x: hm.left - m.left, y: hm.top - m.top, scale: hm.width / m.width, transformOrigin: '0 0', duration: 0.85, ease: 'expo.inOut' }, 0.04);
+    } else {
+      out.to(motto, { y: -window.innerHeight, duration: 0.8, ease: 'expo.inOut' }, 0.06);
+    }
     if (head) {
       // FLIP: from where the logo is to where the header's logo is
       const a = sym.getBoundingClientRect(), b = head.getBoundingClientRect();
@@ -280,7 +291,7 @@ function play(
       // the header shows only the symbol here: the wordmark bows out
       out.to(word, { autoAlpha: 0, y: -12, duration: 0.3, ease: 'power2.in' }, 0);
     }
-  }, [], 4.3);
+  }, [], 4.75);
 
   let over = false;
   listen(() => {

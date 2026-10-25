@@ -3,6 +3,8 @@
   position: fixed; left: 0; right: 0; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 60;
   display: flex; justify-content: center; pointer-events: none;
 }
+/* on a phone the menu floats at the bottom (Nav.astro): the island sits just above it */
+@media (max-width: 820px) { .island-mount { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); } }
 .isl-stage { position: relative; isolation: isolate; pointer-events: auto; }
 .isl-stage[hidden] { display: none; }
 .isl-peek {

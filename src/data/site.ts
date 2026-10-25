@@ -30,12 +30,15 @@ export const brand = {
   name: 'onehub',
   /** what a screen reader hears for the header logo, which links home */
   homeLabel: 'onehub, home',
+  /** the line under the logo: in the header, and under the logo at the end of the intro */
+  motto: 'Design. Build. Automate. Scale fast.',
 };
 
-// The opening intro: one word per loop (top, left, right), the line under the logo, the skip button
+// The opening intro: one word per loop (top, left, right), the end of the line under the logo, the skip button
 export const intro = {
   words: ['Design', 'Build', 'Automate'] as [string, string, string],
-  line: 'Design. Build. Automate. Scale fast. — All in one.',
+  /** follows the motto (brand.motto) under the intro's logo, and fades as the logo and motto fly to the header */
+  tail: '— All in one.',
   skip: 'Skip intro',
 };
 

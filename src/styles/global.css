@@ -21,10 +21,9 @@
   --sheet-ink: #141414;
   --sheet-paper-glow: radial-gradient(120% 130% at 100% 0%, #dde3f4 0%, #e8e6df 62%);
   --sheet-ink-glow: radial-gradient(120% 130% at 100% 0%, #1c2547 0%, #141414 62%);
-  /* the fixed menu bar's height, for things that stick under it */
-  --topbar-h: 68px;
+  /* the fixed top bar's height (the logo and its line), for things that stick under it */
+  --topbar-h: 72px;
 }
-@media (max-width: 820px) { :root { --topbar-h: 72px; } }
 .theme-light {
   --bg: var(--paper);
   --surface: #ffffff;

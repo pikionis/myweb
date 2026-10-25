@@ -1,5 +1,5 @@
 ---
-import { intro } from '../data/site';
+import { intro, brand } from '../data/site';
 import { symbolBox, wordBox, lockup, lines, centers, tip, stroke, letters } from '../data/logo';
 
 // The intro's logo is the master lockup: the symbol, the wordmark centred under it. Both boxes are placed
@@ -55,7 +55,9 @@ const PEN = Math.round(stroke * 2.4);
         {letters.map((_, i) => <use href={`#ohl-l${i}`} />)}
       </svg>
     </div>
-    <p class="ohl-line">{intro.line}</p>
+    <!-- the motto flies on into the header (where it is the real text, so here it is drawn from data); the
+         tail stays on the ivory -->
+    <p class="ohl-line"><span class="ohl-motto" data-text={brand.motto}></span> <span class="ohl-tail">{intro.tail}</span></p>
     <!-- the script writes each word letter by letter; the HTML only carries it as data -->
     {loops.map((k, i) => <span class="ohl-say" data-say={k} data-word={intro.words[i]}></span>)}
   </div>
@@ -89,7 +91,14 @@ const PEN = Math.round(stroke * 2.4);
     position: absolute; width: 30%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; visibility: hidden;
     background: radial-gradient(closest-side, rgb(45 73 173 / 0.5), rgb(45 73 173 / 0.16) 50%, transparent);
   }
-  .ohl-line { margin: 0; font-size: clamp(0.95rem, 1.5vw, 1.15rem); font-weight: 500; letter-spacing: 0.01em; text-align: center; text-wrap: balance; }
+  /* the same face, weight, tracking and leading as the header's motto, so it lands on it exactly */
+  .ohl-line {
+    margin: 0; font-size: clamp(0.95rem, 1.5vw, 1.15rem); font-weight: 500; line-height: 1.2; letter-spacing: 0.01em;
+    text-align: center; text-wrap: balance; color: color-mix(in srgb, currentColor 72%, transparent);
+  }
+  .ohl-motto, .ohl-tail { display: inline-block; }
+  .ohl-motto { white-space: nowrap; }
+  .ohl-motto::before { content: attr(data-text); }
 
   .ohl-say {
     position: absolute; left: 0; top: 0; white-space: nowrap; visibility: hidden;
