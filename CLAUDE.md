@@ -5,6 +5,7 @@ About me `/about`, Contact `/contact`, Blog `/blog`. Site text lives in `src/dat
 
 ## Commands
 - `npm install` → `npm run dev` (http://localhost:4321) → `npm run build` (output in `dist/`)
+- Live at https://onehublabs.com: GitHub Pages, deployed by `.github/workflows/deploy.yml` on every push to `main` and daily (fresh GitHub terrain). The domain is registered at Hostinger; its DNS points at GitHub Pages.
 
 ## Structure
 - `src/data/site.ts` — text, services (keys `web ai booking commerce data`), brands, stats (edit content here, not in components)
