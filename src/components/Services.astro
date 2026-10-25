@@ -2,8 +2,6 @@
 import { servicesWithProjects } from '../data/projects';
 import { serviceColors, ui } from '../data/site';
 import { stories } from '../data/stories';
-import Stories from './Stories.astro';
-import StoryDefs from './StoryDefs.astro';
 
 const services = await servicesWithProjects();
 // a service's cards: its projects, then (AI search) the card about this very site
@@ -15,7 +13,7 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
 const storyOf = (key: string) => stories.find((st) => st.service === key);
 const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>';
 ---
-<section id="services" class="work" data-work>
+<section id="services" class="work">
   <header class="wrap sec-head">
     <h2>{ui.work.title}</h2>
     <p>{ui.work.intro} <a href="/services">{ui.work.allServices}</a> · <a href="/projects">{ui.work.allProjects}</a></p>
@@ -107,8 +105,6 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
     </div>
   </div>
 
-  <StoryDefs />
-  <Stories />
 </section>
 
 <style>
@@ -154,8 +150,6 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
   @media (max-width: 1199px) { .rm-rest { display: none; } }
   /* no script, no stories to open */
   :global(html:not(.js)) .read-more { display: none; }
-  /* a story is open: the sheets have folded into its bar (src/scripts/stories.ts) */
-  .work.story-open .stack { display: none; }
 
   .copy { grid-column: 1 / 7; grid-row: 2; align-self: start; margin-top: 16px; padding-right: clamp(0px, 2vw, 32px); }
   .lead { margin: 0; max-width: 34ch; font-size: clamp(1.15rem, 1.5vw, 1.375rem); line-height: 1.35; font-weight: 500; letter-spacing: -0.01em; }

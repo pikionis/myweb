@@ -203,8 +203,7 @@ export const ui = {
   stories: {
     readMore: 'Read more',
     /** follows "Read more" where the sheet has room for it */
-    readMoreRest: ' — what I build for you',
-    bar: 'Service stories',
+    readMoreRest: ' — how I work for you',
     close: 'Close',
     start: 'Start a project',
   },

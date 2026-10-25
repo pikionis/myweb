@@ -3,6 +3,7 @@ import Site from '../layouts/Site.astro';
 import Intro from '../components/Intro.astro';
 import Marquee from '../components/Marquee.astro';
 import Services from '../components/Services.astro';
+import Stories from '../components/Stories.astro';
 ---
 <Site>
   <main>
@@ -12,4 +13,7 @@ import Services from '../components/Services.astro';
       <Services />
     </div>
   </main>
+  <!-- each service's story, opened from its sheet as a box over the page (outside <main>, so the page can be
+       set inert while one is open) -->
+  <Stories />
 </Site>
