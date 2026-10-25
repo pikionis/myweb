@@ -1,5 +1,6 @@
 import { gsap } from 'gsap';
 import { glassCarousel, type GlassApi } from './glass';
+import { serviceColors } from '../data/site';
 
 /*
  * The projects showcase on /projects. Every project sits in the liquid glass carousel; opening one
@@ -21,14 +22,8 @@ type ProjectData = {
 };
 
 const CARD = { w: 900, h: 1200 };
-// a title card's ground and ink, by the project's first service
-const CARD_COLORS: Record<string, [string, string]> = {
-  web: ['#141414', '#f4f3ef'],
-  ai: ['#4d7cff', '#0a0b0a'],
-  booking: ['#1d3b9e', '#f4f3ef'],
-  commerce: ['#e2e0d9', '#141414'],
-  data: ['#2a2b27', '#f4f3ef'],
-};
+// a title card's ground and ink, by the project's first service (src/data/site.ts)
+const CARD_COLORS: Record<string, [string, string]> = serviceColors;
 const EASE_IN_OUT = 'power3.inOut';
 const COMPACT_SCALE = () => (window.innerWidth < 760 ? 0.72 : 0.6);
 
@@ -55,7 +50,7 @@ function titleCard(p: ProjectData) {
   c.width = CARD.w;
   c.height = CARD.h;
   const g = c.getContext('2d')!;
-  const [ground, ink] = CARD_COLORS[p.serviceKeys[0]] ?? CARD_COLORS.web;
+  const [ground, ink] = CARD_COLORS[p.serviceKeys[0]] ?? CARD_COLORS.none;
   g.fillStyle = ground;
   g.fillRect(0, 0, CARD.w, CARD.h);
   g.fillStyle = ink;
@@ -120,7 +115,7 @@ export async function projectsShowcase(root: HTMLElement) {
     title: p.title,
     source: p.cover ?? cards[i],
     aspect: 3 / 4,
-    base: rgb((CARD_COLORS[p.serviceKeys[0]] ?? CARD_COLORS.web)[0]),
+    base: rgb((CARD_COLORS[p.serviceKeys[0]] ?? CARD_COLORS.none)[0]),
   })), {
     background: rgb('#f4f3ef'),
     cursor: root.querySelector<HTMLElement>('[data-view]'),
@@ -147,7 +142,7 @@ export async function projectsShowcase(root: HTMLElement) {
       img.src = p.cover ?? cards[data.indexOf(p)].toDataURL('image/png');
       media.append(img);
       media.dataset.kind = p.cover ? 'cover' : 'card';
-      media.style.background = p.cover ? '' : (CARD_COLORS[p.serviceKeys[0]] ?? CARD_COLORS.web)[0];
+      media.style.background = p.cover ? '' : (CARD_COLORS[p.serviceKeys[0]] ?? CARD_COLORS.none)[0];
     }
 
     const kicker = panel.querySelector<HTMLElement>('[data-p-services]')!;

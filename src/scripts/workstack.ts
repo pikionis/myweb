@@ -5,36 +5,84 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
  * "What I build" on the home page: the service sheets stack over a held screen, and inside each
  * sheet its projects stack the same way — a stack within a stack. Each scroll step brings in one
  * thing: the next project of the current service, or, when a service is done, the next service.
- * Project videos play only while their card is on screen.
+ * A sheet that sets its projects' own texts beside them (Custom web & design) shows the text of the
+ * project on top, or of the one under the pointer. Project videos play only while their card is on screen.
  */
-export function workStack(root: HTMLElement) {
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  watchVideos(root);
-  // reduced motion (or no script) keeps the plain flow: sheets and projects one after another
-  if (reduce) return;
-  gsap.registerPlugin(ScrollTrigger);
-  root.classList.add('on');
 
+// the stack holds only where a sheet's words fit beside its projects; elsewhere (a phone, a short screen,
+// reduced motion, no script) the sheets and their projects simply follow one another
+const PINNED = '(min-width: 861px) and (min-height: 740px) and (prefers-reduced-motion: no-preference)';
+
+export function workStack(root: HTMLElement) {
+  watchVideos(root);
+  gsap.registerPlugin(ScrollTrigger);
   const sheets = [...root.querySelectorAll<HTMLElement>('[data-sheet]')];
-  const tl = gsap.timeline({
-    scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.6, invalidateOnRefresh: true },
-  });
-  let at = 0;
-  sheets.forEach((sheet, i) => {
-    if (i > 0) {
-      // the next service rises from below the screen into its place in the stack
-      tl.fromTo(sheet, { y: () => window.innerHeight }, { y: 0, ease: 'none', duration: 1 }, at);
-      at += 1;
-    }
-    [...sheet.querySelectorAll<HTMLElement>('[data-pcard]')].forEach((card, j) => {
-      if (j === 0) return;
-      // inside the sheet, the next project rises from below the sheet over the one before
-      tl.fromTo(card, { y: () => sheet.clientHeight }, { y: 0, ease: 'none', duration: 1 }, at);
-      at += 1;
+  const texts = sheets.map(projectTexts);
+
+  gsap.matchMedia().add(PINNED, () => {
+    root.classList.add('on');
+    // when each card has slid halfway in, by sheet
+    const arrivals: { sheet: number; card: number; at: number }[] = [];
+    const follow = () => {
+      const t = tl.time();
+      texts.forEach((show, i) => {
+        if (!show) return;
+        let top = 0;
+        for (const a of arrivals) if (a.sheet === i && t >= a.at) top = a.card;
+        show(top);
+      });
+    };
+    const tl = gsap.timeline({
+      onUpdate: follow,
+      scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.6, invalidateOnRefresh: true },
     });
+    let at = 0;
+    sheets.forEach((sheet, i) => {
+      if (i > 0) {
+        // the next service rises from below the screen into its place in the stack
+        tl.fromTo(sheet, { y: () => window.innerHeight }, { y: 0, ease: 'none', duration: 1 }, at);
+        at += 1;
+      }
+      [...sheet.querySelectorAll<HTMLElement>('[data-pcard]')].forEach((card, j) => {
+        if (j === 0) return;
+        // inside the sheet, the next project rises from below the sheet over the one before
+        tl.fromTo(card, { y: () => sheet.clientHeight }, { y: 0, ease: 'none', duration: 1 }, at);
+        arrivals.push({ sheet: i, card: j, at: at + 0.5 });
+        at += 1;
+      });
+    });
+    // a short hold, so the last project is read before the stack lets go
+    tl.to({}, { duration: 0.5 });
+    return () => {
+      root.classList.remove('on');
+      texts.forEach((show) => show?.(0));
+    };
   });
-  // a short hold, so the last project is read before the stack lets go
-  tl.to({}, { duration: 0.5 });
+}
+
+/** A sheet's project texts: one shows at a time, the hovered or focused project's, else the one on top. */
+function projectTexts(sheet: HTMLElement) {
+  const items = [...sheet.querySelectorAll<HTMLElement>('[data-blurb]')];
+  if (!items.length) return null;
+  const cards = [...sheet.querySelectorAll<HTMLElement>('[data-pcard]')];
+  let onTop = 0;
+  let pointed = -1;
+  const render = () => {
+    const i = pointed >= 0 ? pointed : onTop;
+    items.forEach((b, k) => b.classList.toggle('on', k === i));
+  };
+  cards.forEach((card, i) => {
+    if (i >= items.length) return;
+    card.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { pointed = i; render(); } });
+    card.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse' && pointed === i) { pointed = -1; render(); } });
+    card.addEventListener('focusin', () => { pointed = i; render(); });
+    card.addEventListener('focusout', () => { if (pointed === i) { pointed = -1; render(); } });
+  });
+  return (i: number) => {
+    if (i === onTop) return;
+    onTop = i;
+    render();
+  };
 }
 
 /** Loads a project's video when its card first comes near, and plays it only while it is in view. */

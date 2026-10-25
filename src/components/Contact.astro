@@ -1,5 +1,5 @@
 ---
-import { person, pages } from '../data/site';
+import { person, pages, ui } from '../data/site';
 import BriefForm from './BriefForm.astro';
 // `page`: this block is the whole /contact page (a section with the page's h1 and the brief form), not the footer
 interface Props { page?: boolean }
@@ -39,7 +39,7 @@ const location = person.location.replace(' · ', ', ');
       <a class="logo" href="/" aria-label={`${person.name}, home`}>
         {person.logo ? <img src={person.logo} alt="" height="40" /> : <span>{person.name}</span>}
       </a>
-      <p>{person.role}. Websites, booking systems and AI products, designed, built and shipped end to end.</p>
+      <p>{person.role}. {ui.footerLine}</p>
     </div>
     <nav class="col" aria-label="Footer">
       <p class="ctitle">Pages</p>

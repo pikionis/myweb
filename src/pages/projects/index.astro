@@ -1,18 +1,22 @@
 ---
 import Site from '../../layouts/Site.astro';
 import { render } from 'astro:content';
-import { getProjects, servicesWithProjects, hasStory } from '../../data/projects';
-import { services } from '../../data/site';
+import { getProjects, servicesWithProjects, otherProjects, hasStory } from '../../data/projects';
+import { services, ui } from '../../data/site';
 
 const all = await getProjects();
-const groups = (await servicesWithProjects()).filter((g) => g.projects.length);
+// the four services, then the work that sits outside them
+const groups = [
+  ...(await servicesWithProjects()).map((g) => ({ title: g.title, projects: g.projects })),
+  { title: ui.moreWork, projects: await otherProjects() },
+].filter((g) => g.projects.length);
 const titleOf = (k: string) => services.find((s) => s.key === k)?.title ?? k;
 // everything the showcase needs, in carousel order
 const projects = all.map((p) => ({
   id: p.id,
   title: p.data.title,
   summary: p.data.summary,
-  services: p.data.services.map(titleOf),
+  services: p.data.services.length ? p.data.services.map(titleOf) : [ui.moreWork],
   serviceKeys: p.data.services,
   tags: p.data.tags,
   url: p.data.url,
@@ -23,11 +27,11 @@ const projects = all.map((p) => ({
 // written stories travel with the page so the panel can show them without a reload
 const stories = await Promise.all(all.filter(hasStory).map(async (p) => ({ id: p.id, Content: (await render(p)).Content })));
 ---
-<Site title="Projects — Petros Pikionis" description="Websites, AI products, booking systems, marketplace feeds and infrastructure by Petros Pikionis." light>
+<Site title="Projects — Petros Pikionis" description="Websites, AI SaaS and web applications, e-commerce and marketplace engineering by Petros Pikionis." light>
   <main class="page theme-light projects">
     <header class="wrap page-head" data-head data-rise>
       <h1>Projects</h1>
-      <p>{projects.length} projects across websites, AI products, booking systems, marketplace feeds and infrastructure. Drag the row, open any project.</p>
+      <p>{projects.length} projects across websites, web applications, e-commerce and marketplace engineering. Drag the row, open any project.</p>
     </header>
 
     <section class="showcase" data-showcase aria-label="Project showcase">

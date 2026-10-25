@@ -7,11 +7,11 @@ const posts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || 
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const day = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
-<Site title="Blog — Petros Pikionis" description="Notes by Petros Pikionis on building websites, booking systems and AI products." light>
+<Site title="Blog — Petros Pikionis" description="Notes by Petros Pikionis on building websites, web applications and AI products." light>
   <main class="page theme-light">
     <header class="wrap page-head" data-rise>
       <h1>Blog</h1>
-      <p>Notes on building websites, booking systems and AI products.</p>
+      <p>Notes on building websites, web applications and AI products.</p>
     </header>
 
     <div class="wrap">

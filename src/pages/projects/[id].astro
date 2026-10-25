@@ -22,7 +22,7 @@ const serviceTitles = project.data.services.map((k) => services.find((s) => s.ke
         <p>{project.data.summary}</p>
       </header>
       <dl class="facts" data-rise>
-        <div><dt>Service</dt><dd>{serviceTitles.join(', ')}</dd></div>
+        {serviceTitles.length > 0 && <div><dt>Service</dt><dd>{serviceTitles.join(', ')}</dd></div>}
         {project.data.tags.length > 0 && <div><dt>Built with</dt><dd>{project.data.tags.join(' · ')}</dd></div>}
         {project.data.url && <div><dt>Live</dt><dd><a href={project.data.url} target="_blank" rel="noopener">Visit site</a></dd></div>}
       </dl>

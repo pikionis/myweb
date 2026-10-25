@@ -1,7 +1,7 @@
 ---
 title: "Galaxus integration"
 summary: "Marketplace integration with AI category matching."
-services: [commerce]
+services: []
 tags: ["Integration"]
 order: 2
 ---

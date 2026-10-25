@@ -17,5 +17,10 @@ export async function servicesWithProjects() {
   return services.map((s) => ({ ...s, projects: all.filter((p) => p.data.services.includes(s.key)) }));
 }
 
+/** Projects outside the four services: they stay on /projects, under "More work". */
+export async function otherProjects() {
+  return (await getProjects()).filter((p) => !p.data.services.length);
+}
+
 /** Only projects with written text get a page of their own. */
 export const hasStory = (p: ProjectEntry) => !!p.body?.trim();

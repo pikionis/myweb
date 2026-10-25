@@ -1,59 +1,96 @@
 ---
 import { servicesWithProjects } from '../data/projects';
+import { serviceColors, ui } from '../data/site';
 
 const services = await servicesWithProjects();
-// a project's media falls back to a typeset block in its service's colour
-const COLORS: Record<string, [string, string]> = {
-  web: ['#141414', '#f4f3ef'],
-  ai: ['#4d7cff', '#0a0b0a'],
-  booking: ['#1d3b9e', '#f4f3ef'],
-  commerce: ['#e2e0d9', '#141414'],
-  data: ['#2a2b27', '#f4f3ef'],
-};
-// scroll steps: each service after the first slides in, and so does each project after a service's first
-const steps = (services.length - 1) + services.reduce((s, x) => s + Math.max(x.projects.length - 1, 0), 0);
+// a service's cards: its projects, then (AI search) the card about this very site
+const cardCount = (s: (typeof services)[number]) => s.projects.length + (s.proof ? 1 : 0);
+// scroll steps: each service after the first slides in, and so does each card after a service's first
+const steps = (services.length - 1) + services.reduce((n, s) => n + Math.max(cardCount(s) - 1, 0), 0);
+const arrow = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>';
+const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>';
 ---
 <section id="services" class="work">
   <header class="wrap sec-head">
-    <h2>What I build</h2>
-    <p>Each service, and the real projects behind it. <a href="/services">All services</a> · <a href="/projects">All projects</a></p>
+    <h2>{ui.work.title}</h2>
+    <p>{ui.work.intro} <a href="/services">{ui.work.allServices}</a> · <a href="/projects">{ui.work.allProjects}</a></p>
   </header>
 
   <!-- Services stack as sheets; inside each sheet its projects stack the same way (src/scripts/workstack.ts) -->
   <div class="stack" data-stack style={`--steps: ${steps}`}>
     <div class="pin">
-      {services.map((s, i) => (
-        <article class:list={['svc', i % 2 ? 'dark' : 'light']} data-sheet style={`--i: ${i}`}>
-          <div class="wrap svc-in">
-            <h3 data-cascade>{s.title}</h3>
-            <p class="desc">{s.desc}</p>
-            <div class="pstack" style={`--m: ${s.projects.length}`}>
-              {s.projects.map((p, j) => {
-                const [bg, fg] = COLORS[p.data.services[0]] ?? COLORS.web;
-                return (
-                  <a class="pcard" data-pcard href={`/projects?project=${p.id}`} style={`--j: ${j}`}>
-                    <span class="pband">
-                      <span class="pname" data-cascade>{p.data.title}</span>
-                      <span class="ptags">{p.data.tags.join(' · ')}</span>
-                      <svg class="parrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
-                    </span>
-                    <span class="pmedia" style={`--mbg: ${bg}; --mfg: ${fg}`}>
-                      {p.data.video ? (
-                        <video data-src={p.data.video} poster={p.data.cover} muted loop playsinline preload="none" aria-label={`Design video of ${p.data.title}`}></video>
-                      ) : p.data.cover ? (
-                        <img src={p.data.cover} alt="" loading="lazy" />
-                      ) : (
-                        <span class="pfallback" aria-hidden="true" data-t={p.data.title}></span>
-                      )}
-                    </span>
-                    <span class="pline">{p.data.summary}</span>
-                  </a>
-                );
-              })}
+      {services.map((s, i) => {
+        // Custom web & design sets each project's own text beside the projects; the others keep it on the card
+        const beside = s.key === 'web' && s.projects.some((p) => p.data.blurb);
+        return (
+          <article class:list={['svc', i % 2 ? 'dark' : 'light']} data-sheet style={`--i: ${i}`}>
+            <div class="wrap svc-in">
+              <h3 data-cascade>{s.title}</h3>
+              <div class="copy">
+                <p class="lead">{s.lead}</p>
+                {s.body.map((t) => <p class="body">{t}</p>)}
+                {s.chips.length > 0 && <ul class="chips">{s.chips.map((c) => <li>{c}</li>)}</ul>}
+                {beside && (
+                  <div class="blurbs" data-blurbs>
+                    {s.projects.map((p, j) => (
+                      <p class:list={['blurb', { on: j === 0 }]} data-blurb>
+                        <span class="bname">{p.data.title}</span> {p.data.blurb ?? p.data.summary}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div class="pstack">
+                {s.projects.map((p, j) => {
+                  const [bg, fg] = serviceColors[p.data.services[0] ?? 'none'];
+                  const { metric, scope } = p.data;
+                  return (
+                    <article class="pcard" data-pcard style={`--j: ${j}`}>
+                      <div class="pband">
+                        <a class="pname" href={`/projects?project=${p.id}`} data-cascade>{p.data.title}</a>
+                        {p.data.badge && <span class="badge">{p.data.badge}</span>}
+                        {p.data.tags.length > 0 && <span class="ptags">{p.data.tags.join(' · ')}</span>}
+                        {p.data.url && (
+                          <a class="visit" href={p.data.url} target="_blank" rel="noopener" aria-label={`${ui.visitSite}: ${p.data.title}`}>
+                            {ui.visitSite}<Fragment set:html={arrow} />
+                          </a>
+                        )}
+                      </div>
+                      <div class:list={['pmedia', { spec: scope }]} style={`--mbg: ${bg}; --mfg: ${fg}`}>
+                        {scope ? (
+                          <>
+                            {metric && <p class="metric"><b>{metric.value}</b> {metric.label}</p>}
+                            <ul class="scope">{scope.map((x) => <li>{x}</li>)}</ul>
+                          </>
+                        ) : p.data.video ? (
+                          <video data-src={p.data.video} poster={p.data.cover} muted loop playsinline preload="none" aria-label={`Design video of ${p.data.title}`}></video>
+                        ) : p.data.cover ? (
+                          <img src={p.data.cover} alt="" loading="lazy" />
+                        ) : (
+                          <span class="pfallback" aria-hidden="true" data-t={p.data.title}></span>
+                        )}
+                      </div>
+                      <p class="pline">{beside ? p.data.summary : (p.data.blurb ?? p.data.summary)}</p>
+                    </article>
+                  );
+                })}
+                {s.proof && (
+                  <article class="pcard proof" data-pcard style={`--j: ${s.projects.length}`}>
+                    <div class="pband">
+                      <span class="pname">{s.proof.name}</span>
+                      <span class="badge">{s.proof.label}</span>
+                    </div>
+                    <div class="pmedia spec" style={`--mbg: ${serviceColors[s.key][0]}; --mfg: ${serviceColors[s.key][1]}`}>
+                      <ul class="checks">{s.proof.items.map((x) => <li><Fragment set:html={check} />{x}</li>)}</ul>
+                    </div>
+                    <p class="pline"><a href={s.proof.link.href}>{s.proof.link.text}</a></p>
+                  </article>
+                )}
+              </div>
             </div>
-          </div>
-        </article>
-      ))}
+          </article>
+        );
+      })}
     </div>
   </div>
 </section>
@@ -65,7 +102,7 @@ const steps = (services.length - 1) + services.reduce((s, x) => s + Math.max(x.p
   .sec-head p { margin: 0; max-width: 44ch; font-size: clamp(1.15rem, 1.6vw, 1.4rem); line-height: 1.45; justify-self: end; }
   .sec-head a { text-decoration-color: var(--accent); text-underline-offset: 0.25em; white-space: nowrap; }
 
-  /* ---- flow: no script, or reduced motion — the sheets and their projects simply follow one another ---- */
+  /* ---- flow: no script, reduced motion or a small screen — the sheets and their projects follow one another ---- */
   .stack { --top: 84px; --band: 72px; --pband: 64px; margin-top: clamp(40px, 6vh, 80px); }
   .svc { position: relative; border-radius: clamp(20px, 3vw, 36px) clamp(20px, 3vw, 36px) 0 0; }
   .svc.light { background: #e8e6df; color: #141414; --card: #ffffff; --meta: #3f3f3b; --tag: #2a55d9; }
@@ -75,19 +112,46 @@ const steps = (services.length - 1) + services.reduce((s, x) => s + Math.max(x.p
     padding-bottom: clamp(32px, 5vh, 56px);
   }
   h3 { grid-column: 1 / -1; align-self: center; font-size: clamp(1.8rem, 3.2vw, 2.75rem); cursor: default; }
-  .desc { grid-column: 1 / 6; grid-row: 2; align-self: start; margin: 20px 0 0; max-width: 32ch; font-size: clamp(1.15rem, 1.6vw, 1.4rem); line-height: 1.45; }
-  .pstack { grid-column: 7 / -1; grid-row: 2; display: grid; gap: 16px; margin-top: 20px; }
 
+  .copy { grid-column: 1 / 7; grid-row: 2; align-self: start; margin-top: 16px; padding-right: clamp(0px, 2vw, 32px); }
+  .lead { margin: 0; max-width: 34ch; font-size: clamp(1.15rem, 1.5vw, 1.375rem); line-height: 1.35; font-weight: 500; letter-spacing: -0.01em; }
+  .body { margin: 14px 0 0; max-width: 62ch; font-size: 1rem; line-height: 1.55; color: var(--meta); }
+  .chips { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips li { padding: 6px 12px; border-radius: 100px; font-size: 0.875rem; line-height: 1.3; background: color-mix(in srgb, currentColor 9%, transparent); }
+
+  /* each project's own text; while the stack is held, only the active project's shows */
+  .blurbs { display: grid; margin-top: 20px; padding-top: 16px; max-width: 62ch; border-top: 1px solid color-mix(in srgb, currentColor 16%, transparent); }
+  .blurb { margin: 0; font-size: 1rem; line-height: 1.55; color: var(--meta); }
+  .blurb + .blurb { margin-top: 14px; }
+  .bname { display: block; margin-bottom: 4px; font-size: 0.875rem; font-weight: 700; letter-spacing: 0.01em; color: var(--tag); }
+
+  .pstack { grid-column: 7 / -1; grid-row: 2; display: grid; gap: 16px; margin-top: 20px; }
   .pcard {
-    display: flex; flex-direction: column; min-height: 0; overflow: hidden; border-radius: 18px;
-    background: var(--card); color: inherit; text-decoration: none;
+    position: relative; display: flex; flex-direction: column; min-height: 0; overflow: hidden; border-radius: 18px;
+    background: var(--card); color: inherit;
   }
   .pband { flex: none; display: flex; align-items: center; gap: 12px; height: var(--pband); padding: 0 18px; }
-  .pname { font-weight: 700; font-size: clamp(1.1rem, 1.5vw, 1.35rem); letter-spacing: -0.01em; white-space: nowrap; }
+  .pname { font-weight: 700; font-size: clamp(1.1rem, 1.5vw, 1.35rem); letter-spacing: -0.01em; white-space: nowrap; text-decoration: none; color: inherit; }
+  /* the name is the card's link: it covers the whole card, under the "Visit site" link */
+  a.pname::after { content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+  a.pname:focus-visible { outline: none; }
+  .pcard:has(a.pname:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .badge {
+    flex: none; padding: 3px 9px; border: 1px solid currentColor; border-radius: 100px;
+    font-size: 0.75rem; font-weight: 500; line-height: 1.3; color: var(--tag);
+  }
   .ptags { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9375rem; color: var(--tag); }
-  .parrow { flex: none; margin-left: auto; opacity: 0.6; transition: opacity 0.2s ease, translate 0.25s var(--ease-out); }
-  @media (hover: hover) and (pointer: fine) { .pcard:hover .parrow { opacity: 1; translate: 2px -2px; } }
-  .pcard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .visit {
+    position: relative; z-index: 2; flex: none; margin-left: auto; display: inline-flex; align-items: center; gap: 4px;
+    min-height: 40px; font-size: 0.9375rem; font-weight: 500; color: inherit;
+    text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.25em; transition: text-decoration-color 0.2s ease;
+  }
+  .visit :global(svg) { transition: translate 0.25s var(--ease-out); }
+  @media (hover: hover) and (pointer: fine) {
+    .visit:hover { text-decoration-color: currentColor; }
+    .visit:hover :global(svg) { translate: 2px -2px; }
+  }
+
   .pmedia { position: relative; display: block; flex: 1 1 auto; min-height: 0; aspect-ratio: 16 / 9; margin: 0 10px; border-radius: 12px; overflow: hidden; background: var(--mbg); color: var(--mfg); }
   .pmedia video, .pmedia img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .pfallback {
@@ -96,7 +160,18 @@ const steps = (services.length - 1) + services.reduce((s, x) => s + Math.max(x.p
   }
   /* the title card repeats the name as a picture, not as text */
   .pfallback::before { content: attr(data-t); }
-  .pline { flex: none; display: block; padding: 12px 18px 16px; font-size: 0.9375rem; line-height: 1.45; color: var(--meta); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* engineering work: the figure and the scope instead of a picture */
+  /* in the flow the card grows to its contents; held in the stack it fills the card like a picture would */
+  .spec { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; padding: clamp(18px, 2vw, 26px); aspect-ratio: auto; min-height: 200px; }
+  .metric { margin: 0; display: grid; gap: 4px; font-size: 1rem; font-weight: 500; }
+  .metric b { font-size: clamp(2.6rem, 5vw, 4.6rem); line-height: 0.9; letter-spacing: -0.05em; }
+  .scope { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .scope li { padding: 6px 12px; border-radius: 100px; font-size: 0.875rem; background: color-mix(in srgb, currentColor 12%, transparent); }
+  .checks { list-style: none; margin: auto 0 0; padding: 0; display: grid; gap: 12px; font-size: clamp(1rem, 1.3vw, 1.2rem); font-weight: 500; line-height: 1.3; }
+  .checks li { display: flex; gap: 10px; align-items: flex-start; }
+  .checks :global(svg) { flex: none; margin-top: 0.15em; }
+  .pline { flex: none; display: block; margin: 0; padding: 12px 18px 16px; font-size: 0.9375rem; line-height: 1.45; color: var(--meta); }
+  .proof .pline a { position: relative; z-index: 2; color: inherit; text-decoration-color: var(--tag); text-underline-offset: 0.25em; }
 
   /* ---- pinned: the sheets stack over a held screen, and each sheet's projects stack inside it ---- */
   .stack.on { height: calc(100vh + var(--steps) * 62vh + 30vh); }
@@ -106,20 +181,28 @@ const steps = (services.length - 1) + services.reduce((s, x) => s + Math.max(x.p
   .stack.on .pstack { display: block; position: relative; height: 100%; margin-top: 0; }
   .stack.on .pcard { position: absolute; left: 0; right: 0; top: calc(var(--j) * var(--pband)); bottom: 0; }
   .stack.on .pmedia { aspect-ratio: auto; }
+  .stack.on .pline { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stack.on .copy { margin-top: 0; }
+  .stack.on .blurb { grid-area: 1 / 1; margin: 0; opacity: 0; transition: opacity 0.3s ease; }
+  .stack.on .blurb.on { opacity: 1; }
   /* a card that has slid over another leaves the one below showing only its name band */
   .stack.on .pcard + .pcard { box-shadow: 0 -10px 24px -18px rgb(0 0 0 / 0.35); }
+  /* a shorter screen: slimmer bands, so the last sheet keeps room for its words */
+  @media (max-height: 860px) { .stack { --band: 60px; --pband: 58px; } }
 
   @media (max-width: 860px) {
     .sec-head { grid-template-columns: 1fr; }
     .sec-head p { justify-self: start; }
-    .stack { --top: 72px; --band: 56px; --pband: 52px; }
+    .stack { --band: 64px; --pband: 56px; }
+    .svc-in { padding-bottom: 28px; }
     h3 { font-size: 1.5rem; }
-    .desc, .pstack { grid-column: 1 / -1; }
-    .desc { grid-row: auto; margin-top: 4px; max-width: none; font-size: 1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .pstack { grid-row: auto; }
-    .stack.on .svc-in { grid-template-rows: var(--band) auto minmax(0, 1fr); }
-    .stack.on .pstack { margin-top: 14px; }
-    .pband { padding: 0 14px; }
+    .copy, .pstack { grid-column: 1 / -1; }
+    .copy { grid-row: auto; margin-top: 0; padding-right: 0; }
+    .lead { font-size: 1.125rem; }
+    .body { font-size: 0.9375rem; }
+    .chips li { padding: 5px 11px; font-size: 0.8125rem; }
+    .pstack { grid-row: auto; margin-top: 24px; }
+    .pband { padding: 0 14px; gap: 10px; }
     .ptags { display: none; }
     .pline { padding: 10px 14px 12px; }
   }
