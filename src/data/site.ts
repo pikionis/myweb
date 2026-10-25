@@ -126,7 +126,7 @@ export const services: Service[] = [
     title: 'E-commerce & marketplaces',
     lead: 'Shops that sell — and the plumbing behind them.',
     body: [
-      "I build custom e-commerce with a modern, fast, conversion-focused UI/UX. But I don't stop at the storefront. As an engineer for DeinDeal, a large Swiss online marketplace, I connected small suppliers to major European marketplaces — product feeds, category mapping, pricing, orders and stock sync, at 800K+ products a day. So I know marketplaces from the inside and the outside. If you want to sell on Galaxus, Amazon, Skroutz or Google Shopping, I've already built that bridge.",
+      "I build custom e-commerce with a modern, fast, conversion-focused UI/UX. But I don't stop at the storefront. As an engineer for DeinDeal, a large Swiss online marketplace, I connected small suppliers to major European marketplaces — product feeds, category mapping, pricing, orders and stock sync, at 800K+ products a day. So I know marketplaces from the inside and the outside. If you need to sell on the big ones — Amazon, Google Shopping, Skroutz or Galaxus, the Swiss marketplace — send me a message. I know this job inside out. Trust me, I'm an engineer. Hold my beer: this is my territory.",
     ],
     chips: [],
     summary: "I build custom e-commerce with a modern, fast, conversion-focused UI/UX. But I don't stop at the storefront.",
