@@ -29,7 +29,15 @@ export function serviceStories(section: HTMLElement, stack: StackApi | null, rea
   const tabs = [...bar.querySelectorAll<HTMLButtonElement>('[data-story-tab]')];
   const closeBtn = bar.querySelector<HTMLButtonElement>('[data-story-close]');
   let active: string | null = null;
+  // one change at a time; a story asked for meanwhile (a link, a quick click) opens as soon as it is done
   let busy = false;
+  let queued: string | null = null;
+  const settle = () => {
+    busy = false;
+    const next = queued;
+    queued = null;
+    if (next && next !== active) open(next);
+  };
 
   const header = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 0;
   const pageTop = (el: Element) => el.getBoundingClientRect().top + window.scrollY;
@@ -62,7 +70,8 @@ export function serviceStories(section: HTMLElement, stack: StackApi | null, rea
 
   const open = (key: string, from?: HTMLElement) => {
     const panel = panels.get(key);
-    if (busy || !panel) return;
+    if (!panel) return;
+    if (busy) { queued = key; return; }
     if (key === active) { glide(storyStart(panel)); return; }
     busy = true;
 
@@ -77,7 +86,7 @@ export function serviceStories(section: HTMLElement, stack: StackApi | null, rea
         jump(storyStart(panel));
         if (!reduce) gsap.fromTo(panel, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power1.out', clearProps: 'opacity' });
         focusTitle(panel);
-        busy = false;
+        settle();
       };
       if (reduce) swap(); else gsap.to(prev, { opacity: 0, duration: BAR_FADE, ease: 'power1.in', onComplete: swap });
       return;
@@ -92,9 +101,9 @@ export function serviceStories(section: HTMLElement, stack: StackApi | null, rea
       scenes(panel);
       jump(pageTop(section) - header());
       focusTitle(panel);
-      if (reduce) { jump(storyStart(panel)); busy = false; return; }
+      if (reduce) { jump(storyStart(panel)); settle(); return; }
       const tab = tabs.find((t) => t.dataset.storyTab === key);
-      const tl = gsap.timeline({ onComplete: () => { busy = false; glide(storyStart(panel)); } });
+      const tl = gsap.timeline({ onComplete: () => { glide(storyStart(panel)); settle(); } });
       if (tab && title) {
         const to = tab.getBoundingClientRect();
         tl.from(tab, {
@@ -124,7 +133,7 @@ export function serviceStories(section: HTMLElement, stack: StackApi | null, rea
       jump(stack && i >= 0 ? stack.sheetTop(i) : pageTop(section) - header());
       readMores.find((b) => b.dataset.readMore === key)?.focus({ preventScroll: true });
       if (!reduce && stackEl) gsap.from(stackEl, { opacity: 0, duration: 0.3, ease: 'power1.out', clearProps: 'opacity' });
-      busy = false;
+      settle();
     };
     if (reduce) finish(); else gsap.to(wrap, { opacity: 0, duration: BAR_FADE, ease: 'power1.in', onComplete: finish });
   };
