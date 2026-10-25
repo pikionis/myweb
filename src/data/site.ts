@@ -55,7 +55,7 @@ export const pages: { href: string; name: string; short?: string }[] = [
 export const brief = {
   formsubmit: 'petrospikionis@gmail.com',
   maxBytes: 10 * 1024 * 1024,
-  needs: ['AI automation', 'AI product or bot', 'Website', 'Booking system', 'E-commerce & feeds', 'Not sure yet'],
+  needs: ['AI automation', 'AI product or bot', 'Website', 'Booking system', 'E-commerce & feeds', 'AI search & marketing', 'Not sure yet'],
 };
 
 export const hero = {
@@ -94,6 +94,13 @@ export type Service = {
   summary?: string;
   /** a card of evidence in place of projects: what this very site does */
   proof?: { label: string; name: string; items: string[]; link: { href: string; text: string } };
+  /** its name in the story bar, where four have to fit */
+  short: string;
+  /** the sheet's ground: a fill token (--sheet-paper, --sheet-ink, or the -glow gradients in global.css), or an
+   *  image (in public/) under a scrim of the fill that keeps the words at 4.5:1; `tone` is the words' colour */
+  background: { tone: 'light' | 'dark'; fill: 'paper' | 'ink' | 'paper-glow' | 'ink-glow'; image?: string };
+  /** the "What do you need?" option its story's "Start a project" pre-selects on /contact (one of brief.needs) */
+  need: string;
 };
 
 export const services: Service[] = [
@@ -106,6 +113,9 @@ export const services: Service[] = [
     ],
     chips: [],
     claim: 'No templates, no recycled layouts.',
+    short: 'Web & design',
+    background: { tone: 'light', fill: 'paper' },
+    need: 'Website',
   },
   {
     key: 'apps',
@@ -120,6 +130,9 @@ export const services: Service[] = [
       'Client portals & user roles',
     ],
     summary: 'Some businesses need software that runs part of the business — taking bookings, managing properties and teams, tracking partners, answering customers at 3 a.m.',
+    short: 'AI SaaS & apps',
+    background: { tone: 'dark', fill: 'ink' },
+    need: 'AI product or bot',
   },
   {
     key: 'commerce',
@@ -130,6 +143,9 @@ export const services: Service[] = [
     ],
     chips: [],
     summary: "I build custom e-commerce with a modern, fast, conversion-focused UI/UX. But I don't stop at the storefront.",
+    short: 'E-commerce',
+    background: { tone: 'light', fill: 'paper' },
+    need: 'E-commerce & feeds',
   },
   {
     key: 'search',
@@ -156,6 +172,9 @@ export const services: Service[] = [
       ],
       link: { href: '/llms.txt', text: 'Read its llms.txt' },
     },
+    short: 'AI search & ads',
+    background: { tone: 'dark', fill: 'ink' },
+    need: 'AI search & marketing',
   },
 ];
 
@@ -177,6 +196,15 @@ export const ui = {
     allProjects: 'All projects',
   },
   visitSite: 'Visit site',
+  /** the service stories (src/components/Stories.astro) */
+  stories: {
+    readMore: 'Read more',
+    /** follows "Read more" where the sheet has room for it */
+    readMoreRest: ' — what I build for you',
+    bar: 'Service stories',
+    close: 'Close',
+    start: 'Start a project',
+  },
   /** under the name in the footer, after the role */
   footerLine: 'Custom websites, web applications, e-commerce, AI search, marketing and ads, designed, built and run end to end.',
   /** the heading for projects that sit outside the four services, on /projects */

@@ -1,0 +1,181 @@
+---
+import { stories } from '../data/stories';
+import { services, ui } from '../data/site';
+import StoryArt from './StoryArt.astro';
+
+const byKey = Object.fromEntries(services.map((s) => [s.key, s]));
+const pad = (n: number) => String(n).padStart(2, '0');
+const t = ui.stories;
+---
+<!-- The service stories (src/scripts/stories.ts). They are in the page from the start, so search engines read
+     them; with script each waits closed until its sheet's "Read more" opens it, and the sheets fold into the
+     bar above it. Without script they simply follow the sheets. -->
+<div class="stories" data-stories>
+  <div class="story-bar" data-story-bar>
+    <div class="wrap bar-in">
+      <div class="tabs" role="group" aria-label={t.bar}>
+        {stories.map((st) => (
+          <button type="button" class="tab" data-story-tab={st.service} aria-controls={st.id} aria-expanded="false">
+            {byKey[st.service].short}
+          </button>
+        ))}
+      </div>
+      <button type="button" class="bar-close" data-story-close aria-label={t.close}>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        <span>{t.close}</span>
+      </button>
+    </div>
+  </div>
+
+  {stories.map((st) => (
+    <article class="story" id={st.id} data-story={st.service} aria-labelledby={`${st.id}-title`}>
+      <header class="wrap story-head">
+        <p class="story-kicker">{byKey[st.service].title}</p>
+        <h3 id={`${st.id}-title`} tabindex="-1">{st.title}</h3>
+      </header>
+      {st.scenes.map((sc, i) => (
+        <section class="wrap scene" data-scene>
+          <div class="scene-art"><StoryArt name={sc.art} /></div>
+          <div class="scene-text">
+            <p class="scene-num" aria-hidden="true">{pad(i + 1)}</p>
+            <h4>{sc.title}</h4>
+            <p class="scene-words" data-words>{sc.text}</p>
+          </div>
+        </section>
+      ))}
+      <footer class="wrap story-cta">
+        <p class="cta-line">{st.cta.text}</p>
+        <a class="cta-btn" href={`/contact?type=project&service=${st.service}`}>{t.start}</a>
+        {st.cta.note && <p class="cta-note">{st.cta.note}</p>}
+      </footer>
+    </article>
+  ))}
+</div>
+
+<style>
+  /* with script, the stories wait closed; the section shows one once a sheet's "Read more" opens it */
+  :global(html.js) .stories { display: none; }
+  :global(html.js .story-open) > .stories { display: block; }
+  :global(html.js) .story:not(.open) { display: none; }
+  :global(html:not(.js)) .story-bar { display: none; }
+
+  .stories {
+    --bar-h: 68px; --art-h: min(54vh, 420px);
+    position: relative; margin-top: clamp(24px, 4vh, 48px);
+    border-radius: clamp(20px, 3vw, 36px) clamp(20px, 3vw, 36px) 0 0;
+    background: var(--ivory); color: var(--ink); --accent-ink: #2a55d9;
+  }
+
+  /* ---- the bar the sheets fold into: one tab per service, and a way back ---- */
+  .story-bar {
+    position: sticky; top: var(--topbar-h); z-index: 6;
+    border-radius: inherit; background: var(--ivory);
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  }
+  .bar-in { display: flex; align-items: center; gap: 12px; height: var(--bar-h); }
+  .tabs { display: flex; gap: 6px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab, .bar-close {
+    flex: none; min-height: 44px; padding: 0 16px; border-radius: 12px; cursor: pointer;
+    font-size: 0.9375rem; font-weight: 500; color: var(--ink); white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .tab { border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); background: transparent; }
+  .tab.on { background: var(--ink); border-color: var(--ink); color: var(--ivory); }
+  .bar-close { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; border: 0; background: transparent; }
+  @media (hover: hover) and (pointer: fine) {
+    .tab:not(.on):hover, .bar-close:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+  }
+  .tab:focus-visible, .bar-close:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+
+  /* ---- a story ---- */
+  .story-head { padding-block: clamp(56px, 10vh, 120px) clamp(8px, 2vh, 24px); }
+  .story-kicker { margin: 0 0 16px; font-size: 0.9375rem; font-weight: 500; color: var(--accent-ink); }
+  .story-head h3 { max-width: 14ch; font-size: clamp(2.4rem, 7vw, 5.5rem); outline: none; }
+
+  /* a scene: its picture holds still while its words scroll past, sides alternating */
+  .scene { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; min-height: 115vh; }
+  .scene-art {
+    grid-column: 1 / 7; grid-row: 1; align-self: start; position: sticky;
+    top: calc(var(--topbar-h) + var(--bar-h) + (100vh - var(--topbar-h) - var(--bar-h) - var(--art-h)) / 2);
+  }
+  .scene-text { grid-column: 8 / -1; grid-row: 1; align-self: center; padding-block: 26vh; }
+  .scene:nth-of-type(even) .scene-art { grid-column: 7 / -1; }
+  .scene:nth-of-type(even) .scene-text { grid-column: 1 / 6; }
+  .scene-num { margin: 0 0 12px; font-size: 0.9375rem; font-weight: 500; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+  .scene-text h4 { margin: 0; font-size: clamp(1.6rem, 2.8vw, 2.5rem); font-weight: 700; line-height: 0.95; letter-spacing: -0.03em; text-transform: uppercase; text-wrap: balance; }
+  .scene-words { margin: 18px 0 0; max-width: 32ch; font-size: clamp(1.2rem, 1.8vw, 1.6rem); line-height: 1.4; font-weight: 500; }
+  /* words light up as the scene scrolls by (only once the script has split them) */
+  .scene-words :global(.w) { color: color-mix(in srgb, var(--ink) 22%, transparent); transition: color 0.3s ease; }
+  .scene-words :global(.w.lit) { color: var(--ink); }
+
+  .story-cta { display: flex; flex-direction: column; align-items: center; gap: 28px; padding-block: clamp(80px, 14vh, 160px); text-align: center; }
+  .cta-line { margin: 0; max-width: 18ch; font-size: clamp(2.2rem, 6vw, 4.5rem); font-weight: 700; line-height: 0.95; letter-spacing: -0.04em; text-transform: uppercase; text-wrap: balance; }
+  .cta-btn {
+    display: inline-flex; align-items: center; min-height: 56px; padding: 0 32px; border-radius: 100px;
+    background: var(--accent); color: #0a0b0a; font-weight: 700; font-size: 1.0625rem; text-decoration: none;
+    transition: background-color 0.2s ease, scale 0.16s var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) { .cta-btn:hover { background: #6b92ff; } }
+  .cta-btn:active { scale: 0.97; }
+  .cta-btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; }
+  .cta-note { margin: 0; font-size: 0.9375rem; color: color-mix(in srgb, var(--ink) 72%, transparent); }
+
+  /* ---- the line art (StoryArt.astro) ---- */
+  .scene-art :global(.sa) { display: block; height: var(--art-h); width: auto; max-width: 100%; margin-inline: auto; overflow: visible; }
+  .stories :global(.sa path), .stories :global(.sa use) { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .stories :global(.sa .sa-d) { stroke-dasharray: 1 2; }
+  .stories :global(.sa .ac) { stroke: var(--cobalt); }
+  .stories :global(.sa .thick) { stroke-width: 7; }
+  .stories :global(.sa .solid) { fill: var(--ivory); }
+  .stories :global(.sa circle) { fill: var(--ink); }
+  .stories :global(.sa circle.ac) { fill: var(--cobalt); }
+  .stories :global(.sa text) { fill: var(--ink); font-size: 15px; font-weight: 500; }
+
+  /* idle motion: once a scene is drawn, and only while it is on screen */
+  .stories :global(.sa [class*='i-']) { transform-box: fill-box; transform-origin: 50% 100%; }
+  .stories :global(.sa.idle.inview .i-nod) { animation: sa-nod 3.4s ease-in-out infinite; }
+  .stories :global(.sa.idle.inview .i-bob) { animation: sa-bob 2.8s ease-in-out infinite; }
+  .stories :global(.sa.idle.inview .i-blink) { animation: sa-blink 2.4s ease-in-out infinite; }
+  .stories :global(.sa.idle.inview .i-shake) { animation: sa-shake 2.8s ease-in-out infinite; }
+  .stories :global(.sa.idle.inview .i-click) { animation: sa-click 2.4s ease-in-out infinite; transform-origin: 0 0; }
+  .stories :global(.sa.idle.inview .i-pulse) { animation: sa-pulse 2.8s ease-in-out infinite; transform-origin: 50% 50%; }
+  .stories :global(.sa.idle.inview .i-wave) { animation: sa-wave 2.4s ease-in-out infinite; transform-origin: 0 100%; }
+  .stories :global(.sa.idle.inview .i-grow) { animation: sa-grow 2.6s ease-in-out infinite; }
+  .stories :global(.sa.idle.inview .i-turn) { animation: sa-turn 5s ease-in-out infinite; transform-origin: 50% 50%; }
+  .stories :global(.sa.idle.inview .i-jitter) { animation: sa-jitter 1.6s ease-in-out infinite; transform-box: view-box; transform-origin: 200px 196px; }
+  .stories :global(.sa.idle.inview .i-sway) { animation: sa-sway 4s ease-in-out infinite; }
+  .stories :global(.sa.idle.inview .i-type) { animation: sa-type 1.2s ease-in-out infinite; }
+  .stories :global(.sa.idle.inview .i-fall) { animation: sa-fall 2.2s ease-in infinite; }
+  .stories :global(.sa.idle.inview .i-slide) { animation: sa-slide 3s ease-in-out infinite; }
+  .stories :global(.sa .late) { animation-delay: 0.4s !important; }
+  .stories :global(.sa .later) { animation-delay: 0.8s !important; }
+  .stories :global(.sa .d1) { animation-delay: 0.3s !important; }
+  .stories :global(.sa .d2) { animation-delay: 0.6s !important; }
+  .stories :global(.sa .d3) { animation-delay: 0.9s !important; }
+  @keyframes sa-nod { 50% { rotate: -3deg; } }
+  @keyframes sa-bob { 50% { translate: 0 -4px; } }
+  @keyframes sa-blink { 50% { opacity: 0.3; } }
+  @keyframes sa-shake { 0%, 36%, 100% { translate: 0 0; } 12% { translate: 0 3px; } 24% { translate: 0 -2px; } }
+  @keyframes sa-click { 0%, 30%, 100% { scale: 1; } 12% { scale: 0.86; } }
+  @keyframes sa-pulse { 50% { scale: 1.07; } }
+  @keyframes sa-wave { 50% { rotate: 6deg; } }
+  @keyframes sa-grow { 50% { scale: 1 1.06; } }
+  @keyframes sa-turn { 50% { scale: 0.55 1; } }
+  @keyframes sa-jitter { 0%, 100% { rotate: 0deg; } 30% { rotate: 2.5deg; } 60% { rotate: -1.5deg; } }
+  @keyframes sa-sway { 50% { translate: -8px 4px; } }
+  @keyframes sa-type { 0%, 100% { opacity: 0.25; } 40% { opacity: 1; } }
+  @keyframes sa-fall { 0% { translate: 0 -6px; opacity: 0; } 25% { opacity: 1; } 100% { translate: 0 22px; opacity: 0; } }
+  @keyframes sa-slide { 50% { translate: 8px 0; } }
+
+  /* a phone: each picture above its words, the page simply scrolls */
+  @media (max-width: 899px) {
+    .stories { --bar-h: 64px; }
+    .scene { display: block; min-height: 0; padding-block: 44px; }
+    .scene-art { position: static; }
+    .scene-art :global(.sa) { width: 100%; height: auto; max-width: 440px; }
+    .scene-text { padding-block: 20px 0; }
+    .tab, .bar-close { padding: 0 12px; font-size: 0.875rem; }
+    .bar-close span { display: none; }
+  }
+</style>

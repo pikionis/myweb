@@ -16,7 +16,15 @@
   --ink: #1f2020;
   --cobalt: #2d49ad;
   --ivory: #f8f4e6;
+  /* a service sheet's ground (background.fill in src/data/site.ts); every one keeps its words at 4.5:1 or more */
+  --sheet-paper: #e8e6df;
+  --sheet-ink: #141414;
+  --sheet-paper-glow: radial-gradient(120% 130% at 100% 0%, #dde3f4 0%, #e8e6df 62%);
+  --sheet-ink-glow: radial-gradient(120% 130% at 100% 0%, #1c2547 0%, #141414 62%);
+  /* the fixed menu bar's height, for things that stick under it */
+  --topbar-h: 68px;
 }
+@media (max-width: 820px) { :root { --topbar-h: 72px; } }
 .theme-light {
   --bg: var(--paper);
   --surface: #ffffff;

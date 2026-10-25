@@ -5,6 +5,7 @@ import { activityTerrain } from './terrain';
 import { splitNav } from './splitnav';
 import { briefForm } from './brief';
 import { workStack } from './workstack';
+import { serviceStories } from './stories';
 import { letterCascade } from './cascade';
 import { ditheredText } from './dither';
 import { logoIntro } from './intro';
@@ -130,7 +131,12 @@ export function init() {
   document.querySelectorAll<HTMLElement>('[data-terrain]').forEach(activityTerrain);
   document.querySelectorAll<HTMLElement>('[data-split]').forEach(splitNav);
   document.querySelectorAll<HTMLFormElement>('form[data-brief]').forEach(briefForm);
-  document.querySelectorAll<HTMLElement>('[data-stack]').forEach(workStack);
+  // the services on the home page: the stack of sheets, and the stories that open from them
+  const work = document.querySelector<HTMLElement>('[data-work]');
+  if (work) {
+    const stackEl = work.querySelector<HTMLElement>('[data-stack]');
+    serviceStories(work, stackEl ? workStack(stackEl) : null, intro.handoff);
+  }
   document.querySelectorAll<HTMLElement>('[data-dither]').forEach(ditheredText);
   // titles ripple letter by letter on hover; a project's name answers a hover anywhere on its card
   document.querySelectorAll<HTMLElement>('[data-cascade]').forEach((el) =>

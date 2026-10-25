@@ -15,7 +15,15 @@ const PINNED = '(min-width: 861px) and (min-height: 740px) and (prefers-reduced-
 /** Breathing room kept under a held sheet's words, in px. */
 const ROOM = 12;
 
-export function workStack(root: HTMLElement) {
+/** What the service stories need from the stack: where a sheet sits, and a re-measure once it is back. */
+export type StackApi = {
+  /** the scroll position at which sheet `i` is fully in view (held: arrived in the stack; flow: at the top) */
+  sheetTop(i: number): number;
+  /** measures again whether the stack can hold (after it was folded away for a story) */
+  recheck(): void;
+};
+
+export function workStack(root: HTMLElement): StackApi {
   watchVideos(root);
   gsap.registerPlugin(ScrollTrigger);
   const sheets = [...root.querySelectorAll<HTMLElement>('[data-sheet]')];
@@ -42,13 +50,18 @@ export function workStack(root: HTMLElement) {
     mm = gsap.matchMedia();
     mm.add(PINNED, () => (fits() ? hold() : undefined));
   };
+  const recheck = () => {
+    // folded away for a story: nothing to measure until it is back
+    if (!root.offsetParent) return;
+    if (window.matchMedia(PINNED).matches && fits() !== holding) { setup(); ScrollTrigger.refresh(); }
+  };
   let wait = 0;
   window.addEventListener('resize', () => {
     clearTimeout(wait);
-    wait = window.setTimeout(() => {
-      if (window.matchMedia(PINNED).matches && fits() !== holding) { setup(); ScrollTrigger.refresh(); }
-    }, 200);
+    wait = window.setTimeout(recheck, 200);
   });
+  // where each sheet has fully arrived, on the held timeline
+  let held: { tl: gsap.core.Timeline; done: number[] } | null = null;
 
   const hold = () => {
     holding = true;
@@ -69,12 +82,14 @@ export function workStack(root: HTMLElement) {
       scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.6, invalidateOnRefresh: true },
     });
     let at = 0;
+    const done: number[] = [];
     sheets.forEach((sheet, i) => {
       if (i > 0) {
         // the next service rises from below the screen into its place in the stack
         tl.fromTo(sheet, { y: () => window.innerHeight }, { y: 0, ease: 'none', duration: 1 }, at);
         at += 1;
       }
+      done.push(at);
       [...sheet.querySelectorAll<HTMLElement>('[data-pcard]')].forEach((card, j) => {
         if (j === 0) return;
         // inside the sheet, the next project rises from below the sheet over the one before
@@ -85,13 +100,25 @@ export function workStack(root: HTMLElement) {
     });
     // a short hold, so the last project is read before the stack lets go
     tl.to({}, { duration: 0.5 });
+    held = { tl, done };
     return () => {
       holding = false;
+      held = null;
       root.classList.remove('on');
       texts.forEach((show) => show?.(0));
     };
   };
   setup();
+
+  return {
+    sheetTop(i) {
+      const st = held?.tl.scrollTrigger;
+      if (held && st) return st.start + (st.end - st.start) * (held.done[i] / held.tl.duration());
+      const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 0;
+      return sheets[i].getBoundingClientRect().top + window.scrollY - header;
+    },
+    recheck,
+  };
 }
 
 /** A sheet's project texts: one shows at a time, the hovered or focused project's, else the one on top. */

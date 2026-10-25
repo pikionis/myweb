@@ -31,7 +31,7 @@ function gist(idea: string) {
 
 function previewQuestions(idea: string, need: string): Question[] {
   const it = gist(idea);
-  const site = need === 'Website' || need === 'Booking system' || need === 'E-commerce & feeds';
+  const site = need === 'Website' || need === 'Booking system' || need === 'E-commerce & feeds' || need === 'AI search & marketing';
   return [
     {
       angle: 'Competition',
@@ -66,6 +66,8 @@ const DIRECTIONS: Record<string, string> = {
     '1. Direct bookings on your own site, synced with Airbnb and Booking.com.\n2. One calendar and one inbox for every channel, so nothing is double-booked.\n3. Automated guest messages and payments around each stay.',
   'E-commerce & feeds':
     '1. Automated product feeds to the marketplaces you sell on.\n2. AI-assisted catalogue mapping, translation and category matching.\n3. Pricing rules that update on their own across every channel.',
+  'AI search & marketing':
+    '1. An audit of how AI assistants and search see your business today, and what to fix first.\n2. Structured data, an llms.txt and clean content, so assistants can read and trust your site.\n3. Google Ads and Shopping campaigns with conversion tracking, so each one shows what it brings in.',
 };
 
 function previewDraft(idea: string, need: string, answers: Answer[]): Record<BriefSection, string> {

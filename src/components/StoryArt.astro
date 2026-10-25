@@ -1,0 +1,285 @@
+---
+// One illustration of a service story, by name: single-line art in --ink on the ivory, with one --cobalt
+// accent per scene ("One Continuous Line"). Every stroke can draw itself on (`sa-d`, pathLength 1),
+// small dots fade in (`sa-f`), and `i-*` groups carry the idle motion once a scene is drawn
+// (src/scripts/stories.ts). Each picture is drawn as its scene ends (that is also how it rests with reduced
+// motion): `data-lift` and `data-turn-from` say where a part comes from. The shared people and props are
+// symbols in StoryDefs.astro, used with <use>.
+interface Props { name: string }
+const { name } = Astro.props;
+
+type N = number;
+const r1 = (v: N) => Math.round(v * 10) / 10;
+/** a circle as a path, so it can be drawn on like any line */
+const C = (cx: N, cy: N, r: N) => `M${r1(cx - r)} ${r1(cy)}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
+/** a rounded rectangle as a path */
+const R = (x: N, y: N, w: N, h: N, r: N) =>
+  `M${x + r} ${y}h${w - 2 * r}a${r} ${r} 0 0 1 ${r} ${r}v${h - 2 * r}a${r} ${r} 0 0 1 ${-r} ${r}h${-(w - 2 * r)}a${r} ${r} 0 0 1 ${-r} ${-r}v${-(h - 2 * r)}a${r} ${r} 0 0 1 ${r} ${-r}z`;
+const cls = (base: string, extra: string) => (extra ? `${base} ${extra}` : base);
+/** a stroke that draws itself */
+const P = (d: string, extra = '', attrs = '') => `<path class="${cls('sa-d', extra)}" pathLength="1" d="${d}"${attrs ? ` ${attrs}` : ''}/>`;
+/** a shared person or prop */
+const U = (id: string, t: string, extra = '') => `<use class="${cls('sa-d', extra)}" href="#sa-${id}" transform="${t}"/>`;
+/** a dot that fades in */
+const D = (cx: N, cy: N, r: N, extra = '') => `<circle class="${cls('sa-f', extra)}" cx="${cx}" cy="${cy}" r="${r}"/>`;
+/** a group with idle motion (the motion lives on its own group, so it never fights a placement transform) */
+const I = (motion: string, inner: string, style = '') => `<g class="${motion}"${style ? ` style="${style}"` : ''}>${inner}</g>`;
+const T = (t: string, inner: string) => `<g transform="${t}">${inner}</g>`;
+/** a point on a cubic Bézier, for things placed along a curve */
+const bez = (p: N[], t: N) => {
+  const u = 1 - t;
+  return [0, 1].map((k) => u * u * u * p[k] + 3 * u * u * t * p[2 + k] + 3 * u * t * t * p[4 + k] + t * t * t * p[6 + k]);
+};
+/** a point at an angle on a circle (degrees, counter-clockwise from 3 o'clock, as on paper) */
+const at = (cx: N, cy: N, r: N, deg: N) => [r1(cx + r * Math.cos((deg * Math.PI) / 180)), r1(cy - r * Math.sin((deg * Math.PI) / 180))];
+
+const ART: Record<string, () => string> = {
+  // ---- Custom web & design: how we work together ----
+  meet: () => [
+    I('i-nod', U('person', 'translate(108 250) scale(1.15)')),
+    I('i-nod late', U('person', 'translate(292 250) scale(1.15)')),
+    P('M136 214C170 214 188 178 200 158'),
+    P('M200 158C214 138 224 116 200 114C176 116 186 138 200 158', 'ac'),
+    P('M200 158C212 178 230 214 264 214'),
+  ].join(''),
+
+  brand: () => [
+    I('i-nod', U('person', 'translate(78 254) scale(1.1)')),
+    P('M106 206C140 206 160 184 184 178'),
+    D(184, 178, 3.5),
+    P('M184 178C212 170 218 128 246 124'),
+    P('M246 154V84H280L290 94H346V154Z'),
+    I('i-slide', P('M258 108H334M258 122H316')),
+    P('M184 178C210 186 214 212 228 212'),
+    P(R(228, 200, 24, 24, 5)),
+    P(R(262, 200, 24, 24, 5)),
+    P(R(296, 200, 24, 24, 5), 'ac'),
+    P(R(330, 200, 24, 24, 5)),
+  ].join(''),
+
+  directions: () => {
+    const frame = (deg: N, extra = '') => U('screen', `rotate(${deg} 200 330) translate(140 112) scale(0.86)`, cls('solid', extra));
+    return [frame(-21), frame(-7), frame(21), `<g data-lift="28" transform="translate(0 -28)">${frame(7, 'ac')}</g>`].join('');
+  },
+
+  agree: () => [
+    U('doc', 'translate(164 18) scale(0.9)'),
+    P('M178 104c6-8 10-8 12 0s8 6 14-4'),
+    P('M40 186H120L150 206M40 236H112L140 246'), P('M108 180V242'),
+    P('M360 186H280L250 206M360 236H288L260 246'), P('M292 180V242'),
+    I('i-shake', [
+      P('M150 206C170 218 200 218 220 208C232 202 244 204 246 212C248 222 236 224 226 226', 'ac'),
+      P('M250 206C238 214 236 232 248 240C256 246 270 242 274 236', 'ac'),
+      P('M140 246C162 258 196 262 226 252C236 248 244 242 248 240', 'ac'),
+      P('M260 246C250 250 236 252 228 246', 'ac'),
+      P('M226 226C230 232 234 236 236 242M214 228C216 236 218 242 220 250M202 226C202 234 204 242 206 252', 'ac'),
+    ].join('')),
+  ].join(''),
+
+  'build-site': () => [
+    P(R(46, 46, 308, 208, 10)),
+    P('M46 70H354'),
+    P(C(60, 58, 3) + C(72, 58, 3) + C(84, 58, 3)),
+    P('M70 100H112'), P('M82 118H140'), P('M82 136H124'), P('M94 154H136'), P('M82 172H118'), P('M70 190H104'),
+    P('M150 148C164 148 170 132 186 130'),
+    P('M178 124l9 6-8 7'),
+    P(R(196, 92, 140, 14, 3)),
+    P(R(196, 114, 140, 54, 6), 'ac'),
+    P(R(196, 178, 42, 52, 4)), P(R(245, 178, 42, 52, 4)), P(R(294, 178, 42, 52, 4)),
+    I('i-click', P('M286 142v24l6-6 5 11 5-2-5-11h8z')),
+  ].join(''),
+
+  payment: () => [
+    P('M92 150V110'), P('M92 112h24l-6 8 6 8H92'),
+    U('screen', 'translate(172 106) scale(0.4)'),
+    I('i-pulse', P(C(301, 128, 18)) + P('M292 128l6 7 12-14')),
+    P('M60 180H138', 'thick'),
+    P('M148 180H252', 'thick ac'),
+    P('M262 180H340', 'thick'),
+  ].join(''),
+
+  // ---- AI SaaS & web applications: from idea to MVP ----
+  idea: () => [
+    I('i-nod', U('person', 'translate(200 284) scale(1.25)')),
+    P('M200 58C177 58 164 77 168 95C171 108 182 114 184 126H216C218 114 229 108 232 95C236 77 223 58 200 58Z', 'ac'),
+    P('M192 126C192 114 194 106 200 100C206 94 212 100 208 106C204 112 196 108 198 102', 'ac'),
+    P('M186 134H214'), P('M189 142H211'), P('M195 150H205'),
+    I('i-blink', P('M200 38V24') + P('M162 52l-9-9') + P('M238 52l9-9') + P('M150 92H136') + P('M250 92H264')),
+  ].join(''),
+
+  pitch: () => [
+    I('i-nod', U('person', 'translate(76 262) scale(1.1)')),
+    I('i-nod late', U('person', 'translate(324 262) scale(1.1)')),
+    P('M112 198C150 120 236 98 286 136'),
+    T('translate(262 120) rotate(22)', I('i-bob', P('M0 0L42 -14L28 14Z', 'ac') + P('M28 14L18 4L42 -14', 'ac'))),
+  ].join(''),
+
+  estimate: () => [
+    I('i-nod', U('person', 'translate(84 226) scale(1.05)')),
+    I('i-nod late', U('person', 'translate(316 226) scale(1.05)')),
+    P('M30 226H370'), P('M64 226V286'), P('M336 226V286'),
+    P(R(126, 140, 72, 70, 6)), P('M144 132V148M180 132V148'), P('M126 160H198'),
+    P('M138 176h8M154 176h8M170 176h8M186 176h6M138 192h8M154 192h8M186 192h6'),
+    P(C(174, 192, 9), 'ac'),
+    U('doc', 'translate(214 132) scale(0.82)'),
+  ].join(''),
+
+  roadmap: () => [
+    P('M30 248C96 248 92 178 156 178C220 178 214 112 276 112C330 112 336 62 372 62'),
+    P(C(30, 248, 7)), P(C(156, 178, 7)), P(C(372, 62, 7)),
+    P(C(276, 112, 12), 'ac'),
+    I('i-wave', P('M276 98V58', 'ac') + P('M276 60H302L295 69L302 78H276', 'ac')),
+  ].join(''),
+
+  app: () => [
+    P(R(58, 58, 92, 178, 16)), P('M90 72H118'), P(R(72, 88, 64, 40, 6)), P('M72 142H136M72 156H118M72 170H128'), P(R(72, 196, 64, 22, 11)),
+    P(R(170, 74, 196, 148, 10)), P('M170 96H366'), P('M200 96V222'), P('M180 114h10M180 130h10M180 146h10'),
+    I('i-grow', P('M222 204V182', 'thick') + P('M240 204V166', 'thick') + P('M258 204V174', 'thick') + P('M276 204V150', 'thick')),
+    P('M296 194L314 172L330 180L348 150L356 138', 'ac'),
+  ].join(''),
+
+  launch: () => [
+    D(80, 70, 2.5), D(320, 56, 2.5), D(300, 150, 2), D(96, 170, 2),
+    I('i-bob', [
+      P('M200 50C228 74 236 122 224 166H176C164 122 172 74 200 50Z'),
+      P(C(200, 108, 11)),
+      P('M178 140L158 172L182 164'), P('M222 140L242 172L218 164'),
+      P('M188 166V178H212V166'),
+    ].join('')),
+    P('M200 182C190 202 210 210 200 228C192 244 206 252 200 272', 'ac'),
+  ].join(''),
+
+  // ---- E-commerce & marketplaces: zero to hero ----
+  shopfront: () => {
+    let scallops = 'M80 142';
+    for (let i = 0; i < 10; i++) scallops += 'q12 16 24 0';
+    return [
+      P('M56 262H344'),
+      P('M92 262V142M308 142V262'),
+      P('M80 142H320L304 108H96Z'),
+      P(scallops),
+      P(R(156, 74, 88, 26, 6)), P('M174 87H226'),
+      P(R(108, 172, 52, 44, 4)), P('M134 172V216M108 194H160'),
+      P(R(240, 172, 52, 44, 4)), P('M266 172V216M240 194H292'),
+      P(R(178, 188, 44, 74, 4), 'ac'), P(C(212, 228, 2.5), 'ac'),
+    ].join('');
+  },
+
+  store: () => [
+    P(R(36, 40, 328, 220, 12)), P('M36 66H364'), P(C(52, 53, 3) + C(64, 53, 3) + C(76, 53, 3)),
+    P('M60 90H120'),
+    P('M312 80h6l5 18h20l4-12h-27'), P(C(328, 104, 2.5) + C(342, 104, 2.5)),
+    U('card', 'translate(66 112)'), U('card', 'translate(168 112)'), U('card', 'translate(270 112)'),
+    P(R(66, 206, 64, 20, 10)), P(R(168, 206, 64, 20, 10), 'ac'), P(R(270, 206, 64, 20, 10)),
+    I('i-click', P('M214 214v24l6-6 5 11 5-2-5-11h8z')),
+  ].join(''),
+
+  catalogue: () => [
+    P(R(28, 70, 124, 160, 6)), P('M28 102H152M28 134H152M28 166H152M28 198H152'), P('M62 70V230M108 70V230'),
+    P('M152 118C196 118 208 94 244 94'),
+    P('M152 150C196 150 208 164 244 164', 'ac'),
+    P('M152 182C196 182 208 232 244 232'),
+    I('i-bob', U('card', 'translate(248 68) scale(0.62)')),
+    I('i-bob late', U('card', 'translate(248 138) scale(0.62)')),
+    I('i-bob later', U('card', 'translate(248 206) scale(0.62)')),
+  ].join(''),
+
+  marketplaces: () => [
+    P(R(40, 124, 56, 52, 4)), P('M34 124H102L94 108H42Z'), P('M60 176V154H76V176'),
+    P('M96 150H119'),
+    P(C(126, 150, 7), 'ac'),
+    P('M133 150C200 150 214 66 284 62'),
+    P('M133 150C200 150 222 126 296 126'),
+    P('M133 150C200 150 222 196 288 198'),
+    P('M133 150C192 150 220 252 274 258'),
+    I('i-pulse', P(C(302, 62, 18))),
+    I('i-pulse late', P(R(296, 108, 36, 36, 4))),
+    I('i-pulse later', P('M306 178L324 188V208L306 218L288 208V188Z')),
+    I('i-pulse', P('M284 240L304 276H264Z')),
+  ].join(''),
+
+  globe: () => [
+    P(C(200, 150, 82)),
+    I('i-turn', P('M200 68C158 100 158 200 200 232C242 200 242 100 200 68') + P('M200 68C180 100 180 200 200 232C220 200 220 100 200 68')),
+    P('M126 116C170 128 230 128 274 116'), P('M118 150H282'), P('M126 184C170 172 230 172 274 184'),
+    P('M256 104C280 90 296 80 312 76'), P('M152 98C134 84 116 76 96 72'), P('M146 196C126 214 106 226 88 232'), P('M244 200C262 220 280 234 298 240'),
+    P(C(250, 108, 6), 'ac'),
+    `<text class="sa-f" x="316" y="80">Γειά σας</text>`,
+    `<text class="sa-f" x="34" y="70">Hello</text>`,
+    `<text class="sa-f" x="30" y="252">Привет</text>`,
+    `<text class="sa-f" x="296" y="260">Hallo</text>`,
+  ].join(''),
+
+  scale: () => {
+    const curve = [24, 214, 80, 150, 140, 262, 200, 204];
+    const curve2 = [200, 204, 256, 150, 318, 226, 380, 160];
+    const spots: [N[], N][] = [[curve, 0.06], [curve, 0.42], [curve, 0.62], [curve, 0.78], [curve, 0.92], [curve2, 0.1], [curve2, 0.24], [curve2, 0.36], [curve2, 0.47], [curve2, 0.57], [curve2, 0.66], [curve2, 0.75], [curve2, 0.83], [curve2, 0.91]];
+    const boxes = spots.map(([c, t], i) => {
+      const [x, y] = bez(c, t);
+      const s = i === 0 ? 0.95 : 0.62;
+      return I(`i-bob d${i % 4}`, U('box', `translate(${r1(x - 16 * s)} ${r1(y - 40 * s)}) scale(${s})`, i === 0 ? 'ac solid' : 'solid'));
+    });
+    return [P('M24 214C80 150 140 262 200 204C256 150 318 226 380 160'), ...boxes].join('');
+  },
+
+  // ---- AI search, marketing & ads: be found in the AI era ----
+  shift: () => [
+    ...[86, 118, 150, 182].map((y) => P(R(36, y - 7, 14, 14, 3)) + P(`M60 ${y - 3}H140M60 ${y + 4}H110`)),
+    I('i-nod', U('person', 'translate(196 264) scale(1.1)')),
+    P('M150 130C188 92 230 86 262 104'), P('M254 96l10 8-11 6'),
+    P(R(266, 82, 104, 62, 16), 'ac'), P('M288 144L282 164L304 144', 'ac'),
+    I('i-type', D(298, 113, 4, 'ac')), I('i-type late', D(318, 113, 4, 'ac')), I('i-type later', D(338, 113, 4, 'ac')),
+  ].join(''),
+
+  'ai-ready': () => [
+    P(R(50, 46, 172, 214, 10)), P(R(68, 66, 96, 14, 4)), P('M68 96H200M68 110H180'),
+    P(R(68, 128, 136, 52, 6)), P('M80 144H104M112 144H176M80 160H96M104 160H160'),
+    P('M68 198h6M82 198H170M68 214h6M82 214H150M68 230h6M82 230H160'),
+    P(R(262, 70, 110, 64, 16), 'ac'), P('M284 134L278 152L298 134', 'ac'),
+    I('i-type', D(294, 102, 4, 'ac')), I('i-type late', D(316, 102, 4, 'ac')), I('i-type later', D(338, 102, 4, 'ac')),
+    P('M262 112C242 118 232 142 214 150'),
+    P(R(60, 120, 152, 68, 10)),
+  ].join(''),
+
+  speed: () => {
+    const [sx, sy] = at(200, 196, 120, 210);
+    const [ex, ey] = at(200, 196, 120, -30);
+    const [zx, zy] = at(200, 196, 120, 30);
+    let ticks = '';
+    for (let a = 210; a >= -30; a -= 30) {
+      const [x1, y1] = at(200, 196, 100, a);
+      const [x2, y2] = at(200, 196, 110, a);
+      ticks += `M${x1} ${y1}L${x2} ${y2}`;
+    }
+    return [
+      P(`M${sx} ${sy}A120 120 0 1 1 ${ex} ${ey}`),
+      P(ticks),
+      P(`M${zx} ${zy}A120 120 0 0 1 ${ex} ${ey}`, 'thick ac'),
+      I('i-jitter', P(`M200 196L${at(200, 196, 92, 14).join(' ')}`, 'ac', 'data-turn-from="-196" data-origin="200 196"')),
+      P(C(200, 196, 9)),
+    ].join('');
+  },
+
+  seo: () => [
+    P(R(70, 46, 170, 214, 10)), P('M90 76H200M90 92H170'),
+    ...[124, 164, 204].map((y) => P(`M90 ${y}H150`) + P(`M90 ${y + 12}H214`)),
+    I('i-sway', [
+      P(C(262, 150, 52), 'solid'),
+      P('M299 187L338 226', 'thick'),
+      P('M232 150H292', 'ac'),
+    ].join('')),
+  ].join(''),
+
+  ads: () => [
+    P('M92 62H308L232 154V226H168V154Z'),
+    P('M92 62C92 76 308 76 308 62'),
+    I('i-fall', D(150, 34, 5)), I('i-fall late', D(200, 22, 5)), I('i-fall later', D(248, 36, 5)),
+    D(186, 104, 4), D(214, 120, 4), D(200, 196, 4),
+    P(C(200, 264, 18), 'ac'), P('M191 264l6 7 12-13', 'ac'),
+  ].join(''),
+};
+
+const inner = ART[name]?.() ?? '';
+if (!inner) throw new Error(`StoryArt: no illustration called "${name}"`);
+---
+<svg class="sa" viewBox="0 0 400 300" aria-hidden="true" focusable="false" set:html={inner} />

@@ -81,6 +81,8 @@ const ld = {
     <script is:inline>
       (function () {
         var html = document.documentElement, mode = 'quick';
+        // script is running: things that only open with script (the service stories) can start closed
+        html.classList.add('js');
         try {
           if (!sessionStorage.getItem('ohl-intro')) {
             mode = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'still' : 'full';
