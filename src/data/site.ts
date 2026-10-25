@@ -1,4 +1,4 @@
-// All site content lives here. Edit this file to change text, projects or brands.
+// All site content lives here. Edit this file to change text; projects live in src/content/projects.
 
 export const person = {
   name: 'Petros Pikionis',
@@ -192,22 +192,7 @@ export const ui = {
   },
 };
 
-// url: '' hides the "Visit site" button. video: vertical mp4 path (e.g. '/videos/arogi.mp4') or ''.
-export type Brand = { name: string; cat: string; desc: string; url: string; video: string };
-
-export const brands: Brand[] = [
-  { name: 'Arogi Kos', cat: 'Web design', desc: 'Brand-led website designed with Claude Design and built with AI-assisted development.', url: 'https://arogikos.gr', video: '' },
-  { name: 'Archon Yachting', cat: 'Booking engine', desc: 'Yacht charter platform with a booking system and online payments.', url: '', video: '' },
-  { name: 'La Islakos', cat: 'Web · Store', desc: 'Brand site with a small online store.', url: 'https://la-islakos.gr', video: '' },
-  { name: 'Kalimera', cat: 'Product', desc: 'Travel app, concept to launch — 80+ business profiles, Flutter.', url: '', video: '' },
-  { name: 'Feedgenix', cat: 'AI SaaS', desc: 'AI translation and feed engine: 6 stages, 220K SKUs, multi-provider routing.', url: 'https://feedgenix.com', video: '' },
-  { name: 'DeinDeal', cat: 'AI · Data', desc: 'Internal AI product for partner data — 800K+ products daily.', url: 'https://deindeal.ch', video: '' },
-  { name: 'Galaxus', cat: 'Integration', desc: 'Marketplace integration with AI category matching.', url: '', video: '' },
-  { name: 'Skroutz', cat: 'Marketplace', desc: 'Automated product feed integration.', url: '', video: '' },
-  { name: 'Amazon', cat: 'Marketplace', desc: 'Product feeds via automated XML.', url: '', video: '' },
-  { name: 'Google', cat: 'Merchant', desc: 'Google Merchant feed integration.', url: '', video: '' },
-];
-
+// The numbers on /about
 export const stats = [
   { value: 800, suffix: 'K+', label: 'Products processed daily with AI' },
   { value: 6, suffix: '', label: 'Agile team members led' },

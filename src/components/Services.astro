@@ -96,7 +96,8 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
 </section>
 
 <style>
-  .work { padding-bottom: 0; }
+  /* the light page shows between the last sheet and the dark footer, so the two never run together */
+  .work { padding-bottom: clamp(64px, 10vh, 120px); }
   .sec-head { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 48px; align-items: end; margin-bottom: clamp(24px, 4vh, 48px); }
   .sec-head h2 { font-size: clamp(2.4rem, 8vw, 6rem); }
   .sec-head p { margin: 0; max-width: 44ch; font-size: clamp(1.15rem, 1.6vw, 1.4rem); line-height: 1.45; justify-self: end; }

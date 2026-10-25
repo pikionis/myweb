@@ -9,8 +9,6 @@ import { letterCascade } from './cascade';
 import { ditheredText } from './dither';
 import { logoIntro } from './intro';
 
-type Brand = { name: string; cat: string; desc: string; url: string; video: string };
-
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const dpr = () => Math.min(window.devicePixelRatio || 1, 2);
 const cssVar = (el: Element, name: string, fallback: string) =>
@@ -72,123 +70,6 @@ function lightZone() {
   window.addEventListener('scroll', check, { passive: true });
 }
 
-/* ---------- brand bubbles + project panel ---------- */
-function brandBubbles() {
-  const cv = document.getElementById('brandCanvas') as HTMLCanvasElement | null;
-  const dataEl = document.getElementById('brand-data');
-  if (!cv || !dataEl) return;
-  const BRANDS: Brand[] = JSON.parse(dataEl.textContent || '[]');
-  const ctx = cv.getContext('2d')!;
-  const field = document.getElementById('brandField')!;
-  const modal = document.getElementById('bmodal')!;
-  const panel = modal.querySelector('.panel') as HTMLElement;
-  const screen = document.getElementById('phoneScreen')!;
-  const closeBtn = document.getElementById('bmClose') as HTMLButtonElement;
-  let lastFocus: HTMLElement | null = null;
-
-  let W = 0, H = 0, raf = 0, t = 0;
-  type Item = { b: Brand; r: number; x: number; y: number; vx: number; vy: number; ph: number };
-  let items: Item[] = [];
-  const size = () => { const d = dpr(); W = cv.width = cv.offsetWidth * d; H = cv.height = cv.offsetHeight * d; };
-  const font = (px: number) => `500 ${px * dpr()}px 'Space Grotesk', sans-serif`;
-  const build = () => {
-    const d = dpr(); const small = cv.offsetWidth < 600;
-    ctx.font = font(small ? 13 : 16);
-    items = BRANDS.map((b) => {
-      const r = Math.max((small ? 34 : 44) * d, ctx.measureText(b.name).width / 2 + (small ? 14 : 22) * d);
-      return { b, r, x: r + Math.random() * Math.max(1, W - 2 * r), y: r + Math.random() * Math.max(1, H - 2 * r),
-        vx: (Math.random() - 0.5) * 0.5 * d, vy: (Math.random() - 0.5) * 0.5 * d, ph: Math.random() * Math.PI * 2 };
-    });
-  };
-
-  const step = () => {
-    t += 0.012;
-    const d = dpr(); const small = cv.offsetWidth < 600;
-    ctx.clearRect(0, 0, W, H);
-    const accent = cssVar(cv, '--accent', '#4d7cff');
-    const fg = getComputedStyle(cv).color;
-    for (const p of items) {
-      if (!reduce) { p.x += p.vx; p.y += p.vy + Math.sin(t + p.ph) * 0.25 * d; }
-      if (p.x < p.r) { p.x = p.r; p.vx *= -1; } if (p.x > W - p.r) { p.x = W - p.r; p.vx *= -1; }
-      if (p.y < p.r) { p.y = p.r; p.vy *= -1; } if (p.y > H - p.r) { p.y = H - p.r; p.vy *= -1; }
-    }
-    for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) {
-      const a = items[i], b = items[j]; const dx = b.x - a.x, dy = b.y - a.y; const dist = Math.hypot(dx, dy), min = a.r + b.r;
-      if (dist > 0 && dist < min) {
-        const o = (min - dist) / 2, nx = dx / dist, ny = dy / dist;
-        a.x -= nx * o; a.y -= ny * o; b.x += nx * o; b.y += ny * o;
-        a.vx -= nx * 0.02; b.vx += nx * 0.02; a.vy -= ny * 0.02; b.vy += ny * 0.02;
-      }
-    }
-    items.forEach((p, i) => {
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      if (i % 4 === 0) { ctx.fillStyle = accent; ctx.globalAlpha = 0.14; ctx.fill(); }
-      ctx.globalAlpha = 1; ctx.lineWidth = 1.2 * d; ctx.strokeStyle = accent; ctx.stroke();
-      ctx.fillStyle = fg; ctx.font = font(small ? 13 : 15);
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(p.b.name, p.x, p.y);
-    });
-    if (!reduce) raf = requestAnimationFrame(step);
-  };
-
-  const open = (b: Brand, ox = 50, oy = 50) => {
-    lastFocus = document.activeElement as HTMLElement;
-    (document.getElementById('bmCat') as HTMLElement).textContent = b.cat || 'Project';
-    (document.getElementById('bmName') as HTMLElement).textContent = b.name;
-    (document.getElementById('bmDesc') as HTMLElement).textContent = b.desc || '';
-    const visit = document.getElementById('bmVisit') as HTMLAnchorElement;
-    visit.hidden = !b.url; if (b.url) visit.href = b.url;
-    screen.replaceChildren();
-    if (b.video) {
-      const v = Object.assign(document.createElement('video'), { src: b.video, autoplay: true, muted: true, loop: true, playsInline: true });
-      screen.append(v);
-    } else {
-      const f = document.createElement('div'); f.className = 'fallback';
-      const n = document.createElement('b'); n.textContent = b.name;
-      const s = document.createElement('small'); s.textContent = 'Vertical video goes here';
-      f.append(n, s); screen.append(f);
-    }
-    panel.style.setProperty('--ox', `${ox}%`); panel.style.setProperty('--oy', `${oy}%`);
-    field.classList.add('focused'); modal.hidden = false; closeBtn.focus({ preventScroll: true });
-  };
-  const close = () => {
-    if (modal.hidden) return;
-    modal.hidden = true; field.classList.remove('focused');
-    screen.querySelector('video')?.pause();
-    lastFocus?.focus({ preventScroll: true });
-  };
-
-  cv.addEventListener('click', (e) => {
-    const rect = cv.getBoundingClientRect(); const d = dpr();
-    const cx = (e.clientX - rect.left) * d, cy = (e.clientY - rect.top) * d;
-    for (let i = items.length - 1; i >= 0; i--) {
-      const p = items[i];
-      if (Math.hypot(cx - p.x, cy - p.y) <= p.r) { open(p.b, (p.x / d / cv.offsetWidth) * 100, (p.y / d / cv.offsetHeight) * 100); break; }
-    }
-  });
-  cv.addEventListener('mousemove', (e) => {
-    const rect = cv.getBoundingClientRect(); const d = dpr();
-    const cx = (e.clientX - rect.left) * d, cy = (e.clientY - rect.top) * d;
-    cv.style.cursor = items.some((p) => Math.hypot(cx - p.x, cy - p.y) <= p.r) ? 'pointer' : 'default';
-  });
-  field.querySelectorAll<HTMLButtonElement>('[data-brand]').forEach((btn) =>
-    btn.addEventListener('click', () => open(BRANDS[Number(btn.dataset.brand)])));
-  closeBtn.addEventListener('click', close);
-  modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
-
-  const start = () => {
-    size(); build(); step();
-    new IntersectionObserver(([e]) => {
-      if (reduce) return;
-      if (e.isIntersecting) { if (!raf) step(); } else { cancelAnimationFrame(raf); raf = 0; }
-    }).observe(cv);
-    let rt = 0;
-    window.addEventListener('resize', () => { clearTimeout(rt); rt = window.setTimeout(() => { size(); build(); if (reduce) step(); }, 150); });
-  };
-  // measure names with the real font
-  document.fonts?.ready ? document.fonts.ready.then(start) : start();
-}
-
 /* ---------- copy e-mail ---------- */
 function copyEmail() {
   const btn = document.getElementById('emailBtn'); const hint = document.getElementById('copyHint');
@@ -245,7 +126,6 @@ export function init() {
   const intro = logoIntro();
   heroBubbles();
   lightZone();
-  brandBubbles();
   copyEmail();
   document.querySelectorAll<HTMLElement>('[data-terrain]').forEach(activityTerrain);
   document.querySelectorAll<HTMLElement>('[data-split]').forEach(splitNav);
@@ -330,7 +210,7 @@ function entrances() {
       scrollTrigger: { trigger, start, once: true },
       y: 24, autoAlpha: 0, duration: 0.8, ease: 'power3.out', stagger: 0.07,
     });
-  document.querySelectorAll('.sec-head, .customers .head, .figure, .close .top, [data-rise]').forEach((el) =>
+  document.querySelectorAll('.sec-head, .close .top, [data-rise]').forEach((el) =>
     rise([...el.querySelectorAll(':scope > *, :scope > .invite > *')].filter((c) => !c.matches('.invite')), el));
 
   // the closing surname rises out of the bottom edge
