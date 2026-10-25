@@ -5,7 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
  * "What I build" on the home page: the service sheets stack over a held screen, and inside each
  * sheet its projects stack the same way — a stack within a stack. Each scroll step brings in one
  * thing: the next project of the current service, or, when a service is done, the next service.
- * A sheet that sets its projects' own texts beside them (Custom web & design) shows the text of the
+ * A sheet that sets its projects' own texts beside them shows the text of the
  * project on top, or of the one under the pointer. Project videos play only while their card is on screen.
  */
 

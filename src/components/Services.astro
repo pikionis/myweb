@@ -20,8 +20,8 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
   <div class="stack" data-stack style={`--steps: ${steps}`}>
     <div class="pin">
       {services.map((s, i) => {
-        // Custom web & design sets each project's own text beside the projects; the others keep it on the card
-        const beside = s.key === 'web' && s.projects.some((p) => p.data.blurb);
+        // each project's own text sits beside the projects, following the card on top (or under the pointer)
+        const beside = s.projects.some((p) => p.data.blurb);
         return (
           <article class:list={['svc', i % 2 ? 'dark' : 'light']} data-sheet style={`--i: ${i}`}>
             <div class="wrap svc-in">
@@ -104,7 +104,8 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
 
   /* ---- flow: no script, reduced motion or a small screen — the sheets and their projects follow one another ---- */
   .stack { --top: 84px; --band: 72px; --pband: 64px; margin-top: clamp(40px, 6vh, 80px); }
-  .svc { position: relative; border-radius: clamp(20px, 3vw, 36px) clamp(20px, 3vw, 36px) 0 0; }
+  /* each sheet and each card is its own layer, so a card's link (raised inside it) never reaches over a later one */
+  .svc { position: relative; isolation: isolate; border-radius: clamp(20px, 3vw, 36px) clamp(20px, 3vw, 36px) 0 0; }
   .svc.light { background: #e8e6df; color: #141414; --card: #ffffff; --meta: #3f3f3b; --tag: #2a55d9; }
   .svc.dark { background: #141414; color: #f4f3ef; --card: #1f201d; --meta: #b9b8b0; --tag: #7a9bff; }
   .svc-in {
@@ -127,7 +128,7 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
 
   .pstack { grid-column: 7 / -1; grid-row: 2; display: grid; gap: 16px; margin-top: 20px; }
   .pcard {
-    position: relative; display: flex; flex-direction: column; min-height: 0; overflow: hidden; border-radius: 18px;
+    position: relative; isolation: isolate; display: flex; flex-direction: column; min-height: 0; overflow: hidden; border-radius: 18px;
     background: var(--card); color: inherit;
   }
   .pband { flex: none; display: flex; align-items: center; gap: 12px; height: var(--pband); padding: 0 18px; }
