@@ -188,8 +188,14 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
   .stack.on .blurb.on { opacity: 1; }
   /* a card that has slid over another leaves the one below showing only its name band */
   .stack.on .pcard + .pcard { box-shadow: 0 -10px 24px -18px rgb(0 0 0 / 0.35); }
-  /* a shorter screen: slimmer bands, so the last sheet keeps room for its words */
-  @media (max-height: 860px) { .stack { --band: 60px; --pband: 58px; } }
+  /* a shorter screen: slimmer bands and tighter words, so the last sheet keeps room for them */
+  @media (max-height: 880px) {
+    .stack { --band: 60px; --pband: 58px; }
+    .stack.on .body { margin-top: 10px; font-size: 0.9375rem; line-height: 1.5; }
+    .stack.on .chips { margin-top: 14px; gap: 6px; }
+    .stack.on .chips li { padding: 4px 10px; font-size: 0.8125rem; }
+    .stack.on .blurbs { margin-top: 16px; padding-top: 12px; }
+  }
 
   @media (max-width: 860px) {
     .sec-head { grid-template-columns: 1fr; }

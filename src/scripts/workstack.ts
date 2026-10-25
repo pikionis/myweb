@@ -9,9 +9,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
  * project on top, or of the one under the pointer. Project videos play only while their card is on screen.
  */
 
-// the stack holds only where a sheet's words fit beside its projects; elsewhere (a phone, a short screen,
-// reduced motion, no script) the sheets and their projects simply follow one another
+// the stack can hold on a screen at least this big; elsewhere (a phone, a short screen, reduced motion, no
+// script) the sheets and their projects simply follow one another
 const PINNED = '(min-width: 861px) and (min-height: 740px) and (prefers-reduced-motion: no-preference)';
+/** Breathing room kept under a held sheet's words, in px. */
+const ROOM = 12;
 
 export function workStack(root: HTMLElement) {
   watchVideos(root);
@@ -19,7 +21,37 @@ export function workStack(root: HTMLElement) {
   const sheets = [...root.querySelectorAll<HTMLElement>('[data-sheet]')];
   const texts = sheets.map(projectTexts);
 
-  gsap.matchMedia().add(PINNED, () => {
+  /** Whether every sheet's words fit beside its projects while held (measured in the held layout). */
+  const fits = () => {
+    const held = root.classList.contains('on');
+    root.classList.add('on');
+    const ok = sheets.every((sheet) => {
+      const copy = sheet.querySelector<HTMLElement>('.copy');
+      return !copy || copy.offsetTop + copy.offsetHeight <= sheet.clientHeight - ROOM;
+    });
+    if (!held) root.classList.remove('on');
+    return ok;
+  };
+
+  // the stack holds only where the words fit, so longer copy falls back to the flow instead of being cut;
+  // a resize can change that either way
+  let mm: gsap.MatchMedia | null = null;
+  let holding = false;
+  const setup = () => {
+    mm?.revert();
+    mm = gsap.matchMedia();
+    mm.add(PINNED, () => (fits() ? hold() : undefined));
+  };
+  let wait = 0;
+  window.addEventListener('resize', () => {
+    clearTimeout(wait);
+    wait = window.setTimeout(() => {
+      if (window.matchMedia(PINNED).matches && fits() !== holding) { setup(); ScrollTrigger.refresh(); }
+    }, 200);
+  });
+
+  const hold = () => {
+    holding = true;
     root.classList.add('on');
     // when each card has slid halfway in, by sheet
     const arrivals: { sheet: number; card: number; at: number }[] = [];
@@ -54,10 +86,12 @@ export function workStack(root: HTMLElement) {
     // a short hold, so the last project is read before the stack lets go
     tl.to({}, { duration: 0.5 });
     return () => {
+      holding = false;
       root.classList.remove('on');
       texts.forEach((show) => show?.(0));
     };
-  });
+  };
+  setup();
 }
 
 /** A sheet's project texts: one shows at a time, the hovered or focused project's, else the one on top. */

@@ -19,7 +19,7 @@ export const person = {
 // What every page's head says by default (Base.astro); the structured data and /llms.txt build on it too
 export const meta = {
   description:
-    'Custom websites, web applications, e-commerce and AI search visibility — designed, built and shipped end to end by Petros Pikionis.',
+    'Custom websites, web applications, e-commerce, AI search, marketing and ads — designed, built and run end to end by Petros Pikionis.',
   /** the picture a shared link shows: 1200 × 630, in public/ */
   image: '/og.png',
   imageAlt: 'The onehub logo: three loops that meet in one point. Design. Build. Automate.',
@@ -75,7 +75,7 @@ export const hero = {
   ],
 };
 
-export const marquee = ['Web design', 'AI SaaS', 'Web applications', 'E-commerce', 'Marketplaces', 'AI search'];
+export const marquee = ['Web design', 'AI SaaS', 'Web applications', 'E-commerce', 'Marketplaces', 'AI search', 'Marketing & ads'];
 
 // The four services. Projects live in src/content/projects/*.md and list the service keys they show under.
 export type ServiceKey = 'web' | 'apps' | 'commerce' | 'search';
@@ -133,16 +133,19 @@ export const services: Service[] = [
   },
   {
     key: 'search',
-    title: 'AI search & visibility',
+    title: 'AI search, marketing & ads',
     lead: 'Be the answer, not just a result.',
     body: [
       'Search is moving from ten blue links to one answer. More and more people ask ChatGPT, Claude, Gemini or Perplexity what to buy, where to stay and who to hire — and get back a short list of recommendations. The sites those answers draw from are the ones built for it: clean semantic content, structured data, fast pages, consistent business information across the web. Every site I build is ready for the AI era from day one, and I can audit yours so your business shows up when someone asks.',
+      // draft: marketing & ads, from the services Petros picked (no social media ads)
+      'Search is only half of it. I also run the marketing that brings people in: SEO and content that answer what your customers actually ask, Google Ads and Shopping campaigns fed straight from your product catalogue, and analytics and conversion tracking set up properly, so you can see what every campaign brings in.',
     ],
     chips: [
       'Structured data (Schema.org)', 'llms.txt', 'Semantic content & FAQs', 'Performance & Core Web Vitals',
       'Entity consistency (Google Business, directories)', 'AI visibility audits',
+      'SEO & content', 'Google Ads & Shopping', 'Analytics & tracking',
     ],
-    summary: 'Every site I build is ready for the AI era from day one, and I can audit yours so your business shows up when someone asks.',
+    summary: 'Every site I build is ready for the AI era from day one. Around it, I run the SEO, Google Ads and tracking that bring people in.',
     proof: {
       label: 'This site',
       name: 'onehublabs.com',
@@ -175,7 +178,7 @@ export const ui = {
   },
   visitSite: 'Visit site',
   /** under the name in the footer, after the role */
-  footerLine: 'Custom websites, web applications, e-commerce and AI search visibility, designed, built and shipped end to end.',
+  footerLine: 'Custom websites, web applications, e-commerce, AI search, marketing and ads, designed, built and run end to end.',
   /** the heading for projects that sit outside the four services, on /projects */
   moreWork: 'More work',
   servicesPage: {
