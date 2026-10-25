@@ -7,12 +7,15 @@ import StoryDefs from './StoryDefs.astro';
 const byKey = Object.fromEntries(services.map((s) => [s.key, s]));
 const pad = (n: number) => String(n).padStart(2, '0');
 const t = ui.stories;
+const icon = (d: string) =>
+  `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
 ---
 <!-- The service stories (src/scripts/stories.ts). A sheet's "Read more" opens its story as a "thought": a
-     rounded box that grows out of the button over the home page, titled with the service; the story plays
-     out as it scrolls inside the box, and closing it shrinks it back into the button, the page never having
-     moved. The stories are in the page from the start, so search engines read them; without script they
-     simply follow the services. -->
+     rounded box that grows out of the button over the home page, titled with the service. Inside, the story
+     plays by itself, scene by scene: each picture draws itself while its words light up, holds long enough to
+     read, then gives way to the next. When the last one is done the pictures shrink and settle side by side,
+     the whole story at once, with the call to start a project. The stories are in the page from the start, so
+     search engines read them; without script they simply follow the services. -->
 <StoryDefs />
 <div class="bubble" data-bubble>
   <div class="bubble-backdrop" data-bubble-backdrop></div>
@@ -21,31 +24,53 @@ const t = ui.stories;
   <span class="bubble-dot" data-bubble-dot></span>
 
   {stories.map((st) => (
-    <article class="story" id={st.id} data-story={st.service} role="dialog" aria-modal="true" aria-labelledby={`${st.id}-title`}>
+    <!-- focusable: arriving on its address, the browser focuses the story itself, not the page behind it -->
+    <article class="story" id={st.id} data-story={st.service} role="dialog" aria-modal="true" aria-labelledby={`${st.id}-title`} tabindex="-1">
       <header class="story-top">
         <div class="story-names">
           <h2 id={`${st.id}-title`}>{byKey[st.service].title}</h2>
           <p class="story-kicker">{st.title}</p>
         </div>
         <button type="button" class="story-close" data-story-close aria-label={t.close}>
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          <Fragment set:html={icon('M6 6l12 12M18 6L6 18')} />
         </button>
       </header>
-      <div class="story-scroll" data-story-scroll tabindex="-1">
-        {st.scenes.map((sc, i) => (
-          <section class="scene" data-scene>
-            <div class="scene-art"><StoryArt name={sc.art} /></div>
-            <div class="scene-text">
-              <p class="scene-num" aria-hidden="true">{pad(i + 1)}</p>
-              <h3>{sc.title}</h3>
-              <p class="scene-words" data-words>{sc.text}</p>
-            </div>
-          </section>
-        ))}
+      <div class="story-body" data-story-body tabindex="-1">
+        <!-- one bar per scene: it fills while its scene plays, and takes you to that scene -->
+        <div class="story-bars" role="group" aria-label={t.scenes}>
+          {st.scenes.map((sc, i) => (
+            <button type="button" class="bar" data-bar={i} aria-label={`${t.scene} ${i + 1} ${t.of} ${st.scenes.length}: ${sc.title}`}>
+              <span class="bar-fill"></span>
+            </button>
+          ))}
+        </div>
+        <ol class="story-stage" data-stage>
+          {st.scenes.map((sc, i) => (
+            <li class="scene" data-scene>
+              <div class="scene-art"><StoryArt name={sc.art} /></div>
+              <div class="scene-text">
+                <p class="scene-num" aria-hidden="true">{pad(i + 1)}</p>
+                <h3>{sc.title}</h3>
+                <p class="scene-words" data-words>{sc.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <div class="story-controls">
+          <button type="button" class="ctl" data-prev aria-label={t.previous}><Fragment set:html={icon('M15 18l-6-6 6-6')} /></button>
+          <button type="button" class="ctl" data-toggle aria-label={t.pause} data-pause-label={t.pause} data-play-label={t.play}>
+            <span class="ic-pause"><Fragment set:html={icon('M9 6v12M15 6v12')} /></span>
+            <span class="ic-play"><Fragment set:html={icon('M8 5.5v13l10.5-6.5z')} /></span>
+          </button>
+          <button type="button" class="ctl" data-next aria-label={t.next}><Fragment set:html={icon('M9 6l6 6-6 6')} /></button>
+        </div>
         <footer class="story-cta">
           <p class="cta-line">{st.cta.text}</p>
           <a class="cta-btn" href={`/contact?type=project&service=${st.service}`}>{t.start}</a>
           {st.cta.note && <p class="cta-note">{st.cta.note}</p>}
+          <button type="button" class="again" data-again>
+            <Fragment set:html={icon('M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5')} />{t.again}
+          </button>
         </footer>
       </div>
     </article>
@@ -69,47 +94,64 @@ const t = ui.stories;
   }
 
   .story {
-    --r: clamp(24px, 3vw, 40px); --art-h: min(56cqh, 440px);
+    --r: clamp(24px, 3vw, 40px); --pad: clamp(20px, 3vw, 40px);
     position: relative; display: flex; flex-direction: column;
     width: min(1180px, 100%); height: 100%; overflow: hidden;
     border-radius: var(--r); background: var(--ivory); color: var(--ink); --accent-ink: #2a55d9;
-    box-shadow: 0 40px 90px -30px rgb(0 0 0 / 0.55);
+    box-shadow: 0 40px 90px -30px rgb(0 0 0 / 0.55); outline: none;
   }
   .story-top {
     flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
-    padding: clamp(20px, 3vw, 36px) clamp(20px, 3vw, 40px) clamp(14px, 2vw, 22px);
+    padding: clamp(20px, 3vw, 36px) var(--pad) clamp(12px, 1.6vw, 18px);
     border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
   }
   .story-top h2 { font-size: clamp(1.8rem, 4.2vw, 3.6rem); outline: none; }
   .story-kicker { margin: 10px 0 0; font-size: clamp(1rem, 1.4vw, 1.25rem); font-weight: 500; color: var(--accent-ink); }
-  .story-close {
-    flex: none; display: grid; place-items: center; width: 48px; height: 48px; border: 0; border-radius: 50%; cursor: pointer;
-    background: var(--ink); color: var(--ivory); transition: background-color 0.2s ease, scale 0.16s var(--ease-out);
+  .story-close, .ctl {
+    flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, scale 0.16s var(--ease-out);
   }
-  @media (hover: hover) and (pointer: fine) { .story-close:hover { background: var(--cobalt); } }
-  .story-close:active { scale: 0.94; }
-  .story-close:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; }
+  .story-close { width: 48px; height: 48px; border: 0; background: var(--ink); color: var(--ivory); }
+  .ctl { border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent); background: transparent; color: var(--ink); }
+  @media (hover: hover) and (pointer: fine) {
+    .story-close:hover { background: var(--cobalt); }
+    .ctl:hover { background: var(--ink); color: var(--ivory); }
+  }
+  .story-close:active, .ctl:active { scale: 0.94; }
+  .story-close:focus-visible, .ctl:focus-visible, .bar:focus-visible, .again:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; }
 
-  /* the story scrolls inside the box; its scenes measure themselves against the box, not the window */
-  .story-scroll { position: relative; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; container-type: size; outline: none; }
+  /* the body: the bars, the stage with one scene at a time, the buttons */
+  .story-body { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; outline: none; }
+  .story-bars { flex: none; display: flex; gap: 6px; padding: 10px var(--pad) 0; }
+  .bar { position: relative; flex: 1; height: 20px; padding: 0; border: 0; background: none; cursor: pointer; }
+  .bar::before, .bar-fill { position: absolute; left: 0; right: 0; top: 50%; height: 3px; margin-top: -1.5px; border-radius: 3px; }
+  .bar::before { content: ''; background: color-mix(in srgb, var(--ink) 14%, transparent); }
+  .bar-fill { background: var(--ink); transform: scaleX(0); transform-origin: left; }
+  .bar.done .bar-fill { transform: scaleX(1); }
 
-  /* a scene: its picture holds still while its words scroll past, sides alternating */
+  .story-stage { position: relative; flex: 1; min-height: 0; margin: 0; padding: 0; list-style: none; }
+  /* a tap on the playing scene moves the story on */
+  :global(html.js) .story:not(.all) .story-stage { cursor: pointer; }
   .scene {
-    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px;
-    min-height: 110cqh; padding-inline: clamp(20px, 3vw, 40px);
+    position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: center;
+    gap: clamp(24px, 4vw, 64px); padding: clamp(8px, 2vh, 24px) var(--pad); visibility: hidden; opacity: 0;
   }
-  .scene-art { grid-column: 1 / 7; grid-row: 1; align-self: start; position: sticky; top: calc((100cqh - var(--art-h)) / 2); }
-  .scene-text { grid-column: 8 / -1; grid-row: 1; align-self: center; padding-block: 24cqh; }
-  .scene:nth-of-type(even) .scene-art { grid-column: 7 / -1; }
-  .scene:nth-of-type(even) .scene-text { grid-column: 1 / 6; }
+  .scene.current { visibility: visible; opacity: 1; }
+  .scene-art { height: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; }
   .scene-num { margin: 0 0 12px; font-size: 0.9375rem; font-weight: 500; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
   .scene-text h3 { margin: 0; font-size: clamp(1.6rem, 2.8vw, 2.5rem); font-weight: 700; line-height: 0.95; letter-spacing: -0.03em; text-transform: uppercase; text-wrap: balance; }
-  .scene-words { margin: 18px 0 0; max-width: 32ch; font-size: clamp(1.2rem, 1.8vw, 1.6rem); line-height: 1.4; font-weight: 500; }
-  /* words light up as the scene scrolls by (only once the script has split them) */
+  .scene-words { margin: 18px 0 0; max-width: 32ch; font-size: clamp(1.15rem, 1.7vw, 1.5rem); line-height: 1.4; font-weight: 500; }
+  /* words light up while the scene plays (only once the script has split them) */
   .scene-words :global(.w) { color: color-mix(in srgb, var(--ink) 22%, transparent); transition: color 0.3s ease; }
   .scene-words :global(.w.lit) { color: var(--ink); }
 
-  .story-cta { display: flex; flex-direction: column; align-items: center; gap: 28px; padding: clamp(64px, 12cqh, 140px) 20px; text-align: center; }
+  .story-controls { flex: none; display: flex; justify-content: flex-end; gap: 8px; padding: 4px var(--pad) clamp(14px, 2.2vh, 24px); }
+  .ic-play { display: none; }
+  .paused .ic-pause { display: none; }
+  .paused .ic-play { display: block; }
+
+  .story-cta { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: clamp(40px, 7vh, 80px) 20px clamp(48px, 8vh, 96px); text-align: center; }
+  :global(html.js) .story:not(.all) .story-cta { display: none; }
   .cta-line { margin: 0; max-width: 18ch; font-size: clamp(2rem, 5vw, 4rem); font-weight: 700; line-height: 0.95; letter-spacing: -0.04em; text-transform: uppercase; text-wrap: balance; }
   .cta-btn {
     display: inline-flex; align-items: center; min-height: 56px; padding: 0 32px; border-radius: 100px;
@@ -120,9 +162,49 @@ const t = ui.stories;
   .cta-btn:active { scale: 0.97; }
   .cta-btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; }
   .cta-note { margin: 0; font-size: 0.9375rem; color: color-mix(in srgb, var(--ink) 72%, transparent); }
+  .again {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 100px;
+    background: transparent; color: var(--ink); font-size: 0.9375rem; font-weight: 500; cursor: pointer;
+    text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--ink) 30%, transparent); text-underline-offset: 0.25em;
+  }
+  @media (hover: hover) and (pointer: fine) { .again:hover { text-decoration-color: currentColor; } }
+
+  /* ---- the story has played: every picture, small, side by side, and the call to start ---- */
+  .story.all .story-body { overflow-y: auto; overscroll-behavior: contain; }
+  .story.all .story-bars, .story.all .story-controls { display: none; }
+  .story.all .story-stage {
+    flex: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start;
+    gap: clamp(24px, 3vw, 40px) clamp(16px, 2.4vw, 32px); padding: clamp(20px, 3vw, 36px) var(--pad) 0;
+  }
+  .story.all .scene { position: static; display: block; padding: 0; visibility: visible; opacity: 1; }
+  .story.all .scene-art { height: auto; display: block; }
+  .story.all .scene-art :global(.sa) { width: 100%; height: auto; max-height: none; }
+  .story.all .scene-text { margin-top: 10px; }
+  .story.all .scene-num { margin: 0 0 4px; font-size: 0.8125rem; }
+  .story.all .scene-text h3 { font-size: clamp(1.05rem, 1.5vw, 1.35rem); }
+  .story.all .scene-words { display: none; }
+  /* reduced motion: the story does not play; it opens on all its scenes, words and all */
+  .story.all.with-text .scene-words { display: block; margin-top: 8px; font-size: 1rem; line-height: 1.5; font-weight: 400; }
+  /* a wide box: a storyboard, the pictures sized so both rows fit the box, and the call beside them */
+  @media (min-width: 900px) {
+    :global(html.js) .story.all .story-body {
+      /* centred, unless the grid is taller than the box (the words shown): then it starts at the top, in reach */
+      container-type: size; display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 0.4fr); align-items: start; align-items: safe center;
+      column-gap: clamp(28px, 3.5vw, 56px); padding-right: var(--pad);
+    }
+    .story.all .story-stage { padding: clamp(20px, 3vh, 32px) 0 clamp(20px, 3vh, 32px) var(--pad); }
+    .story.all .scene-art :global(.sa) { max-height: max(110px, calc(50cqh - 112px)); }
+    .story.all .scene-text { text-align: center; }
+    .story.all .story-cta { align-items: flex-start; gap: 20px; padding: 0; text-align: left; }
+    .story.all .cta-line { font-size: clamp(1.8rem, 3vw, 2.8rem); }
+    .story.all .again { margin-left: -16px; }
+    /* with the words the grid is taller than the box; the call stays in sight beside it */
+    .story.all.with-text .story-cta { align-self: start; position: sticky; top: clamp(20px, 3vh, 32px); }
+    .story.all.with-text .scene-text { text-align: left; }
+  }
 
   /* ---- the line art (StoryArt.astro) ---- */
-  .scene-art :global(.sa) { display: block; height: var(--art-h); width: auto; max-width: 100%; margin-inline: auto; overflow: visible; }
+  .scene-art :global(.sa) { display: block; width: 100%; height: auto; max-height: 100%; overflow: visible; }
   .bubble :global(.sa path), .bubble :global(.sa use) { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
   .bubble :global(.sa .sa-d) { stroke-dasharray: 1 2; }
   .bubble :global(.sa .ac) { stroke: var(--cobalt); }
@@ -132,7 +214,7 @@ const t = ui.stories;
   .bubble :global(.sa circle.ac) { fill: var(--cobalt); }
   .bubble :global(.sa text) { fill: var(--ink); font-size: 15px; font-weight: 500; }
 
-  /* idle motion: once a scene is drawn, and only while it is on screen */
+  /* idle motion: once the playing scene's picture is drawn */
   .bubble :global(.sa [class*='i-']) { transform-box: fill-box; transform-origin: 50% 100%; }
   .bubble :global(.sa.idle.inview .i-nod) { animation: sa-nod 3.4s ease-in-out infinite; }
   .bubble :global(.sa.idle.inview .i-bob) { animation: sa-bob 2.8s ease-in-out infinite; }
@@ -173,18 +255,20 @@ const t = ui.stories;
     :global(html.js) .bubble.open { padding: 10px; }
     .story { --r: 24px; }
     .story-close { width: 44px; height: 44px; }
-    .scene { display: block; min-height: 0; padding-block: 40px; }
-    .scene-art { position: static; }
-    .scene-art :global(.sa) { width: 100%; height: auto; max-width: 440px; }
-    .scene-text { padding-block: 20px 0; }
+    .scene { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; align-items: center; gap: 16px; }
+    .scene-words { font-size: 1.0625rem; }
+    .story-controls { justify-content: center; }
+    .story.all .story-stage { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .story.all.with-text .story-stage { grid-template-columns: minmax(0, 1fr); }
   }
 
-  /* ---- no script: the stories are part of the page, after the services ---- */
-  :global(html:not(.js)) .bubble-backdrop, :global(html:not(.js)) .bubble-dot, :global(html:not(.js)) .story-close { display: none; }
+  /* ---- no script: the stories are part of the page, after the services, every scene in a row ---- */
+  :global(html:not(.js)) .bubble-backdrop, :global(html:not(.js)) .bubble-dot, :global(html:not(.js)) .story-close,
+  :global(html:not(.js)) .story-bars, :global(html:not(.js)) .story-controls, :global(html:not(.js)) .again { display: none; }
   :global(html:not(.js)) .story { width: auto; height: auto; overflow: visible; border-radius: 0; box-shadow: none; }
-  :global(html:not(.js)) .story-scroll { overflow: visible; container-type: normal; }
-  :global(html:not(.js)) .scene { min-height: 0; }
-  :global(html:not(.js)) .scene-art { position: static; }
-  :global(html:not(.js)) .scene-art :global(.sa) { height: auto; width: 100%; max-width: 440px; }
-  :global(html:not(.js)) .scene-text { padding-block: 24px; }
+  :global(html:not(.js)) .story-body { display: block; }
+  :global(html:not(.js)) .story-stage { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px 24px; padding: 24px var(--pad); }
+  :global(html:not(.js)) .scene { position: static; display: block; padding: 0; visibility: visible; opacity: 1; }
+  :global(html:not(.js)) .scene-art { height: auto; display: block; }
+  :global(html:not(.js)) .scene-words { font-size: 1rem; }
 </style>

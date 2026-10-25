@@ -206,6 +206,15 @@ export const ui = {
     readMoreRest: ' — how I work for you',
     close: 'Close',
     start: 'Start a project',
+    /** the story player: its scenes, its buttons */
+    scenes: 'Scenes',
+    scene: 'Scene',
+    of: 'of',
+    previous: 'Previous scene',
+    next: 'Next scene',
+    pause: 'Pause',
+    play: 'Play',
+    again: 'Play again',
   },
   /** under the name in the footer, after the role */
   footerLine: 'Custom websites, web applications, e-commerce, AI search, marketing and ads, designed, built and run end to end.',
