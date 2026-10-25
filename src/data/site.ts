@@ -10,8 +10,8 @@ export const person = {
   // the contribution terrain is pulled from this account at build time (scripts/github.mjs)
   github: 'https://github.com/pikionis',
   location: 'Kos · Greece',
-  // Put a portrait at public/petros.jpg and set this to '/petros.jpg'
-  photo: '' as string,
+  // the portrait (public/petros.jpg): black and white in the site's ink and ivory, the shirt in the accent blue
+  photo: '/petros.jpg' as string,
   // Put your logo in public/ (an SVG is best) and set this, e.g. '/logo.svg'; until then the footer sets your name
   logo: '' as string,
 };
