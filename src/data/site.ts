@@ -22,7 +22,7 @@ export const meta = {
     'Custom websites, web applications, e-commerce, AI search, marketing and ads — designed, built and run end to end by Petros Pikionis.',
   /** the picture a shared link shows: 1200 × 630, in public/ */
   image: '/og.png',
-  imageAlt: 'The onehub logo: three loops that meet in one point. Design. Build. Automate.',
+  imageAlt: 'The onehub logo: three loops that meet in one point. Design. Build. Automate. Scale fast.',
 };
 
 // The onehub logo: the header lockup (src/components/Logo.astro) and the opening intro (LogoIntro.astro)
@@ -35,7 +35,7 @@ export const brand = {
 // The opening intro: one word per loop (top, left, right), the line under the logo, the skip button
 export const intro = {
   words: ['Design', 'Build', 'Automate'] as [string, string, string],
-  line: 'Design. Build. Automate. — All in one.',
+  line: 'Design. Build. Automate. Scale fast. — All in one.',
   skip: 'Skip intro',
 };
 
