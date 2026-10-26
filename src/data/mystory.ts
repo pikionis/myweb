@@ -121,8 +121,11 @@ export const scenes: Scene[] = [
 /** The words drawn inside the scenes, by scene. */
 export const art = {
   chania: { campus: { en: 'Technical University of Crete', el: 'Πολυτεχνείο Κρήτης' } },
-  /** the first wagons of the journey: the first languages and projects */
-  cargo: ['C++', 'Java', 'SQL', 'PostgreSQL', 'Algorithms', 'Maths'],
+  /** the skills the train carries: the first ones on board from the start, then one more loaded at every stop */
+  cargo: {
+    first: ['C++', 'Java', 'Maths'],
+    stops: ['Algorithms', 'Databases', 'OOP', 'Python', 'AI', 'Cloud', 'Mobile'],
+  },
   courses: [
     { en: 'Linear Algebra', el: 'Γραμμική Άλγεβρα' },
     { en: 'Introduction to Programming', el: 'Εισαγωγή στον Προγραμματισμό' },
@@ -166,15 +169,15 @@ export const art = {
     { at: 0, text: {
       en: 'From the first year: serious mathematics, and hardcore programming in C++ and Java. My first real contact with programming at a high level.',
       el: 'Από τον πρώτο χρόνο: σοβαρά μαθηματικά και hardcore προγραμματισμός σε C++ και Java. Η πρώτη μου πραγματική επαφή με τον προγραμματισμό σε υψηλό επίπεδο.' } },
-    { at: 0.16, text: {
+    { at: 0.1, text: {
       en: 'My first management system: Java software for hospitals. Software for real people.',
       el: 'Το πρώτο μου διαχειριστικό: σύστημα σε Java για νοσοκομεία. Λογισμικό για πραγματικούς ανθρώπους.' } },
-    { at: 0.36, text: {
+    { at: 0.22, text: {
       en: "A special mention: six months of school for one course, PostgreSQL. Let's just say we struggled. That's where I learned that data has architecture.",
       el: 'Ειδική μνεία: έξι μήνες σχολής για ένα μάθημα, την PostgreSQL. Ας πούμε ότι ζοριστήκαμε. Εκεί κατάλαβα ότι τα δεδομένα έχουν αρχιτεκτονική.' } },
     { at: 0.9, text: { en: 'And at the end of the line, the diploma thesis.', el: 'Και στο τέλος της γραμμής, η διπλωματική.' } },
   ] as { at: number; text: Copy }[],
-  /** what the years held, met along the way (one with a note: the special mention) */
+  /** what the years held, one at each station on the way (one with a note: the special mention) */
   moments: [
     { label: { en: 'lectures', el: 'διαλέξεις' } },
     { label: { en: 'study nights at friends’ houses', el: 'διάβασμα και μαζώξεις σε σπίτια' } },

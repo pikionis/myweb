@@ -119,20 +119,25 @@ const SCENES: Record<string, Scene> = {
     const ride = journey(step);
     if (!ride) return;
     const near = part(svg, 'near')!, train = part(svg, 'train')!;
-    // the world draws itself: the clouds, the hills (the AI one in cobalt), the track, the signs, the train
-    draw(tl, parts(svg, 'jcloud-').flatMap(strokes), 0, 0.6, 0.08);
-    draw(tl, strokes(part(svg, 'far')), 0.05, 0.8, 0.1);
-    show(tl, part(svg, 'far')!.querySelector('text'), 0.6);
-    draw(tl, strokes(near).filter((e) => !e.closest('[data-p="train"], [data-p^="moment-"]')), 0.1, 0.7, 0.004);
-    show(tl, [...near.querySelectorAll('.sleepers')], 0.2, true, 0.5);
-    draw(tl, strokes(train).filter((e) => !e.closest('[data-p^="crate-"]')), 0.3, 0.7, 0.008);
-    show(tl, [...train.querySelectorAll('.face-l, .ac-fill, .rod')], 0.8, true, 0.3);
-    // the first languages are loaded, one by one
-    const crates = parts(svg, 'crate-');
-    tl.fromTo(crates, { y: -90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'bounce.out', stagger: 0.18 }, 1.0);
-    // and the journey: seven years, 49 courses
-    tl.fromTo(ride.state, { p: 0 }, { p: 1, duration: 7.5, ease: 'power1.inOut', onUpdate: ride.place }, 2.5);
-    show(tl, ride.station, 9.2, true, 0.4);
+    // the world draws itself: the clouds, the far hills, the track and its stations, the train
+    draw(tl, parts(svg, 'jcloud-').flatMap(strokes), 0, 0.6, 0.05);
+    draw(tl, strokes(part(svg, 'far')), 0.05, 0.8);
+    draw(tl, strokes(near).filter((e) => !e.closest('[data-p="train"], [data-p^="moment-"]')), 0.1, 0.7, 0.002);
+    show(tl, [...near.querySelectorAll('.ties, .rail, [data-p^="stop-"] .ac-fill')], 0.2, true, 0.5);
+    show(tl, [...near.querySelectorAll(':scope > text')], 0.6);
+    draw(tl, strokes(train).filter((e) => !e.closest('[data-p^="crate-"]')), 0.3, 0.7, 0.006);
+    show(tl, [...train.querySelectorAll('.face-l, [data-p="car-0"] .ac-fill, .rod')], 0.8, true, 0.3);
+    // the first skills are on board from the start
+    tl.fromTo(svg.querySelectorAll('[data-at="0"]'), { y: -90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'bounce.out', stagger: 0.18 }, 1.0);
+    // then the journey, slowly: from station to station, a stop at each to load one more skill
+    let at = 2.0;
+    const legs = ride.stops.slice(1);
+    legs.forEach((q, k) => {
+      const leg = { p: q, duration: 1.7, ease: 'sine.inOut', onUpdate: ride.place };
+      if (k === 0) tl.fromTo(ride.state, { p: 0 }, leg, at); else tl.to(ride.state, leg, at);
+      at += 1.7 + (k < legs.length - 1 ? 1.1 : 0);
+    });
+    show(tl, ride.station, at - 0.6, true, 0.4);
     // while it is on screen, the engine smokes, the lab bubbles, the house glows, the rocket waits to launch
     parts(svg, 'puff-').forEach((pf, i) => loop(idle, gsap.fromTo(pf, { opacity: 0.9, x: 0, y: 0, scale: 0.6, transformOrigin: '50% 50%' },
       { opacity: 0, x: -36 - i * 6, y: -48 - i * 8, scale: 1.6, duration: 1.6, ease: 'power1.out', repeat: -1, delay: i * 0.4 })));
@@ -141,7 +146,7 @@ const SCENES: Record<string, Scene> = {
     parts(svg, 'rocket').forEach((r) => loop(idle, gsap.to(r, { y: -8, duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: -1 })));
     parts(svg, 'sweat').forEach((d) => loop(idle, gsap.fromTo(d, { y: 0, opacity: 1 }, { y: 14, opacity: 0, duration: 1.3, ease: 'power1.in', repeat: -1 })));
     parts(svg, 'hand').forEach((h) => { const b = (h as SVGGraphicsElement).getBBox(); loop(idle, gsap.to(h, { rotation: 360, svgOrigin: `${b.x + b.width / 2} ${b.y + b.height}`, duration: 4, ease: 'none', repeat: -1 })); });
-    byHand(tl, step, ride, 10.1);
+    byHand(tl, step, ride, at + 0.2);
   },
 
   graduation(tl, svg, _step, idle) {
@@ -336,19 +341,22 @@ function byHand(tl: Tl, step: HTMLElement, ride: NonNullable<ReturnType<typeof j
   box.addEventListener('pointercancel', end);
 }
 
-/** The journey on show (the wide drawing or the narrow one): the train runs along the track, its wheels turning
- *  and its rods driving; a camera follows it (the hills and the clouds slower, for depth), but never past either end;
- *  the year, the course count and a course's name follow, the moments of those years appear as the train nears them,
- *  and the lines beside it are read one after another. */
+/** The journey on show (the wide drawing or the narrow one): the train rides the rollercoaster from station to
+ *  station, every car set on the track and turned with it, its wheels turning and its rod driving; a camera follows
+ *  it (the hills and the clouds slower, for depth), but never past either end; each station's skill drops into its
+ *  wagon as the train reaches it; the year, the course count and a course's name follow, the moments of those years
+ *  appear as the train nears them, and the lines beside it are read one after another. */
 function journey(step: HTMLElement) {
-  const svg = [...step.querySelectorAll<SVGSVGElement>('.ms-coaster svg')].find((s) => s.getClientRects().length);
+  const svg = [...step.querySelectorAll<SVGSVGElement>('.ms-coaster svg')].find((v) => v.getClientRects().length);
   if (!svg) return null;
-  const [x0, x1, len] = (svg.dataset.journey ?? '0,1,1').split(',').map(Number);
-  const W = svg.viewBox.baseVal.width;
-  const near = part(svg, 'near')!, far = part(svg, 'far')!, clouds = part(svg, 'clouds')!, train = part(svg, 'train')!;
-  const station = part(svg, 'station')!, rod = part(svg, 'rod');
+  const W = svg.viewBox.baseVal.width, world = Number(svg.dataset.world);
+  const near = part(svg, 'near')!, far = part(svg, 'far')!, clouds = part(svg, 'clouds')!;
+  const track = part(svg, 'track') as SVGPathElement, station = part(svg, 'station')!, rod = part(svg, 'rod');
+  const L = track.getTotalLength();
+  const cars = [0, 1, 2, 3].map((k) => part(svg, `car-${k}`)!).map((el) => ({ el, len: Number(el.dataset.len) }));
   const wheels = parts(svg, 'wheel-').map((w) => ({ el: w, cx: Number(w.dataset.cx), cy: Number(w.dataset.cy), r: Number(w.dataset.r) }));
   const drivers = wheels.filter((w) => w.r === 18);
+  const crates = [...svg.querySelectorAll<SVGGElement>('[data-at]')].map((c) => ({ el: c, at: Number(c.dataset.at) }));
   const moments = parts(svg, 'moment-').map((m) => ({ el: m, x: Number(m.dataset.x) }));
   const lines = [...step.querySelectorAll<HTMLElement>('[data-line-at]')].map((l) => ({ el: l, at: Number(l.dataset.lineAt) }));
   const names = [...step.querySelectorAll('.ms-course-list li')].map((li) => li.textContent ?? '');
@@ -357,32 +365,60 @@ function journey(step: HTMLElement) {
   const yearEl = step.querySelector('[data-course-year]');
   const total = Number(step.querySelector<HTMLElement>('[data-course]')?.dataset.total ?? names.length);
   const [y0, y1] = (step.querySelector<HTMLElement>('[data-course]')?.dataset.years ?? '2009,2016').split(',').map(Number);
-  // the train's length: three wagons behind the engine
-  const TRAIN = 656;
+  // the track, sampled once: where each station's stop is along it, and a camera that only moves forward with it
+  // (in the loop the train turns back for a moment; the camera waits for it)
+  const N = Math.ceil(L / 4);
+  const xs: number[] = [], ys: number[] = [];
+  for (let i = 0; i <= N; i++) { const q = track.getPointAtLength((i / N) * L); xs.push(q.x); ys.push(q.y); }
+  const camX: number[] = [];
+  xs.forEach((x, i) => camX.push(Math.max(x, camX[i - 1] ?? x)));
+  const ground = ys[0];
+  const stopS: number[] = [];
+  let from = 0;
+  parts(svg, 'stop-').map((st) => Number(st.dataset.x)).forEach((x) => {
+    let i = from;
+    while (i < N && !(Math.abs(xs[i] - x) < 3 && Math.abs(ys[i] - ground) < 1)) i++;
+    stopS.push((i / N) * L);
+    from = i;
+  });
+  const s0 = stopS[0], s1 = stopS[stopS.length - 1];
+  const TRAIN = cars.reduce((n, c) => n + c.len + 12, -12);
+  const at = (d: number) => track.getPointAtLength(gsap.utils.clamp(0, L, d));
   let counted = -1, named = -1, read = -1;
   // p: where the train is (0 to 1); max: how far it has been
   const state = { p: 0, max: 0 };
   const place = () => {
     const p = state.p;
     state.max = Math.max(state.max, p);
-    const x = x0 + p * (x1 - x0);
+    const s = s0 + p * (s1 - s0);
+    // every car on the track, turned with it
+    let back = 0;
+    cars.forEach((c) => {
+      const d = s - back - c.len / 2;
+      back += c.len + 12;
+      const q = at(d), a = at(d - 4), b = at(d + 4);
+      c.el.setAttribute('transform', `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)}) rotate(${((Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI).toFixed(2)})`);
+    });
     // the camera: on the whole train while it loads, then on the engine, a little behind the middle so the way ahead shows
-    const e = gsap.utils.clamp(0, 1, p / 0.12);
-    const focus = x - (TRAIN / 2) * (1 - e), at = W * (0.5 + 0.12 * e);
-    const tx = gsap.utils.clamp(W - len, 0, at - focus);
-    near.setAttribute('transform', `translate(${tx} 0)`);
-    far.setAttribute('transform', `translate(${tx * 0.35} 0)`);
-    clouds.setAttribute('transform', `translate(${tx * 0.15} 0)`);
-    train.setAttribute('transform', `translate(${x} 0)`);
+    const fx = camX[Math.round((gsap.utils.clamp(0, L, s) / L) * N)];
+    // and, nearing the end of the line, back again, so the last station comes into view
+    const e = gsap.utils.clamp(0, 1, (s - s0) / 600), end = gsap.utils.clamp(0, 1, (s - (s1 - 700)) / 700);
+    const focus = fx - (TRAIN / 2) * (1 - e), aim = W * (0.5 + 0.12 * e - 0.3 * end);
+    const tx = gsap.utils.clamp(W - world, 0, aim - focus);
+    near.setAttribute('transform', `translate(${tx.toFixed(1)} 0)`);
+    far.setAttribute('transform', `translate(${(tx * 0.35).toFixed(1)} 0)`);
+    clouds.setAttribute('transform', `translate(${(tx * 0.15).toFixed(1)} 0)`);
     // the wheels turn with the distance; the rod rides the drivers' cranks
-    const run = x - x0;
-    wheels.forEach((w) => w.el.setAttribute('transform', `rotate(${((run / w.r) * 180) / Math.PI} ${w.cx} ${w.cy})`));
+    const run = s - s0;
+    wheels.forEach((w) => w.el.setAttribute('transform', `rotate(${(((run / w.r) * 180) / Math.PI).toFixed(1)} ${w.cx} ${w.cy})`));
     if (rod && drivers.length === 2) {
       const a = run / drivers[0].r, c = 9;
       const [d0, d1] = drivers;
       rod.setAttribute('d', `M${(d0.cx + c * Math.cos(a)).toFixed(1)} ${(d0.cy + c * Math.sin(a)).toFixed(1)}L${(d1.cx + c * Math.cos(a)).toFixed(1)} ${(d1.cy + c * Math.sin(a)).toFixed(1)}`);
     }
-    moments.forEach((m) => m.el.classList.toggle('seen', x > m.x - 420));
+    // a station's skill comes on board once the train has reached it
+    crates.forEach((c) => { if (c.at > 0) c.el.classList.toggle('loaded', s >= stopS[c.at] - 2); });
+    moments.forEach((m) => m.el.classList.toggle('seen', fx > m.x - 520));
     // 49 courses, 2009 to 2016; the named ones are some of the most serious
     const n = Math.max(1, Math.round(p * total));
     if (n !== counted) {
@@ -398,7 +434,7 @@ function journey(step: HTMLElement) {
     if (li !== read) { read = li; lines.forEach((l, i) => l.el.classList.toggle('on', i === li)); }
   };
   place();
-  return { state, place, station };
+  return { state, place, station, stops: stopS.map((v) => (v - s0) / (s1 - s0)) };
 }
 
 /** Splits a paragraph into word spans (its text stays the same, read as one), for lighting up in turn. */

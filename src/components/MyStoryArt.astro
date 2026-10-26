@@ -69,21 +69,54 @@ const burst = (p: string, x: N, y: N, r: N) => G(p, Array.from({ length: 12 }, (
   const a = (i / 12) * Math.PI * 2, r0 = r * 0.35;
   return pen(`M${r1(x + Math.cos(a) * r0)} ${r1(y + Math.sin(a) * r0)}L${r1(x + Math.cos(a) * r)} ${r1(y + Math.sin(a) * r)}`, i % 2 ? 'ac' : '');
 }).join('') + `<circle class="ac-fill" cx="${x}" cy="${y}" r="4"/>`);
-// ---- the journey, 2009 to 2016: a train through seven years of study ----
-// The world is long; the script moves a camera along it (the far hills and the clouds slower, for depth), and the
-// train along the track. It is drawn twice, for a wide window and a narrow one; the script uses the one shown.
-const J = { len: 3900, h: 480, rail: 400, x0: 720, x1: 3420 };
-const RL = J.rail;
-/** where the train's front is at a point of the journey (0 to 1) */
-const trainAt = (q: N) => J.x0 + q * (J.x1 - J.x0);
-const momentAt = [0.06, 0.18, 0.3, 0.42, 0.54, 0.66, 0.78, 0.9];
+// ---- the journey, 2009 to 2016: a train on a rollercoaster through seven years of study ----
+// The track runs from station to station: a flat stretch at each, where the train stops and loads one more skill,
+// and a hill between them (one of them a loop; the highest, in cobalt, Artificial Intelligence). The script moves a
+// camera along it (the far hills and the clouds slower, for depth) and lays the cars along the track, each turned
+// with it. It is drawn twice, for a wide window and a narrow one; the script uses the one shown.
+const RL = 400;
+const J = { h: 480, first: 760, seg: 980, hill: 560, hills: [120, 160, 0, 190, 250, 150, 175, 130], loop: 2, ai: 4 };
+const segX = (k: N) => 880 + k * J.seg;
+/** where the train's front stops at station k (0 is the start, 8 the end of the line) */
+const stopX = (k: N) => (k === 0 ? J.first : segX(k - 1) + J.hill + 360);
+const WORLD = segX(8) + 300;
+const bez = (a: N[], b: N[], c: N[], d: N[], q: N) => {
+  const u = 1 - q;
+  return [0, 1].map((i) => u * u * u * a[i] + 3 * u * u * q * b[i] + 3 * u * q * q * c[i] + q * q * q * d[i]);
+};
+/** the track: flat at the stations, a hill (or the loop) between them; the supports under it; the AI hill */
+const coasterTrack = () => {
+  let d = `M40 ${RL}H880`, posts = '', ai = '', aiTop = [0, 0];
+  for (let k = 0; k < 8; k++) {
+    const x = segX(k), h = J.hills[k];
+    if (k === J.loop) {
+      d += `H${x + 200}C${x + 330} ${RL} ${x + 372} ${RL - 190} ${x + 280} ${RL - 190}C${x + 188} ${RL - 190} ${x + 232} ${RL} ${x + 360} ${RL}H${x + J.hill}`;
+    } else {
+      const up = [[x, RL], [x + 130, RL], [x + 170, RL - h], [x + 280, RL - h]], down = [[x + 280, RL - h], [x + 390, RL - h], [x + 430, RL], [x + 560, RL]];
+      const seg = `C${x + 130} ${RL} ${x + 170} ${RL - h} ${x + 280} ${RL - h}C${x + 390} ${RL - h} ${x + 430} ${RL} ${x + J.hill} ${RL}`;
+      d += seg;
+      if (k === J.ai) { ai = `M${x} ${RL}${seg}`; aiTop = [x + 280, RL - h]; }
+      // it stands on supports wherever it leaves the ground
+      for (const c of [up, down]) for (let i = 1; i < 8; i++) {
+        const [px, py] = bez(c[0], c[1], c[2], c[3], i / 8);
+        if (RL - py > 16) posts += `M${r1(px)} ${r1(py + 6)}V${RL + 34}`;
+      }
+    }
+    d += `H${x + J.seg}`;
+  }
+  d += `H${WORLD}`;
+  return { d, posts, ai, aiTop };
+};
 /** a wheel on the rail: rim, spokes, hub; the script turns it */
 const wheel = (p: string, cx: N, r: N) => G(p,
   pen(C(cx, RL - r, r)) + pen(`M${r1(cx - r * 0.72)} ${RL - r}H${r1(cx + r * 0.72)}M${cx} ${r1(RL - r - r * 0.72)}V${r1(RL - r + r * 0.72)}`, 'thin') +
   `<circle class="fill-ink" cx="${cx}" cy="${RL - r}" r="2.5"/>`, `data-cx="${cx}" data-cy="${RL - r}" data-r="${r}"`);
-/** the train, its front at x = 0: a steam engine and three wagons carrying the first languages */
+const LOCO = 186, WAGON = 170;
+/** the train: the engine, then three wagons. Each car is drawn about its own middle, on the rail (y = 0), so the
+ *  script can set it on the track and turn it with it. The wagons carry the skills: the first ones from the start,
+ *  then one more from every station (data-at: the station that loads it) */
 const train = () => {
-  const loco = [
+  const engine = [
     P(R(-170, 304, 46, 74, 4), 'solid'), P('M-178 304H-116L-121 295H-173Z', 'solid'), pen(R(-160, 316, 26, 22, 3), 'thin'),
     P(R(-128, 334, 118, 44, 21), 'solid'), F('M-107 336H-12V376H-107Z', 'face-l'), pen('M-100 334V378M-58 334V378', 'thin'),
     P(R(-14, 330, 14, 50, 4), 'solid'), pen(C(-7, 354, 5), 'thin'),
@@ -94,16 +127,21 @@ const train = () => {
     `<path class="rod" data-p="rod" d="M-105 382L-63 382"/>`,
     G('smoke', [0, 1, 2, 3].map((k) => `<circle class="puff" data-p="puff-${k}" cx="-37" cy="292" r="${7 + k * 2}"/>`).join('')),
   ].join('');
-  const wagons = [0, 1, 2].map((k) => {
-    const xs = -170 - 12 - (k + 1) * 150;
-    const [a, b] = [A.cargo[k * 2], A.cargo[k * 2 + 1]];
-    const wa = width(a, 12) + 18, wb = width(b, 12) + 18, start = xs + (150 - (wa + wb + 8)) / 2;
-    const crate = (i: number, x: N, w: N, label: string) => G(`crate-${i}`, P(R(r1(x), 306, w, 34, 4), 'solid ac') + X(r1(x + w / 2), 328, label, 12, 'mid mono bold'));
-    return pen(`M${xs + 150} 372H${xs + 162}`) + P(R(xs, 340, 150, 40, 4), 'solid') + pen(`M${xs + 8} 352H${xs + 142}`, 'thin') +
-      wheel(`wheel-${3 + k * 2}`, xs + 30, 12) + wheel(`wheel-${4 + k * 2}`, xs + 120, 12) +
-      crate(k * 2, start, wa, a) + crate(k * 2 + 1, start + wa + 8, wb, b);
-  }).join('');
-  return G('train', wagons + loco);
+  // the skills, in the order they come on board, and the slots they fill: the lower row of every wagon, then the upper
+  const skills = [...A.cargo.first.map((l) => [l, 0] as const), ...A.cargo.stops.map((l, i) => [l, i + 1] as const)];
+  const slots: N[][] = [];
+  for (const row of [0, 1]) for (const w of [0, 1, 2]) for (const col of [0, 1]) slots.push([w, row, col]);
+  const crates: string[][] = [[], [], []];
+  skills.forEach(([label, at], i) => {
+    const [w, row, col] = slots[i];
+    const x = -85 + 8 + col * 81, y = 306 - row * 36, ai = label === 'AI';
+    crates[w].push(G(`crate-${i}`, (ai ? `<path class="ac-fill" d="${R(x, y, 73, 34, 4)}"/>` : P(R(x, y, 73, 34, 4), 'solid ac')) +
+      X(x + 36.5, y + 22, label, 11, ai ? 'mid mono bold t-inv' : 'mid mono bold'), `data-at="${at}"`));
+  });
+  const wagons = [0, 1, 2].map((k) => G(`car-${k + 1}`, `<g transform="translate(0 ${-RL})">` +
+    pen('M85 372H97') + P(R(-85, 340, 170, 40, 4), 'solid') + pen('M-77 352H77', 'thin') +
+    wheel(`wheel-${3 + k * 2}`, -55, 12) + wheel(`wheel-${4 + k * 2}`, 55, 12) + crates[k].join('') + '</g>', `data-len="${WAGON}"`)).join('');
+  return G('train', wagons + G('car-0', `<g transform="translate(77 ${-RL})">${engine}</g>`, `data-len="${LOCO}"`));
 };
 /** what the years held, as small pictures along the way, each with its words under it */
 const journeyMoment = (k: number, cx: N) => {
@@ -149,26 +187,31 @@ const journeyMoment = (k: number, cx: N) => {
 };
 const journey = (narrow: boolean) => {
   const W = narrow ? 520 : 760;
-  // the far hills, slower than the track (the highest one, in cobalt, is Artificial Intelligence)
-  const farLen = Math.round(J.len * 0.35 + W);
-  let hills = `M0 ${RL - 60}`;
-  for (let x = 0; x < farLen; x += 160) hills += `Q${x + 40} ${RL - 60 - 50 - ((x / 160) % 3) * 22} ${x + 80} ${RL - 70}T${x + 160} ${RL - 60}`;
-  const aiX = 1380;
-  const ai = `M${aiX - 80} ${RL - 66}L${aiX} ${RL - 176}L${aiX + 80} ${RL - 66}`;
-  const far = G('far', pen(hills, 'faint') + F(ai + 'Z', 'ai-hill') + pen(ai, 'ac') + X(aiX, RL - 188, 'AI', 18, 'mid bold t-ac'));
-  const clouds = G('clouds', [80, 420, 760, 1050].map((x, i) => cloud(`jcloud-${i}`, x, 60 + (i % 2) * 34, 0.8 + (i % 2) * 0.3)).join(''));
-  // the near world: the track, its sleepers, a sign for every year, trees, the moments, the station at the end
-  const years = Array.from({ length: 8 }, (_, k) => {
-    const x = r1(trainAt(k / 7) + 30);
-    return pen(`M${x} ${RL + 62}V${RL + 34}`) + P(R(x - 28, RL + 14, 56, 22, 4), 'solid') + X(x, RL + 30, String(A.years[0] + k), 13, 'mid mono bold');
+  // the far hills and the clouds, slower than the track
+  const farLen = Math.round(WORLD * 0.35 + W);
+  let hills = `M0 ${RL - 40}`;
+  for (let x = 0; x < farLen; x += 160) hills += `Q${x + 40} ${RL - 40 - 40 - ((x / 160) % 3) * 16} ${x + 80} ${RL - 50}T${x + 160} ${RL - 40}`;
+  const far = G('far', pen(hills, 'faint'));
+  const clouds = G('clouds', Array.from({ length: 8 }, (_, i) => cloud(`jcloud-${i}`, 80 + i * 300, 50 + (i % 2) * 34, 0.8 + (i % 2) * 0.3)).join(''));
+  const track = coasterTrack();
+  // a station at every stop: its platform, its sign (the skill it loads), and a moment of those years over it
+  const stations = Array.from({ length: 9 }, (_, k) => {
+    const x = stopX(k), platform = P(R(x - 420, RL + 4, 440, 8, 2), 'solid');
+    if (k === 8) {
+      return G('stop-8', platform + G('station', P(R(x + 40, 312, 210, 84, 4), 'solid') + P(`M${x + 30} 312L${x + 145} 270L${x + 260} 312Z`, 'solid') +
+        pen(R(x + 120, 340, 50, 56, 3)) + X(x + 145, 262, t(A.station), 18, 'mid bold')), `data-x="${x}"`);
+    }
+    const label = k === 0 ? String(A.years[0]) : A.cargo.stops[k - 1], ai = label === 'AI';
+    const w = Math.max(70, width(label, 14) + 26);
+    const sign = pen(`M${x + 54} ${RL + 34}V${RL - 74}`) + (ai ? `<path class="ac-fill" d="${R(x + 54 - w / 2, RL - 108, w, 34, 6)}"/>` : P(R(x + 54 - w / 2, RL - 108, w, 34, 6), 'solid')) +
+      X(x + 54, RL - 86, label, 14, ai ? 'mid mono bold t-inv' : 'mid mono bold');
+    return G(`stop-${k}`, platform + sign, `data-x="${x}"`) + journeyMoment(k, x - 210);
   }).join('');
-  const trees = [520, 1040, 1700, 2350, 3000, 3700].map((x, i) => pen(`M${x} ${RL - 4}V${RL - 34}`) + pen(C(x, RL - 50, 16 + (i % 2) * 4))).join('');
-  const moments = momentAt.map((q, k) => journeyMoment(k, trainAt(q) + 230)).join('');
-  const station = G('station', P(R(J.x1 + 40, 312, 210, 84, 4), 'solid') + P(`M${J.x1 + 30} 312L${J.x1 + 145} 270L${J.x1 + 260} 312Z`, 'solid') +
-    pen(R(J.x1 + 120, 340, 50, 56, 3)) + X(J.x1 + 145, 262, t(A.station), 18, 'mid bold'));
   const near = G('near', [
-    `<path class="sleepers" d="M0 ${RL + 7}H${J.len}"/>`, pen(`M0 ${RL}H${J.len}`), pen(`M0 ${RL + 12}H${J.len}`, 'faint'),
-    trees, moments, years, station, P(R(40, RL - 4, 690, 8, 2), 'solid'), train(),
+    pen(`M0 ${RL + 34}H${WORLD}`, 'faint'), pen(track.posts, 'faint thin'),
+    `<path class="ties" d="${track.d}"/>`, `<path class="rail" data-p="track" d="${track.d}"/>`,
+    pen(track.ai, 'ac thick-ish'), X(track.aiTop[0], track.aiTop[1] - 18, 'AI', 20, 'mid bold t-ac'),
+    stations, train(),
   ].join(''));
   return { view: `0 0 ${W} ${J.h}`, inner: clouds + far + near };
 };
@@ -406,7 +449,7 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
 const scene: { view?: string; inner: string } = name === 'journey-wide' ? journey(false) : name === 'journey-narrow' ? journey(true) : SCENES[name]();
 const view = scene.view ?? '0 0 800 500';
 ---
-<svg class:list={['ms-svg', `art-${name}`]} data-art={name} data-journey={name.startsWith('journey') ? [J.x0, J.x1, J.len].join(',') : undefined} viewBox={view} aria-hidden="true" focusable="false"
+<svg class:list={['ms-svg', `art-${name}`]} data-art={name} data-world={name.startsWith('journey') ? WORLD : undefined} viewBox={view} aria-hidden="true" focusable="false"
   preserveAspectRatio={name.startsWith('journey') ? 'xMidYMid slice' : 'xMidYMid meet'} set:html={scene.inner} />
 
 <style>
@@ -430,7 +473,11 @@ const view = scene.view ?? '0 0 800 500';
   .ms-svg :global(.t-inv) { fill: var(--paper); }
   /* the journey */
   .art-journey-wide, .art-journey-narrow { overflow: hidden; }
-  .ms-svg :global(.sleepers) { stroke-width: 7; stroke-dasharray: 9 15; stroke-linecap: butt; stroke: color-mix(in srgb, var(--ink) 55%, transparent); }
+  .ms-svg :global(.ties) { stroke-width: 11; stroke-dasharray: 3 11; stroke-linecap: butt; stroke: color-mix(in srgb, var(--ink) 45%, transparent); }
+  .ms-svg :global(.rail) { stroke-width: 4; }
+  /* a skill waits at its station until the train has reached it, then drops into its wagon */
+  .ms-svg :global([data-at]) { transition: opacity 0.25s ease, translate 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  :global(html.js) .ms-svg :global([data-at]:not([data-at='0']):not(.loaded)) { opacity: 0; translate: 0 -90px; }
   .ms-svg :global(.rod) { stroke-width: 3; }
   .ms-svg :global(.puff) { fill: var(--paper); stroke: color-mix(in srgb, var(--ink) 45%, transparent); stroke-width: 1.6; }
   .ms-svg :global(.glow) { fill: color-mix(in srgb, var(--cobalt) 30%, var(--paper)); stroke: currentColor; stroke-width: 1.6; }
