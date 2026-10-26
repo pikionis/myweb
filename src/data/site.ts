@@ -273,6 +273,8 @@ export const ui = {
     intro: 'Each service, and the real projects behind it.',
     allServices: 'All services',
     allProjects: 'All projects',
+    /** on a phone, on the band of a service the next one has covered: back to it */
+    again: 'See again',
   },
   visitSite: 'Visit site',
   /** a project's live site in its card (home page): the frame's name, after the title */

@@ -115,10 +115,11 @@ export function workStack(root: HTMLElement) {
 }
 
 /**
- * The stack on a phone held upright: each sheet holds the screen in turn. Its title stays at the top while its
- * words scroll up under it, one for one with the finger, until its projects fill the screen; they stack the way
- * they do on a desktop, each sliding up over the one before and leaving its name showing; then the next sheet
- * slides up over it, and it sinks back a little. Every word stays: nothing is cut to make room.
+ * The stack on a phone held upright: the sheets stack like tabs, as on a desktop. Each holds the screen in turn
+ * under the title bands of the ones before it. Its title stays while its words scroll up under it, one for one
+ * with the finger, until its projects fill the screen; they stack the way they do on a desktop, each with its own
+ * text under its picture; then the next sheet slides up over it, leaving its band showing. A covered sheet's band
+ * has a way back to it ("See again"). Every word stays: nothing is cut to make room.
  */
 function holdPhone(root: HTMLElement, pin: HTMLElement, sheets: HTMLElement[]) {
   root.classList.add('phone');
@@ -147,14 +148,26 @@ function holdPhone(root: HTMLElement, pin: HTMLElement, sheets: HTMLElement[]) {
   // the stack is as tall as the scroll it plays over
   root.style.height = `${Math.round(unit * (1 + total))}px`;
 
-  const tl = gsap.timeline({ scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.3, invalidateOnRefresh: true } });
+  // when each sheet starts to come in, and when it is in (its words about to scroll)
+  const comes: number[] = [];
+  const opens: number[] = [];
+  // a sheet the next one has covered shows the way back to it
+  const cover = () => {
+    const t = tl.time();
+    plans.forEach((p, i) => p.sheet.classList.toggle('covered', i < plans.length - 1 && t >= comes[i + 1] + SLIDE * 0.6));
+  };
+  const tl = gsap.timeline({
+    onUpdate: cover,
+    scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.3, invalidateOnRefresh: true },
+  });
   let at = 0;
   plans.forEach((p, i) => {
+    comes.push(at);
     if (i > 0) {
-      tl.fromTo(p.sheet, { y: () => pin.clientHeight }, { y: 0, ease: 'none', duration: SLIDE }, at)
-        .to(plans[i - 1].sheet, { scale: 0.94, ease: 'none', duration: SLIDE }, at);
+      tl.fromTo(p.sheet, { y: () => pin.clientHeight }, { y: 0, ease: 'none', duration: SLIDE }, at);
       at += SLIDE;
     }
+    opens.push(at);
     if (p.shift) {
       tl.to(p.words, { y: -p.shift, ease: 'none', duration: p.shift / unit }, at);
       at += p.shift / unit;
@@ -167,10 +180,20 @@ function holdPhone(root: HTMLElement, pin: HTMLElement, sheets: HTMLElement[]) {
   });
   tl.to({}, { duration: LAST }, at);
 
+  // "See again": back to the moment the sheet was in, its words about to scroll
+  const again = (e: Event) => {
+    const i = plans.findIndex((p) => p.sheet.contains(e.currentTarget as Node));
+    const top = root.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: Math.round(top + opens[i] * unit) + 1, behavior: 'smooth' });
+  };
+  const buttons = plans.map((p) => p.sheet.querySelector<HTMLButtonElement>('[data-again]'));
+  buttons.forEach((b) => b?.addEventListener('click', again));
+
   return () => {
     root.classList.remove('phone');
     root.style.height = '';
-    sheets.forEach((s) => s.style.removeProperty('--area'));
+    buttons.forEach((b) => b?.removeEventListener('click', again));
+    sheets.forEach((s) => { s.style.removeProperty('--area'); s.classList.remove('covered'); });
   };
 }
 

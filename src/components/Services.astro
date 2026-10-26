@@ -11,6 +11,10 @@ const steps = (services.length - 1) + services.reduce((n, s) => n + Math.max(car
 const arrow = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>';
 const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" /></svg>';
 const storyOf = (key: string) => stories.find((st) => st.service === key);
+const up = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" /></svg>';
+// a project's own text, unless it is still to be written; then its one-line summary
+const ownText = (p: (typeof services)[number]['projects'][number]) =>
+  p.data.blurb && !/^\s*\[TODO/.test(p.data.blurb) ? p.data.blurb : p.data.summary;
 const next = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>';
 const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>';
 ---
@@ -29,6 +33,8 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
         return (
           <article class:list={['svc', s.background.tone]} data-sheet data-image={s.background.image ? '' : undefined}
             style={`--i: ${i}; --ground: var(--sheet-${s.background.fill})${s.background.image ? `; --image: url(${s.background.image})` : ''}`}>
+            <!-- on a phone, once the next sheet covers this one, its band offers a way back to it -->
+            <button type="button" class="again-tab" data-again aria-label={`${ui.work.again}: ${s.title}`}>{ui.work.again}<Fragment set:html={up} /></button>
             <div class="wrap svc-in">
               <h3 data-cascade>{s.title}</h3>
               <div class="copy">
@@ -38,7 +44,7 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                 {beside && (
                   <div class="blurbs" data-blurbs>
                     {s.projects.map((p, j) => (
-                      <p class:list={['blurb', { on: j === 0, todo: /^\s*\[TODO/.test(p.data.blurb ?? '') }]} data-blurb>
+                      <p class:list={['blurb', { on: j === 0 }]} data-blurb>
                         <span class="bname">{p.data.title}</span> {p.data.blurb ?? p.data.summary}
                         {hasStory(p) && <a class="bstory" href={`/projects/${p.id}`}>{ui.readStory}<Fragment set:html={next} /></a>}
                       </p>
@@ -90,6 +96,11 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                         )}
                       </div>
                       <p class="pline">{beside ? p.data.summary : (p.data.blurb ?? p.data.summary)}</p>
+                      <!-- on a phone the project's own text comes under its picture, not before the cards -->
+                      <div class="ptext">
+                        <p>{ownText(p)}</p>
+                        {hasStory(p) && <a class="bstory" href={`/projects/${p.id}`}>{ui.readStory}<Fragment set:html={next} /></a>}
+                      </div>
                     </article>
                   );
                 })}
@@ -169,8 +180,8 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
   .blurbs { display: grid; margin-top: 20px; padding-top: 16px; max-width: 62ch; border-top: 1px solid color-mix(in srgb, currentColor 16%, transparent); }
   .blurb { margin: 0; font-size: 1rem; line-height: 1.55; color: var(--meta); }
   .blurb + .blurb { margin-top: 14px; }
-  /* on a phone every project's text is listed: one still to be written ([TODO …]) stays out of the list */
-  @media (max-width: 860px) { .blurb.todo { display: none; } }
+  /* on a phone the texts travel with their cards instead (.ptext) */
+  @media (max-width: 860px) { .blurbs { display: none; } }
   .bname { display: block; margin-bottom: 4px; font-size: 0.875rem; font-weight: 700; letter-spacing: 0.01em; color: var(--tag); }
   /* the way into the project's story, under its own text */
   .bstory {
@@ -240,6 +251,16 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
   .checks li { display: flex; gap: 10px; align-items: flex-start; }
   .checks :global(svg) { flex: none; margin-top: 0.15em; }
   .pline { flex: none; display: block; margin: 0; padding: 12px 18px 16px; font-size: 0.9375rem; line-height: 1.45; color: var(--meta); }
+  /* a phone: under the picture, the project's own text and the way into its story */
+  .ptext { display: none; }
+  @media (max-width: 860px) {
+    .pline { display: none; }
+    .ptext { display: block; flex: none; padding: 12px 14px 4px; }
+    .ptext p { margin: 0; font-size: 0.9375rem; line-height: 1.5; color: var(--meta); }
+    .ptext .bstory { position: relative; z-index: 2; }
+    .ptext:not(:has(.bstory)) { padding-bottom: 14px; }
+  }
+  .again-tab { display: none; }
   .proof .pline a { position: relative; z-index: 2; color: inherit; text-decoration-color: var(--tag); text-underline-offset: 0.25em; }
 
   /* ---- pinned: the sheets stack over a held screen, and each sheet's projects stack inside it ---- */
@@ -284,27 +305,43 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
     .pline { padding: 10px 14px 12px; }
   }
 
-  /* ---- held on a phone (holdPhone in workstack.ts): one sheet holds the screen at a time. Its title stays while
-     its words scroll up under it; then its projects stack; then the next sheet slides up over it ---- */
+  /* ---- held on a phone (holdPhone in workstack.ts): the sheets stack like tabs under the bar, each one's title
+     band showing above the next. A sheet's title stays while its words scroll up under it; then its projects
+     stack, each with its own text under its picture; then the next sheet slides up over it ---- */
+  .stack.phone { --tab: 52px; }
   .stack.phone .pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
-  /* the sheets sit under the bar, as on a desktop, their rounded tops showing */
   .stack.phone .svc {
-    position: absolute; inset: calc(var(--topbar-h) + env(safe-area-inset-top, 0px)) 0 0;
-    transform-origin: 50% 0; box-shadow: 0 -24px 40px -28px rgb(0 0 0 / 0.4);
+    position: absolute; inset: calc(var(--topbar-h) + env(safe-area-inset-top, 0px) + var(--i) * var(--tab)) 0 0;
+    box-shadow: 0 -18px 30px -24px rgb(0 0 0 / 0.4);
   }
   .stack.phone .svc-in {
     height: 100%; display: flex; flex-direction: column; overflow: hidden; padding-top: 0;
     /* clear of the menu that floats at the bottom */
     padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   }
-  /* the title band spans the sheet, so the words pass under all of it */
-  .stack.phone h3 { flex: none; align-self: stretch; position: relative; z-index: 3; margin: 0; padding: 16px 0 14px; background: var(--ground); }
-  .stack.phone .copy, .stack.phone .read-more { flex: none; }
-  .stack.phone .read-more { align-self: flex-start; }
+  /* the title band: one line, a tab high, across the sheet, so the words pass under all of it */
+  .stack.phone h3 {
+    flex: none; align-self: stretch; position: relative; z-index: 3; margin: 0; padding: 0;
+    height: var(--tab); line-height: var(--tab); font-size: clamp(1.1rem, 5.2vw, 1.5rem);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: var(--ground);
+  }
+  /* covered by the next sheet, its band offers the way back to it; a long title fades out before it */
+  .stack.phone .svc.covered .again-tab {
+    position: absolute; z-index: 4; top: 8px; right: max(16px, env(safe-area-inset-right, 0px)); height: 36px;
+    display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; border: 0; border-radius: 100px;
+    font: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer;
+    box-shadow: -28px 0 16px 6px var(--ground);
+  }
+  /* a 44px target around the 36px pill */
+  .stack.phone .again-tab::after { content: ''; position: absolute; inset: -4px; }
+  .stack.phone .svc.light .again-tab { background: #141414; color: #f4f3ef; }
+  .stack.phone .svc.dark .again-tab { background: #f4f3ef; color: #141414; }
+  .stack.phone .again-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .stack.phone .copy { flex: none; margin-top: 6px; }
+  .stack.phone .read-more { flex: none; align-self: flex-start; }
   .stack.phone .pstack { flex: none; display: block; position: relative; height: var(--area, 60vh); }
   .stack.phone .pcard { position: absolute; left: 0; right: 0; top: calc(var(--j) * var(--pband)); bottom: 0; }
-  .stack.phone .pmedia { aspect-ratio: auto; }
+  .stack.phone .pmedia { aspect-ratio: auto; min-height: 140px; }
   .stack.phone .spec { justify-content: flex-start; }
-  .stack.phone .pline { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .stack.phone .pcard + .pcard { box-shadow: 0 -10px 24px -18px rgb(0 0 0 / 0.35); }
 </style>
