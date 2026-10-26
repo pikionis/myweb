@@ -288,4 +288,28 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
     .ptags { display: none; }
     .pline { padding: 10px 14px 12px; }
   }
+
+  /* ---- held on a phone (holdPhone in workstack.ts): one sheet holds the screen at a time. Its title stays while
+     its words scroll up under it; then its projects stack; then the next sheet slides up over it ---- */
+  .stack.phone .pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+  /* the sheets sit under the bar, as on a desktop, their rounded tops showing */
+  .stack.phone .svc {
+    position: absolute; inset: calc(var(--topbar-h) + env(safe-area-inset-top, 0px)) 0 0;
+    transform-origin: 50% 0; box-shadow: 0 -24px 40px -28px rgb(0 0 0 / 0.4);
+  }
+  .stack.phone .svc-in {
+    height: 100%; display: flex; flex-direction: column; overflow: hidden; padding-top: 0;
+    /* clear of the menu that floats at the bottom */
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+  /* the title band spans the sheet, so the words pass under all of it */
+  .stack.phone h3 { flex: none; align-self: stretch; position: relative; z-index: 3; margin: 0; padding: 16px 0 14px; background: var(--ground); }
+  .stack.phone .copy, .stack.phone .read-more { flex: none; }
+  .stack.phone .read-more { align-self: flex-start; }
+  .stack.phone .pstack { flex: none; display: block; position: relative; height: var(--area, 60vh); }
+  .stack.phone .pcard { position: absolute; left: 0; right: 0; top: calc(var(--j) * var(--pband)); bottom: 0; }
+  .stack.phone .pmedia { aspect-ratio: auto; }
+  .stack.phone .spec { justify-content: flex-start; }
+  .stack.phone .pline { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stack.phone .pcard + .pcard { box-shadow: 0 -10px 24px -18px rgb(0 0 0 / 0.35); }
 </style>

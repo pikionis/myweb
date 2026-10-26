@@ -9,9 +9,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
  * project on top, or of the one under the pointer. Project videos play only while their card is on screen.
  */
 
-// the stack can hold on a screen at least this big; elsewhere (a phone, a short screen, reduced motion, no
-// script) the sheets and their projects simply follow one another
+// the stack can hold on a screen at least this big; on a phone held upright it holds its own way (holdPhone);
+// elsewhere (a short wide screen, a phone on its side, reduced motion, no script) the sheets and their
+// projects simply follow one another
 const PINNED = '(min-width: 861px) and (min-height: 740px) and (prefers-reduced-motion: no-preference)';
+const PHONE = '(max-width: 860px) and (min-height: 560px) and (prefers-reduced-motion: no-preference)';
 /** Breathing room kept under a held sheet's words, in px. */
 const ROOM = 12;
 
@@ -45,10 +47,27 @@ export function workStack(root: HTMLElement) {
   const recheck = () => {
     if (window.matchMedia(PINNED).matches && fits() !== holding) { setup(); ScrollTrigger.refresh(); }
   };
+  // a phone: built once the fonts are in (the words' height decides how far they scroll), and again when the
+  // width changes (only the height changes as a phone's address bar comes and goes)
+  const pin = root.querySelector<HTMLElement>('.pin');
+  let phone: gsap.MatchMedia | null = null;
+  let phoneWidth = 0;
+  const setupPhone = () => {
+    if (!pin) return;
+    phone?.revert();
+    phone = gsap.matchMedia();
+    phoneWidth = window.innerWidth;
+    phone.add(PHONE, () => holdPhone(root, pin, sheets));
+  };
+  (document.fonts?.ready ?? Promise.resolve()).then(() => { setupPhone(); ScrollTrigger.refresh(); });
+
   let wait = 0;
   window.addEventListener('resize', () => {
     clearTimeout(wait);
-    wait = window.setTimeout(recheck, 200);
+    wait = window.setTimeout(() => {
+      recheck();
+      if (window.innerWidth !== phoneWidth) { setupPhone(); ScrollTrigger.refresh(); }
+    }, 200);
   });
 
   const hold = () => {
@@ -93,6 +112,66 @@ export function workStack(root: HTMLElement) {
     };
   };
   setup();
+}
+
+/**
+ * The stack on a phone held upright: each sheet holds the screen in turn. Its title stays at the top while its
+ * words scroll up under it, one for one with the finger, until its projects fill the screen; they stack the way
+ * they do on a desktop, each sliding up over the one before and leaving its name showing; then the next sheet
+ * slides up over it, and it sinks back a little. Every word stays: nothing is cut to make room.
+ */
+function holdPhone(root: HTMLElement, pin: HTMLElement, sheets: HTMLElement[]) {
+  root.classList.add('phone');
+  // one screen of scroll for each second of the timeline
+  const unit = pin.clientHeight;
+  const plans = sheets.map((sheet) => {
+    const inner = sheet.querySelector<HTMLElement>('.svc-in')!;
+    const title = sheet.querySelector<HTMLElement>('h3')!;
+    const stack = sheet.querySelector<HTMLElement>('.pstack')!;
+    const gap = parseFloat(getComputedStyle(stack).marginTop) || 0;
+    const pad = getComputedStyle(inner);
+    // the projects get the whole screen under the title
+    const area = inner.clientHeight - parseFloat(pad.paddingTop) - parseFloat(pad.paddingBottom) - title.offsetHeight - gap;
+    sheet.style.setProperty('--area', `${Math.max(Math.round(area), 240)}px`);
+    // and the words above them scroll up until the projects sit right under the title
+    const shift = Math.max(stack.offsetTop - (title.offsetTop + title.offsetHeight + gap), 0);
+    return {
+      sheet, shift,
+      words: [...inner.children].filter((el) => el !== title),
+      cards: [...sheet.querySelectorAll<HTMLElement>('[data-pcard]')],
+    };
+  });
+
+  const SLIDE = 0.8, CARD = 0.6, LAST = 0.3;
+  const total = plans.reduce((t, p, i) => t + (i ? SLIDE : 0) + p.shift / unit + Math.max(p.cards.length - 1, 0) * CARD, 0) + LAST;
+  // the stack is as tall as the scroll it plays over
+  root.style.height = `${Math.round(unit * (1 + total))}px`;
+
+  const tl = gsap.timeline({ scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.3, invalidateOnRefresh: true } });
+  let at = 0;
+  plans.forEach((p, i) => {
+    if (i > 0) {
+      tl.fromTo(p.sheet, { y: () => pin.clientHeight }, { y: 0, ease: 'none', duration: SLIDE }, at)
+        .to(plans[i - 1].sheet, { scale: 0.94, ease: 'none', duration: SLIDE }, at);
+      at += SLIDE;
+    }
+    if (p.shift) {
+      tl.to(p.words, { y: -p.shift, ease: 'none', duration: p.shift / unit }, at);
+      at += p.shift / unit;
+    }
+    p.cards.forEach((card, j) => {
+      if (!j) return;
+      tl.fromTo(card, { y: () => pin.clientHeight }, { y: 0, ease: 'none', duration: CARD }, at);
+      at += CARD;
+    });
+  });
+  tl.to({}, { duration: LAST }, at);
+
+  return () => {
+    root.classList.remove('phone');
+    root.style.height = '';
+    sheets.forEach((s) => s.style.removeProperty('--area'));
+  };
 }
 
 /** A sheet's project texts: one shows at a time, the hovered or focused project's, else the one on top. */
