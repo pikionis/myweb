@@ -172,16 +172,35 @@ function hero(handoff: Promise<void>) {
   // the reveal plays over the first 2.2 screens; the last screen of the intro belongs to the sheet
   const reveal = { trigger: '.intro-scroll', start: 'top top', end: '+=220%' };
 
-  // 1) the curtain opens, and the headline arrives letter by letter through the gap
-  gsap.timeline({ scrollTrigger: { ...reveal, scrub: 0.6 } })
-    .to('.curtain .half.top', { yPercent: -100, ease: 'power2.inOut', duration: 1 }, 0)
-    .to('.curtain .half.bot', { yPercent: 100, ease: 'power2.inOut', duration: 1 }, 0)
-    .to('.curtain .center', { autoAlpha: 0, filter: 'blur(8px)', duration: 0.4 }, 0)
-    .to('#ink', { autoAlpha: 0, duration: 0.4 }, 0)
-    // once open, the empty curtain stops catching the pointer (the headline tilt lives underneath)
-    .set('.curtain', { pointerEvents: 'none' }, 0.4)
-    .from(chars, { yPercent: 60, autoAlpha: 0, ease: 'power3.out', duration: 0.3, stagger: 0.018 }, 0.45)
-    .from('.hero-fig, .corner', { autoAlpha: 0, y: 30, stagger: 0.06, ease: 'power3.out', duration: 0.8 }, 0.8);
+  // 1) the curtain opens, and the headline arrives letter by letter through the gap. The portrait follows
+  // the reading order: beside the headline on a wide screen it comes after it; on a phone it sits above the
+  // headline, so it comes first, as the curtain opens, and the copy waits for its headline. Either way the
+  // timeline keeps its length, so the scroll has the same pace.
+  // What arrives later is set out of sight first and brought in with to(), not from(): a ScrollTrigger refresh
+  // (the services stack makes one on load) undoes a from()'s start before its turn, so the part showed, then
+  // blinked out when its turn came.
+  gsap.matchMedia().add({ phone: '(max-width: 820px)', wide: '(min-width: 821px)' }, (ctx) => {
+    const phone = ctx.conditions?.phone;
+    gsap.set(chars, { yPercent: 60, autoAlpha: 0 });
+    gsap.set('.hero-fig', { autoAlpha: 0, y: phone ? 24 : 30 });
+    gsap.set('.corner', { autoAlpha: 0, y: 30 });
+    if (phone) gsap.set('.hero-copy .js-words', { autoAlpha: 0 });
+    const tl = gsap.timeline({ scrollTrigger: { ...reveal, scrub: 0.6 } })
+      .to('.curtain .half.top', { yPercent: -100, ease: 'power2.inOut', duration: 1 }, 0)
+      .to('.curtain .half.bot', { yPercent: 100, ease: 'power2.inOut', duration: 1 }, 0)
+      .to('.curtain .center', { autoAlpha: 0, filter: 'blur(8px)', duration: 0.4 }, 0)
+      .to('#ink', { autoAlpha: 0, duration: 0.4 }, 0)
+      // once open, the empty curtain stops catching the pointer (the headline tilt lives underneath)
+      .set('.curtain', { pointerEvents: 'none' }, 0.4)
+      .to(chars, { yPercent: 0, autoAlpha: 1, ease: 'power3.out', duration: 0.3, stagger: 0.018 }, 0.45);
+    if (phone) {
+      tl.to('.hero-fig', { autoAlpha: 1, y: 0, ease: 'power3.out', duration: 0.6 }, 0.25)
+        .to('.hero-copy .js-words', { autoAlpha: 1, ease: 'power1.out', duration: 0.3 }, 0.75)
+        .to('.corner', { autoAlpha: 1, y: 0, stagger: 0.06, ease: 'power3.out', duration: 0.8 }, 0.8);
+    } else {
+      tl.to('.hero-fig, .corner', { autoAlpha: 1, y: 0, stagger: 0.06, ease: 'power3.out', duration: 0.8 }, 0.8);
+    }
+  });
 
   // 2) once the headline has landed (~0.67), the copy below lights up word by word
   ScrollTrigger.create({
