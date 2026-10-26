@@ -77,6 +77,8 @@ export const hero = {
     { pos: 'bl', top: 'E-commerce', bold: 'Specialist' },
     { pos: 'br', top: 'Go-to', bold: 'Market' },
   ],
+  /** under the name and role beside the portrait: the link to /about */
+  bio: 'My bio',
   /** "What I work on" on /about */
   areas: ['AI Software Engineering', 'Cloud & Infrastructure', 'Data Pipelines', 'Go-to Market'],
 };

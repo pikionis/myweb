@@ -1,5 +1,7 @@
 ---
 import { hero, person } from '../data/site';
+
+const next = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>';
 ---
 <!-- Scroll distance drives the curtain opening; the hero sits behind it.
      The last screen of scroll is where the light sheet slides up over the pinned hero. -->
@@ -32,6 +34,7 @@ import { hero, person } from '../data/site';
           <figcaption>
             <span class="cap-name">{person.name}</span>
             <span class="cap-role">{person.role}</span>
+            <a class="cap-bio" href="/about">{hero.bio}<Fragment set:html={next} /></a>
           </figcaption>
         </figure>
       </div>
@@ -99,6 +102,19 @@ import { hero, person } from '../data/site';
   figcaption { display: grid; gap: 6px; margin-top: 16px; }
   .cap-name { font-size: 1rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; line-height: 1.1; }
   .cap-role { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+  /* the way to the full bio, on /about */
+  .cap-bio {
+    display: inline-flex; align-items: center; gap: 6px; width: max-content; min-height: 44px;
+    font-size: 0.875rem; font-weight: 500; color: var(--fg);
+    text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: 0.25em;
+    transition: text-decoration-color 0.2s ease;
+  }
+  .cap-bio :global(svg) { transition: translate 0.25s var(--ease-out); }
+  @media (hover: hover) and (pointer: fine) {
+    .cap-bio:hover { text-decoration-color: currentColor; }
+    .cap-bio:hover :global(svg) { translate: 3px 0; }
+  }
+  .cap-bio:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 
   .corner { position: absolute; z-index: 8; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
   .corner b { color: var(--accent-ink); font-weight: 700; }
