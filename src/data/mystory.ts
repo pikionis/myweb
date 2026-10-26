@@ -23,7 +23,7 @@ export type Scene = {
   label: Copy;
   title?: Copy;
   text: Copy;
-  /** how long the scene holds, in screens of scroll (a phone holds it a little shorter) */
+  /** how long the scene holds, relative to the others (MyStory.astro's --pace turns it into screens of scroll) */
   hold: number;
   /** a client project in this stretch of time: a dot on the parallel line */
   side?: boolean;

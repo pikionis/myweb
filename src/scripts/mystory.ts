@@ -352,13 +352,14 @@ export function myStory(root: HTMLElement) {
       const svg = step.querySelector<SVGSVGElement>('.ms-art svg');
       const scene = SCENES[step.dataset.scene ?? ''];
       if (!svg || !scene) return;
-      const tl = gsap.timeline({ scrollTrigger: { trigger: step, start: 'top top', end: 'bottom bottom', scrub: 0.5 } });
+      // it starts while the scene is still coming up the screen, so one scene's drawing follows the last one's
+      const tl = gsap.timeline({ scrollTrigger: { trigger: step, start: 'top 70%', end: 'bottom bottom', scrub: 0.5 } });
       // the words arrive first: the label, the title, the line
       const words = [...step.querySelectorAll<HTMLElement>('[data-t]')].filter((el) => !el.hasAttribute('data-words-end'));
       tl.fromTo(words, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.08, ease: 'power2.out' }, 0);
       scene(tl, svg, step);
       // and the scene holds, done, before the next one comes
-      tl.to({}, { duration: 0.6 });
+      tl.to({}, { duration: 0.3 });
     });
     ScrollTrigger.refresh();
     return () => root.classList.remove('on');
