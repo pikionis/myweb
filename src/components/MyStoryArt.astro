@@ -24,6 +24,14 @@ const F = (d: string, extra: string, attrs = '') => `<path class="${extra}" d="$
 const X = (x: N, y: N, text: string, size: N, extra = '', attrs = '') =>
   `<text class="${cls('t', extra)}" x="${x}" y="${y}" font-size="${size}"${attrs ? ` ${attrs}` : ''}>${esc(text)}</text>`;
 const width = (text: string, size: N) => Math.round(text.length * size * 0.56);
+/** words that write themselves: uncovered from left to right, as if written (the script widens the rect that clips
+ *  them, `<p>-pen`, from nothing); 'script' sets them by hand, in Great Vibes */
+const written = (p: string, x: N, y: N, text: string, size: N, extra = '') => {
+  // (with room around them for a script's swashes)
+  const w = width(text, size) + size * 1.6, x0 = extra.split(' ').includes('mid') ? x - w / 2 : x - size * 0.9;
+  return `<clipPath id="ms-${p}"><rect data-p="${p}-pen" x="${r1(x0)}" y="${r1(y - size * 1.3)}" width="${r1(w)}" height="${r1(size * 1.9)}"/></clipPath>` +
+    `<g clip-path="url(#ms-${p})">${X(x, y, text, size, extra, `data-p="${p}"`)}</g>`;
+};
 /** a small label in a pill */
 const pill = (x: N, y: N, text: string, size: N, extra = '') => {
   const w = width(text, size) + 22;
@@ -232,7 +240,7 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
     const waves = [[206, 1.2, 36], [222, 1.6, 42], [244, 2.2, 50], [272, 3, 58], [308, 3.8, 66], [352, 4.6, 76], [404, 5.6, 88], [460, 6.4, 98]].map(([y, a, per], i) => {
       let d = `M${-per * 2} ${y}`;
       for (let x = -per * 2; x < 900; x += per) d += `q${per / 4} ${-a} ${per / 2} 0t${per / 2} 0`;
-      return G(`wave-${i}`, pen(d, i < 3 ? 'faint wave' : 'wave'), `data-per="${per}"`);
+      return G(`wave-${i}`, pen(d, i < 3 ? 'faint wave' : i === 4 || i === 6 ? 'ac wave' : 'wave'), `data-per="${per}"`);
     }).join('');
     // the Venetian building, an isometric block under a hipped roof of tiles, a flag on top
     const venetian = (() => {
@@ -281,7 +289,7 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
       G('harbour', [
         cloud('cloud-0', 420, 70, 1), cloud('cloud-1', 560, 120, 0.7), cloud('cloud-2', 250, 40, 0.8),
         pen('M392 196H800', 'faint'),
-        `<g clip-path="url(#ms-sea)">` + waves +
+        `<g clip-path="url(#ms-sea)">` + `<path class="sea" data-p="sea" d="M0 190H800V500H0Z"/>` + waves +
           G('sail', pen('M452 232H492L486 240H458Z', 'solid') + pen('M472 232V160') + pen('M472 164L496 228H472', 'solid')) +
           G('dinghies', [0, 1, 2, 3, 4].map((k) => pen(`M${520 + k * 22} 236L${528 + k * 22} 216V236Z`, 'solid')).join('')) +
           G('breakwater', pen('M580 262L800 248', 'thick-ish')) + `</g>`,
@@ -290,14 +298,16 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
         pen(quay), pen('M30 500Q190 410 402 292', 'thin'),
         G('lamps', lamps),
         walker('walker-0', 168, 438, 0.5), walker('walker-1', 236, 404, 0.45), walker('walker-2', 300, 360, 0.4, 'ac'),
+        written('chania-name', 52, 104, t(A.chania.city), 72, 'script'),
       ].join('')),
       G('beam-r', `<path class="beam" d="M660 78L812 54V104Z"/>`),
       G('beam-l', `<path class="beam" d="M652 78L500 56V102Z"/>`),
       G('campus', [
-        cloud('ccloud-0', 470, 30, 0.8), cloud('ccloud-1', 120, 22, 0.6),
-        // the wing: a quiet nod to the university's emblem
+        cloud('ccloud-0', 690, 34, 0.8), cloud('ccloud-1', 96, 22, 0.6),
+        // the wing (a nod to the university's emblem) and the university's name beside it, as its sign
         G('wing', pen('M372 58C378 38 402 24 434 24C428 30 428 32 440 34C432 40 430 42 442 46C432 50 426 52 434 56C418 60 394 56 372 58Z', 'ac') +
-          pen('M384 54C394 44 410 38 428 34M390 56C402 50 416 46 432 44', 'ac thin')),
+          pen('M384 54C394 44 410 38 428 34M390 56C402 50 416 46 432 44', 'ac thin'), 'transform="translate(-206 0)"'),
+        written('campus-name', 250, 52, t(A.chania.campus), 26, 'bold'),
         F(`M40 70Q400 230 760 70V352Q400 592 40 352Z`, 'stone'),
         pen('M40 70Q400 230 760 70'), pen('M40 70V352M760 70V352'),
         slits,
@@ -327,30 +337,25 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
       `<path class="ac-fill" d="${R(140, 336, 110, 36, 18)}"/>` + X(195, 360, t(A.graduation.send), 15, 'mid bold t-inv')),
     G('app', X(195, 452, A.graduation.app, 17, 'mid bold')),
     G('grad', person(590, 270, 1.6) + pen('M560 362L548 308') + pen('M620 362L634 312') + P(R(632, 296, 40, 16, 6), 'solid') + `<path class="ac-fill" d="M648 296h8v16h-8z"/>`),
+    written('grad-name', 590, 424, t(A.graduation.graduated), 56, 'script mid'),
+    G('degree', X(590, 456, t(A.graduation.degree), 14, 'mid')),
     G('cap', `<path class="fill-ink" d="M548 240L590 222L632 240L590 258Z"/>` + pen('M566 248V262C578 270 602 270 614 262V248') + pen('M624 243V266', 'ac') + `<circle class="ac-fill" cx="624" cy="268" r="4"/>`),
     burst('fw-0', 470, 110, 46), burst('fw-1', 660, 80, 56), burst('fw-2', 750, 200, 40),
     G('confetti', [[440, 200], [520, 60], [600, 140], [700, 130], [760, 290], [470, 300], [560, 40]].map(([x, y], i) =>
       `<rect class="${i % 2 ? 'ac-fill' : 'fill-ink'}" x="${x}" y="${y}" width="8" height="5" rx="1" transform="rotate(${i * 37} ${x} ${y})"/>`).join('')),
   ].join('') }),
 
-  // websites stack up; a shop fills and feeds the marketplaces; then 2019, campaigns against the clock
+  // websites stack up; a shop fills and feeds the marketplaces
   reach: () => ({ inner: [
     G('lead', P('M0 250C20 250 30 250 40 250')),
     [0, 1, 2].map((i) => G(`browser-${i}`, P(R(40 + i * 34, 60 + i * 30, 300, 200, 10), 'solid') + P(`M${40 + i * 34} ${92 + i * 30}H${340 + i * 34}`) +
       D(58 + i * 34, 76 + i * 30, 3.5) + D(70 + i * 34, 76 + i * 30, 3.5) + D(82 + i * 34, 76 + i * 30, 3.5) +
-      P(`M${62 + i * 34} ${118 + i * 30}H${200 + i * 34}`, 'thick') + P(`M${62 + i * 34} ${146 + i * 30}H${300 + i * 34}M${62 + i * 34} ${166 + i * 30}H${260 + i * 34}`), 'opacity="0"')).join(''),
+      P(`M${62 + i * 34} ${118 + i * 30}H${200 + i * 34}`, 'thick') + P(`M${62 + i * 34} ${146 + i * 30}H${300 + i * 34}M${62 + i * 34} ${166 + i * 30}H${260 + i * 34}`))).join(''),
     G('cart', P('M430 200H560L544 290H448Z', 'solid') + P('M430 200L418 176H398') + P(C(458, 312, 10)) + P(C(534, 312, 10))),
     [[452, 214, 26, 26], [484, 206, 26, 34], [516, 218, 22, 22]].map(([x, y, w, h], i) => G(`product-${i}`, P(R(x, y, w, h, 4), 'solid ac'))).join(''),
     A.reach.markets.map((m, i) => G(`market-${i}`, P(R(640, 90 + i * 110, 130, 54, 10), 'solid') + X(705, 123 + i * 110, m, 18, 'mid bold'))).join(''),
     [117, 227, 337].map((y, i) => G(`feed-${i}`, P(`M562 230C604 230 600 ${y} 632 ${y}`, 'ac') + P(`M624 ${y - 6}L634 ${y}L624 ${y + 6}`, 'ac'))).join(''),
     G('xml', X(596, 214, A.reach.feed, 15, 'mono t-ac mid')),
-    G('campaign', [
-      X(60, 70, A.reach.year, 26, 'mono bold'),
-      P('M60 400V230'), P('M60 232C90 222 110 242 140 232V282C110 292 90 272 60 282', 'ac'),
-      P('M200 330L262 300V380L200 350Z'), P(R(180, 330, 20, 20, 3)), P('M276 318Q292 340 276 362'), P('M290 306Q314 340 290 374'),
-      P(C(130, 150, 44)), G('hand', P('M130 150V116')), P('M130 150L156 160'), X(130, 222, A.reach.clock, 18, 'mono mid', 'data-clock'),
-      P(R(220, 90, 150, 130, 8), 'solid'), P('M240 122H340', 'thick'), P('M240 146H350M240 164H320'), F(R(240, 182, 64, 22, 11), 'ac-fill'),
-    ].join(''), 'opacity="0"'),
   ].join('') }),
 
   // a phone where the sun rises; the team around it; then the stage, the prize, a door, a board of what it taught
@@ -471,7 +476,7 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
       // (as it ends: folded into the corner; the script opens it out first)
       G('zurich', `<g clip-path="url(#ms-zurich)">` + [
         cloud('zcloud-0', 520, 92, 1), cloud('zcloud-1', 650, 136, 0.7), cloud('zcloud-2', 250, 100, 0.8),
-        X(56, 84, t(A.deindeal.city), 40, 'bold'),
+        written('zurich-name', 44, 70, t(A.deindeal.city), 64, 'script'),
         G('city', city), F(arches, 'face-l'), waves, G('bridge', bridge), G('boat', boat),
       ].join('') + '</g>' + G('zframe', pen(R(0, 0, 800, 500, 24), 'thick')), 'transform="translate(30 10) scale(0.32)"'),
       file(0, 440, 30) + file(1, 530, 20) + file(2, 620, 34) + file(3, 700, 40),
@@ -516,6 +521,7 @@ const view = scene.view ?? '0 0 800 500';
   preserveAspectRatio={name.startsWith('journey') ? 'xMidYMid slice' : 'xMidYMid meet'} set:html={scene.inner} />
 
 <style>
+  @font-face { font-family: 'Great Vibes'; src: url('/fonts/great-vibes-latin-400.woff2') format('woff2'); font-weight: 400; font-display: swap; }
   .ms-svg { display: block; width: 100%; height: 100%; overflow: visible; color: var(--ink); }
   /* the line widths, times --sw: the journey sets it as its camera pulls back, so its lines thin less than it shrinks */
   .ms-svg :global(path), .ms-svg :global(rect) { fill: none; stroke: currentColor; stroke-width: calc(2.4px * var(--sw, 1)); stroke-linecap: round; stroke-linejoin: round; }
@@ -567,12 +573,16 @@ const view = scene.view ?? '0 0 800 500';
   .ms-svg :global(.t-ac) { fill: var(--cobalt); }
   .ms-svg :global(.muted) { fill: color-mix(in srgb, currentColor 55%, transparent); }
   .ms-svg :global(.mono) { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  /* words by hand (the city names, the graduation): Great Vibes, OFL, in public/fonts with its licence */
+  .ms-svg :global(.script) { font-family: 'Great Vibes', 'Snell Roundhand', 'Segoe Script', cursive; font-weight: 400; }
+  .ms-svg :global(.sea) { fill: color-mix(in srgb, var(--cobalt) 9%, var(--paper)); stroke: none; }
   .ms-svg :global(.math) { font-family: Georgia, 'Times New Roman', serif; font-style: italic; }
   /* a phone: the picture shows at under half its size; the words that have room grow, so they still read (the
      rest of what a scene says is in its own words, beside it) */
   @media (max-width: 760px) {
     .art-firstyear :global(.math) { font-size: 28px; }
     .ms-svg :global([data-count]) { font-size: 48px; }
+    .art-graduation :global([data-p='degree'] text) { font-size: 18px; }
     /* the theory tags are listed under the words instead */
     .art-postgres :global([data-p^='tag-']) { display: none; }
   }

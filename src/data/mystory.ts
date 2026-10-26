@@ -68,8 +68,8 @@ export const scenes: Scene[] = [
     rail: { en: '2017', el: '2017' }, label: { en: '2017–2021', el: '2017–2021' },
     title: { en: 'My first job: Reach Web Agency', el: 'Η πρώτη μου δουλειά: Reach Web Agency' },
     text: {
-      en: 'My first job! At Reach I learned the trade and took my first steps in freelancing: first clients, first websites, first e-commerce stores connected to marketplaces. 2019 — political campaigns: shipping fast under pressure.',
-      el: 'Η πρώτη μου δουλειά! Στη Reach έμαθα τη δουλειά και έκανα τα πρώτα μου βήματα στο freelancing: πρώτοι πελάτες, πρώτα sites, πρώτα e-shops συνδεδεμένα με marketplaces. 2019 — πολιτικές καμπάνιες: παράδοση με πίεση χρόνου.',
+      en: 'My first job! At Reach I learned the trade and took my first steps in freelancing: first clients, first websites, first e-commerce stores connected to marketplaces.',
+      el: 'Η πρώτη μου δουλειά! Στη Reach έμαθα τη δουλειά και έκανα τα πρώτα μου βήματα στο freelancing: πρώτοι πελάτες, πρώτα sites, πρώτα e-shops συνδεδεμένα με marketplaces.',
     },
   },
   {
@@ -120,7 +120,7 @@ export const scenes: Scene[] = [
 
 /** The words drawn inside the scenes, by scene. */
 export const art = {
-  chania: { campus: { en: 'Technical University of Crete', el: 'Πολυτεχνείο Κρήτης' } },
+  chania: { city: { en: 'Chania', el: 'Χανιά' }, campus: { en: 'Technical University of Crete', el: 'Πολυτεχνείο Κρήτης' } },
   /** the skills the train carries: the first ones on board from the start, then one more loaded at every stop */
   cargo: {
     first: ['C++', 'Java', 'Maths'],
@@ -192,13 +192,13 @@ export const art = {
     app: 'Smart Questionnaire Generator',
     question: { en: 'How was your meal?', el: 'Πώς ήταν το γεύμα σας;' },
     send: { en: 'Send', el: 'Αποστολή' },
+    graduated: { en: 'Graduated', el: 'Αποφοίτησα' },
+    degree: { en: 'MEng · Electrical & Computer Engineering', el: 'Δίπλωμα Μηχανικού · Ηλεκτρολόγων Μηχανικών & Μηχανικών Υπολογιστών' },
   },
   station: { en: 'Diploma Thesis', el: 'Διπλωματική' },
   reach: {
     markets: ['Skroutz', 'Amazon', 'Google'],
     feed: 'XML',
-    year: '2019',
-    clock: '23:59:59',
   },
   kalimera: {
     mvp: { en: '2021 — MVP launch', el: '2021 — Λανσάρισμα MVP' },

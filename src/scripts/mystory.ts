@@ -51,6 +51,12 @@ const type = (tl: Tl, el: El, at: number, duration: number) => {
   show(tl, el, at, true, 0.01);
   tl.fromTo(o, { n: 0 }, { n: full.length, duration, ease: 'none', onUpdate: () => { el.textContent = full.slice(0, Math.round(o.n)); } }, at);
 };
+/** words that write themselves (`written` in MyStoryArt): the rect that clips them widens from nothing */
+const write = (tl: Tl, svg: Element, p: string, at: number, duration: number) => {
+  const pen = part(svg, `${p}-pen`);
+  if (!pen) return;
+  tl.fromTo(pen, { attr: { width: 0 } }, { attr: { width: Number(pen.getAttribute('width')) }, duration, ease: 'power1.inOut' }, at);
+};
 /** a number counts up to what the picture says */
 const count = (tl: Tl, el: El, at: number, duration: number, to: number, format: (v: number) => string) => {
   if (!el) return;
@@ -85,7 +91,9 @@ const SCENES: Record<string, Scene> = {
     faces(tl, harbour, 'venetian', 0.7); faces(tl, harbour, 'fort', 0.8);
     show(tl, [...harbour.querySelectorAll('.roof, [data-p="roof"] .face-r, [data-p="flag"] .ac-fill, [data-p="lighthouse"] > .face-r')], 0.8, true, 0.4);
     // the sea coming in, the boats, the people on the quay
+    show(tl, part(svg, 'sea'), 0.3, true, 0.8);
     draw(tl, waves.flatMap(strokes), 0.3, 0.8, 0.06);
+    write(tl, svg, 'chania-name', 0.8, 1.2);
     draw(tl, all(part(svg, 'sail'), part(svg, 'dinghies')), 0.9, 0.4, 0.06);
     draw(tl, parts(svg, 'walker-').flatMap(strokes), 1.0, 0.4, 0.04);
     show(tl, [part(svg, 'beam-r'), part(svg, 'beam-l')], 1.2, true, 0.3);
@@ -110,6 +118,7 @@ const SCENES: Record<string, Scene> = {
     tl.fromTo(crowd, { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: true }, 4.0);
     const fans = parts(svg, 'fan-').filter((f) => !f.dataset.p!.endsWith('-arms'));
     tl.fromTo(fans, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out', stagger: 0.04 }, 4.0);
+    write(tl, svg, 'campus-name', 4.4, 1.1);
     parts(svg, 'fan-').filter((f) => f.dataset.p!.endsWith('-arms')).forEach((arms, i) =>
       loop(idle, gsap.to(arms, { y: -3, rotation: i % 2 ? 8 : -8, transformOrigin: '50% 100%', duration: 0.45 + (i % 3) * 0.1, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: i * 0.05 })));
     parts(svg, 'ccloud-').forEach((c, i) => loop(idle, gsap.to(c, { x: 24 + i * 10, duration: 8 + i * 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })));
@@ -171,6 +180,8 @@ const SCENES: Record<string, Scene> = {
         .to(fw, { opacity: 0, duration: 0.6, ease: 'power1.in' }, 0.5));
     });
     tl.fromTo(part(svg, 'confetti')!.children, { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.06, ease: 'power2.out' }, 2.4);
+    write(tl, svg, 'grad-name', 2.6, 1.1);
+    show(tl, part(svg, 'degree'), 3.4, true, 0.4);
     loop(idle, gsap.to(part(svg, 'confetti')!.children, { y: 14, rotation: 40, duration: 1.4, ease: 'sine.inOut', stagger: 0.12, yoyo: true, repeat: -1 }));
   },
 
@@ -186,15 +197,6 @@ const SCENES: Record<string, Scene> = {
     pop(tl, parts(svg, 'market-'), 2.0, '50% 50%', 0.12);
     draw(tl, all(...parts(svg, 'feed-')), 2.3, 0.4, 0.12);
     show(tl, part(svg, 'xml'), 2.5);
-    // 2019: campaigns against the clock
-    show(tl, browsers, 3.1, false, 0.3);
-    const campaign = part(svg, 'campaign');
-    show(tl, campaign, 3.2, true, 0.1);
-    draw(tl, strokes(campaign), 3.25, 0.6, 0.03);
-    tl.fromTo(part(svg, 'hand'), { rotation: 0, svgOrigin: '130 150' }, { rotation: 720, svgOrigin: '130 150', duration: 1.4, ease: 'none' }, 3.8);
-    const clock = svg.querySelector('[data-clock]');
-    const left = { s: 59 };
-    tl.fromTo(left, { s: 59 }, { s: 0, duration: 1.4, ease: 'none', onUpdate: () => { if (clock) clock.textContent = `23:59:${String(Math.round(left.s)).padStart(2, '0')}`; } }, 3.8);
   },
 
   kalimera(tl, svg, step) {
@@ -260,7 +262,7 @@ const SCENES: Record<string, Scene> = {
     show(tl, part(svg, 'zframe'), 3.5, true, 0.3);
     draw(tl, strokes(part(svg, 'lead')), 0, 0.3);
     draw(tl, parts(svg, 'zcloud-').flatMap(strokes), 0, 0.6, 0.1);
-    show(tl, zurich.querySelector('text'), 0.3, true, 0.4);
+    write(tl, svg, 'zurich-name', 0.4, 1.1);
     draw(tl, strokes(part(svg, 'city')), 0.1, 0.8, 0.006);
     show(tl, [...zurich.querySelectorAll('.face-r, .face-l, .ac-fill')], 0.7, true, 0.5);
     draw(tl, waves.flatMap(strokes), 0.4, 0.8, 0.06);
