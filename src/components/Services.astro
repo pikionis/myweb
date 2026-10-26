@@ -11,6 +11,8 @@ const steps = (services.length - 1) + services.reduce((n, s) => n + Math.max(car
 const arrow = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>';
 const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" /></svg>';
 const storyOf = (key: string) => stories.find((st) => st.service === key);
+const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7" /></svg>';
+const close = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>';
 const up = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" /></svg>';
 // a project's own text, unless it is still to be written; then its one-line summary
 const ownText = (p: (typeof services)[number]['projects'][number]) =>
@@ -81,6 +83,12 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                             <span class="pfallback" aria-hidden="true" data-t={p.data.title}></span>
                             <iframe src={live} title={`${p.data.title} ${ui.live.site}`} loading="lazy" tabindex="-1"
                               sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
+                            <!-- a phone: the finger scrolls the page; this opens the site full screen to scroll through it -->
+                            <button type="button" class="live-preview" data-preview={live} data-name={p.data.title}
+                              data-frame-title={`${p.data.title} ${ui.live.site}`} data-visit={p.data.url ?? live}
+                              aria-label={`${ui.live.preview}: ${p.data.title}`}>
+                              <Fragment set:html={expand} />{ui.live.preview}
+                            </button>
                           </div>
                         ) : scope ? (
                           <>
@@ -124,6 +132,16 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
     </div>
   </div>
 
+
+  <!-- a phone's full-screen preview of a live site (livePreview in src/scripts/livesites.ts moves it to <body>) -->
+  <div class="lp" data-lp role="dialog" aria-modal="true" aria-labelledby="lp-name" hidden>
+    <div class="lp-bar">
+      <p class="lp-name" id="lp-name" data-lp-name></p>
+      <a class="lp-visit" data-lp-visit href="#" target="_blank" rel="noopener">{ui.visitSite}<Fragment set:html={arrow} /></a>
+      <button type="button" class="lp-close" data-lp-close aria-label={ui.live.close}><Fragment set:html={close} /></button>
+    </div>
+    <div class="lp-frame" data-lp-frame></div>
+  </div>
 </section>
 
 <style>
@@ -147,6 +165,9 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
   /* a picture behind a sheet sits under a scrim of the sheet's own ground, which keeps every word at 4.5:1
      or better whatever the picture */
   .svc[data-image] { background: var(--image) center / cover no-repeat; }
+  /* depth: as sheets stack, the ones further back sit a little smaller and darker, like folders inside a folder
+     (--shade and the scale are set by workstack.ts; in the flow both stay at rest) */
+  .svc::after { content: ''; position: absolute; inset: 0; z-index: 6; border-radius: inherit; pointer-events: none; background: rgb(10 11 10 / var(--shade, 0)); }
   .svc[data-image]::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--scrim); }
   .svc-in {
     display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: var(--band) auto; column-gap: 24px;
@@ -240,6 +261,35 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
     .site-live { z-index: 2; }
     .site-live iframe { pointer-events: auto; }
   }
+  /* a phone (or any touch screen): "Preview" in the middle of the site opens it full screen */
+  .live-preview { display: none; }
+  @media not all and (hover: hover) and (pointer: fine) and (min-width: 768px) {
+    .live-preview {
+      position: absolute; z-index: 2; left: 50%; top: 50%; translate: -50% -50%;
+      display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border: 0; border-radius: 100px;
+      background: color-mix(in srgb, var(--ink) 86%, transparent); color: var(--ivory); font: inherit; font-size: 0.9375rem; font-weight: 600;
+      box-shadow: 0 10px 28px -12px rgb(0 0 0 / 0.55); cursor: pointer; transition: scale 0.16s var(--ease-out);
+    }
+    .live-preview:active { scale: 0.96; }
+    .live-preview:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  }
+
+  /* the full-screen preview (livePreview in livesites.ts): the site at the phone's own width, to scroll through */
+  .lp { position: fixed; inset: 0; z-index: 95; display: flex; flex-direction: column; background: #141414; color: #f4f3ef; }
+  .lp[hidden] { display: none; }
+  .lp-bar { flex: none; display: flex; align-items: center; gap: 10px; padding: calc(8px + env(safe-area-inset-top, 0px)) 10px 8px 18px; }
+  .lp-name { flex: 1; min-width: 0; margin: 0; font-size: 1.0625rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lp-visit {
+    flex: none; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 6px;
+    color: inherit; font-size: 0.9375rem; font-weight: 500; text-decoration: underline; text-underline-offset: 0.25em;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  }
+  .lp-close { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: #f4f3ef; color: #141414; cursor: pointer; }
+  .lp-visit:focus-visible, .lp-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .lp-frame { flex: 1; min-height: 0; margin: 0 8px calc(8px + env(safe-area-inset-bottom, 0px)); border-radius: 14px; overflow: hidden; background: #1f201d; }
+  /* the frame is made by the script, so it carries none of this component's scoping */
+  .lp-frame :global(iframe) { display: block; width: 100%; height: 100%; border: 0; }
+  :global(html.lp-open) { overflow: hidden; overscroll-behavior: none; }
   /* engineering work: the figure and the scope instead of a picture */
   /* in the flow the card grows to its contents; held in the stack it fills the card like a picture would */
   .spec { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; padding: clamp(18px, 2vw, 26px); aspect-ratio: auto; min-height: 200px; }

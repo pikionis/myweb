@@ -16,6 +16,15 @@ const PINNED = '(min-width: 861px) and (min-height: 740px) and (prefers-reduced-
 const PHONE = '(max-width: 860px) and (min-height: 560px) and (prefers-reduced-motion: no-preference)';
 /** Breathing room kept under a held sheet's words, in px. */
 const ROOM = 12;
+/** Depth: how much smaller and darker a sheet sits for each sheet stacked in front of it (folders in a folder). */
+const DEPTH = { scale: 0.025, shade: 0.05 };
+/** The sheets behind the one coming in step back one level of depth, in the same time it takes to come in. */
+const recede = (tl: gsap.core.Timeline, behind: HTMLElement[], at: number, duration: number) => {
+  behind.forEach((sheet, k) => {
+    const level = behind.length - k;
+    tl.to(sheet, { scale: 1 - DEPTH.scale * level, '--shade': DEPTH.shade * level, transformOrigin: '50% 0', ease: 'none', duration }, at);
+  });
+};
 
 export function workStack(root: HTMLElement) {
   watchVideos(root);
@@ -91,8 +100,9 @@ export function workStack(root: HTMLElement) {
     let at = 0;
     sheets.forEach((sheet, i) => {
       if (i > 0) {
-        // the next service rises from below the screen into its place in the stack
+        // the next service rises from below the screen into its place in the stack; the ones behind step back
         tl.fromTo(sheet, { y: () => window.innerHeight }, { y: 0, ease: 'none', duration: 1 }, at);
+        recede(tl, sheets.slice(0, i), at, 1);
         at += 1;
       }
       [...sheet.querySelectorAll<HTMLElement>('[data-pcard]')].forEach((card, j) => {
@@ -165,6 +175,7 @@ function holdPhone(root: HTMLElement, pin: HTMLElement, sheets: HTMLElement[]) {
     comes.push(at);
     if (i > 0) {
       tl.fromTo(p.sheet, { y: () => pin.clientHeight }, { y: 0, ease: 'none', duration: SLIDE }, at);
+      recede(tl, plans.slice(0, i).map((q) => q.sheet), at, SLIDE);
       at += SLIDE;
     }
     opens.push(at);

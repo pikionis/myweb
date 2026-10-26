@@ -277,8 +277,9 @@ export const ui = {
     again: 'See again',
   },
   visitSite: 'Visit site',
-  /** a project's live site in its card (home page): the frame's name, after the title */
-  live: { site: 'website' },
+  /** a project's live site in its card (home page): the frame's name, after the title; on a phone, the button
+   *  that opens it full screen, and the one that closes it */
+  live: { site: 'website', preview: 'Preview', close: 'Close preview' },
   /** under a project's own text, when it has a story to read (its page) */
   readStory: 'Read the full story of our collaboration',
   /** the service stories (src/components/Stories.astro) */
