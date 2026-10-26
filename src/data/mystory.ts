@@ -190,6 +190,12 @@ export const art = {
   years: [2009, 2016],
   /** the course counter beside the ride */
   course: { en: 'course', el: 'μάθημα' },
+  /** the ride can be taken by hand: dragged sideways, or sent back and on again */
+  ride: {
+    back: { en: 'Ride it back', el: 'Πίσω με το τρενάκι' },
+    again: { en: 'Ride it again', el: 'Ξανά το τρενάκι' },
+    drag: { en: 'Or drag the ride sideways', el: 'Ή σύρε το τρενάκι δεξιά-αριστερά' },
+  },
   /** what the years held, drawn along the ride */
   moments: [
     { en: 'code', el: 'κώδικας' }, { en: 'lectures', el: 'διαλέξεις' }, { en: 'group sessions', el: 'ομαδικά sessions' },
@@ -235,7 +241,6 @@ export const art = {
     refresh: { en: 'daily refresh', el: 'καθημερινή ανανέωση' },
   },
   side: [
-    { name: 'Archon Yachting', text: { en: 'Yacht charter platform with bookings and payments.', el: 'Πλατφόρμα ναύλωσης σκαφών με κρατήσεις και πληρωμές.' } },
     { name: 'Arogi Kos · Arangia · La Islakos', text: { en: 'Brand-led websites and an online store.', el: 'Brand-led ιστοσελίδες και ένα online κατάστημα.' } },
     { name: 'Feed Intelligence', text: { en: '6-stage translation pipeline, 220,000-SKU catalogue.', el: 'Pipeline μετάφρασης 6 σταδίων, κατάλογος 220.000 SKU.' } },
   ],

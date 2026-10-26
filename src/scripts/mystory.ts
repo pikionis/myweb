@@ -1,6 +1,5 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { TextPlugin } from 'gsap/TextPlugin';
 
 /*
  * "My story" on /about (src/components/MyStory.astro). Every scene is a screen: one scroll brings the next one
@@ -11,7 +10,7 @@ import { TextPlugin } from 'gsap/TextPlugin';
  * With reduced motion every scene is shown as it ends, one after another, and simply fades in as it arrives.
  */
 
-gsap.registerPlugin(ScrollTrigger, TextPlugin);
+gsap.registerPlugin(ScrollTrigger);
 
 type Tl = gsap.core.Timeline;
 type El = Element | null;
@@ -43,14 +42,20 @@ const show = (tl: Tl, el: El | El[], at: number, on = true, duration = 0.25) =>
   void tl.fromTo(el, { opacity: on ? 0 : 1 }, { opacity: on ? 1 : 0, duration, ease: 'power1.out', immediateRender: on }, at);
 const pop = (tl: Tl, el: El | El[], at: number, origin = '50% 50%', stagger = 0) =>
   void tl.fromTo(el, { opacity: 0, scale: 0.6, transformOrigin: origin }, { opacity: 1, scale: 1, duration: 0.45, ease: 'expo.out', stagger }, at);
-/** words are written in */
-const type = (tl: Tl, el: El, at: number, duration: number) =>
-  void (el && tl.fromTo(el, { text: '' }, { text: el.textContent ?? '', duration, ease: 'none' }, at));
+/** words are written in, a letter at a time (as plain text: code such as <iostream> stays as it is). Hidden until
+ *  their moment, so a scene starting over shows them blank again */
+const type = (tl: Tl, el: El, at: number, duration: number) => {
+  if (!el) return;
+  const full = el.textContent ?? '';
+  const o = { n: 0 };
+  show(tl, el, at, true, 0.01);
+  tl.fromTo(o, { n: 0 }, { n: full.length, duration, ease: 'none', onUpdate: () => { el.textContent = full.slice(0, Math.round(o.n)); } }, at);
+};
 /** a number counts up to what the picture says */
 const count = (tl: Tl, el: El, at: number, duration: number, to: number, format: (v: number) => string) => {
   if (!el) return;
   const o = { v: 0 };
-  gsap.set(el, { text: format(0) });
+  el.textContent = format(0);
   tl.fromTo(o, { v: 0 }, { v: to, duration, ease: 'power1.out', onUpdate: () => { el.textContent = format(o.v); } }, at);
 };
 
@@ -70,54 +75,65 @@ const SCENES: Record<string, Scene> = {
   },
 
   chania(tl, svg, _step, idle) {
-    const harbour = part(svg, 'harbour')!, campus = part(svg, 'campus')!;
-    draw(tl, strokes(part(svg, 'lead')), 0, 0.2);
-    draw(tl, strokes(part(svg, 'sun')), 0.05, 0.5, 0.02);
-    // the harbour, its houses rising off the page, the lighthouse, the sea coming in
-    draw(tl, strokes(harbour).filter((e) => !e.closest('[data-p="sun"], [data-p^="wave-"], [data-p="boat"]')), 0.15, 0.6, 0.012);
-    faces(tl, harbour, 'house-', 0.7); faces(tl, harbour, 'mosque', 0.8); faces(tl, harbour, 'lh-base', 0.9);
+    const harbour = part(svg, 'harbour')!, campus = part(svg, 'campus')!, crowd = part(svg, 'crowd')!;
     const waves = parts(svg, 'wave-');
-    draw(tl, waves.flatMap(strokes), 0.3, 0.8, 0.12);
-    draw(tl, strokes(part(svg, 'boat')), 0.9, 0.4);
-    show(tl, part(svg, 'boat')!.querySelector('.ac-fill'), 1.1);
-    show(tl, [part(svg, 'beam-r'), part(svg, 'beam-l')], 1.1, true, 0.3);
-    // the sea moves, the boat rocks, the lighthouse turns its light
-    waves.forEach((w, i) => loop(idle, gsap.to(w, { x: i % 2 ? Number(w.dataset.per) : -Number(w.dataset.per), duration: 3.2 + i * 0.7, ease: 'none', repeat: -1 })));
-    loop(idle, gsap.to(part(svg, 'boat'), { y: 5, rotation: 3, svgOrigin: '470 390', duration: 1.6, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
-    loop(idle, gsap.timeline({ repeat: -1 }).to(part(svg, 'beam-r'), { opacity: 0.15, duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: 1 })
-      .to(part(svg, 'beam-l'), { opacity: 0.15, duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: 1 }));
-    // then the harbour gives way to the university, and its students
-    tl.to(harbour, { opacity: 0, y: -20, duration: 0.5, ease: 'power2.in' }, 2.6);
-    tl.fromTo(campus, { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: true }, 3.0);
-    draw(tl, strokes(campus), 3.0, 0.7, 0.015);
-    faces(tl, campus, 'uni-', 3.5, 0.12);
-    show(tl, campus.querySelector('text'), 3.8);
-    const students = parts(svg, 'student-').filter((e) => !e.dataset.p!.endsWith('-legs'));
-    tl.fromTo(students, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out', stagger: 0.12 }, 3.8);
-    students.forEach((st, i) => {
-      loop(idle, gsap.to(st, { x: i % 2 ? -26 : 26, duration: 2.4 + i * 0.3, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
-      loop(idle, gsap.to(st.querySelector('[data-p$="-legs"]'), { scaleX: -1, transformOrigin: '50% 0%', duration: 0.35, ease: 'none', yoyo: true, repeat: -1 }));
+    const later = '[data-p^="wave-"], [data-p="sail"], [data-p="dinghies"], [data-p^="walker-"], [data-p^="cloud-"]';
+    draw(tl, strokes(part(svg, 'lead')), 0, 0.15);
+    draw(tl, parts(svg, 'cloud-').flatMap(strokes), 0, 0.6, 0.1);
+    // the quay, the Venetian building and its roof, the lighthouse on its fort
+    draw(tl, strokes(harbour).filter((e) => !e.closest(later)), 0.1, 0.6, 0.008);
+    faces(tl, harbour, 'venetian', 0.7); faces(tl, harbour, 'fort', 0.8);
+    show(tl, [...harbour.querySelectorAll('.roof, [data-p="roof"] .face-r, [data-p="flag"] .ac-fill, [data-p="lighthouse"] > .face-r')], 0.8, true, 0.4);
+    // the sea coming in, the boats, the people on the quay
+    draw(tl, waves.flatMap(strokes), 0.3, 0.8, 0.06);
+    draw(tl, all(part(svg, 'sail'), part(svg, 'dinghies')), 0.9, 0.4, 0.06);
+    draw(tl, parts(svg, 'walker-').flatMap(strokes), 1.0, 0.4, 0.04);
+    show(tl, [part(svg, 'beam-r'), part(svg, 'beam-l')], 1.2, true, 0.3);
+    // and it all moves: the sea, the boats, the passers-by, the clouds, the lighthouse's light
+    waves.forEach((w, i) => loop(idle, gsap.to(w, { x: (i % 2 ? 1 : -1) * Number(w.dataset.per), duration: 2.6 + i * 0.5, ease: 'none', repeat: -1 })));
+    loop(idle, gsap.to(part(svg, 'sail'), { y: 3, rotation: 2, svgOrigin: '472 236', duration: 1.8, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    loop(idle, gsap.to(part(svg, 'dinghies'), { x: 18, duration: 6, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    parts(svg, 'cloud-').forEach((c, i) => loop(idle, gsap.to(c, { x: 30 + i * 10, duration: 9 + i * 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })));
+    parts(svg, 'walker-').filter((w) => !w.dataset.p!.endsWith('-legs')).forEach((w, i) => {
+      loop(idle, gsap.to(w, { x: i % 2 ? -22 : 22, y: i % 2 ? 12 : -12, duration: 3 + i, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+      loop(idle, gsap.to(w.querySelector('[data-p$="-legs"]'), { scaleX: -1, transformOrigin: '50% 0%', duration: 0.35, ease: 'none', yoyo: true, repeat: -1 }));
     });
+    // (the light pulses inside its group, so the group can still leave with the harbour)
+    loop(idle, gsap.timeline({ repeat: -1 }).to(part(svg, 'beam-r')!.firstElementChild, { opacity: 0.3, duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: 1 })
+      .to(part(svg, 'beam-l')!.firstElementChild, { opacity: 0.3, duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: 1 }));
+    // then the harbour gives way to the university: its round courtyard, and its students cheering
+    tl.to([harbour, part(svg, 'beam-r'), part(svg, 'beam-l')], { opacity: 0, y: -16, duration: 0.5, ease: 'power2.in' }, 3.0);
+    tl.fromTo(campus, { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: true }, 3.4);
+    show(tl, [...campus.querySelectorAll('.stone')], 3.4, true, 0.6);
+    draw(tl, strokes(campus), 3.4, 0.8, 0.012);
+    show(tl, [...campus.querySelectorAll('.slit, .pane')], 3.8, true, 0.5);
+    tl.fromTo(crowd, { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: true }, 4.0);
+    const fans = parts(svg, 'fan-').filter((f) => !f.dataset.p!.endsWith('-arms'));
+    tl.fromTo(fans, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out', stagger: 0.04 }, 4.0);
+    parts(svg, 'fan-').filter((f) => f.dataset.p!.endsWith('-arms')).forEach((arms, i) =>
+      loop(idle, gsap.to(arms, { y: -3, rotation: i % 2 ? 8 : -8, transformOrigin: '50% 100%', duration: 0.45 + (i % 3) * 0.1, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: i * 0.05 })));
+    parts(svg, 'ccloud-').forEach((c, i) => loop(idle, gsap.to(c, { x: 24 + i * 10, duration: 8 + i * 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })));
   },
 
   firstyear(tl, svg) {
-    draw(tl, strokes(part(svg, 'lead')), 0, 0.2);
+    draw(tl, strokes(part(svg, 'lead')), 0, 0.15);
     draw(tl, strokes(part(svg, 'board')), 0.05, 0.5, 0.05);
-    [...svg.querySelectorAll('[data-line]')].forEach((line, i) => type(tl, line, 0.4 + i * 0.35, 0.3));
+    // the lecture hall fills, row by row
+    draw(tl, strokes(part(svg, 'hall')), 0.2, 0.5, 0.01);
+    draw(tl, strokes(part(svg, 'student')), 0.4, 0.4);
+    [...svg.querySelectorAll('[data-line]')].forEach((line, i) => type(tl, line, 0.5 + i * 0.35, 0.3));
     // C++, then Java
     const cpp = part(svg, 'cpp')!, java = part(svg, 'java')!;
-    draw(tl, strokes(cpp), 0.5, 0.4);
-    show(tl, [...cpp.querySelectorAll('circle'), cpp.querySelector('.muted')], 0.7);
-    [...cpp.querySelectorAll('[data-type]')].forEach((line, i) => type(tl, line, 0.8 + i * 0.18, 0.16));
-    draw(tl, strokes(java), 1.9, 0.4);
-    show(tl, [...java.querySelectorAll('circle, .ac-fill'), java.querySelector('.muted')], 2.1);
-    [...java.querySelectorAll('[data-type]')].forEach((line, i) => type(tl, line, 2.2 + i * 0.2, 0.18));
-    // and their student
-    draw(tl, strokes(part(svg, 'desk')), 0.2, 0.4);
-    draw(tl, strokes(part(svg, 'student')), 0.4, 0.5);
-    show(tl, [part(svg, 'arms'), part(svg, 'cheer')], 3.1, true, 0.05);
-    draw(tl, all(part(svg, 'arms'), part(svg, 'cheer')), 3.1, 0.3, 0.05);
-    tl.to(part(svg, 'student'), { keyframes: [{ y: -10, duration: 0.15 }, { y: 0, duration: 0.15 }] }, 3.15);
+    draw(tl, strokes(cpp), 0.6, 0.4);
+    show(tl, [...cpp.querySelectorAll('circle'), cpp.querySelector('.muted')], 0.8);
+    [...cpp.querySelectorAll('[data-type]')].forEach((line, i) => type(tl, line, 0.9 + i * 0.18, 0.16));
+    draw(tl, strokes(java), 2.0, 0.4);
+    show(tl, [...java.querySelectorAll('circle, .ac-fill'), java.querySelector('.muted')], 2.2);
+    [...java.querySelectorAll('[data-type]')].forEach((line, i) => type(tl, line, 2.3 + i * 0.2, 0.18));
+    // and a student in the front row who can't sit still
+    show(tl, [part(svg, 'arms'), part(svg, 'cheer')], 3.2, true, 0.05);
+    draw(tl, all(part(svg, 'arms'), part(svg, 'cheer')), 3.2, 0.3, 0.05);
+    tl.to(part(svg, 'student'), { keyframes: [{ y: -10, duration: 0.15 }, { y: 0, duration: 0.15 }] }, 3.25);
   },
 
   postgres(tl, svg) {
@@ -152,6 +168,7 @@ const SCENES: Record<string, Scene> = {
     if (!ride) return;
     tl.fromTo(ride.state, { p: 0 }, { p: 1, duration: 7, ease: 'power1.inOut', onUpdate: ride.place }, 0.3);
     show(tl, ride.station, 6.6, true, 0.3);
+    byHand(tl, step, ride);
   },
 
   graduation(tl, svg, _step, idle) {
@@ -283,9 +300,9 @@ const SCENES: Record<string, Scene> = {
     draw(tl, strokes(part(svg, 'lead')), 0, 0.2);
     draw(tl, [part(svg, 'line')!], 0.1, 1);
     const notes = [...step.querySelectorAll('[data-note]')];
-    [0, 1, 2].forEach((i) => {
+    notes.forEach((_, i) => {
       pop(tl, part(svg, `sdot-${i}`), 0.5 + i * 0.25);
-      pop(tl, part(svg, `scard-${i}`), 1.2 + i * 0.5, i === 1 ? '50% 0%' : '50% 100%');
+      pop(tl, part(svg, `scard-${i}`), 1.2 + i * 0.5, i === 0 ? '50% 100%' : '50% 0%');
       tl.fromTo(notes[i], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 1.3 + i * 0.5);
     });
   },
@@ -302,6 +319,49 @@ const SCENES: Record<string, Scene> = {
     tl.fromTo(parts(svg, 'role-'), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.5 }, 1.1);
   },
 };
+
+/** The ride, taken by hand: dragged sideways (left goes on, right goes back, as if pulling the track), or sent
+ *  all the way back, and on again, by its button. Taking it over stops it riding by itself. */
+function byHand(tl: Tl, step: HTMLElement, ride: NonNullable<ReturnType<typeof coaster>>) {
+  const box = step.querySelector<HTMLElement>('.ms-coaster');
+  const button = step.querySelector<HTMLButtonElement>('[data-ride]');
+  if (!box || !button || box.dataset.byHand) return;
+  box.dataset.byHand = '1';
+  let going: gsap.core.Tween | null = null;
+  const label = () => {
+    const back = ride.state.p > 0.5;
+    button.dataset.dir = back ? 'back' : 'on';
+    button.querySelector('[data-ride-label]')!.textContent = back ? button.dataset.back! : button.dataset.again!;
+  };
+  const takeOver = () => {
+    if (tl.isActive()) tl.pause();
+    going?.kill();
+    gsap.set(ride.station, { opacity: 1 });
+  };
+  // the scene starting again lets go of the ride
+  tl.call(() => { going?.kill(); ride.state.max = 0; }, [], 0.01);
+  tl.call(label, [], 7.4);
+  button.addEventListener('click', () => {
+    takeOver();
+    const to = ride.state.p > 0.5 ? 0 : 1;
+    going = gsap.to(ride.state, { p: to, duration: 1.2 + 4.8 * Math.abs(to - ride.state.p), ease: 'power1.inOut', onUpdate: ride.place, onComplete: label });
+  });
+  let x0 = 0, p0 = 0, dragging = false;
+  box.addEventListener('pointerdown', (e) => {
+    takeOver();
+    dragging = true; x0 = e.clientX; p0 = ride.state.p;
+    box.setPointerCapture(e.pointerId);
+    box.classList.add('dragging');
+  });
+  box.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    ride.state.p = gsap.utils.clamp(0, 1, p0 - (e.clientX - x0) / (box.clientWidth * 2.2));
+    ride.place();
+  });
+  const end = () => { if (!dragging) return; dragging = false; box.classList.remove('dragging'); label(); };
+  box.addEventListener('pointerup', end);
+  box.addEventListener('pointercancel', end);
+}
 
 /** The rollercoaster on show (along on a wide screen, down on a phone): its cart rides the track, the camera
  *  keeps it in the middle, each course lights as the cart passes. */
@@ -335,15 +395,25 @@ function coaster(step: HTMLElement) {
   let counted = -1;
   const peakFrom = at[Math.max(0, stops.findIndex((s) => s.classList.contains('ac-fill')) - 1)];
   let shown = -1;
-  const state = { p: 0 };
+  // p: where the cart is; max: how far it has been (the track stays laid that far, even when it rides back)
+  const state = { p: 0, max: 0 };
   const place = () => {
     const len = state.p * L;
     const pt = track.getPointAtLength(len), ahead = track.getPointAtLength(Math.min(L, len + 3)), behind = track.getPointAtLength(Math.max(0, len - 3));
     const angle = (Math.atan2(ahead.y - behind.y, ahead.x - behind.x) * 180) / Math.PI;
     cart.setAttribute('transform', `translate(${pt.x} ${pt.y}) rotate(${angle})`);
-    world.setAttribute('transform', vertical ? `translate(0 ${vb.height / 2 - pt.y})` : `translate(${vb.width / 2 - pt.x} 0)`);
+    // the camera follows the cart, but never past either end of the ride
+    const w = svg.clientWidth || 1, h = svg.clientHeight || 1;
+    if (vertical) {
+      const seen = (vb.width * h) / w;
+      world.setAttribute('transform', `translate(0 ${gsap.utils.clamp(seen / 2 - vb.height / 2, vb.height / 2 - seen / 2, vb.height / 2 - pt.y)})`);
+    } else {
+      const seen = (vb.height * w) / h;
+      world.setAttribute('transform', `translate(${gsap.utils.clamp(seen / 2 - vb.width / 2, vb.width / 2 - seen / 2, vb.width / 2 - pt.x)} 0)`);
+    }
     // the track lays itself a little ahead of the cart; the cobalt peak once the cart nears it
-    track.style.strokeDashoffset = String(Math.max(0, 1 - Math.min(1, state.p + 0.05)));
+    state.max = Math.max(state.max, state.p);
+    track.style.strokeDashoffset = String(Math.max(0, 1 - Math.min(1, state.max + 0.05)));
     peak.style.opacity = len >= peakFrom ? '1' : '0';
     let k = 0;
     at.forEach((l, i) => { if (len >= l - 2) k = i; stops[i].classList.toggle('passed', len >= l - 2); });
@@ -426,19 +496,31 @@ export function myStory(root: HTMLElement) {
       if (!play) return;
       const go = () => { play.tl.restart(); play.idle.forEach((a) => a.play()); };
       const rest = () => { play.tl.pause(); play.idle.forEach((a) => a.pause()); };
-      ScrollTrigger.create({ trigger: step, start: 'top 60%', end: 'bottom 40%', onEnter: go, onEnterBack: go, onLeave: rest, onLeaveBack: rest });
+      ScrollTrigger.create({ trigger: step, start: 'top 75%', end: 'bottom 25%', onEnter: go, onEnterBack: go, onLeave: rest, onLeaveBack: rest });
     });
     // one scroll, one scene: within the story the page settles on the next scene in the direction it moved
     const track = root.querySelector<HTMLElement>('.ms-steps')!;
     const points: number[] = [];
-    // it takes hold as the story comes up the screen, so the first scene is the first stop; the start itself is a
-    // stop too, so a scroll up from the first scene leaves the story
+    // each scene is as tall as it needs, so they sit close together: the page settles with the scene in the middle
+    // of what is free of the bar (and, on a phone, of the timeline strip and the floating menu). It takes hold as
+    // the story comes up the screen, so the first scene is the first stop; the start and the end are stops too,
+    // so a scroll past the first or the last scene leaves the story
+    const phone = window.matchMedia('(max-width: 860px)');
     const snap = ScrollTrigger.create({
-      trigger: track, start: 'top 60%', end: 'bottom bottom',
+      trigger: track, start: 'top 60%', end: 'bottom center',
       onRefresh: (self) => {
+        const bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 72;
+        const top = bar + (phone.matches ? (rail?.offsetHeight ?? 0) : 0);
+        const bottom = window.innerHeight - (phone.matches ? 90 : 0);
         points.length = 0;
         points.push(0);
-        steps.forEach((s) => points.push(Math.min(1, (s.getBoundingClientRect().top + window.scrollY - self.start) / Math.max(1, self.end - self.start))));
+        steps.forEach((s) => {
+          const y = s.getBoundingClientRect().top + window.scrollY, h = s.offsetHeight;
+          // in the middle of the free space; a scene taller than it starts at its top
+          const at = h > bottom - top ? y - top : y + h / 2 - (top + bottom) / 2;
+          points.push(gsap.utils.clamp(0, 1, (at - self.start) / Math.max(1, self.end - self.start)));
+        });
+        points.push(1);
       },
       snap: {
         snapTo: (value: number, self?: ScrollTrigger) => ScrollTrigger.snapDirectional(points)(value, self?.direction),

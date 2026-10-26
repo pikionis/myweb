@@ -58,6 +58,12 @@ const walker = (p: string, x: N, y: N, s = 1, extra = '') => G(p,
   pen(C(x, y - 62 * s, 7 * s), extra) + pen(`M${x} ${r1(y - 54 * s)}V${r1(y - 26 * s)}`, extra) +
   G(`${p}-legs`, pen(`M${x} ${r1(y - 26 * s)}L${r1(x - 9 * s)} ${y}M${x} ${r1(y - 26 * s)}L${r1(x + 9 * s)} ${y}`, extra)) +
   pen(`M${r1(x - 10 * s)} ${r1(y - 34 * s)}L${x} ${r1(y - 46 * s)}L${r1(x + 10 * s)} ${r1(y - 34 * s)}`, extra));
+/** a figure cheering, both arms up, its feet on the ground at (x, y) */
+const cheer = (p: string, x: N, y: N, s = 1, extra = '') => G(p,
+  pen(C(x, r1(y - 40 * s), r1(5.5 * s)), extra) + pen(`M${x} ${r1(y - 34 * s)}V${r1(y - 15 * s)}M${x} ${r1(y - 15 * s)}L${r1(x - 6 * s)} ${y}M${x} ${r1(y - 15 * s)}L${r1(x + 6 * s)} ${y}`, extra) +
+  G(`${p}-arms`, pen(`M${r1(x - 11 * s)} ${r1(y - 48 * s)}L${x} ${r1(y - 30 * s)}L${r1(x + 11 * s)} ${r1(y - 48 * s)}`, extra)));
+/** a cloud's outline */
+const cloud = (p: string, x: N, y: N, s = 1) => G(p, pen(`M${x} ${y}h${r1(70 * s)}a${r1(14 * s)} ${r1(14 * s)} 0 0 0 ${r1(-10 * s)} ${r1(-22 * s)}a${r1(20 * s)} ${r1(20 * s)} 0 0 0 ${r1(-34 * s)} ${r1(-10 * s)}a${r1(16 * s)} ${r1(16 * s)} 0 0 0 ${r1(-26 * s)} ${r1(12 * s)}a${r1(11 * s)} ${r1(11 * s)} 0 0 0 0 ${r1(20 * s)}Z`, 'faint'));
 /** a firework: rays round a centre, ink and cobalt in turn */
 const burst = (p: string, x: N, y: N, r: N) => G(p, Array.from({ length: 12 }, (_, i) => {
   const a = (i / 12) * Math.PI * 2, r0 = r * 0.35;
@@ -166,61 +172,117 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
     G('drop', P('M400 40V220')),
   ].join('') }),
 
-  // Chania by the sea: the harbour, the lighthouse sweeping its light, a boat on the moving water; then the
-  // university, in three dimensions, with students walking
+  // Chania's old harbour, from the photographs: the Venetian building on the quay, its lamps and passers-by,
+  // boats on the moving water, the lighthouse on its fort sweeping its light. Then the university: the round
+  // courtyard of the ECE building, stone wall, tall slit windows, its amphitheatre, and its students cheering
   chania: () => {
-    const waves = [362, 392, 422, 452].map((y, i) => {
-      const a = 5 - i, per = 64;
-      let d = `M-128 ${y}`;
-      for (let x = -128; x < 960; x += per) d += `q${per / 4} ${-a} ${per / 2} 0t${per / 2} 0`;
-      return G(`wave-${i}`, pen(d, i % 2 ? 'faint wave' : 'wave'), `data-per="${per}"`);
+    // the sea, its rows of waves smaller towards the horizon
+    const waves = [[206, 1.2, 36], [222, 1.6, 42], [244, 2.2, 50], [272, 3, 58], [308, 3.8, 66], [352, 4.6, 76], [404, 5.6, 88], [460, 6.4, 98]].map(([y, a, per], i) => {
+      let d = `M${-per * 2} ${y}`;
+      for (let x = -per * 2; x < 900; x += per) d += `q${per / 4} ${-a} ${per / 2} 0t${per / 2} 0`;
+      return G(`wave-${i}`, pen(d, i < 3 ? 'faint wave' : 'wave'), `data-per="${per}"`);
     }).join('');
+    // the Venetian building, an isometric block under a hipped roof of tiles, a flag on top
+    const venetian = (() => {
+      const x = 120, y = 336, w = 176, d = 52, h = 104, c = 0.866, sn = 0.5;
+      const fr = [x, y - h], rt = [x + w * c, y - w * sn - h], lf = [x - d * c, y - d * sn - h], bk = [x + w * c - d * c, y - w * sn - d * sn - h];
+      const mid = (a: N[], b: N[]) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      const inw = (q: N[], k: N) => [q[0] + k * c, q[1] - k * sn - 26];
+      const r1p = inw(mid(fr, lf), d / 2), r2p = inw(mid(rt, bk), -d / 2);
+      return block('venetian', x, y, w, d, h, 2, 6) +
+        G('roof', F(poly([fr, rt, r2p, r1p]), 'roof') + F(poly([lf, fr, r1p]), 'face-r') + pen(poly([fr, rt, r2p, r1p])) + pen(poly([lf, fr, r1p])) + pen(`M${r1(r2p[0])} ${r1(r2p[1])}L${r1(bk[0])} ${r1(bk[1])}L${r1(rt[0])} ${r1(rt[1])}`, 'thin')) +
+        G('flag', pen(`M${r1(r1p[0] + 18)} ${r1(r1p[1] - 9)}V${r1(r1p[1] - 52)}`) + `<path class="ac-fill" d="M${r1(r1p[0] + 18)} ${r1(r1p[1] - 52)}h22l-5 7 5 7h-22z"/>`);
+    })();
+    // the quay along it, curving out into the harbour, with its lamps and passers-by
+    const quay = 'M30 486Q170 400 372 288';
+    const lamps = [0.22, 0.42, 0.62, 0.82].map((t, i) => {
+      const x = r1((1 - t) * (1 - t) * 30 + 2 * t * (1 - t) * 170 + t * t * 372), y = r1((1 - t) * (1 - t) * 486 + 2 * t * (1 - t) * 400 + t * t * 288);
+      const hgt = 44 - i * 6;
+      return pen(`M${x} ${y}V${y - hgt}`) + pen(C(x, y - hgt - 4, 4)) + pen(`M${x - 6} ${y}H${x + 6}`, 'thin');
+    }).join('');
+    // the lighthouse on its fort, at the end of the breakwater
+    const lighthouse = [
+      block('fort', 642, 262, 72, 42, 30), pen('M618 220v-6h8v6M634 212v-6h8v6M690 196v-6h8v6M706 188v-6h8v6', 'thin'),
+      `<path class="face-r" d="M655 202L662 98H670L668 202Z"/>`,
+      pen('M640 204L648 98M670 202L664 98'), pen('M641 176Q655 182 669 175M643 148Q655 154 667 147M645 122Q655 128 665 121', 'thin'),
+      pen('M638 98H674'), pen('M641 98V90M647 98V90M653 98V90M659 98V90M665 98V90M671 98V90', 'thin'), pen('M638 90H674'),
+      P(R(646, 66, 20, 24, 3), 'solid'), pen('M652 66V90M660 66V90', 'thin'), pen('M643 66C643 50 669 50 669 66'), pen('M656 54V44'),
+    ].join('');
+    // the university's round courtyard: the curve of its wall, as the photographs show it
+    // (each edge a quadratic curve: y = y0 + 2 (cy - y0) t (1 - t), with its control point cy in the middle)
+    const rimY = (t: N) => 70 + 160 * t * (1 - t), bandY = (t: N) => 244 + 108 * t * (1 - t), floorY = (t: N) => 352 + 120 * t * (1 - t);
+    const slits = Array.from({ length: 11 }, (_, i) => {
+      const t = 0.06 + i * 0.088, x = r1(40 + 720 * t), top = r1(rimY(t) + 24), bot = r1(bandY(t) - 30), wd = r1(4 + 5 * Math.sin(Math.PI * t));
+      return `<rect class="slit" x="${x - wd / 2}" y="${top}" width="${wd}" height="${bot - top}" rx="1"/>`;
+    }).join('');
+    const lows = Array.from({ length: 10 }, (_, i) => {
+      const t = 0.1 + i * 0.09, x = r1(40 + 720 * t), top = r1(bandY(t) + 20), bot = r1(floorY(t) - 12), wd = r1(20 + 18 * Math.sin(Math.PI * t));
+      return `<rect class="pane" x="${r1(x - wd / 2)}" y="${top}" width="${wd}" height="${r1(bot - top)}" rx="2"/>`;
+    }).join('');
+    const crowd = [
+      ...Array.from({ length: 9 }, (_, i) => [262 + i * 34, 452, 0.95]),
+      ...Array.from({ length: 8 }, (_, i) => [279 + i * 34, 486, 1.12]),
+    ].map(([x, y, sc], i) => cheer(`fan-${i}`, x, y, sc, i === 12 ? 'ac' : '')).join('');
     return { inner: [
-      `<defs><clipPath id="ms-sea"><rect x="0" y="340" width="800" height="160"/></clipPath></defs>`,
-      G('lead', pen('M0 330C30 330 50 330 60 330')),
+      `<defs><clipPath id="ms-sea"><path d="M30 486Q170 400 372 288L392 196H800V500H30Z"/></clipPath></defs>`,
+      G('lead', pen('M0 486C10 486 20 486 30 486')),
       G('harbour', [
-        G('sun', pen(C(120, 96, 26)) + pen('M120 54V42M120 150V138M78 96H66M174 96H162M90 66L82 58M150 66L158 58M90 126L82 134M150 126L158 134')),
-        pen('M60 330H520'),
-        block('house-0', 96, 330, 64, 30, 64, 2, 2), block('house-1', 180, 330, 56, 30, 88, 3, 2),
-        block('mosque', 286, 330, 70, 40, 46, 1, 2), pen('M289 270C289 236 341 236 341 270'), pen('M315 238V226', 'thin'),
-        block('house-2', 386, 330, 60, 30, 72, 2, 2),
-        pen('M520 330C560 330 600 320 652 312'),
-        G('lighthouse', [
-          block('lh-base', 676, 316, 34, 26, 22),
-          `<path class="face-r" d="M690 294L698 150H710L716 288Z"/>`,
-          pen('M664 292L676 150M716 288L708 150'), pen('M666 262Q690 270 714 258M669 226Q690 234 711 222M672 190Q690 198 709 186', 'thin'),
-          pen('M660 150H724'), pen('M664 150V140M676 150V140M688 150V140M700 150V140M712 150V140M720 150V140', 'thin'), pen('M660 140H724'),
-          P(R(676, 112, 32, 28, 3), 'solid'), pen('M686 112V140M698 112V140', 'thin'), pen('M672 112C672 92 712 92 712 112'), pen('M692 96V86'),
-        ].join('')),
-        G('beam-r', `<path class="beam" d="M694 126L812 96V156Z"/>`),
-        G('beam-l', `<path class="beam" d="M690 126L572 98V154Z"/>`),
-        `<g clip-path="url(#ms-sea)">` + waves + G('boat', pen('M430 378H510L496 396H444Z', 'solid') + pen('M470 378V320') + `<path class="ac-fill" d="M472 324L506 372H472Z"/>`) + `</g>`,
+        cloud('cloud-0', 420, 70, 1), cloud('cloud-1', 560, 120, 0.7), cloud('cloud-2', 250, 40, 0.8),
+        pen('M392 196H800', 'faint'),
+        `<g clip-path="url(#ms-sea)">` + waves +
+          G('sail', pen('M452 232H492L486 240H458Z', 'solid') + pen('M472 232V160') + pen('M472 164L496 228H472', 'solid')) +
+          G('dinghies', [0, 1, 2, 3, 4].map((k) => pen(`M${520 + k * 22} 236L${528 + k * 22} 216V236Z`, 'solid')).join('')) +
+          G('breakwater', pen('M580 262L800 248', 'thick-ish')) + `</g>`,
+        G('lighthouse', lighthouse),
+        venetian,
+        pen(quay), pen('M30 500Q190 410 402 292', 'thin'),
+        G('lamps', lamps),
+        walker('walker-0', 168, 438, 0.5), walker('walker-1', 236, 404, 0.45), walker('walker-2', 300, 360, 0.4, 'ac'),
       ].join('')),
+      G('beam-r', `<path class="beam" d="M660 78L812 54V104Z"/>`),
+      G('beam-l', `<path class="beam" d="M652 78L500 56V102Z"/>`),
       G('campus', [
-        pen('M30 448H770', 'faint'),
-        block('uni-0', 150, 420, 180, 80, 120, 3, 5), block('uni-1', 440, 440, 120, 60, 80, 2, 3), block('uni-2', 610, 412, 130, 50, 150, 4, 3),
-        ...[[96, 430], [400, 452], [740, 440]].map(([x, y], i) => G(`tree-${i}`, pen(`M${x} ${y}V${y - 34}`) + pen(C(x, y - 50, 18)))),
-        X(400, 488, t(A.chania.campus), 18, 'mid bold'),
+        cloud('ccloud-0', 470, 30, 0.8), cloud('ccloud-1', 120, 22, 0.6),
+        // the wing: a quiet nod to the university's emblem
+        G('wing', pen('M372 58C378 38 402 24 434 24C428 30 428 32 440 34C432 40 430 42 442 46C432 50 426 52 434 56C418 60 394 56 372 58Z', 'ac') +
+          pen('M384 54C394 44 410 38 428 34M390 56C402 50 416 46 432 44', 'ac thin')),
+        F(`M40 70Q400 230 760 70V352Q400 592 40 352Z`, 'stone'),
+        pen('M40 70Q400 230 760 70'), pen('M40 70V352M760 70V352'),
+        slits,
+        pen('M40 244Q400 460 760 244', 'thick-ish'), pen('M40 251Q400 467 760 251', 'thin'),
+        lows,
+        pen('M40 352Q400 592 760 352'),
+        // the amphitheatre's railings either side of the courtyard
+        G('steps', pen('M150 380Q170 440 210 500M650 380Q630 440 590 500') + pen('M140 372Q160 436 198 500M660 372Q640 436 602 500', 'thin')),
       ].join(''), 'opacity="0"'),
-      ...[[200, 470, 1], [260, 470, 0.9], [520, 476, 1], [570, 476, 0.95], [690, 466, 1]].map(([x, y, s], i) => walker(`student-${i}`, x, y, s, i === 2 ? 'ac' : '')),
+      G('crowd', crowd, 'opacity="0"'),
     ].join('') };
   },
 
-  // the first year: a board of serious mathematics, C++ and then Java typing themselves, and their student
-  firstyear: () => ({ inner: [
-    G('lead', pen('M0 150C20 150 30 150 40 150')),
-    G('board', P(R(40, 40, 330, 210, 8), 'solid') + pen(R(52, 52, 306, 186, 4), 'thin') + pen('M150 250V262M260 250V262')),
-    G('math', A.board.map((line, i) => X(64, 98 + i * 44, line, 24, 'math', `data-line="${i}"`)).join('')),
-    G('cpp', P(R(420, 34, 340, 206, 12), 'solid') + pen('M420 66H760') + D(440, 50, 3.5) + D(452, 50, 3.5) + D(464, 50, 3.5) + X(740, 55, 'main.cpp', 13, 'mono muted', 'text-anchor="end"') +
-      A.cpp.code.map((line, i) => X(438, 92 + i * 23, line, 15, 'mono', 'data-type')).join('') + X(438, 228, A.cpp.out, 15, 'mono t-ac bold', 'data-type data-out')),
-    G('java', P(R(370, 262, 370, 176, 12), 'solid') + pen('M370 294H740') + D(390, 278, 3.5) + D(402, 278, 3.5) + D(414, 278, 3.5) + X(720, 283, 'Patient.java', 13, 'mono muted', 'text-anchor="end"') +
-      `<path class="ac-fill" d="M690 304h8v10h10v8h-10v10h-8v-10h-10v-8h10z"/>` +
-      A.firstyear.java.map((line, i) => X(390, 326 + i * 25, line, 16, 'mono', 'data-type')).join('')),
-    G('desk', pen('M40 470H330') + P('M110 470L124 410H246L260 470Z', 'solid')),
-    G('student', person(185, 312, 1.2)),
-    G('arms', pen('M163 381L140 340') + pen('M207 381L230 340')),
-    G('cheer', pen('M160 296L150 284', 'ac') + pen('M185 290V274', 'ac') + pen('M210 296L220 284', 'ac')),
-  ].join('') }),
+  // the first year, in a lecture hall: a board of serious mathematics over rows of students; C++ and then Java
+  // typing themselves beside it; and a student in the front row who can't sit still
+  firstyear: () => {
+    const rows = [[300, 0.7, 5], [352, 0.85, 5], [412, 1, 4]].map(([y, sc, n], r) =>
+      pen(`M${30 - r * 6} ${y + 26 * sc}Q215 ${y + 26 * sc + 18} ${400 + r * 6} ${y + 26 * sc}`) +
+      Array.from({ length: n }, (_, k) => {
+        const x = r1(70 + k * (300 / (n - 1)) + (r % 2) * 14);
+        return r === 2 && k === 1 ? '' : pen(C(x, y, r1(10 * sc))) + pen(`M${r1(x - 18 * sc)} ${r1(y + 26 * sc)}C${r1(x - 18 * sc)} ${r1(y + 12 * sc)} ${r1(x + 18 * sc)} ${r1(y + 12 * sc)} ${r1(x + 18 * sc)} ${r1(y + 26 * sc)}`);
+      }).join('')).join('');
+    return { inner: [
+      G('lead', pen('M0 150C10 150 20 150 30 150')),
+      G('board', P(R(30, 30, 370, 200, 8), 'solid') + pen(R(42, 42, 346, 176, 4), 'thin') + pen('M30 244H400', 'thin') + pen('M60 230V244M370 230V244', 'thin')),
+      G('math', A.board.map((line, i) => X(56, 84 + i * 42, line, 23, 'math', `data-line="${i}"`)).join('')),
+      G('hall', rows),
+      G('student', person(184, 412, 1)),
+      G('arms', pen('M166 470L146 432') + pen('M202 470L222 432')),
+      G('cheer', pen('M160 392L150 380', 'ac') + pen('M184 386V370', 'ac') + pen('M208 392L218 380', 'ac')),
+      G('cpp', P(R(430, 30, 340, 200, 12), 'solid') + pen('M430 62H770') + D(450, 46, 3.5) + D(462, 46, 3.5) + D(474, 46, 3.5) + X(750, 51, 'main.cpp', 13, 'mono muted', 'text-anchor="end"') +
+        A.cpp.code.map((line, i) => X(448, 88 + i * 22, line, 15, 'mono', 'data-type')).join('') + X(448, 218, A.cpp.out, 15, 'mono t-ac bold', 'data-type data-out')),
+      G('java', P(R(410, 256, 360, 170, 12), 'solid') + pen('M410 288H770') + D(430, 272, 3.5) + D(442, 272, 3.5) + D(454, 272, 3.5) + X(750, 277, 'Patient.java', 13, 'mono muted', 'text-anchor="end"') +
+        `<path class="ac-fill" d="M720 300h8v10h10v8h-10v10h-8v-10h-10v-8h10z"/>` +
+        A.firstyear.java.map((line, i) => X(430, 320 + i * 24, line, 16, 'mono', 'data-type')).join('')),
+    ].join('') };
+  },
 
   // the diploma: the questionnaire it builds, on a restaurant's tablet; then fireworks, and a cap in the air
   graduation: () => ({ inner: [
@@ -360,15 +422,15 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
     ].join('') };
   },
 
-  // the cobalt line that ran beside it all comes forward; its dots open into the projects built along the way
+  // the cobalt line that ran beside it all comes forward; its dots open into the work built along the way
   side: () => ({ inner: [
-    G('lead', P('M0 250C40 250 60 250 80 250')),
+    G('lead', pen('M0 250C40 250 60 250 80 250')),
     `<path class="ac thick sa-d" data-p="line" pathLength="1" d="M80 250C200 180 300 320 420 250C540 180 640 320 790 250"/>`,
     A.side.map((s, i) => {
-      const x = [180, 420, 660][i], y = [214, 250, 286][i], up = i !== 1;
+      const x = [260, 580][i], y = [216, 284][i], up = i === 0;
       const by = up ? y - 120 : y + 40;
       return `<circle class="ac-fill" data-p="sdot-${i}" cx="${x}" cy="${y}" r="9"/>` +
-        G(`scard-${i}`, P(`M${x} ${y + (up ? -12 : 12)}V${up ? by + 64 : by}`, 'ac') + P(R(x - 110, by, 220, 64, 10), 'solid ac') + X(x, by + 38, s.name.split(' · ')[0], 17, 'mid bold'));
+        G(`scard-${i}`, pen(`M${x} ${y + (up ? -12 : 12)}V${up ? by + 64 : by}`, 'ac') + P(R(x - 120, by, 240, 64, 10), 'solid ac') + X(x, by + 38, s.name.split(' · ')[0], 17, 'mid bold'));
     }).join(''),
   ].join('') }),
 
@@ -411,6 +473,10 @@ const view = scene.view ?? '0 0 800 500';
   .ms-svg :global(.beam) { fill: var(--cobalt); opacity: 0.18; stroke: none; }
   .ms-svg :global(.star-off) { fill: color-mix(in srgb, var(--ink) 18%, transparent); stroke: none; }
   .ms-svg :global(.t-inv) { fill: var(--paper); }
+  .ms-svg :global(.roof) { fill: color-mix(in srgb, var(--cobalt) 22%, var(--paper)); stroke: none; }
+  .ms-svg :global(.stone) { fill: color-mix(in srgb, var(--ink) 6%, var(--paper)); stroke: none; }
+  .ms-svg :global(.slit) { fill: color-mix(in srgb, var(--cobalt) 30%, var(--ink)); stroke: none; opacity: 0.75; }
+  .ms-svg :global(.pane) { fill: color-mix(in srgb, var(--ink) 42%, var(--paper)); stroke: none; }
   .ms-svg :global(.fill-ink) { fill: currentColor; stroke: none; }
   .ms-svg :global(.ac-fill) { fill: var(--cobalt); stroke: none; }
   .ms-svg :global(circle) { fill: currentColor; }

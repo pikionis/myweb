@@ -10,6 +10,8 @@ import { person } from '../data/site';
 interface Props { cv?: string }
 const { cv } = Astro.props;
 const arrow = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>';
+const back = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" /></svg>';
+const drag = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4" /></svg>';
 const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" /></svg>';
 ---
 <section class="ms" data-ms aria-labelledby="ms-title">
@@ -52,6 +54,13 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
                   <span class="y" data-course-year>{A.years[0]}</span> <span class="n">{t(A.course)} <span data-course-n>1 / {A.total}</span></span>
                   <span class="name" data-course-name>{t(A.courses[0])}</span>
                 </p>
+                <!-- the ride by hand: back and on again, or dragged sideways -->
+                <div class="ms-ride">
+                  <button type="button" class="ms-ride-btn" data-ride data-dir="back" data-back={t(A.ride.back)} data-again={t(A.ride.again)}>
+                    <Fragment set:html={back} /><span data-ride-label>{t(A.ride.back)}</span>
+                  </button>
+                  <span class="ms-ride-hint"><Fragment set:html={drag} />{t(A.ride.drag)}</span>
+                </div>
                 <ul class="ms-course-list" data-t>{A.courses.map((c) => <li>{t(c)}</li>)}</ul>
               </>
             )}
@@ -118,8 +127,9 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
     min-height: 0; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); align-items: center;
     gap: clamp(24px, 4vw, 64px); padding-block: clamp(48px, 10vh, 120px);
   }
-  :global(html.js) .ms.on .ms-step { height: 100svh; }
-  :global(html.js) .ms.on .ms-stage { height: 100svh; padding: calc(var(--topbar-h) + 24px) 0 32px; }
+  /* with motion each scene is as tall as it needs, so the scenes sit close together */
+  :global(html.js) .ms.on .ms-stage { padding: clamp(20px, 3vh, 36px) 0; }
+  :global(html.js) .ms.on .ms-art { height: min(56vh, 520px); }
   .ms-art { position: relative; min-height: 0; height: 100%; max-height: min(64vh, 560px); display: flex; align-items: center; justify-content: center; }
   .ms-art :global(.ms-svg) { max-height: 100%; }
   .ms-text { min-width: 0; }
@@ -143,6 +153,22 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
   .ms-course .y, .ms-course .n { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 500; color: var(--accent-ink); }
   .ms-course .y { margin-right: 10px; font-weight: 700; }
   .ms-course .name { display: block; margin-top: 4px; }
+  /* the ride, by hand: shown only when it rides */
+  .ms-ride { display: none; }
+  :global(html.js) .ms.on .ms-ride { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 0 0 18px; }
+  .ms-ride-btn {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 100px;
+    background: var(--ink); color: var(--paper); font: inherit; font-size: 0.9375rem; font-weight: 600; cursor: pointer;
+    transition: scale 0.16s var(--ease-out), opacity 0.2s ease;
+  }
+  .ms-ride-btn[data-dir='on'] :global(svg) { scale: -1 1; }
+  @media (hover: hover) and (pointer: fine) { .ms-ride-btn:hover { opacity: 0.86; } }
+  .ms-ride-btn:active { scale: 0.97; }
+  .ms-ride-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .ms-ride-hint { display: inline-flex; align-items: center; gap: 6px; font-size: 0.875rem; color: var(--muted); }
+  /* the ride can be grabbed: sideways it goes; up and down the page still scrolls */
+  :global(html.js) .ms.on .ms-coaster { cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+  :global(html.js) .ms.on .ms-coaster.dragging { cursor: grabbing; }
   /* the moments of those years show as the cart reaches them */
   :global(html.js) .ms.on .ms-coaster :global([data-p^='moment-']) { opacity: 0; transition: opacity 0.4s ease, translate 0.5s var(--ease-out); translate: 0 12px; }
   :global(html.js) .ms.on .ms-coaster :global([data-p^='moment-'].seen) { opacity: 1; translate: 0 0; }
@@ -157,6 +183,7 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
   /* the opening: the words alone, and the line under them */
   .ms-intro .ms-stage { grid-template-columns: minmax(0, 1fr); align-content: center; text-align: center; }
   .ms-intro .ms-art { order: 2; height: auto; max-height: 220px; }
+  :global(html.js) .ms.on .ms-intro .ms-art { height: 200px; }
   .ms-headline {
     margin: 0 auto; max-width: 22ch; font-size: clamp(1.9rem, 4.2vw, 3.6rem); font-weight: 700; line-height: 1.08; letter-spacing: -0.03em; text-wrap: balance;
   }
@@ -201,10 +228,8 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
     .ms-dot { left: 0; top: 0; width: 8px; height: 8px; border-width: 1.5px; }
     .ms-years li.side::after { display: none; }
     .ms-stage { grid-template-columns: minmax(0, 1fr); gap: 18px; padding-block: 40px; }
-    :global(html.js) .ms.on .ms-stage {
-      grid-template-rows: auto minmax(0, 1fr); align-items: stretch; align-content: stretch;
-      padding: calc(var(--topbar-h) + 62px) 0 calc(88px + env(safe-area-inset-bottom, 0px));
-    }
+    :global(html.js) .ms.on .ms-stage { grid-template-rows: auto auto; align-items: stretch; padding: 22px 0; }
+    :global(html.js) .ms.on .ms-art { height: clamp(240px, 40svh, 380px); }
     :global(html.js) .ms.on .ms-text { order: -1; }
     .ms-art { max-height: none; }
     .ms-label { font-size: clamp(1.6rem, 8vw, 2.2rem); margin-bottom: 6px; }
