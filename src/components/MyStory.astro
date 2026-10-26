@@ -37,19 +37,20 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
       <article class:list={['ms-step', `ms-${s.id}`]} data-scene={s.id} data-index={i}>
         <div class="ms-stage">
           <div class="ms-art">
-            {s.id === 'courses' ? (
+            {s.id === 'studies' ? (
               <div class="ms-coaster">
-                <div class="wide"><MyStoryArt name="courses-wide" /></div>
-                <div class="tall"><MyStoryArt name="courses-tall" /></div>
+                <div class="wide"><MyStoryArt name="journey-wide" /></div>
+                <div class="narrow"><MyStoryArt name="journey-narrow" /></div>
               </div>
             ) : <MyStoryArt name={s.id} />}
           </div>
           <div class="ms-text">
             {t(s.label) && <p class="ms-label" data-t>{t(s.label)}</p>}
             {s.title && <h3 data-t>{t(s.title)}</h3>}
-            {s.id === 'courses' && (
+            {s.id === 'studies' && <p class="ms-words" data-t>{t(s.text)}</p>}
+            {s.id === 'studies' && (
               <>
-                <!-- the course the cart is passing (the full list follows, for readers and without motion) -->
+                <!-- the course the train is passing (the full list follows, for readers and without motion) -->
                 <p class="ms-course" data-course data-total={A.total} data-years={A.years.join(',')} aria-hidden="true">
                   <span class="y" data-course-year>{A.years[0]}</span> <span class="n">{t(A.course)} <span data-course-n>1 / {A.total}</span></span>
                   <span class="name" data-course-name>{t(A.courses[0])}</span>
@@ -61,11 +62,12 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
                   </button>
                   <span class="ms-ride-hint"><Fragment set:html={drag} />{t(A.ride.drag)}</span>
                 </div>
+                <!-- read one after another as the train goes (all of them, for readers and without motion) -->
+                <div class="ms-lines">{A.lines.map((l) => <p data-line-at={l.at}>{t(l.text)}</p>)}</div>
                 <ul class="ms-course-list" data-t>{A.courses.map((c) => <li>{t(c)}</li>)}</ul>
               </>
             )}
-            {s.id === 'intro' ? <p class="ms-headline" data-words>{t(s.text)}</p> : <p class="ms-words" data-t>{t(s.text)}</p>}
-            {s.id === 'postgres' && <ul class="ms-chips" data-t>{A.postgres.tags.map((x) => <li>{x}</li>)}</ul>}
+            {s.id === 'intro' ? <p class="ms-headline" data-words>{t(s.text)}</p> : s.id !== 'studies' && <p class="ms-words" data-t>{t(s.text)}</p>}
             {s.id === 'kalimera' && (
               <ul class="ms-notes">
                 {[A.kalimera.mvp, A.kalimera.prize, A.kalimera.accelerator].map((n, k) => <li data-note={k}>{t(n)}</li>)}
@@ -139,14 +141,12 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
   }
   .ms-text h3 { margin: 0 0 12px; font-size: clamp(1.25rem, 1.8vw, 1.6rem); line-height: 1.15; letter-spacing: -0.01em; text-transform: none; }
   .ms-words { margin: 0; max-width: 40ch; font-size: clamp(1.05rem, 1.35vw, 1.25rem); line-height: 1.5; }
-  .ms-notes, .ms-cards, .ms-chips, .ms-course-list { list-style: none; margin: 18px 0 0; padding: 0; }
+  .ms-notes, .ms-cards, .ms-course-list { list-style: none; margin: 18px 0 0; padding: 0; }
   .ms-notes { display: grid; gap: 8px; font-size: 0.9375rem; line-height: 1.45; color: var(--muted); }
   .ms-notes li { padding-left: 14px; border-left: 2px solid var(--cobalt); }
   .ms-cards { display: grid; gap: 10px; }
   .ms-cards li { padding: 12px 14px; border-radius: 12px; background: var(--surface); font-size: 0.9375rem; line-height: 1.45; }
   .ms-cards b { display: block; margin-bottom: 2px; }
-  .ms-chips { display: none; flex-wrap: wrap; gap: 6px; }
-  .ms-chips li { padding: 4px 10px; border-radius: 100px; background: var(--surface); font-size: 0.8125rem; }
   /* the course the cart is passing; the full list for readers, and for everyone without motion */
   .ms-course { display: none; }
   :global(html.js) .ms.on .ms-course { display: block; margin: 4px 0 16px; min-height: 2.6em; font-size: clamp(1.05rem, 1.4vw, 1.25rem); font-weight: 600; }
@@ -177,7 +177,13 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
   /* the rollercoaster: along on a wide screen, down on a phone */
   .ms-coaster { position: relative; width: 100%; height: 100%; }
   .ms-coaster > div { position: absolute; inset: 0; overflow: hidden; border-radius: 16px; }
-  .ms-coaster .tall { display: none; }
+  .ms-coaster .narrow { display: none; }
+  /* the lines read along the journey: one at a time while it rides, all of them otherwise */
+  .ms-lines { display: grid; gap: 10px; margin-top: 14px; }
+  .ms-lines p { margin: 0; max-width: 44ch; padding-left: 14px; border-left: 2px solid var(--cobalt); font-size: clamp(1rem, 1.2vw, 1.125rem); line-height: 1.5; }
+  :global(html.js) .ms.on .ms-lines { grid-template-areas: 'line'; min-height: 7.5em; }
+  :global(html.js) .ms.on .ms-lines p { grid-area: line; opacity: 0; translate: 0 8px; transition: opacity 0.4s ease, translate 0.5s var(--ease-out); }
+  :global(html.js) .ms.on .ms-lines p.on { opacity: 1; translate: 0 0; }
   :global(html:not(.js)) .ms-coaster, .ms:not(.on) .ms-coaster { height: 320px; }
 
   /* the opening: the words alone, and the line under them */
@@ -235,11 +241,17 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
     .ms-label { font-size: clamp(1.6rem, 8vw, 2.2rem); margin-bottom: 6px; }
     .ms-text h3 { font-size: 1.125rem; margin-bottom: 6px; }
     .ms-words { font-size: 1rem; }
-    .ms-chips { display: flex; margin-top: 12px; }
     .ms-notes, .ms-cards { margin-top: 12px; gap: 6px; }
     .ms-cards li { padding: 8px 12px; font-size: 0.875rem; }
     .ms-coaster .wide { display: none; }
-    .ms-coaster .tall { display: block; }
+    .ms-coaster .narrow { display: block; }
+    :global(html.js) .ms.on .ms-lines { min-height: 8em; }
+    /* the journey on a phone: the train first, so it stays in sight while it rides; the words under it */
+    :global(html.js) .ms.on .ms-studies .ms-text { order: 0; }
+    :global(html.js) .ms.on .ms-studies .ms-art { height: 220px; }
+    :global(html.js) .ms.on .ms-studies .ms-label { font-size: 1.5rem; }
+    .ms-ride-hint { display: none; }
+    :global(html.js) .ms.on .ms-ride { margin-bottom: 10px; }
     :global(html.js) .ms.on .ms-intro .ms-stage { grid-template-rows: auto auto; align-content: center; }
     :global(html.js) .ms.on .ms-intro .ms-text { order: 0; }
     .ms-headline { font-size: clamp(1.7rem, 7.6vw, 2.2rem); }

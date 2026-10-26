@@ -46,30 +46,12 @@ export const scenes: Scene[] = [
     },
   },
   {
-    id: 'firstyear',
-    rail: { en: '2010', el: '2010' }, label: { en: '2009–2010', el: '2009–2010' },
-    title: { en: 'Serious mathematics, hardcore programming', el: 'Σοβαρά μαθηματικά, hardcore προγραμματισμός' },
+    id: 'studies',
+    rail: { en: '2009–16', el: '2009–16' }, label: { en: '2009–2016', el: '2009–2016' },
+    title: { en: 'My first languages, then 49 courses', el: 'Οι πρώτες μου γλώσσες, και 49 μαθήματα' },
     text: {
-      en: 'From the first year: serious mathematics, and hardcore programming in C++ and Java, with my first management system, Java software for hospitals. My first real contact with programming at a high level.',
-      el: 'Από τον πρώτο χρόνο: σοβαρά μαθηματικά και hardcore προγραμματισμός σε C++ και Java, με το πρώτο μου διαχειριστικό, σύστημα σε Java για νοσοκομεία. Η πρώτη μου πραγματική επαφή με τον προγραμματισμό σε υψηλό επίπεδο.',
-    },
-  },
-  {
-    id: 'postgres',
-    rail: { en: 'SQL', el: 'SQL' }, label: { en: 'PostgreSQL', el: 'PostgreSQL' },
-    title: { en: 'A special mention', el: 'Ειδική μνεία' },
-    text: {
-      en: "Six months of school for this one course. Let's just say we struggled. That's where I learned that data has architecture.",
-      el: 'Έξι μήνες σχολής μόνο για αυτό το μάθημα. Ας πούμε ότι ζοριστήκαμε. Εκεί κατάλαβα ότι τα δεδομένα έχουν αρχιτεκτονική.',
-    },
-  },
-  {
-    id: 'courses',
-    rail: { en: '2016', el: '2016' }, label: { en: '2009–2016', el: '2009–2016' },
-    title: { en: '49 courses', el: '49 μαθήματα' },
-    text: {
-      en: 'Forty-nine courses from 2009 to 2016: lectures, exams, group sessions, long nights of study and code. Here are some of the most serious ones.',
-      el: 'Σαράντα εννέα μαθήματα από το 2009 ως το 2016: διαλέξεις, εξετάσεις, ομαδικά sessions, ατελείωτο διάβασμα και κώδικας. Εδώ είναι μερικά από τα πιο σοβαρά.',
+      en: 'It started with my first programming languages and projects: C++, Java, SQL and PostgreSQL, algorithms, mathematics. They were the first of 49 courses over seven years.',
+      el: 'Ξεκίνησα με τις πρώτες μου γλώσσες προγραμματισμού και τα πρώτα μου projects: C++, Java, SQL και PostgreSQL, αλγόριθμους, μαθηματικά. Ήταν τα πρώτα από 49 μαθήματα σε επτά χρόνια.',
     },
   },
   {
@@ -138,26 +120,9 @@ export const scenes: Scene[] = [
 
 /** The words drawn inside the scenes, by scene. */
 export const art = {
-  // the blackboard in Chania, one line at a time
-  board: ['d/dx (x² + 3x) = 2x + 3', '∫ 2x dx = x² + C', "y'' + y = 0", 'y = C₁ cos x + C₂ sin x'],
   chania: { campus: { en: 'Technical University of Crete', el: 'Πολυτεχνείο Κρήτης' } },
-  firstyear: {
-    java: ['class Patient {', '  String name;', '  Ward ward;', '}'],
-  },
-  cpp: {
-    code: ['#include <iostream>', '', 'int main() {', '  std::cout << "Hello, world!";', '  return 0;', '}'],
-    out: '> Hello, world!',
-  },
-  postgres: {
-    entities: ['Customer', 'Order', 'Product'],
-    nf: ['1NF', '2NF', '3NF', 'BCNF'],
-    join: 'JOIN',
-    tags: [
-      'relational model', 'relational algebra: σ π ⋈', 'functional dependencies', 'normalisation',
-      'SQL: DDL / DML', 'JOINs · subqueries · GROUP BY', 'views · triggers · procedures', 'indexes (B-tree)',
-      'query plans', 'transactions · ACID', 'isolation levels', 'concurrency',
-    ],
-  },
+  /** the first wagons of the journey: the first languages and projects */
+  cargo: ['C++', 'Java', 'SQL', 'PostgreSQL', 'Algorithms', 'Maths'],
   courses: [
     { en: 'Linear Algebra', el: 'Γραμμική Άλγεβρα' },
     { en: 'Introduction to Programming', el: 'Εισαγωγή στον Προγραμματισμό' },
@@ -183,24 +148,43 @@ export const art = {
     { en: 'Modern Mobile Systems, Applications and Services', el: 'Μοντέρνα Κινητά Συστήματα, Εφαρμογές και Υπηρεσίες' },
     { en: 'Cloud and Fog Computing Services', el: 'Υπηρεσίες στο Υπολογιστικό Νέφος και την Ομίχλη' },
   ] as Copy[],
-  /** the course drawn in cobalt, the highest peak: it comes back in 2025 */
+  /** the course whose hill is drawn in cobalt, the highest on the way: it comes back in 2025 */
   peak: 19,
   /** all the courses (the ones named above are some of the most serious) */
   total: 49,
   years: [2009, 2016],
-  /** the course counter beside the ride */
+  /** the course counter beside the journey */
   course: { en: 'course', el: 'μάθημα' },
-  /** the ride can be taken by hand: dragged sideways, or sent back and on again */
+  /** the journey can be taken by hand: dragged sideways, or sent back and on again */
   ride: {
-    back: { en: 'Ride it back', el: 'Πίσω με το τρενάκι' },
-    again: { en: 'Ride it again', el: 'Ξανά το τρενάκι' },
-    drag: { en: 'Or drag the ride sideways', el: 'Ή σύρε το τρενάκι δεξιά-αριστερά' },
+    back: { en: 'Back up the train', el: 'Όπισθεν το τρένο' },
+    again: { en: 'All aboard again', el: 'Ξανά επιβίβαση' },
+    drag: { en: 'Or drag the train sideways', el: 'Ή σύρε το τρένο δεξιά-αριστερά' },
   },
-  /** what the years held, drawn along the ride */
+  /** read one after another as the train goes: each from the point of the journey (0 to 1) it is reached */
+  lines: [
+    { at: 0, text: {
+      en: 'From the first year: serious mathematics, and hardcore programming in C++ and Java. My first real contact with programming at a high level.',
+      el: 'Από τον πρώτο χρόνο: σοβαρά μαθηματικά και hardcore προγραμματισμός σε C++ και Java. Η πρώτη μου πραγματική επαφή με τον προγραμματισμό σε υψηλό επίπεδο.' } },
+    { at: 0.16, text: {
+      en: 'My first management system: Java software for hospitals. Software for real people.',
+      el: 'Το πρώτο μου διαχειριστικό: σύστημα σε Java για νοσοκομεία. Λογισμικό για πραγματικούς ανθρώπους.' } },
+    { at: 0.36, text: {
+      en: "A special mention: six months of school for one course, PostgreSQL. Let's just say we struggled. That's where I learned that data has architecture.",
+      el: 'Ειδική μνεία: έξι μήνες σχολής για ένα μάθημα, την PostgreSQL. Ας πούμε ότι ζοριστήκαμε. Εκεί κατάλαβα ότι τα δεδομένα έχουν αρχιτεκτονική.' } },
+    { at: 0.9, text: { en: 'And at the end of the line, the diploma thesis.', el: 'Και στο τέλος της γραμμής, η διπλωματική.' } },
+  ] as { at: number; text: Copy }[],
+  /** what the years held, met along the way (one with a note: the special mention) */
   moments: [
-    { en: 'code', el: 'κώδικας' }, { en: 'lectures', el: 'διαλέξεις' }, { en: 'group sessions', el: 'ομαδικά sessions' },
-    { en: 'exams', el: 'εξετάσεις' }, { en: 'study', el: 'διάβασμα' }, { en: 'programming', el: 'προγραμματισμός' },
-  ] as Copy[],
+    { label: { en: 'lectures', el: 'διαλέξεις' } },
+    { label: { en: 'study nights at friends’ houses', el: 'διάβασμα και μαζώξεις σε σπίτια' } },
+    { label: { en: 'experiments in the lab', el: 'πειράματα στο εργαστήριο' } },
+    { label: { en: 'six months of PostgreSQL', el: 'έξι μήνες PostgreSQL' }, note: { en: 'one course. We struggled.', el: 'ένα μάθημα. Ζοριστήκαμε.' } },
+    { label: { en: 'big group projects', el: 'μεγάλα ομαδικά projects' } },
+    { label: { en: 'Python', el: 'Python' } },
+    { label: { en: 'exams', el: 'εξετάσεις' } },
+    { label: { en: 'our first application', el: 'η πρώτη μας εφαρμογή' } },
+  ] as { label: Copy; note?: Copy }[],
   graduation: {
     app: 'Smart Questionnaire Generator',
     question: { en: 'How was your meal?', el: 'Πώς ήταν το γεύμα σας;' },

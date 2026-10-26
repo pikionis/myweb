@@ -115,60 +115,33 @@ const SCENES: Record<string, Scene> = {
     parts(svg, 'ccloud-').forEach((c, i) => loop(idle, gsap.to(c, { x: 24 + i * 10, duration: 8 + i * 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })));
   },
 
-  firstyear(tl, svg) {
-    draw(tl, strokes(part(svg, 'lead')), 0, 0.15);
-    draw(tl, strokes(part(svg, 'board')), 0.05, 0.5, 0.05);
-    // the lecture hall fills, row by row
-    draw(tl, strokes(part(svg, 'hall')), 0.2, 0.5, 0.01);
-    draw(tl, strokes(part(svg, 'student')), 0.4, 0.4);
-    [...svg.querySelectorAll('[data-line]')].forEach((line, i) => type(tl, line, 0.5 + i * 0.35, 0.3));
-    // C++, then Java
-    const cpp = part(svg, 'cpp')!, java = part(svg, 'java')!;
-    draw(tl, strokes(cpp), 0.6, 0.4);
-    show(tl, [...cpp.querySelectorAll('circle'), cpp.querySelector('.muted')], 0.8);
-    [...cpp.querySelectorAll('[data-type]')].forEach((line, i) => type(tl, line, 0.9 + i * 0.18, 0.16));
-    draw(tl, strokes(java), 2.0, 0.4);
-    show(tl, [...java.querySelectorAll('circle, .ac-fill'), java.querySelector('.muted')], 2.2);
-    [...java.querySelectorAll('[data-type]')].forEach((line, i) => type(tl, line, 2.3 + i * 0.2, 0.18));
-    // and a student in the front row who can't sit still
-    show(tl, [part(svg, 'arms'), part(svg, 'cheer')], 3.2, true, 0.05);
-    draw(tl, all(part(svg, 'arms'), part(svg, 'cheer')), 3.2, 0.3, 0.05);
-    tl.to(part(svg, 'student'), { keyframes: [{ y: -10, duration: 0.15 }, { y: 0, duration: 0.15 }] }, 3.25);
-  },
-
-  postgres(tl, svg) {
-    draw(tl, strokes(part(svg, 'lead')), 0, 0.2);
-    const er = part(svg, 'er');
-    draw(tl, all(...parts(svg, 'ent-')), 0.1, 0.6, 0.02);
-    draw(tl, strokes(er), 0.6, 0.4, 0.05);
-    show(tl, [...er!.querySelectorAll('text')], 0.7);
-    // one wide, messy table...
-    const segs = parts(svg, 'seg-');
-    gsap.set(segs[1], { x: -55 });
-    gsap.set(segs[2], { x: -110 });
-    draw(tl, all(...segs), 1.1, 0.5, 0.01);
-    show(tl, part(svg, 'messy'), 1.5);
-    // ...splits through the normal forms
-    const nf = [...svg.querySelectorAll('[data-nf]')];
-    gsap.set(nf, { opacity: 0 });
-    nf.forEach((n, i) => {
-      tl.to(n, { opacity: 1, duration: 0.15 }, 1.9 + i * 0.45);
-      if (i < nf.length - 1) tl.to(n, { opacity: 0, duration: 0.15 }, 2.3 + i * 0.45);
-    });
-    tl.to(segs, { x: 0, duration: 0.9, ease: 'power2.inOut' }, 2.2);
-    show(tl, part(svg, 'messy'), 2.2, false, 0.4);
-    // and join again
-    draw(tl, strokes(part(svg, 'join')), 3.5, 0.4, 0.1);
-    show(tl, part(svg, 'join')!.querySelector('text'), 3.6);
-    pop(tl, parts(svg, 'tag-'), 3.9, '50% 50%', 0.09);
-  },
-
-  courses(tl, _svg, step) {
-    const ride = coaster(step);
+  studies(tl, svg, step, idle) {
+    const ride = journey(step);
     if (!ride) return;
-    tl.fromTo(ride.state, { p: 0 }, { p: 1, duration: 7, ease: 'power1.inOut', onUpdate: ride.place }, 0.3);
-    show(tl, ride.station, 6.6, true, 0.3);
-    byHand(tl, step, ride);
+    const near = part(svg, 'near')!, train = part(svg, 'train')!;
+    // the world draws itself: the clouds, the hills (the AI one in cobalt), the track, the signs, the train
+    draw(tl, parts(svg, 'jcloud-').flatMap(strokes), 0, 0.6, 0.08);
+    draw(tl, strokes(part(svg, 'far')), 0.05, 0.8, 0.1);
+    show(tl, part(svg, 'far')!.querySelector('text'), 0.6);
+    draw(tl, strokes(near).filter((e) => !e.closest('[data-p="train"], [data-p^="moment-"]')), 0.1, 0.7, 0.004);
+    show(tl, [...near.querySelectorAll('.sleepers')], 0.2, true, 0.5);
+    draw(tl, strokes(train).filter((e) => !e.closest('[data-p^="crate-"]')), 0.3, 0.7, 0.008);
+    show(tl, [...train.querySelectorAll('.face-l, .ac-fill, .rod')], 0.8, true, 0.3);
+    // the first languages are loaded, one by one
+    const crates = parts(svg, 'crate-');
+    tl.fromTo(crates, { y: -90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'bounce.out', stagger: 0.18 }, 1.0);
+    // and the journey: seven years, 49 courses
+    tl.fromTo(ride.state, { p: 0 }, { p: 1, duration: 7.5, ease: 'power1.inOut', onUpdate: ride.place }, 2.5);
+    show(tl, ride.station, 9.2, true, 0.4);
+    // while it is on screen, the engine smokes, the lab bubbles, the house glows, the rocket waits to launch
+    parts(svg, 'puff-').forEach((pf, i) => loop(idle, gsap.fromTo(pf, { opacity: 0.9, x: 0, y: 0, scale: 0.6, transformOrigin: '50% 50%' },
+      { opacity: 0, x: -36 - i * 6, y: -48 - i * 8, scale: 1.6, duration: 1.6, ease: 'power1.out', repeat: -1, delay: i * 0.4 })));
+    parts(svg, 'bubble').forEach((b, i) => loop(idle, gsap.fromTo(b, { y: 0, opacity: 1 }, { y: -40, opacity: 0, duration: 1.4, ease: 'power1.in', repeat: -1, delay: i * 0.45 })));
+    parts(svg, 'glow').forEach((g) => loop(idle, gsap.to(g, { opacity: 0.55, duration: 1.2, ease: 'sine.inOut', yoyo: true, repeat: -1 })));
+    parts(svg, 'rocket').forEach((r) => loop(idle, gsap.to(r, { y: -8, duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: -1 })));
+    parts(svg, 'sweat').forEach((d) => loop(idle, gsap.fromTo(d, { y: 0, opacity: 1 }, { y: 14, opacity: 0, duration: 1.3, ease: 'power1.in', repeat: -1 })));
+    parts(svg, 'hand').forEach((h) => { const b = (h as SVGGraphicsElement).getBBox(); loop(idle, gsap.to(h, { rotation: 360, svgOrigin: `${b.x + b.width / 2} ${b.y + b.height}`, duration: 4, ease: 'none', repeat: -1 })); });
+    byHand(tl, step, ride, 10.1);
   },
 
   graduation(tl, svg, _step, idle) {
@@ -320,9 +293,9 @@ const SCENES: Record<string, Scene> = {
   },
 };
 
-/** The ride, taken by hand: dragged sideways (left goes on, right goes back, as if pulling the track), or sent
- *  all the way back, and on again, by its button. Taking it over stops it riding by itself. */
-function byHand(tl: Tl, step: HTMLElement, ride: NonNullable<ReturnType<typeof coaster>>) {
+/** The journey, taken by hand: dragged sideways (left goes on, right goes back, as if pulling the track), or
+ *  sent all the way back, and on again, by its button. Taking it over stops it riding by itself. */
+function byHand(tl: Tl, step: HTMLElement, ride: NonNullable<ReturnType<typeof journey>>, ends: number) {
   const box = step.querySelector<HTMLElement>('.ms-coaster');
   const button = step.querySelector<HTMLButtonElement>('[data-ride]');
   if (!box || !button || box.dataset.byHand) return;
@@ -340,7 +313,7 @@ function byHand(tl: Tl, step: HTMLElement, ride: NonNullable<ReturnType<typeof c
   };
   // the scene starting again lets go of the ride
   tl.call(() => { going?.kill(); ride.state.max = 0; }, [], 0.01);
-  tl.call(label, [], 7.4);
+  tl.call(label, [], ends);
   button.addEventListener('click', () => {
     takeOver();
     const to = ride.state.p > 0.5 ? 0 : 1;
@@ -363,72 +336,66 @@ function byHand(tl: Tl, step: HTMLElement, ride: NonNullable<ReturnType<typeof c
   box.addEventListener('pointercancel', end);
 }
 
-/** The rollercoaster on show (along on a wide screen, down on a phone): its cart rides the track, the camera
- *  keeps it in the middle, each course lights as the cart passes. */
-function coaster(step: HTMLElement) {
+/** The journey on show (the wide drawing or the narrow one): the train runs along the track, its wheels turning
+ *  and its rods driving; a camera follows it (the hills and the clouds slower, for depth), but never past either end;
+ *  the year, the course count and a course's name follow, the moments of those years appear as the train nears them,
+ *  and the lines beside it are read one after another. */
+function journey(step: HTMLElement) {
   const svg = [...step.querySelectorAll<SVGSVGElement>('.ms-coaster svg')].find((s) => s.getClientRects().length);
   if (!svg) return null;
-  const track = svg.querySelector<SVGPathElement>('[data-p="track"]')!;
-  const world = svg.querySelector<SVGGElement>('[data-p="world"]')!;
-  const cart = svg.querySelector<SVGGElement>('[data-p="cart"]')!;
-  const station = svg.querySelector<SVGGElement>('[data-p="station"]')!;
-  const peak = svg.querySelector<SVGPathElement>('[data-p="peak"]')!;
-  const stops = [...svg.querySelectorAll<SVGCircleElement>('[data-p="stop"]')];
-  const vertical = cart.hasAttribute('data-vertical');
-  const vb = svg.viewBox.baseVal;
-  const L = track.getTotalLength();
-  // where along the track each course sits
-  const samples = Array.from({ length: 900 }, (_, i) => { const l = (i / 899) * L; const p = track.getPointAtLength(l); return [l, p.x, p.y]; });
-  const at = stops.map((s) => {
-    const x = Number(s.getAttribute('cx')), y = Number(s.getAttribute('cy'));
-    return samples.reduce((best, [l, px, py]) => ((px - x) ** 2 + (py - y) ** 2 < best[1] ? [l, (px - x) ** 2 + (py - y) ** 2] : best), [0, Infinity])[0];
-  });
+  const [x0, x1, len] = (svg.dataset.journey ?? '0,1,1').split(',').map(Number);
+  const W = svg.viewBox.baseVal.width;
+  const near = part(svg, 'near')!, far = part(svg, 'far')!, clouds = part(svg, 'clouds')!, train = part(svg, 'train')!;
+  const station = part(svg, 'station')!, rod = part(svg, 'rod');
+  const wheels = parts(svg, 'wheel-').map((w) => ({ el: w, cx: Number(w.dataset.cx), cy: Number(w.dataset.cy), r: Number(w.dataset.r) }));
+  const drivers = wheels.filter((w) => w.r === 18);
+  const moments = parts(svg, 'moment-').map((m) => ({ el: m, x: Number(m.dataset.x) }));
+  const lines = [...step.querySelectorAll<HTMLElement>('[data-line-at]')].map((l) => ({ el: l, at: Number(l.dataset.lineAt) }));
   const names = [...step.querySelectorAll('.ms-course-list li')].map((li) => li.textContent ?? '');
   const nameEl = step.querySelector('[data-course-name]');
   const nEl = step.querySelector('[data-course-n]');
   const yearEl = step.querySelector('[data-course-year]');
   const total = Number(step.querySelector<HTMLElement>('[data-course]')?.dataset.total ?? names.length);
   const [y0, y1] = (step.querySelector<HTMLElement>('[data-course]')?.dataset.years ?? '2009,2016').split(',').map(Number);
-  // the moments of those years: each shows as the cart nears its stop
-  const momentAt = (svg.dataset.moments ?? '').split(',').filter(Boolean).map(Number);
-  const moments = momentAt.map((_, i) => svg.querySelector<SVGGElement>(`[data-p="moment-${i}"]`));
-  let counted = -1;
-  const peakFrom = at[Math.max(0, stops.findIndex((s) => s.classList.contains('ac-fill')) - 1)];
-  let shown = -1;
-  // p: where the cart is; max: how far it has been (the track stays laid that far, even when it rides back)
+  // the train's length: three wagons behind the engine
+  const TRAIN = 656;
+  let counted = -1, named = -1, read = -1;
+  // p: where the train is (0 to 1); max: how far it has been
   const state = { p: 0, max: 0 };
   const place = () => {
-    const len = state.p * L;
-    const pt = track.getPointAtLength(len), ahead = track.getPointAtLength(Math.min(L, len + 3)), behind = track.getPointAtLength(Math.max(0, len - 3));
-    const angle = (Math.atan2(ahead.y - behind.y, ahead.x - behind.x) * 180) / Math.PI;
-    cart.setAttribute('transform', `translate(${pt.x} ${pt.y}) rotate(${angle})`);
-    // the camera follows the cart, but never past either end of the ride
-    const w = svg.clientWidth || 1, h = svg.clientHeight || 1;
-    if (vertical) {
-      const seen = (vb.width * h) / w;
-      world.setAttribute('transform', `translate(0 ${gsap.utils.clamp(seen / 2 - vb.height / 2, vb.height / 2 - seen / 2, vb.height / 2 - pt.y)})`);
-    } else {
-      const seen = (vb.height * w) / h;
-      world.setAttribute('transform', `translate(${gsap.utils.clamp(seen / 2 - vb.width / 2, vb.width / 2 - seen / 2, vb.width / 2 - pt.x)} 0)`);
+    const p = state.p;
+    state.max = Math.max(state.max, p);
+    const x = x0 + p * (x1 - x0);
+    // the camera: on the whole train while it loads, then on the engine, a little behind the middle so the way ahead shows
+    const e = gsap.utils.clamp(0, 1, p / 0.12);
+    const focus = x - (TRAIN / 2) * (1 - e), at = W * (0.5 + 0.12 * e);
+    const tx = gsap.utils.clamp(W - len, 0, at - focus);
+    near.setAttribute('transform', `translate(${tx} 0)`);
+    far.setAttribute('transform', `translate(${tx * 0.35} 0)`);
+    clouds.setAttribute('transform', `translate(${tx * 0.15} 0)`);
+    train.setAttribute('transform', `translate(${x} 0)`);
+    // the wheels turn with the distance; the rod rides the drivers' cranks
+    const run = x - x0;
+    wheels.forEach((w) => w.el.setAttribute('transform', `rotate(${((run / w.r) * 180) / Math.PI} ${w.cx} ${w.cy})`));
+    if (rod && drivers.length === 2) {
+      const a = run / drivers[0].r, c = 9;
+      const [d0, d1] = drivers;
+      rod.setAttribute('d', `M${(d0.cx + c * Math.cos(a)).toFixed(1)} ${(d0.cy + c * Math.sin(a)).toFixed(1)}L${(d1.cx + c * Math.cos(a)).toFixed(1)} ${(d1.cy + c * Math.sin(a)).toFixed(1)}`);
     }
-    // the track lays itself a little ahead of the cart; the cobalt peak once the cart nears it
-    state.max = Math.max(state.max, state.p);
-    track.style.strokeDashoffset = String(Math.max(0, 1 - Math.min(1, state.max + 0.05)));
-    peak.style.opacity = len >= peakFrom ? '1' : '0';
-    let k = 0;
-    at.forEach((l, i) => { if (len >= l - 2) k = i; stops[i].classList.toggle('passed', len >= l - 2); });
-    moments.forEach((m, i) => m?.classList.toggle('seen', len >= at[Math.max(0, momentAt[i] - 1)] - 2));
-    if (k !== shown) {
-      shown = k;
-      if (nameEl) nameEl.textContent = names[k];
-    }
-    // all 49 courses go by, from 2009 to 2016; the named ones are some of them
-    const n = Math.max(1, Math.round(state.p * total));
+    moments.forEach((m) => m.el.classList.toggle('seen', x > m.x - 420));
+    // 49 courses, 2009 to 2016; the named ones are some of the most serious
+    const n = Math.max(1, Math.round(p * total));
     if (n !== counted) {
       counted = n;
       if (nEl) nEl.textContent = `${n} / ${total}`;
-      if (yearEl) yearEl.textContent = String(Math.min(y1, y0 + Math.floor(state.p * (y1 - y0 + 1))));
+      if (yearEl) yearEl.textContent = String(Math.min(y1, y0 + Math.floor(p * (y1 - y0 + 1))));
     }
+    const k = Math.min(names.length - 1, Math.floor(p * names.length));
+    if (k !== named) { named = k; if (nameEl) nameEl.textContent = names[k]; }
+    // the line being read: the last one reached
+    let li = 0;
+    lines.forEach((l, i) => { if (p >= l.at) li = i; });
+    if (li !== read) { read = li; lines.forEach((l, i) => l.el.classList.toggle('on', i === li)); }
   };
   place();
   return { state, place, station };
@@ -471,8 +438,8 @@ export function myStory(root: HTMLElement) {
   gsap.matchMedia().add({ motion: '(prefers-reduced-motion: no-preference)', still: '(prefers-reduced-motion: reduce)' }, (ctx) => {
     if (ctx.conditions?.still) {
       // reduced motion: each scene as it ends, fading in as it arrives; the cart waits at its station
-      const courses = steps.find((s) => s.dataset.scene === 'courses');
-      const ride = courses ? coaster(courses) : null;
+      const studies = steps.find((s) => s.dataset.scene === 'studies');
+      const ride = studies ? journey(studies) : null;
       if (ride) { ride.state.p = 1; ride.place(); }
       const io = new IntersectionObserver((entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add('seen')), { threshold: 0.15 });
       steps.forEach((s) => io.observe(s));
@@ -480,7 +447,8 @@ export function myStory(root: HTMLElement) {
     }
     root.classList.add('on');
     const plays = steps.map((step) => {
-      const svg = step.querySelector<SVGSVGElement>('.ms-art svg');
+      // the picture on show (the journey is drawn twice, wide and narrow)
+      const svg = [...step.querySelectorAll<SVGSVGElement>('.ms-art svg')].find((v) => v.getClientRects().length) ?? null;
       const scene = SCENES[step.dataset.scene ?? ''];
       if (!svg || !scene) return null;
       const tl = gsap.timeline({ paused: true });
