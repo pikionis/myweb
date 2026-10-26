@@ -278,7 +278,7 @@ export const ui = {
   /** a project's live site in its card (home page): the frame's name, after the title */
   live: { site: 'website' },
   /** under a project's own text, when it has a story to read (its page) */
-  readStory: 'Read the story',
+  readStory: 'Read the full story of our collaboration',
   /** the service stories (src/components/Stories.astro) */
   stories: {
     readMore: 'Read more',

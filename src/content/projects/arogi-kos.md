@@ -1,7 +1,7 @@
 ---
 title: "Arogi Kos"
 summary: "Brand-led website, designed with Claude Design and AI-assisted build."
-blurb: "All Ilias brought me was a logo. It was enough: the whole site, every illustration and every graphic grew out of it. One of the most beautiful designs I have made for a client."
+blurb: "All Ilias brought me was a logo. It was enough: the whole site, every illustration and every graphic grew out of it. One of the most beautiful designs I have made, for a very dear family friend, and I am really proud of the result."
 services: [web]
 tags: ["Web design"]
 url: "https://arogikos.gr"
@@ -17,7 +17,7 @@ For me, that was enough.
 
 ## One idea, the whole site
 
-That logo became the idea behind everything. The concept of the site, its illustrations, its graphics: all of it grew out of that one mark. It is one of the most beautiful designs I have made for a client.
+That logo became the idea behind everything. The concept of the site, its illustrations, its graphics: all of it grew out of that one mark. It is one of the most beautiful designs I have made, and I made it for a very dear family friend. I am really proud of the result, and genuinely excited about it.
 
 ## Behind the pages
 
