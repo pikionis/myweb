@@ -1,0 +1,215 @@
+---
+// "My story" on /about (src/scripts/mystory.ts): thirteen scenes, each held for a stretch of scroll while its
+// picture draws itself and its words arrive. On the left (on a phone: the top) runs the timeline: the portrait,
+// the career line in ink and, beside it, the thin cobalt line of client work, with every scene's year.
+// With reduced motion or without script the scenes simply follow one another, drawn, words and all.
+import MyStoryArt from './MyStoryArt.astro';
+import { scenes, art as A, t, aboutIntro } from '../data/mystory';
+import { person } from '../data/site';
+
+interface Props { cv?: string }
+const { cv } = Astro.props;
+const arrow = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>';
+const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" /></svg>';
+---
+<section class="ms" data-ms aria-labelledby="ms-title">
+  <h2 id="ms-title" class="sr-only">{t(aboutIntro.story)}</h2>
+
+  <!-- the timeline: what it shows is in the scenes themselves, so readers of the page skip it -->
+  <div class="ms-rail" aria-hidden="true">
+    {person.photo && <img class="ms-face" src={person.photo} alt="" width="96" height="128" />}
+    <p class="ms-now" data-rail-now>{t(scenes[1].rail)}</p>
+    <div class="ms-track">
+      <span class="ms-line ink"><span data-rail-ink></span></span>
+      <span class="ms-line cob"><span data-rail-cob></span></span>
+      <ol class="ms-years">
+        {scenes.map((s, i) => (
+          <li class:list={[{ side: s.side }]} data-rail={i}><span class="ms-dot"></span><span class="ms-year">{t(s.rail)}</span></li>
+        ))}
+      </ol>
+    </div>
+  </div>
+
+  <div class="ms-steps">
+    {scenes.map((s, i) => (
+      <article class:list={['ms-step', `ms-${s.id}`]} data-scene={s.id} data-index={i} style={`--hold: ${s.hold}`}>
+        <div class="ms-stage">
+          <div class="ms-art">
+            {s.id === 'courses' ? (
+              <div class="ms-coaster">
+                <div class="wide"><MyStoryArt name="courses-wide" /></div>
+                <div class="tall"><MyStoryArt name="courses-tall" /></div>
+              </div>
+            ) : <MyStoryArt name={s.id} />}
+          </div>
+          <div class="ms-text">
+            {t(s.label) && <p class="ms-label" data-t>{t(s.label)}</p>}
+            {s.title && <h3 data-t>{t(s.title)}</h3>}
+            {s.id === 'courses' && (
+              <>
+                <!-- the course the cart is passing (the full list follows, for readers and without motion) -->
+                <p class="ms-course" data-course aria-hidden="true"><span class="n" data-course-n>1 / {A.courses.length}</span> <span data-course-name>{t(A.courses[0])}</span></p>
+                <ul class="ms-course-list" data-t>{A.courses.map((c) => <li>{t(c)}</li>)}</ul>
+              </>
+            )}
+            {s.id === 'intro' ? <p class="ms-headline" data-words>{t(s.text)}</p> : <p class="ms-words" data-t data-words-end={s.id === 'courses' ? '' : undefined}>{t(s.text)}</p>}
+            {s.id === 'postgres' && <ul class="ms-chips" data-t>{A.postgres.tags.map((x) => <li>{x}</li>)}</ul>}
+            {s.id === 'kalimera' && (
+              <ul class="ms-notes">
+                {[A.kalimera.mvp, A.kalimera.prize, A.kalimera.accelerator].map((n, k) => <li data-note={k}>{t(n)}</li>)}
+              </ul>
+            )}
+            {s.id === 'side' && (
+              <ul class="ms-cards">
+                {A.side.map((p, k) => <li data-note={k}><b>{p.name}</b> {t(p.text)}</li>)}
+              </ul>
+            )}
+            {s.id === 'today' && (
+              <div class="ms-end" data-t>
+                <p class="ms-cta">{t(A.cta)}</p>
+                <div class="ms-actions">
+                  <a class="ms-btn" href="/contact">{t(A.contact)}<Fragment set:html={arrow} /></a>
+                  {cv && <a class="ms-btn ghost" href={cv} download>{t(aboutIntro.cv)}<Fragment set:html={down} /></a>}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .ms { --rail: 200px; position: relative; display: grid; grid-template-columns: var(--rail) minmax(0, 1fr); column-gap: clamp(24px, 3vw, 48px); }
+
+  /* ---- the timeline ---- */
+  .ms-rail {
+    position: sticky; top: var(--topbar-h); align-self: start; height: calc(100svh - var(--topbar-h));
+    display: flex; flex-direction: column; gap: 20px; padding: 28px 0 32px;
+  }
+  .ms-face { width: 96px; height: 128px; object-fit: cover; border-radius: 12px; }
+  .ms-now { display: none; }
+  .ms-track { position: relative; flex: 1; min-height: 0; padding-left: 34px; }
+  /* the two lines: the career in ink and the client work in thin cobalt; they fill as the story goes */
+  .ms-line { position: absolute; top: 6px; bottom: 6px; width: 2px; background: color-mix(in srgb, var(--ink) 12%, transparent); }
+  .ms-line.ink { left: 6px; }
+  .ms-line.cob { left: 16px; width: 1px; background: color-mix(in srgb, var(--cobalt) 18%, transparent); transition: width 0.4s var(--ease-out); }
+  .ms-line > span { position: absolute; inset: 0; transform-origin: 50% 0; transform: scaleY(var(--fill, 0)); }
+  .ms-line.ink > span { background: var(--ink); }
+  .ms-line.cob > span { background: var(--cobalt); }
+  /* the scene of the client work: its line comes forward */
+  .ms-rail.side-on .ms-line.cob { width: 4px; left: 14px; }
+  .ms-years { list-style: none; margin: 0; padding: 0; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+  .ms-years li { position: relative; display: flex; align-items: center; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.8125rem; color: var(--muted); transition: color 0.3s ease; }
+  .ms-dot { position: absolute; left: -32px; width: 10px; height: 10px; border-radius: 50%; background: var(--paper); border: 2px solid color-mix(in srgb, var(--ink) 25%, transparent); transition: background-color 0.3s ease, border-color 0.3s ease, scale 0.3s var(--ease-out); }
+  .ms-years li.side::after { content: ''; position: absolute; left: -21px; width: 5px; height: 5px; border-radius: 50%; background: var(--cobalt); opacity: 0.35; }
+  .ms-years li.past { color: var(--ink); }
+  .ms-years li.past .ms-dot { border-color: var(--ink); background: var(--ink); }
+  .ms-years li.now { color: var(--ink); font-weight: 700; }
+  .ms-years li.now .ms-dot { border-color: var(--cobalt); background: var(--cobalt); scale: 1.3; }
+  .ms-years li.side.past::after { opacity: 1; }
+
+  /* ---- a scene: held for its stretch of scroll (with motion), its picture and its words side by side ---- */
+  .ms-stage {
+    min-height: 0; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); align-items: center;
+    gap: clamp(24px, 4vw, 64px); padding-block: clamp(48px, 10vh, 120px);
+  }
+  :global(html.js) .ms.on .ms-step { height: calc(100svh * (1 + var(--hold))); }
+  :global(html.js) .ms.on .ms-stage { position: sticky; top: 0; height: 100svh; padding: calc(var(--topbar-h) + 24px) 0 32px; }
+  .ms-art { position: relative; min-height: 0; height: 100%; max-height: min(64vh, 560px); display: flex; align-items: center; justify-content: center; }
+  .ms-art :global(.ms-svg) { max-height: 100%; }
+  .ms-text { min-width: 0; }
+  .ms-label {
+    margin: 0 0 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700;
+    font-size: clamp(2rem, 4.4vw, 4rem); line-height: 1; letter-spacing: -0.03em;
+  }
+  .ms-text h3 { margin: 0 0 12px; font-size: clamp(1.25rem, 1.8vw, 1.6rem); line-height: 1.15; letter-spacing: -0.01em; text-transform: none; }
+  .ms-words { margin: 0; max-width: 40ch; font-size: clamp(1.05rem, 1.35vw, 1.25rem); line-height: 1.5; }
+  .ms-notes, .ms-cards, .ms-chips, .ms-course-list { list-style: none; margin: 18px 0 0; padding: 0; }
+  .ms-notes { display: grid; gap: 8px; font-size: 0.9375rem; line-height: 1.45; color: var(--muted); }
+  .ms-notes li { padding-left: 14px; border-left: 2px solid var(--cobalt); }
+  .ms-cards { display: grid; gap: 10px; }
+  .ms-cards li { padding: 12px 14px; border-radius: 12px; background: var(--surface); font-size: 0.9375rem; line-height: 1.45; }
+  .ms-cards b { display: block; margin-bottom: 2px; }
+  .ms-chips { display: none; flex-wrap: wrap; gap: 6px; }
+  .ms-chips li { padding: 4px 10px; border-radius: 100px; background: var(--surface); font-size: 0.8125rem; }
+  /* the course the cart is passing; the full list for readers, and for everyone without motion */
+  .ms-course { display: none; }
+  :global(html.js) .ms.on .ms-course { display: block; margin: 4px 0 16px; min-height: 2.6em; font-size: clamp(1.05rem, 1.4vw, 1.25rem); font-weight: 600; }
+  .ms-course .n { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 500; color: var(--accent-ink); }
+  .ms-course-list { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 0.875rem; color: var(--muted); }
+  :global(html.js) .ms.on .ms-course-list { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /* the rollercoaster: along on a wide screen, down on a phone */
+  .ms-coaster { position: relative; width: 100%; height: 100%; }
+  .ms-coaster > div { position: absolute; inset: 0; overflow: hidden; border-radius: 16px; }
+  .ms-coaster .tall { display: none; }
+  :global(html:not(.js)) .ms-coaster, .ms:not(.on) .ms-coaster { height: 320px; }
+
+  /* the opening: the words alone, and the line under them */
+  .ms-intro .ms-stage { grid-template-columns: minmax(0, 1fr); align-content: center; text-align: center; }
+  .ms-intro .ms-art { order: 2; height: auto; max-height: 220px; }
+  .ms-headline {
+    margin: 0 auto; max-width: 22ch; font-size: clamp(1.9rem, 4.2vw, 3.6rem); font-weight: 700; line-height: 1.08; letter-spacing: -0.03em; text-wrap: balance;
+  }
+  .ms-headline :global(.w) { color: color-mix(in srgb, var(--ink) 20%, transparent); transition: color 0.3s ease; }
+  .ms-headline :global(.w.lit) { color: var(--ink); }
+
+  /* the close: the roles, the invitation and the two ways forward */
+  .ms-today .ms-words { font-size: clamp(1.6rem, 2.6vw, 2.4rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
+  .ms-cta { margin: 18px 0 0; font-size: 1.125rem; }
+  .ms-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .ms-btn {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 100px;
+    background: var(--ink); color: var(--paper); font-weight: 600; text-decoration: none; transition: scale 0.16s var(--ease-out), opacity 0.2s ease;
+  }
+  .ms-btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+  @media (hover: hover) and (pointer: fine) { .ms-btn:hover { opacity: 0.86; } }
+  .ms-btn:active { scale: 0.97; }
+  .ms-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* without motion (or script): each scene simply arrives */
+  :global(html.js) .ms:not(.on) .ms-stage { opacity: 0; transition: opacity 0.6s ease; }
+  :global(html.js) .ms:not(.on) .ms-step.seen .ms-stage { opacity: 1; }
+
+  /* ---- a phone: the timeline is a strip at the top, the picture over the words ---- */
+  @media (max-width: 860px) {
+    .ms { display: block; }
+    .ms-rail {
+      position: sticky; top: var(--topbar-h); z-index: 5; height: auto; flex-direction: row; align-items: center; gap: 12px;
+      padding: 8px 0 10px; background: var(--paper);
+    }
+    .ms-face { width: 32px; height: 32px; border-radius: 50%; object-position: 50% 20%; }
+    .ms-now { display: block; margin: 0; min-width: 4.5em; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9375rem; font-weight: 700; }
+    .ms-track { flex: 1; height: 18px; padding: 0; }
+    .ms-line { top: auto; bottom: auto; left: 0; right: 0; width: auto; height: 2px; }
+    .ms-line.ink { top: 4px; left: 0; }
+    .ms-line.cob { top: 12px; left: 0; width: auto; height: 1px; }
+    .ms-rail.side-on .ms-line.cob { height: 3px; top: 11px; left: 0; width: auto; }
+    .ms-line > span { transform-origin: 0 50%; transform: scaleX(var(--fill, 0)); }
+    .ms-years { position: absolute; inset: 0; flex-direction: row; height: auto; }
+    .ms-years li { width: 8px; }
+    .ms-year { display: none; }
+    .ms-dot { left: 0; top: 0; width: 8px; height: 8px; border-width: 1.5px; }
+    .ms-years li.side::after { display: none; }
+    .ms-stage { grid-template-columns: minmax(0, 1fr); gap: 18px; padding-block: 40px; }
+    :global(html.js) .ms.on .ms-step { height: calc(100svh * (1 + var(--hold) * 0.75)); }
+    :global(html.js) .ms.on .ms-stage {
+      grid-template-rows: auto minmax(0, 1fr); align-items: stretch; align-content: stretch;
+      padding: calc(var(--topbar-h) + 62px) 0 calc(88px + env(safe-area-inset-bottom, 0px));
+    }
+    :global(html.js) .ms.on .ms-text { order: -1; }
+    .ms-art { max-height: none; }
+    .ms-label { font-size: clamp(1.6rem, 8vw, 2.2rem); margin-bottom: 6px; }
+    .ms-text h3 { font-size: 1.125rem; margin-bottom: 6px; }
+    .ms-words { font-size: 1rem; }
+    .ms-chips { display: flex; margin-top: 12px; }
+    .ms-notes, .ms-cards { margin-top: 12px; gap: 6px; }
+    .ms-cards li { padding: 8px 12px; font-size: 0.875rem; }
+    .ms-coaster .wide { display: none; }
+    .ms-coaster .tall { display: block; }
+    :global(html.js) .ms.on .ms-intro .ms-stage { grid-template-rows: auto auto; align-content: center; }
+    :global(html.js) .ms.on .ms-intro .ms-text { order: 0; }
+    .ms-headline { font-size: clamp(1.7rem, 7.6vw, 2.2rem); }
+  }
+</style>

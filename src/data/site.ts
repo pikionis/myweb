@@ -12,6 +12,9 @@ export const person = {
   location: 'Kos · Greece',
   // the portrait (public/petros.jpg): black and white in the site's ink and ivory, the shirt in the accent blue
   photo: '/petros.jpg' as string,
+  // the CV for "Download CV" on /about: a PDF at this address in public/ (the button shows on the live site once
+  // the file is there) [TODO: add the CV PDF]
+  cv: '/petros-pikionis-cv.pdf' as string,
   // Put your logo in public/ (an SVG is best) and set this, e.g. '/logo.svg'; until then the footer sets your name
   logo: '' as string,
 };

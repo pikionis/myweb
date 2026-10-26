@@ -1,0 +1,345 @@
+---
+// One drawing per scene of "My story" (src/data/mystory.ts), by scene id: single-line art in ink on the paper,
+// with cobalt as the one accent ("One Continuous Line"). Each is drawn as it ends, which is how it rests with
+// reduced motion or no script; src/scripts/mystory.ts draws it from nothing as the scene is scrolled through.
+// Every scene but the first is entered by its `lead`, the line coming in from the left (from the timeline), so
+// the line never breaks. Parts the script moves are named by data-p; strokes draw on as in the stories.
+import { r1, C, R, P, D, cls } from './lineart';
+import { art as A, t } from '../data/mystory';
+
+interface Props { name: string }
+const { name } = Astro.props;
+
+type N = number;
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+/** a part the script moves */
+const G = (p: string, inner: string, attrs = '') => `<g data-p="${p}"${attrs ? ` ${attrs}` : ''}>${inner}</g>`;
+/** a filled shape (it does not draw on) */
+const F = (d: string, extra: string, attrs = '') => `<path class="${extra}" d="${d}"${attrs ? ` ${attrs}` : ''}/>`;
+/** words */
+const X = (x: N, y: N, text: string, size: N, extra = '', attrs = '') =>
+  `<text class="${cls('t', extra)}" x="${x}" y="${y}" font-size="${size}"${attrs ? ` ${attrs}` : ''}>${esc(text)}</text>`;
+const width = (text: string, size: N) => Math.round(text.length * size * 0.56);
+/** a small label in a pill */
+const pill = (x: N, y: N, text: string, size: N, extra = '') => {
+  const w = width(text, size) + 22;
+  return P(R(x, y, w, size + 14, (size + 14) / 2), cls('solid', extra)) + X(x + w / 2, y + size + 2, text, size, extra.includes('ac') ? 't-ac mid' : 'mid');
+};
+/** a person: head and shoulders, the head at (x, y) */
+const person = (x: N, y: N, s = 1, extra = '') =>
+  P(C(x, y, r1(12 * s)), extra) +
+  P(`M${r1(x - 22 * s)} ${r1(y + 58 * s)}C${r1(x - 22 * s)} ${r1(y + 30 * s)} ${r1(x - 11 * s)} ${r1(y + 18 * s)} ${x} ${r1(y + 18 * s)}C${r1(x + 11 * s)} ${r1(y + 18 * s)} ${r1(x + 22 * s)} ${r1(y + 30 * s)} ${r1(x + 22 * s)} ${r1(y + 58 * s)}`, extra);
+/** a document with a few lines */
+const doc = (x: N, y: N, w: N, h: N) =>
+  P(R(x, y, w, h, 6), 'solid') + P(`M${x + 12} ${y + 18}H${x + w - 14}M${x + 12} ${y + 30}H${x + w - 24}M${x + 12} ${y + 42}H${x + w - 18}`);
+/** a point list through which a smooth line runs (Catmull-Rom, as cubic Béziers) */
+const smooth = (pts: N[][], start = true) => {
+  let d = start ? `M${pts[0][0]} ${pts[0][1]}` : '';
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] ?? pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] ?? p2;
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    d += `C${r1(c1[0])} ${r1(c1[1])} ${r1(c2[0])} ${r1(c2[1])} ${p2[0]} ${p2[1]}`;
+  }
+  return d;
+};
+
+// ---- the rollercoaster's track: one peak or turn per course, a loop on the way, the highest peak in cobalt ----
+const N = A.courses.length;
+// heights above the ground, by course (the AI peak, A.peak, is the highest)
+const lift = [60, 120, 80, 170, 110, 60, 150, 100, 190, 70, 130, 90, 160, 110, 70, 140, 100, 180, 90, 300, 130, 80, 110];
+const wide = { w: 160 + N * 150 + 260, h: 500, ground: 420 };
+const widePts = Array.from({ length: N }, (_, i) => [160 + i * 150, wide.ground - lift[i]]);
+const tall = { w: 500, h: 220 + N * 150 + 240, };
+// down the phone the track zig-zags from side to side, one turn per course
+const tallPts = Array.from({ length: N }, (_, i) => [i % 2 ? 380 : 120, 200 + i * 150]);
+/** the track: up through every course, a loop after the tenth, on to the station */
+const track = (pts: N[][], start: N[], end: N[], loopAt: number, vertical: boolean) => {
+  const a = [start, ...pts.slice(0, loopAt + 1)];
+  const b = [pts[loopAt], ...pts.slice(loopAt + 1), end];
+  const [lx, ly] = pts[loopAt];
+  const loop = vertical
+    ? `C${lx + 120} ${ly} ${lx + 120} ${ly + 150} ${lx} ${ly + 150}C${lx - 120} ${ly + 150} ${lx - 120} ${ly} ${lx} ${ly}`
+    : `C${lx + 95} ${ly} ${lx + 95} ${ly - 150} ${lx} ${ly - 150}C${lx - 95} ${ly - 150} ${lx - 95} ${ly} ${lx} ${ly}`;
+  return smooth(a) + loop + smooth(b, false);
+};
+const peakSegment = (pts: N[][]) => smooth(pts.slice(A.peak - 1, A.peak + 2));
+const cart = (vertical: boolean) => G('cart',
+  F(R(-24, -30, 48, 24, 6), 'fill-ink') + F(C(-13, -2, 6), 'fill-ink') + F(C(13, -2, 6), 'fill-ink') + F(C(0, -40, 7), 'fill-ink'),
+  vertical ? 'data-vertical' : '');
+const station = (x: N, y: N) => G('station',
+  P(`M${x - 46} ${y}V${y - 66}H${x + 46}V${y}`) + P(`M${x - 58} ${y - 66}L${x} ${y - 104}L${x + 58} ${y - 66}`) + P(`M${x - 12} ${y}V${y - 34}H${x + 12}V${y}`) +
+  X(x, y - 118, t(A.station), 22, 'mid bold'));
+const coaster = (vertical: boolean) => {
+  const pts = vertical ? tallPts : widePts;
+  const start = vertical ? [250, 60] : [20, wide.ground];
+  const end = vertical ? [250, tall.h - 120] : [wide.w - 140, wide.ground];
+  const view = vertical ? `0 0 ${tall.w} ${tall.h}` : `0 0 ${wide.w} ${wide.h}`;
+  const ground = vertical ? '' : P(`M0 ${wide.ground + 34}H${wide.w}`, 'faint');
+  const dots = pts.map(([x, y], i) => `<circle class="${i === A.peak ? 'stop ac-fill' : 'stop'}" data-p="stop" cx="${x}" cy="${y}" r="${i === A.peak ? 9 : 6}"/>`).join('');
+  const peak = pts[A.peak];
+  return { view, inner: G('world',
+    ground +
+    `<path class="track sa-d" data-p="track" pathLength="1" d="${track(pts, start, end, 10, vertical)}"/>` +
+    P(peakSegment(pts), 'ac thick', 'data-p="peak"') +
+    X(peak[0] + (vertical ? 30 : 0), peak[1] - (vertical ? -8 : 28), 'AI', 26, vertical ? 'bold t-ac' : 'mid bold t-ac') +
+    dots + station(end[0], end[1]) + cart(vertical)) };
+};
+
+// ---- the PostgreSQL tags, laid out in rows ----
+const tagRows = (() => {
+  const rows: string[] = [];
+  let x = 40, y = 392;
+  A.postgres.tags.forEach((tag, i) => {
+    const w = width(tag, 15) + 22;
+    if (x + w > 760) { x = 40; y += 36; }
+    rows.push(G(`tag-${i}`, pill(x, y, tag, 15, i % 4 === 1 ? 'ac' : '')));
+    x += w + 10;
+  });
+  return rows.join('');
+})();
+
+const SCENES: Record<string, () => { view?: string; inner: string }> = {
+  // a dot that becomes a line, under the words, and drops down to start the journey
+  intro: () => ({ view: '0 0 800 220', inner: [
+    `<circle data-p="dot" class="fill-ink" cx="400" cy="40" r="6"/>`,
+    G('under', P('M400 40H90') + P('M400 40H710')),
+    G('drop', P('M400 40V220')),
+  ].join('') }),
+
+  // the old harbour of Chania and its lighthouse, then a lecture hall and a blackboard of mathematics
+  chania: () => ({ inner: [
+    G('lead', P('M0 404C40 404 80 400 120 400')),
+    G('harbour', [
+      P('M120 400Q160 390 200 400T280 400T360 400T440 400T520 400T600 400T680 400'),
+      P('M160 434Q200 424 240 434T320 434T400 434T480 434T560 434T640 434'),
+      P('M120 378C220 330 420 330 540 356'),
+      P(R(150, 300, 46, 52, 3)), P(R(204, 284, 40, 68, 3)), P(R(252, 306, 44, 46, 3)),
+      P('M300 356V318H380V356'), P('M300 318C300 276 380 276 380 318'), P('M340 285V270'),
+      P('M592 380L604 214H628L640 380'), P(R(598, 186, 36, 28, 4)), P('M594 186L616 168L638 186'),
+      P('M646 196L716 176', 'ac'), P('M646 206L722 206', 'ac'),
+    ].join(''), 'opacity="0"'),
+    G('hall', [
+      P(R(150, 50, 500, 270, 8), 'solid'), P(R(162, 62, 476, 246, 4)), P('M150 332H650'),
+      P('M90 420H710'), P('M60 460H740'), P('M520 420L532 370H598L610 420'),
+    ].join('')),
+    G('math', A.board.map((line, i) => X(190, 112 + i * 56, line, 30, 'math', `data-line="${i}"`)).join('')),
+  ].join('') }),
+
+  // a terminal; the program types itself, runs, and its author raises both arms
+  cpp: () => ({ inner: [
+    G('lead', P('M0 250C40 250 60 240 90 240')),
+    G('term', P(R(90, 50, 520, 360, 14), 'solid') + P('M90 92H610') + D(116, 71, 4) + D(132, 71, 4) + D(148, 71, 4)),
+    G('code', A.cpp.code.map((line, i) => X(118, 136 + i * 34, line, 22, 'mono', 'data-type')).join('')),
+    G('run', X(118, 350, A.cpp.run, 22, 'mono muted', 'data-type')),
+    G('out', X(118, 386, A.cpp.out, 22, 'mono t-ac bold', 'data-type')),
+    G('coder', person(700, 300, 1.6)),
+    G('arms', P('M672 372L644 322') + P('M728 372L756 322')),
+    G('burst', P('M672 262L660 248', 'ac') + P('M700 250V232', 'ac') + P('M728 262L740 248', 'ac')),
+  ].join('') }),
+
+  // a hospital; its forms fly out and settle into the classes of a system, joined by their relations
+  java: () => {
+    const boxes = [[40, 40], [590, 40], [40, 340], [590, 340]];
+    const cls4 = A.java.classes.map((c, i) => {
+      const [x, y] = boxes[i];
+      return G(`class-${i}`, P(R(x, y, 170, 120, 6), 'solid') + P(`M${x} ${y + 36}H${x + 170}`) + X(x + 85, y + 25, c, 18, 'mid bold') +
+        P(`M${x + 14} ${y + 60}H${x + 120}M${x + 14} ${y + 82}H${x + 100}M${x + 14} ${y + 104}H${x + 132}`));
+    }).join('');
+    const forms = A.java.forms.map((f, i) => {
+      const [x, y] = boxes[i];
+      return G(`form-${i}`, doc(x + 30, y + 20, 110, 80) + X(x + 85, y + 118, t(f), 16, 'mid'), 'opacity="0"');
+    }).join('');
+    return { inner: [
+      G('lead', P('M0 300C80 300 220 296 300 300')),
+      G('rel', P('M125 160V340') + P('M590 110C480 140 320 300 210 380') + P('M590 400C480 360 320 180 210 120') +
+        X(136, 182, '1', 16) + X(136, 332, '*', 18) + X(572, 128, '1', 16) + X(222, 372, '*', 18) + X(572, 392, '1', 16) + X(222, 138, '*', 18)),
+      G('hospital', P(R(300, 170, 200, 190, 6), 'solid') + P('M290 170H510') +
+        [324, 386, 448].map((x) => P(R(x, 196, 28, 26, 3)) + P(R(x, 238, 28, 26, 3))).join('') + P('M380 360V318H420V360')),
+      G('cross', F('M392 104h16v20h20v16h-20v20h-16v-20h-20v-16h20z', 'ac-fill')),
+      cls4, forms,
+    ].join('') };
+  },
+
+  // an ER diagram; a messy table splits into normal forms; a JOIN joins them; the theory around it
+  postgres: () => {
+    const ents = A.postgres.entities.map((e, i) => {
+      const x = 60 + i * 245, y = 36;
+      return G(`ent-${i}`, P(R(x, y, 190, 110, 6), 'solid') + P(`M${x} ${y + 34}H${x + 190}`) + X(x + 104, y + 24, e, 18, 'mid bold') +
+        P(C(x + 20, y + 17, 5), 'ac') + P(`M${x + 25} ${y + 17}H${x + 38}M${x + 33} ${y + 17}V${y + 22}`, 'ac') +
+        P(`M${x + 14} ${y + 58}H${x + 140}M${x + 14} ${y + 80}H${x + 116}`));
+    }).join('');
+    const seg = (i: number) => {
+      const x = 60 + i * 245, y = 196, w = 190, rows = [y + 32, y + 58, y + 84];
+      return G(`seg-${i}`, P(R(x, y, w, 110, 6), 'solid') + P(`M${x} ${y + 26}H${x + w}`) +
+        rows.slice(1).map((r) => P(`M${x} ${r}H${x + w}`)).join('') + P(`M${x + 63} ${y}V${y + 110}M${x + 126} ${y}V${y + 110}`) +
+        P(`M${x + 12} ${y + 13}H${x + 40}M${x + 75} ${y + 13}H${x + 104}M${x + 138} ${y + 13}H${x + 170}`, 'thick-ish'));
+    };
+    return { inner: [
+      G('lead', P('M0 90C30 90 40 90 60 90')),
+      G('er', ents + P('M250 91H305') + P('M495 91H550') + X(258, 82, '1', 15) + X(292, 82, 'N', 15) + X(503, 82, 'N', 15) + X(538, 82, 'M', 15) +
+        P('M305 120h-14l6-5m-6 5l6 5', 'ac') + P('M550 120h-14l6-5m-6 5l6 5', 'ac')),
+      [0, 1, 2].map(seg).join(''),
+      G('messy', P('M120 214L180 290M330 220L380 296M560 210L620 292', 'faint') + P('M60 268H740', 'faint'), 'opacity="0"'),
+      G('join', P('M250 251C272 232 284 232 305 251', 'ac thick') + P('M495 251C517 232 529 232 550 251', 'ac thick') + X(400, 186, A.postgres.join, 18, 'mid bold t-ac mono')),
+      G('nf', A.postgres.nf.map((n, i) => X(400, 344, n, 20, 'mid mono bold', `data-nf="${i}"${i < A.postgres.nf.length - 1 ? ' opacity="0"' : ''}`)).join('')),
+      tagRows,
+    ].join('') };
+  },
+
+  // the rollercoaster: drawn twice, along for a wide screen and down for a phone; the script picks the one shown
+  courses: () => ({ inner: '' }),
+
+  // websites stack up; a shop fills and feeds the marketplaces; then 2019, campaigns against the clock
+  reach: () => ({ inner: [
+    G('lead', P('M0 250C20 250 30 250 40 250')),
+    [0, 1, 2].map((i) => G(`browser-${i}`, P(R(40 + i * 34, 60 + i * 30, 300, 200, 10), 'solid') + P(`M${40 + i * 34} ${92 + i * 30}H${340 + i * 34}`) +
+      D(58 + i * 34, 76 + i * 30, 3.5) + D(70 + i * 34, 76 + i * 30, 3.5) + D(82 + i * 34, 76 + i * 30, 3.5) +
+      P(`M${62 + i * 34} ${118 + i * 30}H${200 + i * 34}`, 'thick') + P(`M${62 + i * 34} ${146 + i * 30}H${300 + i * 34}M${62 + i * 34} ${166 + i * 30}H${260 + i * 34}`), 'opacity="0"')).join(''),
+    G('cart', P('M430 200H560L544 290H448Z', 'solid') + P('M430 200L418 176H398') + P(C(458, 312, 10)) + P(C(534, 312, 10))),
+    [[452, 214, 26, 26], [484, 206, 26, 34], [516, 218, 22, 22]].map(([x, y, w, h], i) => G(`product-${i}`, P(R(x, y, w, h, 4), 'solid ac'))).join(''),
+    A.reach.markets.map((m, i) => G(`market-${i}`, P(R(640, 90 + i * 110, 130, 54, 10), 'solid') + X(705, 123 + i * 110, m, 18, 'mid bold'))).join(''),
+    [117, 227, 337].map((y, i) => G(`feed-${i}`, P(`M562 230C604 230 600 ${y} 632 ${y}`, 'ac') + P(`M624 ${y - 6}L634 ${y}L624 ${y + 6}`, 'ac'))).join(''),
+    G('xml', X(596, 214, A.reach.feed, 15, 'mono t-ac mid')),
+    G('campaign', [
+      X(60, 70, A.reach.year, 26, 'mono bold'),
+      P('M60 400V230'), P('M60 232C90 222 110 242 140 232V282C110 292 90 272 60 282', 'ac'),
+      P('M200 330L262 300V380L200 350Z'), P(R(180, 330, 20, 20, 3)), P('M276 318Q292 340 276 362'), P('M290 306Q314 340 290 374'),
+      P(C(130, 150, 44)), G('hand', P('M130 150V116')), P('M130 150L156 160'), X(130, 222, A.reach.clock, 18, 'mono mid', 'data-clock'),
+      P(R(220, 90, 150, 130, 8), 'solid'), P('M240 122H340', 'thick'), P('M240 146H350M240 164H320'), F(R(240, 182, 64, 22, 11), 'ac-fill'),
+    ].join(''), 'opacity="0"'),
+  ].join('') }),
+
+  // a phone where the sun rises; the team around it; then the stage, the prize, a door, a board of what it taught
+  kalimera: () => ({ inner: [
+    `<defs><clipPath id="ms-screen"><rect x="164" y="96" width="132" height="236" rx="10"/></clipPath></defs>`,
+    G('lead', P('M0 220C60 220 110 220 150 220')),
+    G('phone', P(R(150, 60, 160, 300, 24), 'solid') + P('M210 80H250') + P(R(164, 96, 132, 236, 10))),
+    `<g clip-path="url(#ms-screen)">` + G('sun', P('M192 300A38 38 0 0 1 268 300', 'ac thick') + P('M230 248V234M200 260L190 250M260 260L270 250M182 282H168M278 282H292', 'ac')) + `</g>`,
+    G('horizon', P('M172 300H288')),
+    [[90, 110], [70, 210], [90, 310], [370, 110], [390, 210], [370, 310]].map(([x, y], i) => G(`team-${i}`, person(x, y, 0.9))).join(''),
+    G('count', X(230, 430, `${A.kalimera.count}+`, 40, 'mid bold', 'data-count') + X(230, 458, t(A.kalimera.profiles), 16, 'mid')),
+    G('pitch', P('M450 340H770') + person(500, 236, 1.4) + P(R(570, 150, 180, 110, 6), 'solid') + P('M586 236L620 206L654 218L706 168', 'ac') +
+      [470, 520, 570, 620, 670, 720].map((x) => P(C(x, 404, 10))).join(''), 'opacity="0"'),
+    G('trophy', P('M570 120H690C690 210 650 230 630 230C610 230 570 210 570 120Z', 'solid') + P('M570 140C540 140 540 186 572 190M690 140C720 140 720 186 688 190') +
+      P('M630 230V270') + P(R(590, 270, 80, 24, 4)) + X(630, 196, '2', 52, 'mid bold t-ac'), 'opacity="0"'),
+    G('door', P(R(590, 110, 130, 210, 4)) + P('M600 320L560 380M655 320V392M710 320L750 380', 'ac') +
+      G('panel', P(R(594, 114, 122, 202, 2), 'solid') + D(700, 216, 5)), 'opacity="0"'),
+    G('board', P(R(450, 80, 310, 290, 10), 'solid') + P('M553 80V370M656 80V370') + P('M450 112H760', 'faint') +
+      A.kalimera.words.map((w, i) => {
+        const col = i % 3, row = Math.floor(i / 3), x = 460 + col * 103, y = 126 + row * 74;
+        return G(`word-${i}`, P(R(x, y, 86, 56, 6), 'solid') + X(x + 43, y + 33, t(w), 12, 'mid'));
+      }).join('')),
+  ].join('') }),
+
+  // three islands, joined in cobalt; a board, a team and a budget; a ring of eight with the EU fund at its heart
+  koan: () => ({ inner: [
+    G('lead', P('M0 200C20 200 40 200 56 202')),
+    G('isle-0', P('M60 200C100 170 180 150 260 160C300 166 320 184 300 200C260 222 160 230 90 226C60 222 46 212 60 200Z') + X(176, 254, t(A.koan.islands[0]), 18, 'mid')),
+    G('isle-1', P('M150 330C120 300 70 310 80 340C90 370 140 370 160 350C180 370 230 372 236 342C242 312 196 300 170 330C164 336 156 336 150 330Z') + X(158, 400, t(A.koan.islands[1]), 18, 'mid')),
+    G('isle-2', P(C(330, 330, 40)) + P(C(330, 330, 14)) + X(330, 400, t(A.koan.islands[2]), 18, 'mid')),
+    G('net', `<path class="ac net" d="M210 208Q270 270 300 300M140 226Q130 280 150 320M236 340Q262 334 290 332"/>` +
+      `<circle class="ac-fill" cx="210" cy="208" r="5"/><circle class="ac-fill" cx="150" cy="320" r="5"/><circle class="ac-fill" cx="300" cy="300" r="5"/>`),
+    G('jira', P(R(440, 50, 320, 210, 10), 'solid') + P('M547 50V260M654 50V260') +
+      [[452, 70], [452, 120], [559, 70], [666, 70], [666, 120], [559, 170]].map(([x, y]) => P(R(x, y, 82, 36, 5))).join(''), 'opacity="0"'),
+    G('ring', Array.from({ length: 8 }, (_, i) => {
+      const a = (i / 8) * Math.PI * 2 - Math.PI / 2, x = r1(600 + Math.cos(a) * 96), y = r1(150 + Math.sin(a) * 96);
+      return P(C(x, y, 16), i % 2 ? '' : 'ac');
+    }).join('') + X(600, 146, 'ESPA', 20, 'mid bold') + X(600, 170, A.koan.espa.replace('ESPA ', ''), 15, 'mid mono')),
+    A.koan.roles.map((r, i) => G(`role-${i}`, person(490 + i * 110, 300, 0.9) + X(490 + i * 110, 386, t(r), 15, 'mid'))).join(''),
+    G('budget', P(C(724, 410, 40), 'solid ac') + X(724, 416, A.koan.budget, 16, 'mid bold t-ac')),
+  ].join('') }),
+
+  // a desk, books and a laptop; the cobalt peak of the courses comes back, with what it holds now
+  ai: () => ({ inner: [
+    G('lead', P('M0 380C40 380 80 380 120 380')),
+    G('desk', P('M120 380H560') + P('M150 380V470M530 380V470') + P(R(160, 350, 90, 30, 3)) + P(R(170, 322, 74, 28, 3)) + P(R(166, 298, 82, 24, 3))),
+    G('reader', person(380, 230, 1.5)),
+    G('laptop', P('M300 380L316 290H444L460 380Z', 'solid') + P('M330 312H430', 'faint')),
+    G('peak', P('M560 320L650 150L740 320', 'ac thick') + X(650, 132, 'AI', 26, 'mid bold t-ac')),
+    A.ai.map((a, i) => G(`ai-${i}`, pill([560, 690, 700, 540][i], [70, 60, 200, 210][i], a, 16, i % 2 ? 'ac' : ''))).join(''),
+  ].join('') }),
+
+  // Zurich; files tumble into a funnel; clean products come out, eight hundred thousand of them, every day
+  deindeal: () => {
+    const file = (i: number, x: number, y: number) => G(`file-${i}`, i === 3
+      ? P(`M${x} ${y + 10}H${x + 22}L${x + 30} ${y}H${x + 64}V${y + 52}H${x}Z`, 'solid') + X(x + 32, y + 36, A.deindeal.files[i], 14, 'mid mono bold')
+      : P(R(x, y, 54, 66, 4), 'solid') + X(x + 27, y + 40, A.deindeal.files[i], 14, 'mid mono bold'));
+    return { inner: [
+      G('lead', P('M0 110C10 110 30 110 40 110')),
+      G('zurich', P('M40 110L110 50L150 90L210 30L270 100L320 70L380 110') + P('M60 140Q100 132 140 140T220 140T300 140T380 140') + X(210, 176, t(A.deindeal.city), 16, 'mid')),
+      file(0, 440, 30) + file(1, 530, 20) + file(2, 620, 34) + file(3, 700, 40),
+      G('funnel', P('M300 190H660L520 330V368H440V330Z', 'solid')),
+      A.deindeal.stages.map((s, i) => G(`stage-${i}`, X(480, 222 + i * 30, `${i + 1} ${t(s)}`, 15, 'mid mono'))).join(''),
+      [0, 1, 2, 3, 4].map((i) => G(`card-${i}`, P(R(330 + i * 72, 400, 60, 80, 6), 'solid') + P(R(340 + i * 72, 410, 40, 30, 4), 'ac') + P(`M${340 + i * 72} 452H${378 + i * 72}M${340 + i * 72} 464H${366 + i * 72}`))).join(''),
+      G('count', X(150, 420, `${A.deindeal.count.toLocaleString('en-US')}+`, 34, 'mid bold', 'data-count') + X(150, 448, t(A.deindeal.products), 16, 'mid')),
+      G('refresh', P('M180 330A30 30 0 1 1 150 300', 'ac') + P('M146 290L152 300L142 306', 'ac') + X(150, 272, t(A.deindeal.refresh), 14, 'mid t-ac')),
+    ].join('') };
+  },
+
+  // the cobalt line that ran beside it all comes forward; its dots open into the projects built along the way
+  side: () => ({ inner: [
+    G('lead', P('M0 250C40 250 60 250 80 250')),
+    `<path class="ac thick sa-d" data-p="line" pathLength="1" d="M80 250C200 180 300 320 420 250C540 180 640 320 790 250"/>`,
+    A.side.map((s, i) => {
+      const x = [180, 420, 660][i], y = [214, 250, 286][i], up = i !== 1;
+      const by = up ? y - 120 : y + 40;
+      return `<circle class="ac-fill" data-p="sdot-${i}" cx="${x}" cy="${y}" r="9"/>` +
+        G(`scard-${i}`, P(`M${x} ${y + (up ? -12 : 12)}V${up ? by + 64 : by}`, 'ac') + P(R(x - 110, by, 220, 64, 10), 'solid ac') + X(x, by + 38, s.name.split(' · ')[0], 17, 'mid bold'));
+    }).join(''),
+  ].join('') }),
+
+  // the two lines meet and, as one, draw an engineer's brackets, a team, and a maze with its way out
+  today: () => ({ inner: [
+    G('lead', P('M0 220C80 220 120 240 200 250') + P('M0 280C80 280 120 260 200 250', 'ac')),
+    G('one', P('M200 250H270')),
+    G('code', P('M318 206L278 250L318 294') + P('M360 196L336 304') + P('M378 206L418 250L378 294')),
+    G('link-1', P('M418 250H470')),
+    G('team', person(500, 214, 0.9) + person(560, 200, 1.1) + person(620, 214, 0.9)),
+    G('link-2', P('M650 250H660')),
+    G('maze', P(R(660, 190, 120, 120, 4)) + P('M660 220H720M690 220V250M720 250H780M690 280H750M660 280V280M720 190V220M750 250V310')),
+    G('way', P('M662 205H705V235H735V265H765V295H778', 'ac thick')),
+    A.roles.map((r, i) => X([348, 560, 720][i], 360, t(r), 18, 'mid bold', `data-p="role-${i}"`)).join(''),
+  ].join('') }),
+};
+
+const scene = name === 'courses-wide' ? coaster(false) : name === 'courses-tall' ? coaster(true) : SCENES[name]();
+const view = scene.view ?? '0 0 800 500';
+---
+<svg class:list={['ms-svg', `art-${name}`]} data-art={name} viewBox={view} aria-hidden="true" focusable="false"
+  preserveAspectRatio={name.startsWith('courses') ? 'xMidYMid slice' : 'xMidYMid meet'} set:html={scene.inner} />
+
+<style>
+  .ms-svg { display: block; width: 100%; height: 100%; overflow: visible; color: var(--ink); }
+  .ms-svg :global(path), .ms-svg :global(rect) { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .ms-svg :global(.sa-d) { stroke-dasharray: 1 2; }
+  .ms-svg :global(.thick) { stroke-width: 6; }
+  .ms-svg :global(.thick-ish) { stroke-width: 4; }
+  .ms-svg :global(.faint) { stroke: color-mix(in srgb, currentColor 30%, transparent); }
+  .ms-svg :global(.ac) { stroke: var(--cobalt); }
+  .ms-svg :global(.solid) { fill: var(--paper); }
+  .ms-svg :global(.fill-ink) { fill: currentColor; stroke: none; }
+  .ms-svg :global(.ac-fill) { fill: var(--cobalt); stroke: none; }
+  .ms-svg :global(circle) { fill: currentColor; }
+  .ms-svg :global(.stop) { fill: color-mix(in srgb, currentColor 35%, transparent); }
+  .ms-svg :global(.stop.ac-fill) { fill: var(--cobalt); }
+  .ms-svg :global(.stop.passed) { fill: currentColor; }
+  .ms-svg :global(.net) { stroke-dasharray: 6 8; }
+  .ms-svg :global(.track) { stroke-width: 4; }
+  .ms-svg :global(.t) { fill: currentColor; stroke: none; font-weight: 500; }
+  .ms-svg :global(.mid) { text-anchor: middle; }
+  .ms-svg :global(.bold) { font-weight: 700; }
+  .ms-svg :global(.t-ac) { fill: var(--cobalt); }
+  .ms-svg :global(.muted) { fill: color-mix(in srgb, currentColor 55%, transparent); }
+  .ms-svg :global(.mono) { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .ms-svg :global(.math) { font-family: Georgia, 'Times New Roman', serif; font-style: italic; }
+  /* a phone: the picture shows at under half its size; the words that have room grow, so they still read (the
+     rest of what a scene says is in its own words, beside it) */
+  @media (max-width: 760px) {
+    .art-cpp :global(.mono) { font-size: 25px; }
+    .art-chania :global(.math) { font-size: 34px; }
+    .ms-svg :global([data-count]) { font-size: 48px; }
+    /* the theory tags are listed under the words instead */
+    .art-postgres :global([data-p^='tag-']) { display: none; }
+  }
+</style>

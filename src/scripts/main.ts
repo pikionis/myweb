@@ -6,6 +6,7 @@ import { splitNav } from './splitnav';
 import { briefForm } from './brief';
 import { workStack } from './workstack';
 import { liveSite, livePreview } from './livesites';
+import { myStory } from './mystory';
 import { serviceStories } from './stories';
 import { serviceSheets } from './servicesheets';
 import { letterCascade } from './cascade';
@@ -139,6 +140,9 @@ export function init() {
   document.querySelectorAll<HTMLElement>('[data-live]').forEach(liveSite);
   const preview = document.querySelector<HTMLElement>('[data-lp]');
   if (preview) livePreview(preview);
+  // /about: the story, scene by scene
+  const story = document.querySelector<HTMLElement>('[data-ms]');
+  if (story) myStory(story);
   const bubble = document.querySelector<HTMLElement>('[data-bubble]');
   if (bubble) serviceStories(bubble, intro.handoff);
   // the /services cards, opened
