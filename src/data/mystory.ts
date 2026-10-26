@@ -23,15 +23,13 @@ export type Scene = {
   label: Copy;
   title?: Copy;
   text: Copy;
-  /** how long the scene holds, relative to the others (MyStory.astro's --pace turns it into screens of scroll) */
-  hold: number;
   /** a client project in this stretch of time: a dot on the parallel line */
   side?: boolean;
 };
 
 export const scenes: Scene[] = [
   {
-    id: 'intro', hold: 1,
+    id: 'intro',
     rail: { en: 'Start', el: 'Αρχή' }, label: { en: '', el: '' },
     text: {
       en: "I'm not just a software engineer. I build software, organise teams and solve problems along the way.",
@@ -39,55 +37,61 @@ export const scenes: Scene[] = [
     },
   },
   {
-    id: 'chania', hold: 1.6,
+    id: 'chania',
     rail: { en: '2009', el: '2009' }, label: { en: '2009', el: '2009' },
     title: { en: 'Technical University of Crete, Chania', el: 'Πολυτεχνείο Κρήτης, Χανιά' },
     text: {
-      en: 'Electrical & Computer Engineering. It started with serious mathematics.',
-      el: 'Ηλεκτρολόγος Μηχανικός & Μηχανικός Υπολογιστών. Ξεκίνησα από τα σοβαρά μαθηματικά.',
+      en: 'Chania, by the sea. I started Electrical & Computer Engineering at the Technical University of Crete.',
+      el: 'Χανιά, δίπλα στη θάλασσα. Ξεκίνησα Ηλεκτρολόγος Μηχανικός & Μηχανικός Υπολογιστών στο Πολυτεχνείο Κρήτης.',
     },
   },
   {
-    id: 'cpp', hold: 1.2,
-    rail: { en: 'C++', el: 'C++' }, label: { en: 'C++', el: 'C++' },
-    text: { en: 'My first application, written in C++.', el: 'Η πρώτη μου εφαρμογή, σε C++.' },
-  },
-  {
-    id: 'java', hold: 1.4,
-    rail: { en: 'Java', el: 'Java' }, label: { en: 'Java', el: 'Java' },
+    id: 'firstyear',
+    rail: { en: '2010', el: '2010' }, label: { en: '2009–2010', el: '2009–2010' },
+    title: { en: 'Serious mathematics, hardcore programming', el: 'Σοβαρά μαθηματικά, hardcore προγραμματισμός' },
     text: {
-      en: 'My first management system: Java software for hospitals. Software for real people.',
-      el: 'Το πρώτο μου διαχειριστικό: σύστημα σε Java για νοσοκομεία. Λογισμικό για πραγματικούς ανθρώπους.',
+      en: 'From the first year: serious mathematics, and hardcore programming in C++ and Java, with my first management system, Java software for hospitals. My first real contact with programming at a high level.',
+      el: 'Από τον πρώτο χρόνο: σοβαρά μαθηματικά και hardcore προγραμματισμός σε C++ και Java, με το πρώτο μου διαχειριστικό, σύστημα σε Java για νοσοκομεία. Η πρώτη μου πραγματική επαφή με τον προγραμματισμό σε υψηλό επίπεδο.',
     },
   },
   {
-    id: 'postgres', hold: 2.6,
+    id: 'postgres',
     rail: { en: 'SQL', el: 'SQL' }, label: { en: 'PostgreSQL', el: 'PostgreSQL' },
+    title: { en: 'A special mention', el: 'Ειδική μνεία' },
     text: {
-      en: "Six months inside PostgreSQL. That's where I learned that data has architecture.",
-      el: 'Έξι μήνες μέσα στην PostgreSQL. Εκεί κατάλαβα ότι τα δεδομένα έχουν αρχιτεκτονική.',
+      en: "Six months of school for this one course. Let's just say we struggled. That's where I learned that data has architecture.",
+      el: 'Έξι μήνες σχολής μόνο για αυτό το μάθημα. Ας πούμε ότι ζοριστήκαμε. Εκεί κατάλαβα ότι τα δεδομένα έχουν αρχιτεκτονική.',
     },
   },
   {
-    id: 'courses', hold: 2.6,
+    id: 'courses',
     rail: { en: '2016', el: '2016' }, label: { en: '2009–2016', el: '2009–2016' },
-    title: { en: 'The rollercoaster of courses', el: 'Το τρενάκι των μαθημάτων' },
+    title: { en: '49 courses', el: '49 μαθήματα' },
     text: {
-      en: 'Diploma thesis: Smart Questionnaire Generator for restaurant customers (Vue.js, Laravel). 2016 — MEng.',
-      el: 'Διπλωματική: Smart Questionnaire Generator για πελάτες εστιατορίων (Vue.js, Laravel). 2016 — Δίπλωμα Μηχανικού.',
+      en: 'Forty-nine courses from 2009 to 2016: lectures, exams, group sessions, long nights of study and code. Here are some of the most serious ones.',
+      el: 'Σαράντα εννέα μαθήματα από το 2009 ως το 2016: διαλέξεις, εξετάσεις, ομαδικά sessions, ατελείωτο διάβασμα και κώδικας. Εδώ είναι μερικά από τα πιο σοβαρά.',
     },
   },
   {
-    id: 'reach', hold: 1.8, side: true,
+    id: 'graduation',
+    rail: { en: 'MEng', el: 'Δίπλωμα' }, label: { en: '2016', el: '2016' },
+    title: { en: 'Diploma thesis · MEng', el: 'Διπλωματική · Δίπλωμα Μηχανικού' },
+    text: {
+      en: 'Smart Questionnaire Generator: a SaaS application for businesses such as restaurants, building smart questionnaires for their customers (Vue.js, Laravel). 2016 — MEng.',
+      el: 'Smart Questionnaire Generator: μια SaaS εφαρμογή για επιχειρήσεις όπως τα εστιατόρια, που φτιάχνει έξυπνα ερωτηματολόγια για τους πελάτες τους (Vue.js, Laravel). 2016 — Δίπλωμα Μηχανικού.',
+    },
+  },
+  {
+    id: 'reach', side: true,
     rail: { en: '2017', el: '2017' }, label: { en: '2017–2021', el: '2017–2021' },
-    title: { en: 'Reach Web Agency', el: 'Reach Web Agency' },
+    title: { en: 'My first job: Reach Web Agency', el: 'Η πρώτη μου δουλειά: Reach Web Agency' },
     text: {
-      en: 'First clients, first websites, first e-commerce stores connected to marketplaces. 2019 — political campaigns: shipping fast under pressure.',
-      el: 'Πρώτοι πελάτες, πρώτα sites, πρώτα e-shops συνδεδεμένα με marketplaces. 2019 — πολιτικές καμπάνιες: παράδοση με πίεση χρόνου.',
+      en: 'My first job! At Reach I learned the trade and took my first steps in freelancing: first clients, first websites, first e-commerce stores connected to marketplaces. 2019 — political campaigns: shipping fast under pressure.',
+      el: 'Η πρώτη μου δουλειά! Στη Reach έμαθα τη δουλειά και έκανα τα πρώτα μου βήματα στο freelancing: πρώτοι πελάτες, πρώτα sites, πρώτα e-shops συνδεδεμένα με marketplaces. 2019 — πολιτικές καμπάνιες: παράδοση με πίεση χρόνου.',
     },
   },
   {
-    id: 'kalimera', hold: 2.4, side: true,
+    id: 'kalimera', side: true,
     rail: { en: '2021', el: '2021' }, label: { en: '2021–2024', el: '2021–2024' },
     title: { en: 'Kalimera, my own product', el: 'Kalimera, το δικό μου προϊόν' },
     text: {
@@ -96,7 +100,7 @@ export const scenes: Scene[] = [
     },
   },
   {
-    id: 'koan', hold: 1.8, side: true,
+    id: 'koan', side: true,
     rail: { en: '2024', el: '2024' }, label: { en: '05/2024–06/2025', el: '05/2024–06/2025' },
     title: { en: 'KOAN S.A. · Director of Sustainable Tourism Development', el: 'KOAN S.A. · Διευθυντής Ανάπτυξης Βιώσιμου Τουρισμού' },
     text: {
@@ -105,13 +109,13 @@ export const scenes: Scene[] = [
     },
   },
   {
-    id: 'ai', hold: 1, side: true,
+    id: 'ai', side: true,
     rail: { en: '2025', el: '2025' }, label: { en: '07/2025–12/2025', el: '07/2025–12/2025' },
     title: { en: 'Deep dive into AI engineering', el: 'Βουτιά στο AI engineering' },
     text: { en: 'A planned pause to study AI engineering in depth.', el: 'Μια συνειδητή παύση για να μάθω AI engineering σε βάθος.' },
   },
   {
-    id: 'deindeal', hold: 2, side: true,
+    id: 'deindeal', side: true,
     rail: { en: '2026', el: '2026' }, label: { en: '2026', el: '2026' },
     title: { en: 'DeinDeal.ch · AI Software Engineer', el: 'DeinDeal.ch · AI Software Engineer' },
     text: {
@@ -120,13 +124,13 @@ export const scenes: Scene[] = [
     },
   },
   {
-    id: 'side', hold: 1.6,
+    id: 'side',
     rail: { en: 'Side', el: 'Πελάτες' }, label: { en: 'All along', el: 'Σε όλη τη διαδρομή' },
     title: { en: 'The parallel line', el: 'Η παράλληλη γραμμή' },
     text: { en: 'And through all of it, I never stopped building for my own clients.', el: 'Και σε όλη τη διαδρομή, δεν σταμάτησα ποτέ να χτίζω για τους δικούς μου πελάτες.' },
   },
   {
-    id: 'today', hold: 1.2,
+    id: 'today',
     rail: { en: 'Today', el: 'Σήμερα' }, label: { en: 'Today', el: 'Σήμερα' },
     text: { en: 'Engineer. Manager. Problem solver.', el: 'Engineer. Manager. Problem solver.' },
   },
@@ -136,14 +140,13 @@ export const scenes: Scene[] = [
 export const art = {
   // the blackboard in Chania, one line at a time
   board: ['d/dx (x² + 3x) = 2x + 3', '∫ 2x dx = x² + C', "y'' + y = 0", 'y = C₁ cos x + C₂ sin x'],
+  chania: { campus: { en: 'Technical University of Crete', el: 'Πολυτεχνείο Κρήτης' } },
+  firstyear: {
+    java: ['class Patient {', '  String name;', '  Ward ward;', '}'],
+  },
   cpp: {
     code: ['#include <iostream>', '', 'int main() {', '  std::cout << "Hello, world!";', '  return 0;', '}'],
-    run: '$ g++ main.cpp && ./a.out',
-    out: 'Hello, world!',
-  },
-  java: {
-    forms: [{ en: 'Patients', el: 'Ασθενείς' }, { en: 'Appointments', el: 'Ραντεβού' }, { en: 'Beds', el: 'Κλίνες' }, { en: 'Doctors', el: 'Γιατροί' }],
-    classes: ['Patient', 'Doctor', 'Appointment', 'Ward'],
+    out: '> Hello, world!',
   },
   postgres: {
     entities: ['Customer', 'Order', 'Product'],
@@ -182,6 +185,21 @@ export const art = {
   ] as Copy[],
   /** the course drawn in cobalt, the highest peak: it comes back in 2025 */
   peak: 19,
+  /** all the courses (the ones named above are some of the most serious) */
+  total: 49,
+  years: [2009, 2016],
+  /** the course counter beside the ride */
+  course: { en: 'course', el: 'μάθημα' },
+  /** what the years held, drawn along the ride */
+  moments: [
+    { en: 'code', el: 'κώδικας' }, { en: 'lectures', el: 'διαλέξεις' }, { en: 'group sessions', el: 'ομαδικά sessions' },
+    { en: 'exams', el: 'εξετάσεις' }, { en: 'study', el: 'διάβασμα' }, { en: 'programming', el: 'προγραμματισμός' },
+  ] as Copy[],
+  graduation: {
+    app: 'Smart Questionnaire Generator',
+    question: { en: 'How was your meal?', el: 'Πώς ήταν το γεύμα σας;' },
+    send: { en: 'Send', el: 'Αποστολή' },
+  },
   station: { en: 'Diploma Thesis', el: 'Διπλωματική' },
   reach: {
     markets: ['Skroutz', 'Amazon', 'Google'],

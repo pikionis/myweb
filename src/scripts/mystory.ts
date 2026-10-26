@@ -3,11 +3,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TextPlugin } from 'gsap/TextPlugin';
 
 /*
- * "My story" on /about (src/components/MyStory.astro). Each scene holds the screen for its stretch of scroll
- * while its picture draws itself (MyStoryArt.astro, authored as it ends) and its words arrive; the scroll drives
- * it both ways. The timeline on the left (on a phone, the strip at the top) follows: the career line fills, the
+ * "My story" on /about (src/components/MyStory.astro). Every scene is a screen: one scroll brings the next one
+ * (the page settles on it), and it plays by itself, its picture drawing itself (MyStoryArt.astro, authored as it
+ * ends) while its words arrive; some keep a small motion of their own while on screen (the sea, the light, the
+ * fireworks). The timeline on the left (on a phone, the strip at the top) follows: the career line fills, the
  * cobalt line of client work beside it, the current scene lit; the client-work scene brings that line forward.
- * With reduced motion every scene is shown as it ends, and simply fades in as it arrives.
+ * With reduced motion every scene is shown as it ends, one after another, and simply fades in as it arrives.
  */
 
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
@@ -20,10 +21,23 @@ const parts = (root: Element, prefix: string) => [...root.querySelectorAll<SVGGr
 const strokes = (el: El): Element[] => (!el ? [] : el.matches('.sa-d') ? [el] : [...el.querySelectorAll('.sa-d')]);
 const all = (...els: El[]) => els.flatMap(strokes);
 
-const draw = (tl: Tl, els: Element[], at: number, duration = 0.6, stagger = 0.03) =>
-  void (els.length && tl.fromTo(els, { strokeDashoffset: 1.01 }, { strokeDashoffset: 0, duration, ease: 'power1.inOut', stagger }, at));
-const undraw = (tl: Tl, els: Element[], at: number, duration = 0.4) =>
-  void (els.length && tl.to(els, { strokeDashoffset: 1.01, duration, ease: 'power1.in' }, at));
+/** the soft shadows of the solid shapes among these strokes (each sits just before its shape) */
+const shades = (els: Element[]) => els.map((e) => e.previousElementSibling).filter((e): e is Element => !!e?.matches('.shade'));
+const draw = (tl: Tl, els: Element[], at: number, duration = 0.6, stagger = 0.03) => {
+  if (!els.length) return;
+  tl.fromTo(els, { strokeDashoffset: 1.01 }, { strokeDashoffset: 0, duration, ease: 'power1.inOut', stagger }, at);
+  const sh = shades(els);
+  if (sh.length) tl.fromTo(sh, { opacity: 0 }, { opacity: 1, duration: duration * 0.8, ease: 'power1.out' }, at + duration * 0.4);
+};
+const undraw = (tl: Tl, els: Element[], at: number, duration = 0.4) => {
+  if (!els.length) return;
+  tl.to(els, { strokeDashoffset: 1.01, duration, ease: 'power1.in' }, at);
+  const sh = shades(els);
+  if (sh.length) tl.to(sh, { opacity: 0, duration: duration * 0.6 }, at);
+};
+/** a block's faces fill in once its edges are drawn */
+const faces = (tl: Tl, root: Element, prefix: string, at: number, stagger = 0.1) =>
+  void tl.fromTo(root.querySelectorAll(`[data-p^="${prefix}"][data-p$="-faces"]`), { opacity: 0 }, { opacity: 1, duration: 0.4, stagger, ease: 'power1.out' }, at);
 /** a part that rests hidden shows (set up in advance), or one that rests shown leaves (at its moment) */
 const show = (tl: Tl, el: El | El[], at: number, on = true, duration = 0.25) =>
   void tl.fromTo(el, { opacity: on ? 0 : 1 }, { opacity: on ? 1 : 0, duration, ease: 'power1.out', immediateRender: on }, at);
@@ -40,7 +54,10 @@ const count = (tl: Tl, el: El, at: number, duration: number, to: number, format:
   tl.fromTo(o, { v: 0 }, { v: to, duration, ease: 'power1.out', onUpdate: () => { el.textContent = format(o.v); } }, at);
 };
 
-type Scene = (tl: Tl, svg: SVGSVGElement, step: HTMLElement) => void;
+/** a scene's timeline, its svg, its step, and its idle motions (loops that run while it is on screen) */
+type Scene = (tl: Tl, svg: SVGSVGElement, step: HTMLElement, idle: gsap.core.Animation[]) => void;
+/** a motion that runs on its own while its scene is on screen */
+const loop = (idle: gsap.core.Animation[], a: gsap.core.Animation) => { a.pause(); idle.push(a); };
 
 const SCENES: Record<string, Scene> = {
   intro(tl, svg, step) {
@@ -52,48 +69,55 @@ const SCENES: Record<string, Scene> = {
     draw(tl, strokes(part(svg, 'drop')), 1.4, 0.6);
   },
 
-  chania(tl, svg) {
-    const harbour = part(svg, 'harbour');
-    draw(tl, strokes(part(svg, 'lead')), 0, 0.3);
-    show(tl, harbour, 0.15, true, 0.1);
-    draw(tl, strokes(harbour), 0.2, 0.7, 0.04);
-    // the harbour gives way to a lecture hall
-    undraw(tl, strokes(harbour), 1.5);
-    show(tl, harbour, 1.85, false, 0.1);
-    draw(tl, strokes(part(svg, 'hall')), 1.6, 0.7, 0.06);
-    [...svg.querySelectorAll('[data-line]')].forEach((line, i) => type(tl, line, 2.4 + i * 0.45, 0.4));
-  },
-
-  cpp(tl, svg) {
-    draw(tl, strokes(part(svg, 'lead')), 0, 0.3);
-    draw(tl, strokes(part(svg, 'term')), 0.1, 0.5);
-    show(tl, [...part(svg, 'term')!.querySelectorAll('circle')], 0.4);
-    draw(tl, strokes(part(svg, 'coder')), 0.4, 0.5);
-    [...part(svg, 'code')!.querySelectorAll('text')].forEach((line, i) => type(tl, line, 0.7 + i * 0.28, 0.24));
-    type(tl, part(svg, 'run')?.querySelector('text') ?? null, 2.5, 0.3);
-    show(tl, part(svg, 'out'), 3.0);
-    // it runs: arms up
-    show(tl, [part(svg, 'arms'), part(svg, 'burst')], 3.1, true, 0.05);
-    draw(tl, all(part(svg, 'arms'), part(svg, 'burst')), 3.1, 0.3, 0.05);
-    tl.to(part(svg, 'coder'), { keyframes: [{ y: -12, duration: 0.15 }, { y: 0, duration: 0.15 }] }, 3.15);
-  },
-
-  java(tl, svg) {
-    draw(tl, strokes(part(svg, 'lead')), 0, 0.3);
-    draw(tl, strokes(part(svg, 'hospital')), 0.1, 0.7, 0.03);
-    pop(tl, part(svg, 'cross'), 0.8);
-    // the forms fly out of the hospital
-    const forms = parts(svg, 'form-');
-    forms.forEach((f, i) => {
-      const b = f.getBBox();
-      tl.fromTo(f, { opacity: 0, x: 400 - (b.x + b.width / 2), y: 265 - (b.y + b.height / 2), scale: 0.3, transformOrigin: '50% 50%' },
-        { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.6, ease: 'expo.out' }, 1.0 + i * 0.15);
+  chania(tl, svg, _step, idle) {
+    const harbour = part(svg, 'harbour')!, campus = part(svg, 'campus')!;
+    draw(tl, strokes(part(svg, 'lead')), 0, 0.2);
+    draw(tl, strokes(part(svg, 'sun')), 0.05, 0.5, 0.02);
+    // the harbour, its houses rising off the page, the lighthouse, the sea coming in
+    draw(tl, strokes(harbour).filter((e) => !e.closest('[data-p="sun"], [data-p^="wave-"], [data-p="boat"]')), 0.15, 0.6, 0.012);
+    faces(tl, harbour, 'house-', 0.7); faces(tl, harbour, 'mosque', 0.8); faces(tl, harbour, 'lh-base', 0.9);
+    const waves = parts(svg, 'wave-');
+    draw(tl, waves.flatMap(strokes), 0.3, 0.8, 0.12);
+    draw(tl, strokes(part(svg, 'boat')), 0.9, 0.4);
+    show(tl, part(svg, 'boat')!.querySelector('.ac-fill'), 1.1);
+    show(tl, [part(svg, 'beam-r'), part(svg, 'beam-l')], 1.1, true, 0.3);
+    // the sea moves, the boat rocks, the lighthouse turns its light
+    waves.forEach((w, i) => loop(idle, gsap.to(w, { x: i % 2 ? Number(w.dataset.per) : -Number(w.dataset.per), duration: 3.2 + i * 0.7, ease: 'none', repeat: -1 })));
+    loop(idle, gsap.to(part(svg, 'boat'), { y: 5, rotation: 3, svgOrigin: '470 390', duration: 1.6, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    loop(idle, gsap.timeline({ repeat: -1 }).to(part(svg, 'beam-r'), { opacity: 0.15, duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: 1 })
+      .to(part(svg, 'beam-l'), { opacity: 0.15, duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: 1 }));
+    // then the harbour gives way to the university, and its students
+    tl.to(harbour, { opacity: 0, y: -20, duration: 0.5, ease: 'power2.in' }, 2.6);
+    tl.fromTo(campus, { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: true }, 3.0);
+    draw(tl, strokes(campus), 3.0, 0.7, 0.015);
+    faces(tl, campus, 'uni-', 3.5, 0.12);
+    show(tl, campus.querySelector('text'), 3.8);
+    const students = parts(svg, 'student-').filter((e) => !e.dataset.p!.endsWith('-legs'));
+    tl.fromTo(students, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out', stagger: 0.12 }, 3.8);
+    students.forEach((st, i) => {
+      loop(idle, gsap.to(st, { x: i % 2 ? -26 : 26, duration: 2.4 + i * 0.3, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+      loop(idle, gsap.to(st.querySelector('[data-p$="-legs"]'), { scaleX: -1, transformOrigin: '50% 0%', duration: 0.35, ease: 'none', yoyo: true, repeat: -1 }));
     });
-    // and settle into the classes of a system
-    show(tl, forms, 2.1, false, 0.3);
-    draw(tl, all(...parts(svg, 'class-')), 2.0, 0.6, 0.02);
-    draw(tl, strokes(part(svg, 'rel')), 2.7, 0.6, 0.1);
-    show(tl, [...part(svg, 'rel')!.querySelectorAll('text')], 2.7, true, 0.3);
+  },
+
+  firstyear(tl, svg) {
+    draw(tl, strokes(part(svg, 'lead')), 0, 0.2);
+    draw(tl, strokes(part(svg, 'board')), 0.05, 0.5, 0.05);
+    [...svg.querySelectorAll('[data-line]')].forEach((line, i) => type(tl, line, 0.4 + i * 0.35, 0.3));
+    // C++, then Java
+    const cpp = part(svg, 'cpp')!, java = part(svg, 'java')!;
+    draw(tl, strokes(cpp), 0.5, 0.4);
+    show(tl, [...cpp.querySelectorAll('circle'), cpp.querySelector('.muted')], 0.7);
+    [...cpp.querySelectorAll('[data-type]')].forEach((line, i) => type(tl, line, 0.8 + i * 0.18, 0.16));
+    draw(tl, strokes(java), 1.9, 0.4);
+    show(tl, [...java.querySelectorAll('circle, .ac-fill'), java.querySelector('.muted')], 2.1);
+    [...java.querySelectorAll('[data-type]')].forEach((line, i) => type(tl, line, 2.2 + i * 0.2, 0.18));
+    // and their student
+    draw(tl, strokes(part(svg, 'desk')), 0.2, 0.4);
+    draw(tl, strokes(part(svg, 'student')), 0.4, 0.5);
+    show(tl, [part(svg, 'arms'), part(svg, 'cheer')], 3.1, true, 0.05);
+    draw(tl, all(part(svg, 'arms'), part(svg, 'cheer')), 3.1, 0.3, 0.05);
+    tl.to(part(svg, 'student'), { keyframes: [{ y: -10, duration: 0.15 }, { y: 0, duration: 0.15 }] }, 3.15);
   },
 
   postgres(tl, svg) {
@@ -126,10 +150,33 @@ const SCENES: Record<string, Scene> = {
   courses(tl, _svg, step) {
     const ride = coaster(step);
     if (!ride) return;
-    tl.fromTo(ride.state, { p: 0 }, { p: 1, duration: 6, ease: 'none', onUpdate: ride.place }, 0.3);
-    show(tl, ride.station, 5.6, true, 0.3);
-    // the station: the thesis
-    tl.fromTo(step.querySelector('[data-words-end]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 6);
+    tl.fromTo(ride.state, { p: 0 }, { p: 1, duration: 7, ease: 'power1.inOut', onUpdate: ride.place }, 0.3);
+    show(tl, ride.station, 6.6, true, 0.3);
+  },
+
+  graduation(tl, svg, _step, idle) {
+    draw(tl, strokes(part(svg, 'lead')), 0, 0.2);
+    const tablet = part(svg, 'tablet')!;
+    draw(tl, strokes(tablet), 0.1, 0.6, 0.02);
+    show(tl, [...tablet.querySelectorAll('.face-r, .ac-fill:not([data-p^="star-"])')], 0.5, true, 0.3);
+    show(tl, [...tablet.querySelectorAll('text')], 0.6);
+    pop(tl, parts(svg, 'star-'), 0.8, '50% 50%', 0.1);
+    show(tl, part(svg, 'app'), 1.2);
+    // the graduate, the cap in the air, and fireworks
+    draw(tl, strokes(part(svg, 'grad')), 1.3, 0.6, 0.04);
+    show(tl, part(svg, 'grad')!.querySelector('.ac-fill'), 1.7);
+    show(tl, part(svg, 'cap'), 1.4, true, 0.2);
+    tl.to(part(svg, 'cap'), { keyframes: [{ y: -150, rotation: -200, duration: 0.6, ease: 'power2.out' }, { y: 0, rotation: -360, duration: 0.6, ease: 'power2.in' }], svgOrigin: '590 240' }, 2.0);
+    const fws = parts(svg, 'fw-');
+    fws.forEach((fw, i) => {
+      tl.fromTo(fw, { opacity: 0, scale: 0.2, transformOrigin: '50% 50%' }, { opacity: 1, scale: 1, duration: 0.5, ease: 'expo.out' }, 2.2 + i * 0.25);
+      // they keep bursting while the scene is on screen
+      loop(idle, gsap.timeline({ repeat: -1, delay: i * 0.7 })
+        .fromTo(fw, { opacity: 1, scale: 0.2, transformOrigin: '50% 50%' }, { scale: 1.08, duration: 0.7, ease: 'expo.out' })
+        .to(fw, { opacity: 0, duration: 0.6, ease: 'power1.in' }, 0.5));
+    });
+    tl.fromTo(part(svg, 'confetti')!.children, { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.06, ease: 'power2.out' }, 2.4);
+    loop(idle, gsap.to(part(svg, 'confetti')!.children, { y: 14, rotation: 40, duration: 1.4, ease: 'sine.inOut', stagger: 0.12, yoyo: true, repeat: -1 }));
   },
 
   reach(tl, svg) {
@@ -279,6 +326,13 @@ function coaster(step: HTMLElement) {
   const names = [...step.querySelectorAll('.ms-course-list li')].map((li) => li.textContent ?? '');
   const nameEl = step.querySelector('[data-course-name]');
   const nEl = step.querySelector('[data-course-n]');
+  const yearEl = step.querySelector('[data-course-year]');
+  const total = Number(step.querySelector<HTMLElement>('[data-course]')?.dataset.total ?? names.length);
+  const [y0, y1] = (step.querySelector<HTMLElement>('[data-course]')?.dataset.years ?? '2009,2016').split(',').map(Number);
+  // the moments of those years: each shows as the cart nears its stop
+  const momentAt = (svg.dataset.moments ?? '').split(',').filter(Boolean).map(Number);
+  const moments = momentAt.map((_, i) => svg.querySelector<SVGGElement>(`[data-p="moment-${i}"]`));
+  let counted = -1;
   const peakFrom = at[Math.max(0, stops.findIndex((s) => s.classList.contains('ac-fill')) - 1)];
   let shown = -1;
   const state = { p: 0 };
@@ -293,10 +347,17 @@ function coaster(step: HTMLElement) {
     peak.style.opacity = len >= peakFrom ? '1' : '0';
     let k = 0;
     at.forEach((l, i) => { if (len >= l - 2) k = i; stops[i].classList.toggle('passed', len >= l - 2); });
+    moments.forEach((m, i) => m?.classList.toggle('seen', len >= at[Math.max(0, momentAt[i] - 1)] - 2));
     if (k !== shown) {
       shown = k;
       if (nameEl) nameEl.textContent = names[k];
-      if (nEl) nEl.textContent = `${k + 1} / ${names.length}`;
+    }
+    // all 49 courses go by, from 2009 to 2016; the named ones are some of them
+    const n = Math.max(1, Math.round(state.p * total));
+    if (n !== counted) {
+      counted = n;
+      if (nEl) nEl.textContent = `${n} / ${total}`;
+      if (yearEl) yearEl.textContent = String(Math.min(y1, y0 + Math.floor(state.p * (y1 - y0 + 1))));
     }
   };
   place();
@@ -337,7 +398,7 @@ export function myStory(root: HTMLElement) {
     onUpdate: (s) => fills.forEach((f) => f.style.setProperty('--fill', s.progress.toFixed(4))),
   });
 
-  gsap.matchMedia().add({ motion: '(prefers-reduced-motion: no-preference)', still: '(prefers-reduced-motion: reduce)', phone: '(max-width: 860px)' }, (ctx) => {
+  gsap.matchMedia().add({ motion: '(prefers-reduced-motion: no-preference)', still: '(prefers-reduced-motion: reduce)' }, (ctx) => {
     if (ctx.conditions?.still) {
       // reduced motion: each scene as it ends, fading in as it arrives; the cart waits at its station
       const courses = steps.find((s) => s.dataset.scene === 'courses');
@@ -348,20 +409,43 @@ export function myStory(root: HTMLElement) {
       return () => io.disconnect();
     }
     root.classList.add('on');
-    steps.forEach((step) => {
+    const plays = steps.map((step) => {
       const svg = step.querySelector<SVGSVGElement>('.ms-art svg');
       const scene = SCENES[step.dataset.scene ?? ''];
-      if (!svg || !scene) return;
-      // it starts while the scene is still coming up the screen, so one scene's drawing follows the last one's
-      const tl = gsap.timeline({ scrollTrigger: { trigger: step, start: 'top 70%', end: 'bottom bottom', scrub: 0.5 } });
+      if (!svg || !scene) return null;
+      const tl = gsap.timeline({ paused: true });
+      const idle: gsap.core.Animation[] = [];
       // the words arrive first: the label, the title, the line
-      const words = [...step.querySelectorAll<HTMLElement>('[data-t]')].filter((el) => !el.hasAttribute('data-words-end'));
-      tl.fromTo(words, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.08, ease: 'power2.out' }, 0);
-      scene(tl, svg, step);
-      // and the scene holds, done, before the next one comes
-      tl.to({}, { duration: 0.3 });
+      tl.fromTo(step.querySelectorAll('[data-t]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.08, ease: 'power2.out' }, 0);
+      scene(tl, svg, step, idle);
+      return { tl, idle };
+    });
+    // a scene plays as it arrives, from either side, and rests once it has gone
+    steps.forEach((step, i) => {
+      const play = plays[i];
+      if (!play) return;
+      const go = () => { play.tl.restart(); play.idle.forEach((a) => a.play()); };
+      const rest = () => { play.tl.pause(); play.idle.forEach((a) => a.pause()); };
+      ScrollTrigger.create({ trigger: step, start: 'top 60%', end: 'bottom 40%', onEnter: go, onEnterBack: go, onLeave: rest, onLeaveBack: rest });
+    });
+    // one scroll, one scene: within the story the page settles on the next scene in the direction it moved
+    const track = root.querySelector<HTMLElement>('.ms-steps')!;
+    const points: number[] = [];
+    // it takes hold as the story comes up the screen, so the first scene is the first stop; the start itself is a
+    // stop too, so a scroll up from the first scene leaves the story
+    const snap = ScrollTrigger.create({
+      trigger: track, start: 'top 60%', end: 'bottom bottom',
+      onRefresh: (self) => {
+        points.length = 0;
+        points.push(0);
+        steps.forEach((s) => points.push(Math.min(1, (s.getBoundingClientRect().top + window.scrollY - self.start) / Math.max(1, self.end - self.start))));
+      },
+      snap: {
+        snapTo: (value: number, self?: ScrollTrigger) => ScrollTrigger.snapDirectional(points)(value, self?.direction),
+        duration: { min: 0.25, max: 0.6 }, delay: 0.04, ease: 'power2.inOut', inertia: false,
+      },
     });
     ScrollTrigger.refresh();
-    return () => root.classList.remove('on');
+    return () => { root.classList.remove('on'); snap.kill(); plays.forEach((p) => p?.tl.kill()); };
   });
 }

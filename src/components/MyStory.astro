@@ -1,6 +1,6 @@
 ---
-// "My story" on /about (src/scripts/mystory.ts): thirteen scenes, each held for a stretch of scroll while its
-// picture draws itself and its words arrive. On the left (on a phone: the top) runs the timeline: the portrait,
+// "My story" on /about (src/scripts/mystory.ts): thirteen scenes, a screen each. One scroll brings the next, and
+// it plays by itself: its picture draws itself and its words arrive. On the left (on a phone: the top) runs the timeline: the portrait,
 // the career line in ink and, beside it, the thin cobalt line of client work, with every scene's year.
 // With reduced motion or without script the scenes simply follow one another, drawn, words and all.
 import MyStoryArt from './MyStoryArt.astro';
@@ -32,7 +32,7 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
 
   <div class="ms-steps">
     {scenes.map((s, i) => (
-      <article class:list={['ms-step', `ms-${s.id}`]} data-scene={s.id} data-index={i} style={`--hold: ${s.hold}`}>
+      <article class:list={['ms-step', `ms-${s.id}`]} data-scene={s.id} data-index={i}>
         <div class="ms-stage">
           <div class="ms-art">
             {s.id === 'courses' ? (
@@ -48,11 +48,14 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
             {s.id === 'courses' && (
               <>
                 <!-- the course the cart is passing (the full list follows, for readers and without motion) -->
-                <p class="ms-course" data-course aria-hidden="true"><span class="n" data-course-n>1 / {A.courses.length}</span> <span data-course-name>{t(A.courses[0])}</span></p>
+                <p class="ms-course" data-course data-total={A.total} data-years={A.years.join(',')} aria-hidden="true">
+                  <span class="y" data-course-year>{A.years[0]}</span> <span class="n">{t(A.course)} <span data-course-n>1 / {A.total}</span></span>
+                  <span class="name" data-course-name>{t(A.courses[0])}</span>
+                </p>
                 <ul class="ms-course-list" data-t>{A.courses.map((c) => <li>{t(c)}</li>)}</ul>
               </>
             )}
-            {s.id === 'intro' ? <p class="ms-headline" data-words>{t(s.text)}</p> : <p class="ms-words" data-t data-words-end={s.id === 'courses' ? '' : undefined}>{t(s.text)}</p>}
+            {s.id === 'intro' ? <p class="ms-headline" data-words>{t(s.text)}</p> : <p class="ms-words" data-t>{t(s.text)}</p>}
             {s.id === 'postgres' && <ul class="ms-chips" data-t>{A.postgres.tags.map((x) => <li>{x}</li>)}</ul>}
             {s.id === 'kalimera' && (
               <ul class="ms-notes">
@@ -81,8 +84,7 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
 </section>
 
 <style>
-  /* --pace: how much of its `hold` a scene is given in scroll (lower is quicker); a phone is quicker still */
-  .ms { --pace: 0.5; --rail: 200px; position: relative; display: grid; grid-template-columns: var(--rail) minmax(0, 1fr); column-gap: clamp(24px, 3vw, 48px); }
+  .ms { --rail: 200px; position: relative; display: grid; grid-template-columns: var(--rail) minmax(0, 1fr); column-gap: clamp(24px, 3vw, 48px); }
 
   /* ---- the timeline ---- */
   .ms-rail {
@@ -111,13 +113,13 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
   .ms-years li.now .ms-dot { border-color: var(--cobalt); background: var(--cobalt); scale: 1.3; }
   .ms-years li.side.past::after { opacity: 1; }
 
-  /* ---- a scene: held for its stretch of scroll (with motion), its picture and its words side by side ---- */
+  /* ---- a scene: a screen (with motion), its picture and its words side by side ---- */
   .ms-stage {
     min-height: 0; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); align-items: center;
     gap: clamp(24px, 4vw, 64px); padding-block: clamp(48px, 10vh, 120px);
   }
-  :global(html.js) .ms.on .ms-step { height: calc(100svh * (1 + var(--hold) * var(--pace))); }
-  :global(html.js) .ms.on .ms-stage { position: sticky; top: 0; height: 100svh; padding: calc(var(--topbar-h) + 24px) 0 32px; }
+  :global(html.js) .ms.on .ms-step { height: 100svh; }
+  :global(html.js) .ms.on .ms-stage { height: 100svh; padding: calc(var(--topbar-h) + 24px) 0 32px; }
   .ms-art { position: relative; min-height: 0; height: 100%; max-height: min(64vh, 560px); display: flex; align-items: center; justify-content: center; }
   .ms-art :global(.ms-svg) { max-height: 100%; }
   .ms-text { min-width: 0; }
@@ -138,7 +140,12 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
   /* the course the cart is passing; the full list for readers, and for everyone without motion */
   .ms-course { display: none; }
   :global(html.js) .ms.on .ms-course { display: block; margin: 4px 0 16px; min-height: 2.6em; font-size: clamp(1.05rem, 1.4vw, 1.25rem); font-weight: 600; }
-  .ms-course .n { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 500; color: var(--accent-ink); }
+  .ms-course .y, .ms-course .n { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 500; color: var(--accent-ink); }
+  .ms-course .y { margin-right: 10px; font-weight: 700; }
+  .ms-course .name { display: block; margin-top: 4px; }
+  /* the moments of those years show as the cart reaches them */
+  :global(html.js) .ms.on .ms-coaster :global([data-p^='moment-']) { opacity: 0; transition: opacity 0.4s ease, translate 0.5s var(--ease-out); translate: 0 12px; }
+  :global(html.js) .ms.on .ms-coaster :global([data-p^='moment-'].seen) { opacity: 1; translate: 0 0; }
   .ms-course-list { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 0.875rem; color: var(--muted); }
   :global(html.js) .ms.on .ms-course-list { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   /* the rollercoaster: along on a wide screen, down on a phone */
@@ -194,8 +201,6 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
     .ms-dot { left: 0; top: 0; width: 8px; height: 8px; border-width: 1.5px; }
     .ms-years li.side::after { display: none; }
     .ms-stage { grid-template-columns: minmax(0, 1fr); gap: 18px; padding-block: 40px; }
-    .ms { --pace: 0.42; }
-    :global(html.js) .ms.on .ms-step { height: calc(100svh * (1 + var(--hold) * var(--pace))); }
     :global(html.js) .ms.on .ms-stage {
       grid-template-rows: auto minmax(0, 1fr); align-items: stretch; align-content: stretch;
       padding: calc(var(--topbar-h) + 62px) 0 calc(88px + env(safe-area-inset-bottom, 0px));

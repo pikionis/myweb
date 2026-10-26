@@ -4,13 +4,17 @@
 // reduced motion or no script; src/scripts/mystory.ts draws it from nothing as the scene is scrolled through.
 // Every scene but the first is entered by its `lead`, the line coming in from the left (from the timeline), so
 // the line never breaks. Parts the script moves are named by data-p; strokes draw on as in the stories.
-import { r1, C, R, P, D, cls } from './lineart';
+import { r1, C, R, P as pen, D, cls } from './lineart';
 import { art as A, t } from '../data/mystory';
 
 interface Props { name: string }
 const { name } = Astro.props;
 
 type N = number;
+/** a stroke that draws itself; a solid shape (a panel, a card) also casts a soft offset shadow that lifts it off
+ *  the paper (the script brings the shadow in with its shape) */
+const P = (d: string, extra = '', attrs = '') =>
+  (extra.split(' ').includes('solid') ? `<path class="shade" d="${d}" transform="translate(6 7)"/>` : '') + pen(d, extra, attrs);
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 /** a part the script moves */
 const G = (p: string, inner: string, attrs = '') => `<g data-p="${p}"${attrs ? ` ${attrs}` : ''}>${inner}</g>`;
@@ -32,6 +36,53 @@ const person = (x: N, y: N, s = 1, extra = '') =>
 /** a document with a few lines */
 const doc = (x: N, y: N, w: N, h: N) =>
   P(R(x, y, w, h, 6), 'solid') + P(`M${x + 12} ${y + 18}H${x + w - 14}M${x + 12} ${y + 30}H${x + w - 24}M${x + 12} ${y + 42}H${x + w - 18}`);
+const poly = (pts: N[][]) => 'M' + pts.map(([x, y]) => `${r1(x)} ${r1(y)}`).join('L') + 'Z';
+/** an isometric block: its front corner on the ground at (x, y), w to the right, d to the left, h tall. Its three
+ *  faces take three tints of the paper (they fade in once its edges are drawn), so it stands up off the page */
+const block = (p: string, x: N, y: N, w: N, d: N, h: N, rows = 0, cols = 0) => {
+  const c = 0.866, sn = 0.5;
+  const fr = [x, y], rt = [x + w * c, y - w * sn], lf = [x - d * c, y - d * sn], bk = [x + w * c - d * c, y - w * sn - d * sn];
+  const up = (q: N[]) => [q[0], q[1] - h];
+  const left = poly([lf, fr, up(fr), up(lf)]), right = poly([fr, rt, up(rt), up(fr)]), top = poly([up(fr), up(rt), up(bk), up(lf)]);
+  // windows on the right face, in rows and columns
+  let win = '';
+  for (let r = 0; r < rows; r++) for (let k = 0; k < cols; k++) {
+    const u = (w / cols) * (k + 0.3), v = (h / rows) * (r + 0.3), ww = (w / cols) * 0.42, wh = (h / rows) * 0.45;
+    const o = [x + u * c, y - u * sn - v];
+    win += `M${r1(o[0])} ${r1(o[1])}l${r1(ww * c)} ${r1(-ww * sn)}v${r1(-wh)}l${r1(-ww * c)} ${r1(ww * sn)}Z`;
+  }
+  return G(p, G(`${p}-faces`, F(left, 'face-l') + F(right, 'face-r') + F(top, 'face-t')) + pen(left) + pen(right) + pen(top) + (win ? pen(win, 'thin') : ''));
+};
+/** a whole figure, walking: head, body, arms and legs, its feet on the ground at (x, y) */
+const walker = (p: string, x: N, y: N, s = 1, extra = '') => G(p,
+  pen(C(x, y - 62 * s, 7 * s), extra) + pen(`M${x} ${r1(y - 54 * s)}V${r1(y - 26 * s)}`, extra) +
+  G(`${p}-legs`, pen(`M${x} ${r1(y - 26 * s)}L${r1(x - 9 * s)} ${y}M${x} ${r1(y - 26 * s)}L${r1(x + 9 * s)} ${y}`, extra)) +
+  pen(`M${r1(x - 10 * s)} ${r1(y - 34 * s)}L${x} ${r1(y - 46 * s)}L${r1(x + 10 * s)} ${r1(y - 34 * s)}`, extra));
+/** a firework: rays round a centre, ink and cobalt in turn */
+const burst = (p: string, x: N, y: N, r: N) => G(p, Array.from({ length: 12 }, (_, i) => {
+  const a = (i / 12) * Math.PI * 2, r0 = r * 0.35;
+  return pen(`M${r1(x + Math.cos(a) * r0)} ${r1(y + Math.sin(a) * r0)}L${r1(x + Math.cos(a) * r)} ${r1(y + Math.sin(a) * r)}`, i % 2 ? 'ac' : '');
+}).join('') + `<circle class="ac-fill" cx="${x}" cy="${y}" r="4"/>`);
+/** what the years of study held, as small pictures along the ride (each with its word under it) */
+const moment = (k: number, x: N, y: N) => {
+  const pic = [
+    // code
+    () => P(R(x, y, 120, 84, 8), 'solid') + pen(`M${x} ${y + 20}H${x + 120}`) + X(x + 60, y + 62, '</>', 26, 'mid mono bold t-ac'),
+    // lectures
+    () => P(R(x + 10, y, 100, 56, 4), 'solid') + pen(`M${x + 24} ${y + 18}H${x + 80}M${x + 24} ${y + 32}H${x + 64}`) +
+      pen(`M${x + 70} ${y + 84}L${x + 78} ${y + 62}H${x + 106}L${x + 112} ${y + 84}`) + pen(C(x + 30, y + 70, 7)) + pen(`M${x + 18} ${y + 92}C${x + 18} ${y + 80} ${x + 42} ${y + 80} ${x + 42} ${y + 92}`),
+    // group sessions
+    () => pen(`M${x + 14} ${y + 70}H${x + 106}`, 'thick-ish') + [24, 60, 96].map((cx) => pen(C(x + cx, y + 30, 9)) + pen(`M${x + cx - 14} ${y + 64}C${x + cx - 14} ${y + 44} ${x + cx + 14} ${y + 44} ${x + cx + 14} ${y + 64}`)).join('') + P(R(x + 44, y + 62, 32, 10, 2), 'solid ac'),
+    // exams
+    () => P(R(x + 16, y, 70, 92, 5), 'solid') + pen(`M${x + 28} ${y + 22}H${x + 72}M${x + 28} ${y + 40}H${x + 66}M${x + 28} ${y + 58}H${x + 72}`) + pen(`M${x + 30} ${y + 74}l6 6 12-12`, 'ac') + pen(C(x + 100, y + 22, 16)) + pen(`M${x + 100} ${y + 12}V${y + 22}H${x + 108}`),
+    // study
+    () => P(R(x + 10, y + 66, 76, 20, 3), 'solid') + P(R(x + 16, y + 46, 64, 20, 3), 'solid ac') + P(R(x + 8, y + 26, 72, 20, 3), 'solid') +
+      pen(`M${x + 104} ${y + 86}V${y + 30}L${x + 92} ${y + 14}M${x + 82} ${y + 22}L${x + 102} ${y + 6}`) + pen(`M${x + 96} ${y + 86}H${x + 114}`),
+    // programming
+    () => P(`M${x + 14} ${y + 84}L${x + 26} ${y + 20}H${x + 94}L${x + 106} ${y + 84}Z`, 'solid') + X(x + 60, y + 62, '{ }', 24, 'mid mono bold'),
+  ][k]();
+  return G(`moment-${k}`, pic + X(x + 60, y + 114, t(A.moments[k]), 16, 'mid'));
+};
 /** a point list through which a smooth line runs (Catmull-Rom, as cubic Béziers) */
 const smooth = (pts: N[][], start = true) => {
   let d = start ? `M${pts[0][0]} ${pts[0][1]}` : '';
@@ -70,16 +121,24 @@ const cart = (vertical: boolean) => G('cart',
 const station = (x: N, y: N) => G('station',
   P(`M${x - 46} ${y}V${y - 66}H${x + 46}V${y}`) + P(`M${x - 58} ${y - 66}L${x} ${y - 104}L${x + 58} ${y - 66}`) + P(`M${x - 12} ${y}V${y - 34}H${x + 12}V${y}`) +
   X(x, y - 118, t(A.station), 22, 'mid bold'));
-const coaster = (vertical: boolean) => {
+const coaster = (vertical: boolean): { view: string; at: number[]; inner: string } => {
   const pts = vertical ? tallPts : widePts;
   const start = vertical ? [250, 60] : [20, wide.ground];
   const end = vertical ? [250, tall.h - 120] : [wide.w - 140, wide.ground];
   const view = vertical ? `0 0 ${tall.w} ${tall.h}` : `0 0 ${wide.w} ${wide.h}`;
   const ground = vertical ? '' : P(`M0 ${wide.ground + 34}H${wide.w}`, 'faint');
+  // the track stands on supports, so it reads as a structure in the air
+  const supports = vertical ? '' : pts.map(([x, y]) => pen(`M${x} ${y + 8}V${wide.ground + 34}M${x - 18} ${wide.ground + 34}L${x} ${y + 40}L${x + 18} ${wide.ground + 34}`, 'faint')).join('');
+  // the moments of those years: in the sky over a wide track; beside the turns down a phone
+  const at = vertical ? [1, 5, 9, 13, 17, 21] : [1, 4, 8, 13, 16, 22];
+  const moments = at.map((k, i) => {
+    const [x, y] = pts[k];
+    return vertical ? moment(i, 16, y - 52) : moment(i, x - 60, 24);
+  }).join('');
   const dots = pts.map(([x, y], i) => `<circle class="${i === A.peak ? 'stop ac-fill' : 'stop'}" data-p="stop" cx="${x}" cy="${y}" r="${i === A.peak ? 9 : 6}"/>`).join('');
   const peak = pts[A.peak];
-  return { view, inner: G('world',
-    ground +
+  return { view, at, inner: G('world',
+    ground + supports + moments +
     `<path class="track sa-d" data-p="track" pathLength="1" d="${track(pts, start, end, 10, vertical)}"/>` +
     P(peakSegment(pts), 'ac thick', 'data-p="peak"') +
     X(peak[0] + (vertical ? 30 : 0), peak[1] - (vertical ? -8 : 28), 'AI', 26, vertical ? 'bold t-ac' : 'mid bold t-ac') +
@@ -107,59 +166,83 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
     G('drop', P('M400 40V220')),
   ].join('') }),
 
-  // the old harbour of Chania and its lighthouse, then a lecture hall and a blackboard of mathematics
-  chania: () => ({ inner: [
-    G('lead', P('M0 404C40 404 80 400 120 400')),
-    G('harbour', [
-      P('M120 400Q160 390 200 400T280 400T360 400T440 400T520 400T600 400T680 400'),
-      P('M160 434Q200 424 240 434T320 434T400 434T480 434T560 434T640 434'),
-      P('M120 378C220 330 420 330 540 356'),
-      P(R(150, 300, 46, 52, 3)), P(R(204, 284, 40, 68, 3)), P(R(252, 306, 44, 46, 3)),
-      P('M300 356V318H380V356'), P('M300 318C300 276 380 276 380 318'), P('M340 285V270'),
-      P('M592 380L604 214H628L640 380'), P(R(598, 186, 36, 28, 4)), P('M594 186L616 168L638 186'),
-      P('M646 196L716 176', 'ac'), P('M646 206L722 206', 'ac'),
-    ].join(''), 'opacity="0"'),
-    G('hall', [
-      P(R(150, 50, 500, 270, 8), 'solid'), P(R(162, 62, 476, 246, 4)), P('M150 332H650'),
-      P('M90 420H710'), P('M60 460H740'), P('M520 420L532 370H598L610 420'),
-    ].join('')),
-    G('math', A.board.map((line, i) => X(190, 112 + i * 56, line, 30, 'math', `data-line="${i}"`)).join('')),
-  ].join('') }),
-
-  // a terminal; the program types itself, runs, and its author raises both arms
-  cpp: () => ({ inner: [
-    G('lead', P('M0 250C40 250 60 240 90 240')),
-    G('term', P(R(90, 50, 520, 360, 14), 'solid') + P('M90 92H610') + D(116, 71, 4) + D(132, 71, 4) + D(148, 71, 4)),
-    G('code', A.cpp.code.map((line, i) => X(118, 136 + i * 34, line, 22, 'mono', 'data-type')).join('')),
-    G('run', X(118, 350, A.cpp.run, 22, 'mono muted', 'data-type')),
-    G('out', X(118, 386, A.cpp.out, 22, 'mono t-ac bold', 'data-type')),
-    G('coder', person(700, 300, 1.6)),
-    G('arms', P('M672 372L644 322') + P('M728 372L756 322')),
-    G('burst', P('M672 262L660 248', 'ac') + P('M700 250V232', 'ac') + P('M728 262L740 248', 'ac')),
-  ].join('') }),
-
-  // a hospital; its forms fly out and settle into the classes of a system, joined by their relations
-  java: () => {
-    const boxes = [[40, 40], [590, 40], [40, 340], [590, 340]];
-    const cls4 = A.java.classes.map((c, i) => {
-      const [x, y] = boxes[i];
-      return G(`class-${i}`, P(R(x, y, 170, 120, 6), 'solid') + P(`M${x} ${y + 36}H${x + 170}`) + X(x + 85, y + 25, c, 18, 'mid bold') +
-        P(`M${x + 14} ${y + 60}H${x + 120}M${x + 14} ${y + 82}H${x + 100}M${x + 14} ${y + 104}H${x + 132}`));
-    }).join('');
-    const forms = A.java.forms.map((f, i) => {
-      const [x, y] = boxes[i];
-      return G(`form-${i}`, doc(x + 30, y + 20, 110, 80) + X(x + 85, y + 118, t(f), 16, 'mid'), 'opacity="0"');
+  // Chania by the sea: the harbour, the lighthouse sweeping its light, a boat on the moving water; then the
+  // university, in three dimensions, with students walking
+  chania: () => {
+    const waves = [362, 392, 422, 452].map((y, i) => {
+      const a = 5 - i, per = 64;
+      let d = `M-128 ${y}`;
+      for (let x = -128; x < 960; x += per) d += `q${per / 4} ${-a} ${per / 2} 0t${per / 2} 0`;
+      return G(`wave-${i}`, pen(d, i % 2 ? 'faint wave' : 'wave'), `data-per="${per}"`);
     }).join('');
     return { inner: [
-      G('lead', P('M0 300C80 300 220 296 300 300')),
-      G('rel', P('M125 160V340') + P('M590 110C480 140 320 300 210 380') + P('M590 400C480 360 320 180 210 120') +
-        X(136, 182, '1', 16) + X(136, 332, '*', 18) + X(572, 128, '1', 16) + X(222, 372, '*', 18) + X(572, 392, '1', 16) + X(222, 138, '*', 18)),
-      G('hospital', P(R(300, 170, 200, 190, 6), 'solid') + P('M290 170H510') +
-        [324, 386, 448].map((x) => P(R(x, 196, 28, 26, 3)) + P(R(x, 238, 28, 26, 3))).join('') + P('M380 360V318H420V360')),
-      G('cross', F('M392 104h16v20h20v16h-20v20h-16v-20h-20v-16h20z', 'ac-fill')),
-      cls4, forms,
+      `<defs><clipPath id="ms-sea"><rect x="0" y="340" width="800" height="160"/></clipPath></defs>`,
+      G('lead', pen('M0 330C30 330 50 330 60 330')),
+      G('harbour', [
+        G('sun', pen(C(120, 96, 26)) + pen('M120 54V42M120 150V138M78 96H66M174 96H162M90 66L82 58M150 66L158 58M90 126L82 134M150 126L158 134')),
+        pen('M60 330H520'),
+        block('house-0', 96, 330, 64, 30, 64, 2, 2), block('house-1', 180, 330, 56, 30, 88, 3, 2),
+        block('mosque', 286, 330, 70, 40, 46, 1, 2), pen('M289 270C289 236 341 236 341 270'), pen('M315 238V226', 'thin'),
+        block('house-2', 386, 330, 60, 30, 72, 2, 2),
+        pen('M520 330C560 330 600 320 652 312'),
+        G('lighthouse', [
+          block('lh-base', 676, 316, 34, 26, 22),
+          `<path class="face-r" d="M690 294L698 150H710L716 288Z"/>`,
+          pen('M664 292L676 150M716 288L708 150'), pen('M666 262Q690 270 714 258M669 226Q690 234 711 222M672 190Q690 198 709 186', 'thin'),
+          pen('M660 150H724'), pen('M664 150V140M676 150V140M688 150V140M700 150V140M712 150V140M720 150V140', 'thin'), pen('M660 140H724'),
+          P(R(676, 112, 32, 28, 3), 'solid'), pen('M686 112V140M698 112V140', 'thin'), pen('M672 112C672 92 712 92 712 112'), pen('M692 96V86'),
+        ].join('')),
+        G('beam-r', `<path class="beam" d="M694 126L812 96V156Z"/>`),
+        G('beam-l', `<path class="beam" d="M690 126L572 98V154Z"/>`),
+        `<g clip-path="url(#ms-sea)">` + waves + G('boat', pen('M430 378H510L496 396H444Z', 'solid') + pen('M470 378V320') + `<path class="ac-fill" d="M472 324L506 372H472Z"/>`) + `</g>`,
+      ].join('')),
+      G('campus', [
+        pen('M30 448H770', 'faint'),
+        block('uni-0', 150, 420, 180, 80, 120, 3, 5), block('uni-1', 440, 440, 120, 60, 80, 2, 3), block('uni-2', 610, 412, 130, 50, 150, 4, 3),
+        ...[[96, 430], [400, 452], [740, 440]].map(([x, y], i) => G(`tree-${i}`, pen(`M${x} ${y}V${y - 34}`) + pen(C(x, y - 50, 18)))),
+        X(400, 488, t(A.chania.campus), 18, 'mid bold'),
+      ].join(''), 'opacity="0"'),
+      ...[[200, 470, 1], [260, 470, 0.9], [520, 476, 1], [570, 476, 0.95], [690, 466, 1]].map(([x, y, s], i) => walker(`student-${i}`, x, y, s, i === 2 ? 'ac' : '')),
     ].join('') };
   },
+
+  // the first year: a board of serious mathematics, C++ and then Java typing themselves, and their student
+  firstyear: () => ({ inner: [
+    G('lead', pen('M0 150C20 150 30 150 40 150')),
+    G('board', P(R(40, 40, 330, 210, 8), 'solid') + pen(R(52, 52, 306, 186, 4), 'thin') + pen('M150 250V262M260 250V262')),
+    G('math', A.board.map((line, i) => X(64, 98 + i * 44, line, 24, 'math', `data-line="${i}"`)).join('')),
+    G('cpp', P(R(420, 34, 340, 206, 12), 'solid') + pen('M420 66H760') + D(440, 50, 3.5) + D(452, 50, 3.5) + D(464, 50, 3.5) + X(740, 55, 'main.cpp', 13, 'mono muted', 'text-anchor="end"') +
+      A.cpp.code.map((line, i) => X(438, 92 + i * 23, line, 15, 'mono', 'data-type')).join('') + X(438, 228, A.cpp.out, 15, 'mono t-ac bold', 'data-type data-out')),
+    G('java', P(R(370, 262, 370, 176, 12), 'solid') + pen('M370 294H740') + D(390, 278, 3.5) + D(402, 278, 3.5) + D(414, 278, 3.5) + X(720, 283, 'Patient.java', 13, 'mono muted', 'text-anchor="end"') +
+      `<path class="ac-fill" d="M690 304h8v10h10v8h-10v10h-8v-10h-10v-8h10z"/>` +
+      A.firstyear.java.map((line, i) => X(390, 326 + i * 25, line, 16, 'mono', 'data-type')).join('')),
+    G('desk', pen('M40 470H330') + P('M110 470L124 410H246L260 470Z', 'solid')),
+    G('student', person(185, 312, 1.2)),
+    G('arms', pen('M163 381L140 340') + pen('M207 381L230 340')),
+    G('cheer', pen('M160 296L150 284', 'ac') + pen('M185 290V274', 'ac') + pen('M210 296L220 284', 'ac')),
+  ].join('') }),
+
+  // the diploma: the questionnaire it builds, on a restaurant's tablet; then fireworks, and a cap in the air
+  graduation: () => ({ inner: [
+    G('lead', pen('M0 250C20 250 40 250 60 250')),
+    G('tablet', P(R(60, 60, 270, 360, 22), 'solid') + pen(R(76, 80, 238, 320, 8), 'thin') +
+      // the restaurant's awning over its questionnaire
+      pen('M96 100H294') + [0, 1, 2, 3, 4, 5].map((i) => `<path class="${i % 2 ? 'face-r' : 'ac-fill'}" d="M${96 + i * 33} 100h33v18q-16.5 12 -33 0z"/>`).join('') +
+      X(195, 160, t(A.graduation.question), 16, 'mid bold') +
+      [0, 1, 2, 3, 4].map((i) => {
+        const cx = 135 + i * 30, cy = 196, r = 11;
+        return `<path class="${i < 4 ? 'ac-fill' : 'star-off'}" data-p="star-${i}" d="${'M' + Array.from({ length: 10 }, (_, k) => { const a = -Math.PI / 2 + (k * Math.PI) / 5, q = k % 2 ? r * 0.45 : r; return `${r1(cx + q * Math.cos(a))} ${r1(cy + q * Math.sin(a))}`; }).join('L') + 'Z'}"/>`;
+      }).join('') +
+      [0, 1].map((i) => pen(R(104, 236 + i * 40, 18, 18, 4)) + pen(`M134 ${245 + i * 40}H${i ? 250 : 270}`)).join('') +
+      pen('M108 245l4 4 7-8', 'ac') +
+      `<path class="ac-fill" d="${R(140, 336, 110, 36, 18)}"/>` + X(195, 360, t(A.graduation.send), 15, 'mid bold t-inv')),
+    G('app', X(195, 452, A.graduation.app, 17, 'mid bold')),
+    G('grad', person(590, 270, 1.6) + pen('M560 362L548 308') + pen('M620 362L634 312') + P(R(632, 296, 40, 16, 6), 'solid') + `<path class="ac-fill" d="M648 296h8v16h-8z"/>`),
+    G('cap', `<path class="fill-ink" d="M548 240L590 222L632 240L590 258Z"/>` + pen('M566 248V262C578 270 602 270 614 262V248') + pen('M624 243V266', 'ac') + `<circle class="ac-fill" cx="624" cy="268" r="4"/>`),
+    burst('fw-0', 470, 110, 46), burst('fw-1', 660, 80, 56), burst('fw-2', 750, 200, 40),
+    G('confetti', [[440, 200], [520, 60], [600, 140], [700, 130], [760, 290], [470, 300], [560, 40]].map(([x, y], i) =>
+      `<rect class="${i % 2 ? 'ac-fill' : 'fill-ink'}" x="${x}" y="${y}" width="8" height="5" rx="1" transform="rotate(${i * 37} ${x} ${y})"/>`).join('')),
+  ].join('') }),
 
   // an ER diagram; a messy table splits into normal forms; a JOIN joins them; the theory around it
   postgres: () => {
@@ -303,10 +386,10 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
   ].join('') }),
 };
 
-const scene = name === 'courses-wide' ? coaster(false) : name === 'courses-tall' ? coaster(true) : SCENES[name]();
+const scene: { view?: string; at?: number[]; inner: string } = name === 'courses-wide' ? coaster(false) : name === 'courses-tall' ? coaster(true) : SCENES[name]();
 const view = scene.view ?? '0 0 800 500';
 ---
-<svg class:list={['ms-svg', `art-${name}`]} data-art={name} viewBox={view} aria-hidden="true" focusable="false"
+<svg class:list={['ms-svg', `art-${name}`]} data-art={name} data-moments={scene.at?.join(',')} viewBox={view} aria-hidden="true" focusable="false"
   preserveAspectRatio={name.startsWith('courses') ? 'xMidYMid slice' : 'xMidYMid meet'} set:html={scene.inner} />
 
 <style>
@@ -318,6 +401,16 @@ const view = scene.view ?? '0 0 800 500';
   .ms-svg :global(.faint) { stroke: color-mix(in srgb, currentColor 30%, transparent); }
   .ms-svg :global(.ac) { stroke: var(--cobalt); }
   .ms-svg :global(.solid) { fill: var(--paper); }
+  /* depth: the soft shadow a solid shape casts, and the three faces of a block */
+  .ms-svg :global(.shade) { fill: rgb(20 20 20 / 0.08); stroke: none; }
+  .ms-svg :global(.face-t) { fill: var(--paper); stroke: none; }
+  .ms-svg :global(.face-l) { fill: color-mix(in srgb, var(--ink) 7%, var(--paper)); stroke: none; }
+  .ms-svg :global(.face-r) { fill: color-mix(in srgb, var(--ink) 15%, var(--paper)); stroke: none; }
+  .ms-svg :global(.thin) { stroke-width: 1.4; }
+  .ms-svg :global(.wave) { stroke-width: 2; }
+  .ms-svg :global(.beam) { fill: var(--cobalt); opacity: 0.18; stroke: none; }
+  .ms-svg :global(.star-off) { fill: color-mix(in srgb, var(--ink) 18%, transparent); stroke: none; }
+  .ms-svg :global(.t-inv) { fill: var(--paper); }
   .ms-svg :global(.fill-ink) { fill: currentColor; stroke: none; }
   .ms-svg :global(.ac-fill) { fill: var(--cobalt); stroke: none; }
   .ms-svg :global(circle) { fill: currentColor; }
@@ -336,8 +429,7 @@ const view = scene.view ?? '0 0 800 500';
   /* a phone: the picture shows at under half its size; the words that have room grow, so they still read (the
      rest of what a scene says is in its own words, beside it) */
   @media (max-width: 760px) {
-    .art-cpp :global(.mono) { font-size: 25px; }
-    .art-chania :global(.math) { font-size: 34px; }
+    .art-firstyear :global(.math) { font-size: 28px; }
     .ms-svg :global([data-count]) { font-size: 48px; }
     /* the theory tags are listed under the words instead */
     .art-postgres :global([data-p^='tag-']) { display: none; }
