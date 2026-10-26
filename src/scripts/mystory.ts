@@ -126,16 +126,16 @@ const SCENES: Record<string, Scene> = {
     show(tl, [...near.querySelectorAll('.ties, .rail, [data-p^="stop-"] .ac-fill')], 0.2, true, 0.5);
     show(tl, [...near.querySelectorAll(':scope > text')], 0.6);
     draw(tl, strokes(train).filter((e) => !e.closest('[data-p^="crate-"]')), 0.3, 0.7, 0.006);
-    show(tl, [...train.querySelectorAll('.face-l, [data-p="car-0"] .ac-fill, .rod')], 0.8, true, 0.3);
+    show(tl, [...train.querySelectorAll('.face-l, .fill-ink, [data-p="car-0"] .ac-fill, .rod')], 0.8, true, 0.3);
     // the first skills are on board from the start
     tl.fromTo(svg.querySelectorAll('[data-at="0"]'), { y: -90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'bounce.out', stagger: 0.18 }, 1.0);
     // then the journey, slowly: from station to station, a stop at each to load one more skill
     let at = 2.0;
     const legs = ride.stops.slice(1);
     legs.forEach((q, k) => {
-      const leg = { p: q, duration: 1.7, ease: 'sine.inOut', onUpdate: ride.place };
+      const leg = { p: q, duration: 2, ease: 'sine.inOut', onUpdate: ride.place };
       if (k === 0) tl.fromTo(ride.state, { p: 0 }, leg, at); else tl.to(ride.state, leg, at);
-      at += 1.7 + (k < legs.length - 1 ? 1.1 : 0);
+      at += 2 + (k < legs.length - 1 ? 1.1 : 0);
     });
     show(tl, ride.station, at - 0.6, true, 0.4);
     // while it is on screen, the engine smokes, the lab bubbles, the house glows, the rocket waits to launch
@@ -252,26 +252,47 @@ const SCENES: Record<string, Scene> = {
     pop(tl, parts(svg, 'ai-'), 1.8, '50% 50%', 0.15);
   },
 
-  deindeal(tl, svg) {
-    draw(tl, strokes(part(svg, 'lead')), 0, 0.2);
-    draw(tl, strokes(part(svg, 'zurich')), 0.1, 0.6, 0.1);
-    show(tl, part(svg, 'zurich')!.querySelector('text'), 0.6);
+  deindeal(tl, svg, _step, idle) {
+    // Zurich, opened out over the whole picture, draws itself: the sky, the towers and the guild houses, the river,
+    // the bridge (the line coming in from the timeline is its balustrade), the boat
+    const zurich = part(svg, 'zurich')!, boat = part(svg, 'boat')!, waves = parts(svg, 'zwave-');
+    tl.fromTo(zurich, { x: 0, y: 0, scale: 1, svgOrigin: '0 0' }, { x: 0, y: 0, scale: 1, svgOrigin: '0 0', duration: 0.01 }, 0);
+    show(tl, part(svg, 'zframe'), 3.5, true, 0.3);
+    draw(tl, strokes(part(svg, 'lead')), 0, 0.3);
+    draw(tl, parts(svg, 'zcloud-').flatMap(strokes), 0, 0.6, 0.1);
+    show(tl, zurich.querySelector('text'), 0.3, true, 0.4);
+    draw(tl, strokes(part(svg, 'city')), 0.1, 0.8, 0.006);
+    show(tl, [...zurich.querySelectorAll('.face-r, .face-l, .ac-fill')], 0.7, true, 0.5);
+    draw(tl, waves.flatMap(strokes), 0.4, 0.8, 0.06);
+    draw(tl, strokes(part(svg, 'bridge')).filter((e) => !e.closest('[data-p="lead"]')), 0.3, 0.6, 0.01);
+    draw(tl, strokes(boat), 0.8, 0.5, 0.02);
+    // the river flows, the boat glides downstream, the flag flies
+    waves.forEach((w, i) => loop(idle, gsap.to(w, { x: (i % 2 ? 1 : -1) * Number(w.dataset.per), duration: 2.6 + i * 0.5, ease: 'none', repeat: -1 })));
+    tl.fromTo(boat, { x: -110 }, { x: 0, duration: 4.4, ease: 'sine.out' }, 0.6);
+    loop(idle, gsap.to(boat, { y: 2, duration: 1.4, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    loop(idle, gsap.to(part(svg, 'zflag'), { skewY: 5, scaleX: 0.92, svgOrigin: '712 173', duration: 0.7, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    parts(svg, 'zcloud-').forEach((c, i) => loop(idle, gsap.to(c, { x: 24 + i * 10, duration: 9 + i * 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })));
+    // then it folds into a postcard in the corner, and the work starts
+    tl.to(zurich, { x: 30, y: 10, scale: 0.32, svgOrigin: '0 0', duration: 0.8, ease: 'power3.inOut' }, 3.0);
+    const W = 3.2;
     // the files tumble in, and down the funnel
     const files = parts(svg, 'file-');
     files.forEach((f, i) => tl.fromTo(f, { opacity: 0, y: -90, rotation: (i % 2 ? 1 : -1) * 30, transformOrigin: '50% 50%' },
-      { opacity: 1, y: 0, rotation: (i % 2 ? -1 : 1) * 12, duration: 0.4, ease: 'power2.out' }, 0.7 + i * 0.12));
-    draw(tl, strokes(part(svg, 'funnel')), 1.2, 0.4);
+      { opacity: 1, y: 0, rotation: (i % 2 ? -1 : 1) * 12, duration: 0.4, ease: 'power2.out' }, W + 0.7 + i * 0.12));
+    show(tl, part(svg, 'funnel'), W + 1.2, true, 0.01);
+    draw(tl, strokes(part(svg, 'funnel')), W + 1.2, 0.4);
     files.forEach((f, i) => {
       const b = f.getBBox();
-      tl.to(f, { x: 480 - (b.x + b.width / 2), y: 220 - (b.y + b.height / 2), rotation: 0, scale: 0.3, opacity: 0, duration: 0.5, ease: 'power2.in' }, 1.7 + i * 0.12);
+      tl.to(f, { x: 480 - (b.x + b.width / 2), y: 220 - (b.y + b.height / 2), rotation: 0, scale: 0.3, opacity: 0, duration: 0.5, ease: 'power2.in' }, W + 1.7 + i * 0.12);
     });
-    tl.fromTo(parts(svg, 'stage-'), { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.2 }, 2.0);
+    tl.fromTo(parts(svg, 'stage-'), { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.2 }, W + 2.0);
     // clean products come out, and keep coming
-    tl.fromTo(parts(svg, 'card-'), { y: -60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power2.out', stagger: 0.12 }, 2.8);
-    count(tl, part(svg, 'count')?.querySelector('[data-count]') ?? null, 2.9, 1, 800000, (v) => `${Math.round(v).toLocaleString('en-US')}+`);
-    draw(tl, strokes(part(svg, 'refresh')), 3.6, 0.4, 0.1);
-    show(tl, part(svg, 'refresh')!.querySelector('text'), 3.8);
-    tl.fromTo(part(svg, 'refresh'), { rotation: 0, svgOrigin: '150 330' }, { rotation: -360, svgOrigin: '150 330', duration: 0.8, ease: 'none' }, 4.0);
+    tl.fromTo(parts(svg, 'card-'), { y: -60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power2.out', stagger: 0.12 }, W + 2.8);
+    show(tl, part(svg, 'count'), W + 2.9, true, 0.2);
+    count(tl, part(svg, 'count')?.querySelector('[data-count]') ?? null, W + 2.9, 1, 800000, (v) => `${Math.round(v).toLocaleString('en-US')}+`);
+    draw(tl, strokes(part(svg, 'refresh')), W + 3.6, 0.4, 0.1);
+    show(tl, part(svg, 'refresh')!.querySelector('text'), W + 3.8);
+    tl.fromTo(part(svg, 'refresh'), { rotation: 0, svgOrigin: '150 330' }, { rotation: -360, svgOrigin: '150 330', duration: 0.8, ease: 'none' }, W + 4.0);
   },
 
   side(tl, svg, step) {
@@ -374,17 +395,50 @@ function journey(step: HTMLElement) {
   xs.forEach((x, i) => camX.push(Math.max(x, camX[i - 1] ?? x)));
   const ground = ys[0];
   const stopS: number[] = [];
+  const stopX = parts(svg, 'stop-').map((st) => Number(st.dataset.x));
   let from = 0;
-  parts(svg, 'stop-').map((st) => Number(st.dataset.x)).forEach((x) => {
+  stopX.forEach((x) => {
     let i = from;
     while (i < N && !(Math.abs(xs[i] - x) < 3 && Math.abs(ys[i] - ground) < 1)) i++;
     stopS.push((i / N) * L);
     from = i;
   });
   const s0 = stopS[0], s1 = stopS[stopS.length - 1];
+  const stops = stopS.map((v) => (v - s0) / (s1 - s0));
   const TRAIN = cars.reduce((n, c) => n + c.len + 12, -12);
   const at = (d: number) => track.getPointAtLength(gsap.utils.clamp(0, L, d));
-  let counted = -1, named = -1, read = -1;
+  // how much of the world the window takes in as the train goes: at first the engine and the skills it set off
+  // with; at every station, all it carries by then; at the end of the line, the whole train and the station. It
+  // only grows, so the more the train has on board, the smaller it looks
+  // (ahead of the engine: room for the station's sign)
+  const AHEAD = 130, BEHIND = 40, TOP = 96, BOTTOM = ground + 48;
+  const carried: { at: number; d: number }[] = [];
+  let along = 0;
+  cars.forEach((c) => {
+    c.el.querySelectorAll<SVGGElement>('[data-at]').forEach((g) => carried.push({ at: Number(g.dataset.at), d: along + c.len / 2 - g.getBBox().x }));
+    along += c.len + 12;
+  });
+  const need = (j: number) => Math.max(0, ...carried.filter((c) => c.at <= j).map((c) => c.d)) + AHEAD + BEHIND;
+  const end = station.getBBox();
+  const first = need(0), last = TRAIN + end.x + end.width - stopX[stopX.length - 1] + 2 * BEHIND;
+  const reaches: number[] = [];
+  stops.forEach((q, j) => reaches.push(Math.max(first + (last - first) * q, need(j), j ? reaches[j - 1] + 30 : 0)));
+  const reach = (p: number) => {
+    let j = 1;
+    while (j < stops.length - 1 && p > stops[j]) j++;
+    return gsap.utils.interpolate(reaches[j - 1], reaches[j], gsap.utils.clamp(0, 1, (p - stops[j - 1]) / (stops[j] - stops[j - 1])));
+  };
+  // the window: the part of the drawing its box shows (the drawing is cut to fill the box), measured as it resizes
+  const H = svg.viewBox.baseVal.height;
+  const view = { x: 0, y: 0, w: W, h: H };
+  const measure = () => {
+    const r = svg.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    const k = Math.max(r.width / W, r.height / H);
+    Object.assign(view, { w: r.width / k, h: r.height / k, x: (W - r.width / k) / 2, y: (H - r.height / k) / 2 });
+  };
+  measure();
+  let counted = -1, named = -1, read = -1, lineW = 0;
   // p: where the train is (0 to 1); max: how far it has been
   const state = { p: 0, max: 0 };
   const place = () => {
@@ -399,15 +453,23 @@ function journey(step: HTMLElement) {
       const q = at(d), a = at(d - 4), b = at(d + 4);
       c.el.setAttribute('transform', `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)}) rotate(${((Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI).toFixed(2)})`);
     });
-    // the camera: on the whole train while it loads, then on the engine, a little behind the middle so the way ahead shows
+    // the camera pulls back as the train goes (see reach), the picture kept in the middle of the window: the whole
+    // train in it once it fits, with the way ahead (until then, the engine and what it carries)
     const fx = camX[Math.round((gsap.utils.clamp(0, L, s) / L) * N)];
-    // and, nearing the end of the line, back again, so the last station comes into view
-    const e = gsap.utils.clamp(0, 1, (s - s0) / 600), end = gsap.utils.clamp(0, 1, (s - (s1 - 700)) / 700);
-    const focus = fx - (TRAIN / 2) * (1 - e), aim = W * (0.5 + 0.12 * e - 0.3 * end);
-    const tx = gsap.utils.clamp(W - world, 0, aim - focus);
-    near.setAttribute('transform', `translate(${tx.toFixed(1)} 0)`);
-    far.setAttribute('transform', `translate(${(tx * 0.35).toFixed(1)} 0)`);
-    clouds.setAttribute('transform', `translate(${(tx * 0.15).toFixed(1)} 0)`);
+    const z = Math.min(1, view.w / reach(p), view.h / (BOTTOM - TOP)), span = view.w / z;
+    const left = gsap.utils.clamp(0, world - span, Math.max(fx - TRAIN - BEHIND, fx + AHEAD - span));
+    // the hills behind pull back less, and slower; the clouds stay up in the sky
+    const look = (g: Element, depth: number, pull: number, sky = false) => {
+      const k = 1 - (1 - z) * pull;
+      const y = sky ? view.y : view.y + (view.h - k * (TOP + BOTTOM)) / 2;
+      g.setAttribute('transform', `translate(${(view.x - k * left * depth).toFixed(1)} ${y.toFixed(1)}) scale(${k.toFixed(4)})`);
+    };
+    look(near, 1, 1);
+    look(far, 0.35, 0.55);
+    look(clouds, 0.15, 0.3, true);
+    // the lines thin less than the drawing shrinks, so they still read
+    const sw = Math.round(20 / Math.sqrt(z)) / 20;
+    if (sw !== lineW) { lineW = sw; svg.style.setProperty('--sw', String(sw)); }
     // the wheels turn with the distance; the rod rides the drivers' cranks
     const run = s - s0;
     wheels.forEach((w) => w.el.setAttribute('transform', `rotate(${(((run / w.r) * 180) / Math.PI).toFixed(1)} ${w.cx} ${w.cy})`));
@@ -434,7 +496,8 @@ function journey(step: HTMLElement) {
     if (li !== read) { read = li; lines.forEach((l, i) => l.el.classList.toggle('on', i === li)); }
   };
   place();
-  return { state, place, station, stops: stopS.map((v) => (v - s0) / (s1 - s0)) };
+  new ResizeObserver(() => { measure(); place(); }).observe(svg);
+  return { state, place, station, stops };
 }
 
 /** Splits a paragraph into word spans (its text stays the same, read as one), for lighting up in turn. */

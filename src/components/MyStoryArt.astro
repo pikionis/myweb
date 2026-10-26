@@ -75,10 +75,10 @@ const burst = (p: string, x: N, y: N, r: N) => G(p, Array.from({ length: 12 }, (
 // camera along it (the far hills and the clouds slower, for depth) and lays the cars along the track, each turned
 // with it. It is drawn twice, for a wide window and a narrow one; the script uses the one shown.
 const RL = 400;
-const J = { h: 480, first: 760, seg: 980, hill: 560, hills: [120, 160, 0, 190, 250, 150, 175, 130], loop: 2, ai: 4 };
+const J = { h: 480, first: 800, seg: 1400, hill: 560, hills: [120, 160, 0, 190, 250, 150, 175, 130], loop: 2, ai: 4 };
 const segX = (k: N) => 880 + k * J.seg;
-/** where the train's front stops at station k (0 is the start, 8 the end of the line) */
-const stopX = (k: N) => (k === 0 ? J.first : segX(k - 1) + J.hill + 360);
+/** where the train's front stops at station k (0 is the start, 8 the end of the line): the whole train on the flat */
+const stopX = (k: N) => (k === 0 ? J.first : segX(k) - 60);
 const WORLD = segX(8) + 300;
 const bez = (a: N[], b: N[], c: N[], d: N[], q: N) => {
   const u = 1 - q;
@@ -86,7 +86,7 @@ const bez = (a: N[], b: N[], c: N[], d: N[], q: N) => {
 };
 /** the track: flat at the stations, a hill (or the loop) between them; the supports under it; the AI hill */
 const coasterTrack = () => {
-  let d = `M40 ${RL}H880`, posts = '', ai = '', aiTop = [0, 0];
+  let d = `M0 ${RL}H880`, posts = '', ai = '', aiTop = [0, 0];
   for (let k = 0; k < 8; k++) {
     const x = segX(k), h = J.hills[k];
     if (k === J.loop) {
@@ -192,11 +192,11 @@ const journey = (narrow: boolean) => {
   let hills = `M0 ${RL - 40}`;
   for (let x = 0; x < farLen; x += 160) hills += `Q${x + 40} ${RL - 40 - 40 - ((x / 160) % 3) * 16} ${x + 80} ${RL - 50}T${x + 160} ${RL - 40}`;
   const far = G('far', pen(hills, 'faint'));
-  const clouds = G('clouds', Array.from({ length: 8 }, (_, i) => cloud(`jcloud-${i}`, 80 + i * 300, 50 + (i % 2) * 34, 0.8 + (i % 2) * 0.3)).join(''));
+  const clouds = G('clouds', Array.from({ length: Math.ceil((WORLD * 0.15 + 2 * W) / 300) }, (_, i) => cloud(`jcloud-${i}`, 80 + i * 300, 50 + (i % 2) * 34, 0.8 + (i % 2) * 0.3)).join(''));
   const track = coasterTrack();
   // a station at every stop: its platform, its sign (the skill it loads), and a moment of those years over it
   const stations = Array.from({ length: 9 }, (_, k) => {
-    const x = stopX(k), platform = P(R(x - 420, RL + 4, 440, 8, 2), 'solid');
+    const x = stopX(k), platform = P(R(x - 760, RL + 4, 780, 8, 2), 'solid');
     if (k === 8) {
       return G('stop-8', platform + G('station', P(R(x + 40, 312, 210, 84, 4), 'solid') + P(`M${x + 30} 312L${x + 145} 270L${x + 260} 312Z`, 'solid') +
         pen(R(x + 120, 340, 50, 56, 3)) + X(x + 145, 262, t(A.station), 18, 'mid bold')), `data-x="${x}"`);
@@ -205,7 +205,7 @@ const journey = (narrow: boolean) => {
     const w = Math.max(70, width(label, 14) + 26);
     const sign = pen(`M${x + 54} ${RL + 34}V${RL - 74}`) + (ai ? `<path class="ac-fill" d="${R(x + 54 - w / 2, RL - 108, w, 34, 6)}"/>` : P(R(x + 54 - w / 2, RL - 108, w, 34, 6), 'solid')) +
       X(x + 54, RL - 86, label, 14, ai ? 'mid mono bold t-inv' : 'mid mono bold');
-    return G(`stop-${k}`, platform + sign, `data-x="${x}"`) + journeyMoment(k, x - 210);
+    return G(`stop-${k}`, platform + sign, `data-x="${x}"`) + journeyMoment(k, x - 370);
   }).join('');
   const near = G('near', [
     pen(`M0 ${RL + 34}H${WORLD}`, 'faint'), pen(track.posts, 'faint thin'),
@@ -403,14 +403,77 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
     A.ai.map((a, i) => G(`ai-${i}`, pill([560, 690, 700, 540][i], [70, 60, 200, 210][i], a, 16, i % 2 ? 'ac' : ''))).join(''),
   ].join('') }),
 
-  // Zurich; files tumble into a funnel; clean products come out, eight hundred thousand of them, every day
+  // Zurich, from the photograph: the Limmat under the Münsterbrücke's arches, the Fraumünster's slender spire (the
+  // cobalt) with St. Peter's clock tower behind, the guild houses along the quay, a boat on the river. It ends folded
+  // into a postcard in the corner, where the work goes on: files tumble into a funnel; clean products come out,
+  // eight hundred thousand of them, every day
   deindeal: () => {
     const file = (i: number, x: number, y: number) => G(`file-${i}`, i === 3
       ? P(`M${x} ${y + 10}H${x + 22}L${x + 30} ${y}H${x + 64}V${y + 52}H${x}Z`, 'solid') + X(x + 32, y + 36, A.deindeal.files[i], 14, 'mid mono bold')
       : P(R(x, y, 54, 66, 4), 'solid') + X(x + 27, y + 40, A.deindeal.files[i], 14, 'mid mono bold'));
+    /** a building's windows, in rows and columns */
+    const wins = (x: N, y: N, cols: N, rows: N, dx: N, dy: N, w: N, h: N) => {
+      let d = '';
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) d += R(x + c * dx, y + r * dy, w, h, 1.5);
+      return pen(d, 'thin');
+    };
+    /** a tiled roof: tinted, then outlined */
+    const roof = (d: string) => F(d, 'face-r') + pen(d);
+    // the river, its rows of waves larger towards us
+    const waves = [[380, 1.4, 34], [396, 2, 40], [416, 2.8, 48], [442, 3.6, 58], [474, 4.6, 70]].map(([y, a, per], i) => {
+      let d = `M${-per * 2} ${y}`;
+      for (let x = -per * 2; x < 900; x += per) d += `q${per / 4} ${-a} ${per / 2} 0t${per / 2} 0`;
+      return G(`zwave-${i}`, pen(d, i < 2 ? 'faint wave' : 'wave'), `data-per="${per}"`);
+    }).join('');
+    const city = [
+      // St. Peter's tower and its great clock, behind the trees
+      P('M70 318V156H114V318', 'solid'), roof('M66 156L92 104L118 156Z'), pen('M92 104V92', 'thin'),
+      pen(C(92, 180, 14)), pen('M92 180V170M92 180L100 184', 'thin'), pen('M86 240V222A6 6 0 0 1 98 222V240', 'thin'),
+      P('M0 318V262C10 240 34 236 46 250C54 232 84 230 96 248C110 236 136 244 140 264C152 270 150 300 140 318Z', 'solid'),
+      pen('M28 300C38 290 50 292 58 284M88 298C98 288 110 290 116 282', 'thin'),
+      // the guild house by the bridge: a steep roof with dormers
+      P('M150 318V222H292V318', 'solid'), roof('M144 222L178 172H264L298 222Z'),
+      pen('M192 204L202 190L212 204ZM230 204L240 190L250 204Z', 'thin'), wins(162, 236, 7, 3, 19, 26, 9, 15),
+      // the Fraumünster: its gable, its tower with the clock and the belfry, and the spire
+      P('M292 318V244L342 196L392 244V318', 'solid'), pen(C(342, 228, 8)),
+      pen('M326 306V272A16 16 0 0 1 358 272V306'), pen('M342 256V306', 'thin'),
+      P('M392 318V140H432V318', 'solid'), pen('M388 140H436M388 146H436', 'thin'),
+      pen('M400 168V158A6 6 0 0 1 412 158V168M412 168V158A6 6 0 0 1 424 158V168', 'thin'),
+      pen(C(412, 190, 10)), pen('M412 190V182M412 190L418 193', 'thin'), pen('M404 236V216A8 8 0 0 1 420 216V236', 'thin'),
+      F('M394 140L412 24L430 140ZM392 140L395 122L398 140ZM426 140L429 122L432 140Z', 'ac-fill'), pen('M412 24V10', 'ac'), `<circle class="ac-fill" cx="412" cy="10" r="3"/>`,
+      // Zur Meisen: a mansard roof, a pediment in the middle, rows of tall windows
+      P('M440 332V236H610V332', 'solid'), roof('M436 236L450 204H600L614 236Z'), pen('M450 204L462 194H588L600 204', 'thin'),
+      P('M505 236V214L525 198L545 214V236', 'solid'), pen(C(525, 222, 5), 'thin'), pen(C(470, 222, 4) + C(580, 222, 4), 'thin'),
+      wins(452, 248, 8, 3, 20, 26, 10, 16),
+      // the townhouses along the quay, one with the flag
+      P('M610 332V216H690V332', 'solid'), roof('M606 216L650 168L694 216Z'), wins(620, 228, 3, 4, 22, 24, 10, 14),
+      P('M690 332V232H770V332', 'solid'), roof('M686 232L702 204H756L774 232Z'), pen('M744 204V192H752V204', 'thin'), wins(700, 244, 3, 3, 22, 26, 10, 16),
+      G('zflag', pen('M712 204V164') + pen(R(712, 164, 26, 18, 1)) + pen('M725 168V178M720 173H730', 'thin')),
+      P('M770 332V248H812V332', 'solid'), roof('M766 248L788 224H812V248Z'), wins(780, 258, 2, 3, 20, 24, 9, 14),
+      // the quay
+      P('M470 332H812V368H470Z', 'solid'), pen('M470 350H812M520 332V350M600 350V368M680 332V350M760 350V368', 'thin'),
+    ].join('');
+    // the bridge: four arches (shaded under), its balustrade (the line coming in from the timeline), two lamps
+    const arches = [0, 1, 2, 3].map((k) => { const a = 14 + k * 118, b = a + 94; return `M${a} 392V358A47 24 0 0 1 ${b} 358V392Z`; }).join('');
+    const bridge = [
+      P(`M0 316H482V392H0Z${arches}`, 'solid', 'fill-rule="evenodd"'), pen('M0 324H482', 'thin'),
+      G('lead', pen('M0 296H482')), pen(Array.from({ length: 53 }, (_, i) => `M${4 + i * 9} 298V316`).join(''), 'thin'),
+      [140, 376].map((x) => pen(`M${x} 296V262`) + P(R(x - 6, 248, 12, 14, 3), 'solid')).join(''),
+    ].join('');
+    // the boat: a long glass cabin, its wake behind it
+    const boat = [
+      pen('M432 424C446 418 458 418 470 420M412 434C432 428 450 428 466 430', 'faint'),
+      P('M474 410H760L740 430H488Z', 'solid'), P(R(492, 386, 222, 24, 6), 'solid'),
+      pen(Array.from({ length: 11 }, (_, i) => `M${512 + i * 18} 389V407`).join(''), 'thin'), pen('M484 386H722'),
+    ].join('');
     return { inner: [
-      G('lead', P('M0 110C10 110 30 110 40 110')),
-      G('zurich', P('M40 110L110 50L150 90L210 30L270 100L320 70L380 110') + P('M60 140Q100 132 140 140T220 140T300 140T380 140') + X(210, 176, t(A.deindeal.city), 16, 'mid')),
+      `<defs><clipPath id="ms-zurich"><rect x="0" y="0" width="800" height="500" rx="24"/></clipPath></defs>`,
+      // (as it ends: folded into the corner; the script opens it out first)
+      G('zurich', `<g clip-path="url(#ms-zurich)">` + [
+        cloud('zcloud-0', 520, 92, 1), cloud('zcloud-1', 650, 136, 0.7), cloud('zcloud-2', 250, 100, 0.8),
+        X(56, 84, t(A.deindeal.city), 40, 'bold'),
+        G('city', city), F(arches, 'face-l'), waves, G('bridge', bridge), G('boat', boat),
+      ].join('') + '</g>' + G('zframe', pen(R(0, 0, 800, 500, 24), 'thick')), 'transform="translate(30 10) scale(0.32)"'),
       file(0, 440, 30) + file(1, 530, 20) + file(2, 620, 34) + file(3, 700, 40),
       G('funnel', P('M300 190H660L520 330V368H440V330Z', 'solid')),
       A.deindeal.stages.map((s, i) => G(`stage-${i}`, X(480, 222 + i * 30, `${i + 1} ${t(s)}`, 15, 'mid mono'))).join(''),
@@ -454,10 +517,11 @@ const view = scene.view ?? '0 0 800 500';
 
 <style>
   .ms-svg { display: block; width: 100%; height: 100%; overflow: visible; color: var(--ink); }
-  .ms-svg :global(path), .ms-svg :global(rect) { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  /* the line widths, times --sw: the journey sets it as its camera pulls back, so its lines thin less than it shrinks */
+  .ms-svg :global(path), .ms-svg :global(rect) { fill: none; stroke: currentColor; stroke-width: calc(2.4px * var(--sw, 1)); stroke-linecap: round; stroke-linejoin: round; }
   .ms-svg :global(.sa-d) { stroke-dasharray: 1 2; }
-  .ms-svg :global(.thick) { stroke-width: 6; }
-  .ms-svg :global(.thick-ish) { stroke-width: 4; }
+  .ms-svg :global(.thick) { stroke-width: calc(6px * var(--sw, 1)); }
+  .ms-svg :global(.thick-ish) { stroke-width: calc(4px * var(--sw, 1)); }
   .ms-svg :global(.faint) { stroke: color-mix(in srgb, currentColor 30%, transparent); }
   .ms-svg :global(.ac) { stroke: var(--cobalt); }
   .ms-svg :global(.solid) { fill: var(--paper); }
@@ -466,22 +530,22 @@ const view = scene.view ?? '0 0 800 500';
   .ms-svg :global(.face-t) { fill: var(--paper); stroke: none; }
   .ms-svg :global(.face-l) { fill: color-mix(in srgb, var(--ink) 7%, var(--paper)); stroke: none; }
   .ms-svg :global(.face-r) { fill: color-mix(in srgb, var(--ink) 15%, var(--paper)); stroke: none; }
-  .ms-svg :global(.thin) { stroke-width: 1.4; }
-  .ms-svg :global(.wave) { stroke-width: 2; }
+  .ms-svg :global(.thin) { stroke-width: calc(1.4px * var(--sw, 1)); }
+  .ms-svg :global(.wave) { stroke-width: calc(2px * var(--sw, 1)); }
   .ms-svg :global(.beam) { fill: var(--cobalt); opacity: 0.18; stroke: none; }
   .ms-svg :global(.star-off) { fill: color-mix(in srgb, var(--ink) 18%, transparent); stroke: none; }
   .ms-svg :global(.t-inv) { fill: var(--paper); }
   /* the journey */
   .art-journey-wide, .art-journey-narrow { overflow: hidden; }
   .ms-svg :global(.ties) { stroke-width: 11; stroke-dasharray: 3 11; stroke-linecap: butt; stroke: color-mix(in srgb, var(--ink) 45%, transparent); }
-  .ms-svg :global(.rail) { stroke-width: 4; }
+  .ms-svg :global(.rail) { stroke-width: calc(4px * var(--sw, 1)); }
   /* a skill waits at its station until the train has reached it, then drops into its wagon */
   .ms-svg :global([data-at]) { transition: opacity 0.25s ease, translate 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
   :global(html.js) .ms-svg :global([data-at]:not([data-at='0']):not(.loaded)) { opacity: 0; translate: 0 -90px; }
-  .ms-svg :global(.rod) { stroke-width: 3; }
-  .ms-svg :global(.puff) { fill: var(--paper); stroke: color-mix(in srgb, var(--ink) 45%, transparent); stroke-width: 1.6; }
-  .ms-svg :global(.glow) { fill: color-mix(in srgb, var(--cobalt) 30%, var(--paper)); stroke: currentColor; stroke-width: 1.6; }
-  .ms-svg :global(.bubble) { fill: var(--paper); stroke: var(--cobalt); stroke-width: 1.4; }
+  .ms-svg :global(.rod) { stroke-width: calc(3px * var(--sw, 1)); }
+  .ms-svg :global(.puff) { fill: var(--paper); stroke: color-mix(in srgb, var(--ink) 45%, transparent); stroke-width: calc(1.6px * var(--sw, 1)); }
+  .ms-svg :global(.glow) { fill: color-mix(in srgb, var(--cobalt) 30%, var(--paper)); stroke: currentColor; stroke-width: calc(1.6px * var(--sw, 1)); }
+  .ms-svg :global(.bubble) { fill: var(--paper); stroke: var(--cobalt); stroke-width: calc(1.4px * var(--sw, 1)); }
   .ms-svg :global(.ai-hill) { fill: color-mix(in srgb, var(--cobalt) 12%, var(--paper)); stroke: none; }
   .ms-svg :global(.note) { fill: color-mix(in srgb, var(--ink) 14%, var(--paper)); stroke: none; }
   .ms-svg :global(.ac-note) { fill: color-mix(in srgb, var(--cobalt) 35%, var(--paper)); }
@@ -496,7 +560,7 @@ const view = scene.view ?? '0 0 800 500';
   .ms-svg :global(.stop.ac-fill) { fill: var(--cobalt); }
   .ms-svg :global(.stop.passed) { fill: currentColor; }
   .ms-svg :global(.net) { stroke-dasharray: 6 8; }
-  .ms-svg :global(.track) { stroke-width: 4; }
+  .ms-svg :global(.track) { stroke-width: calc(4px * var(--sw, 1)); }
   .ms-svg :global(.t) { fill: currentColor; stroke: none; font-weight: 500; }
   .ms-svg :global(.mid) { text-anchor: middle; }
   .ms-svg :global(.bold) { font-weight: 700; }

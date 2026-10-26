@@ -48,10 +48,10 @@ export const scenes: Scene[] = [
   {
     id: 'studies',
     rail: { en: '2009–16', el: '2009–16' }, label: { en: '2009–2016', el: '2009–2016' },
-    title: { en: 'My first languages, then 49 courses', el: 'Οι πρώτες μου γλώσσες, και 49 μαθήματα' },
+    title: { en: 'My first languages, and 49 courses', el: 'Οι πρώτες μου γλώσσες, και 49 μαθήματα' },
     text: {
-      en: 'It started with my first programming languages and projects: C++, Java, SQL and PostgreSQL, algorithms, mathematics. They were the first of 49 courses over seven years.',
-      el: 'Ξεκίνησα με τις πρώτες μου γλώσσες προγραμματισμού και τα πρώτα μου projects: C++, Java, SQL και PostgreSQL, αλγόριθμους, μαθηματικά. Ήταν τα πρώτα από 49 μαθήματα σε επτά χρόνια.',
+      en: 'C++ and Java, my first programming languages. Then SQL and PostgreSQL, algorithms, mathematics: 49 courses over seven years.',
+      el: 'C++ και Java, οι πρώτες μου γλώσσες προγραμματισμού. Μετά SQL και PostgreSQL, αλγόριθμοι, μαθηματικά: 49 μαθήματα σε επτά χρόνια.',
     },
   },
   {
