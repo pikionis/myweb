@@ -1,5 +1,5 @@
 ---
-import { servicesWithProjects } from '../data/projects';
+import { servicesWithProjects, hasStory } from '../data/projects';
 import { serviceColors, ui } from '../data/site';
 import { stories } from '../data/stories';
 
@@ -11,6 +11,7 @@ const steps = (services.length - 1) + services.reduce((n, s) => n + Math.max(car
 const arrow = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>';
 const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" /></svg>';
 const storyOf = (key: string) => stories.find((st) => st.service === key);
+const next = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>';
 const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>';
 ---
 <section id="services" class="work">
@@ -39,6 +40,7 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                     {s.projects.map((p, j) => (
                       <p class:list={['blurb', { on: j === 0 }]} data-blurb>
                         <span class="bname">{p.data.title}</span> {p.data.blurb ?? p.data.summary}
+                        {hasStory(p) && <a class="bstory" href={`/projects/${p.id}`}>{ui.readStory}<Fragment set:html={next} /></a>}
                       </p>
                     ))}
                   </div>
@@ -74,9 +76,6 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                             <span class="pfallback" aria-hidden="true" data-t={p.data.title}></span>
                             <iframe src={live} title={`${p.data.title} ${ui.live.site}`} loading="lazy" tabindex="-1"
                               sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
-                            <button type="button" class="live-cover" data-live-cover aria-label={`${ui.live.hint}: ${p.data.title}`}>
-                              <span class="live-hint" aria-hidden="true">{ui.live.hint}</span>
-                            </button>
                           </div>
                         ) : scope ? (
                           <>
@@ -172,6 +171,17 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
   .blurb { margin: 0; font-size: 1rem; line-height: 1.55; color: var(--meta); }
   .blurb + .blurb { margin-top: 14px; }
   .bname { display: block; margin-bottom: 4px; font-size: 0.875rem; font-weight: 700; letter-spacing: 0.01em; color: var(--tag); }
+  /* the way into the project's story, under its own text */
+  .bstory {
+    display: flex; align-items: center; gap: 6px; width: max-content; min-height: 44px; margin-top: 2px;
+    font-weight: 600; color: var(--tag); text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.25em;
+    transition: text-decoration-color 0.2s ease;
+  }
+  .bstory :global(svg) { transition: translate 0.25s var(--ease-out); }
+  @media (hover: hover) and (pointer: fine) {
+    .bstory:hover { text-decoration-color: currentColor; }
+    .bstory:hover :global(svg) { translate: 3px 0; }
+  }
 
   .pstack { grid-column: 7 / -1; grid-row: 2; display: grid; gap: 16px; margin-top: 20px; }
   .pcard {
@@ -188,7 +198,11 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
     flex: none; padding: 3px 9px; border: 1px solid currentColor; border-radius: 100px;
     font-size: 0.75rem; font-weight: 500; line-height: 1.3; color: var(--tag);
   }
-  .ptags { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9375rem; color: var(--tag); }
+  /* the tags speak like the brand's other small labels (the corners, the role under the name) */
+  .ptags {
+    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tag);
+  }
   .visit {
     position: relative; z-index: 2; flex: none; margin-left: auto; display: inline-flex; align-items: center; gap: 4px;
     min-height: 44px; font-size: 0.9375rem; font-weight: 500; color: inherit;
@@ -208,28 +222,16 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
   }
   /* the title card repeats the name as a picture, not as text */
   .pfallback::before { content: attr(data-t); }
-  /* a live site: the site itself, 1440px wide and scaled to the box (src/scripts/livesites.ts). It rests still,
-     so the wheel and a finger keep moving the page; on a desktop a click lets you scroll it until the pointer
-     leaves the box. On a phone it is only to look at, and a tap opens the project like the rest of the card */
+  /* a live site: the site itself, 1440px wide and scaled to the box (src/scripts/livesites.ts). On a desktop
+     the wheel follows the pointer: over the box it scrolls the site, anywhere else the page and its cards.
+     On a phone it is only to look at (a finger always scrolls the page), and a tap opens the project like
+     the rest of the card */
   .site-live { position: absolute; inset: 0; overflow: hidden; }
   .site-live iframe { position: absolute; top: 0; left: 0; width: 1440px; height: 100%; border: 0; transform-origin: 0 0; pointer-events: none; }
-  .site-live.active iframe { pointer-events: auto; }
-  .live-cover { display: none; }
   @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
-    /* above the card's own link, so a click here is for the site */
+    /* above the card's own link, so the pointer here is on the site */
     .site-live { z-index: 2; }
-    .live-cover {
-      position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; padding: 0 0 16px;
-      border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer;
-    }
-    .site-live.active .live-cover { display: none; }
-    .live-hint {
-      padding: 8px 14px; border-radius: 100px; font-size: 0.8125rem; font-weight: 500;
-      background: color-mix(in srgb, var(--ink) 84%, transparent); color: var(--ivory);
-      opacity: 0; translate: 0 6px; transition: opacity 0.2s ease, translate 0.2s var(--ease-out);
-    }
-    .live-cover:hover .live-hint, .live-cover:focus-visible .live-hint { opacity: 1; translate: 0 0; }
-    .live-cover:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 12px; }
+    .site-live iframe { pointer-events: auto; }
   }
   /* engineering work: the figure and the scope instead of a picture */
   /* in the flow the card grows to its contents; held in the stack it fills the card like a picture would */
@@ -254,8 +256,9 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
   .stack.on .pmedia { aspect-ratio: auto; }
   .stack.on .pline { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .stack.on .copy { margin-top: 0; }
-  .stack.on .blurb { grid-area: 1 / 1; margin: 0; opacity: 0; transition: opacity 0.3s ease; }
-  .stack.on .blurb.on { opacity: 1; }
+  /* the texts that are not showing step aside too, so their links never catch a click meant for the one that is */
+  .stack.on .blurb { grid-area: 1 / 1; margin: 0; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s; }
+  .stack.on .blurb.on { opacity: 1; visibility: visible; }
   /* a card that has slid over another leaves the one below showing only its name band */
   .stack.on .pcard + .pcard { box-shadow: 0 -10px 24px -18px rgb(0 0 0 / 0.35); }
   /* a shorter screen: slimmer bands and tighter words, so the last sheet keeps room for them */
