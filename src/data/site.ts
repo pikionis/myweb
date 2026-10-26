@@ -70,12 +70,15 @@ export const hero = {
   paletteKeywords: ['websites', 'applications', 'e-commerce', 'ai', 'search'],
   intro:
     "For over nine years I've designed and shipped software across startups, agencies, and a Swiss marketplace. I work end to end, so one person owns the whole thing — from the first sketch to production.",
+  // the labels in the hero's corners
   corners: [
     { pos: 'tl', top: 'AI Software', bold: 'Engineering' },
-    { pos: 'tr', top: 'Cloud &', bold: 'Infrastructure' },
-    { pos: 'bl', top: 'Data', bold: 'Pipelines' },
+    { pos: 'tr', top: 'Startup', bold: 'Enthusiast' },
+    { pos: 'bl', top: 'E-commerce', bold: 'Specialist' },
     { pos: 'br', top: 'Go-to', bold: 'Market' },
   ],
+  /** "What I work on" on /about */
+  areas: ['AI Software Engineering', 'Cloud & Infrastructure', 'Data Pipelines', 'Go-to Market'],
 };
 
 export const marquee = ['Web design', 'AI SaaS', 'Web applications', 'E-commerce', 'Marketplaces', 'AI search', 'Marketing & ads'];
