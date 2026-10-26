@@ -15,6 +15,9 @@ const projects = defineCollection({
     services: z.array(service).default([]),
     tags: z.array(z.string()).default([]),
     url: z.string().url().optional(),
+    // the live site, shown in the box of its card on the home page (scaled from 1440px wide) in place of
+    // the picture; the site must allow being framed (no X-Frame-Options / frame-ancestors against us)
+    live_url: z.string().url().optional(),
     // the project's own text on its service's sheet (Custom web & design shows it beside the projects)
     blurb: z.string().optional(),
     // a small label beside the name, e.g. "Launching soon"

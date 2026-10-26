@@ -54,7 +54,7 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
               <div class="pstack">
                 {s.projects.map((p, j) => {
                   const [bg, fg] = serviceColors[p.data.services[0] ?? 'none'];
-                  const { metric, scope } = p.data;
+                  const { metric, scope, live_url: live } = p.data;
                   return (
                     <article class="pcard" data-pcard style={`--j: ${j}`}>
                       <div class="pband">
@@ -67,8 +67,18 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                           </a>
                         )}
                       </div>
-                      <div class:list={['pmedia', { spec: scope }]} style={`--mbg: ${bg}; --mfg: ${fg}`}>
-                        {scope ? (
+                      <div class:list={['pmedia', { spec: scope && !live }]} style={`--mbg: ${bg}; --mfg: ${fg}`}>
+                        {live ? (
+                          <!-- the live site (src/scripts/livesites.ts); its title card shows until the site paints over it -->
+                          <div class="site-live" data-live>
+                            <span class="pfallback" aria-hidden="true" data-t={p.data.title}></span>
+                            <iframe src={live} title={`${p.data.title} ${ui.live.site}`} loading="lazy" tabindex="-1"
+                              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
+                            <button type="button" class="live-cover" data-live-cover aria-label={`${ui.live.hint}: ${p.data.title}`}>
+                              <span class="live-hint" aria-hidden="true">{ui.live.hint}</span>
+                            </button>
+                          </div>
+                        ) : scope ? (
                           <>
                             {metric && <p class="metric"><b>{metric.value}</b> {metric.label}</p>}
                             <ul class="scope">{scope.map((x) => <li>{x}</li>)}</ul>
@@ -198,6 +208,29 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
   }
   /* the title card repeats the name as a picture, not as text */
   .pfallback::before { content: attr(data-t); }
+  /* a live site: the site itself, 1440px wide and scaled to the box (src/scripts/livesites.ts). It rests still,
+     so the wheel and a finger keep moving the page; on a desktop a click lets you scroll it until the pointer
+     leaves the box. On a phone it is only to look at, and a tap opens the project like the rest of the card */
+  .site-live { position: absolute; inset: 0; overflow: hidden; }
+  .site-live iframe { position: absolute; top: 0; left: 0; width: 1440px; height: 100%; border: 0; transform-origin: 0 0; pointer-events: none; }
+  .site-live.active iframe { pointer-events: auto; }
+  .live-cover { display: none; }
+  @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+    /* above the card's own link, so a click here is for the site */
+    .site-live { z-index: 2; }
+    .live-cover {
+      position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; padding: 0 0 16px;
+      border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer;
+    }
+    .site-live.active .live-cover { display: none; }
+    .live-hint {
+      padding: 8px 14px; border-radius: 100px; font-size: 0.8125rem; font-weight: 500;
+      background: color-mix(in srgb, var(--ink) 84%, transparent); color: var(--ivory);
+      opacity: 0; translate: 0 6px; transition: opacity 0.2s ease, translate 0.2s var(--ease-out);
+    }
+    .live-cover:hover .live-hint, .live-cover:focus-visible .live-hint { opacity: 1; translate: 0 0; }
+    .live-cover:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 12px; }
+  }
   /* engineering work: the figure and the scope instead of a picture */
   /* in the flow the card grows to its contents; held in the stack it fills the card like a picture would */
   .spec { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; padding: clamp(18px, 2vw, 26px); aspect-ratio: auto; min-height: 200px; }

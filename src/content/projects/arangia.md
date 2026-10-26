@@ -5,5 +5,6 @@ blurb: "[TODO: Arangia blurb]"
 services: [web]
 tags: ["Web design", "Booking", "Ops"]
 url: "https://arangia.gr"
+live_url: "https://arangia.gr"
 order: 2
 ---

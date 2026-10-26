@@ -273,6 +273,9 @@ export const ui = {
     allProjects: 'All projects',
   },
   visitSite: 'Visit site',
+  /** a project's live site in its card (home page): the frame's name after the title, and the hint that a
+   *  click lets you scroll it */
+  live: { site: 'website', hint: 'Click to scroll the site' },
   /** the service stories (src/components/Stories.astro) */
   stories: {
     readMore: 'Read more',

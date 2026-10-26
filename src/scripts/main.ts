@@ -5,6 +5,7 @@ import { activityTerrain } from './terrain';
 import { splitNav } from './splitnav';
 import { briefForm } from './brief';
 import { workStack } from './workstack';
+import { liveSite } from './livesites';
 import { serviceStories } from './stories';
 import { serviceSheets } from './servicesheets';
 import { letterCascade } from './cascade';
@@ -134,6 +135,8 @@ export function init() {
   document.querySelectorAll<HTMLFormElement>('form[data-brief]').forEach(briefForm);
   // the services on the home page: the stack of sheets, and the stories that open from them
   document.querySelectorAll<HTMLElement>('[data-stack]').forEach(workStack);
+  // projects whose card shows their live site
+  document.querySelectorAll<HTMLElement>('[data-live]').forEach(liveSite);
   const bubble = document.querySelector<HTMLElement>('[data-bubble]');
   if (bubble) serviceStories(bubble, intro.handoff);
   // the /services cards, opened

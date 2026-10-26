@@ -5,5 +5,6 @@ blurb: "[TODO: Arogi Kos blurb]"
 services: [web]
 tags: ["Web design", "Statamic"]
 url: "https://arogikos.gr"
+live_url: "https://arogikos.gr"
 order: 1
 ---
