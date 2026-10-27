@@ -198,12 +198,12 @@ export const art = {
       { en: 'We launched the MVP in a local market: 80 sales in the first year.', el: 'Βγάλαμε το MVP σε τοπική αγορά: 80 πωλήσεις τον πρώτο χρόνο.' },
       { en: "Real customers, real feedback. We tested the product and learned what worked and what didn't.", el: 'Πραγματικοί πελάτες, πραγματικό feedback. Δοκιμάσαμε το προϊόν και μάθαμε τι δουλεύει και τι όχι.' },
       {
-        en: "We took part in Idea Platform, the competition of CapsuleT, Greece's incubator for technology and tourism. We pivoted and proposed a new business model to its judges: the president of the hoteliers' association, the director of Athens Eleftherios Venizelos International Airport (ATH), the head of the Onassis Foundation and the head of startup seed at the National Bank of Greece.",
-        el: 'Πήραμε μέρος στο Idea Platform, τον διαγωνισμό του CapsuleT, του incubator της Ελλάδας για τεχνολογία και τουρισμό. Κάναμε pivot και προτείναμε νέο business model στους κριτές του: τον πρόεδρο της ένωσης ξενοδόχων, τη διευθύντρια του Διεθνούς Αερολιμένα Αθηνών «Ελευθέριος Βενιζέλος» (ATH), τον head του Ιδρύματος Ωνάση και τον επικεφαλής startup seed της Εθνικής Τράπεζας της Ελλάδος.',
+        en: "We took part in Idea Platform, the contest in which CapsuleT, Greece's incubator for technology and tourism, filters business ideas. We pivoted and proposed a new business model to its judges: the president of the hoteliers' association, the director of Athens Eleftherios Venizelos International Airport (ATH), the head of the Onassis Foundation and the head of startup seed at the National Bank of Greece.",
+        el: 'Πήραμε μέρος στο Idea Platform, τον διαγωνισμό με τον οποίο το CapsuleT, το incubator της Ελλάδας για τεχνολογία και τουρισμό, φιλτράρει επιχειρηματικές ιδέες. Κάναμε pivot και προτείναμε νέο business model στους κριτές του: τον πρόεδρο της ένωσης ξενοδόχων, τη διευθύντρια του Διεθνούς Αερολιμένα Αθηνών «Ελευθέριος Βενιζέλος» (ATH), τον head του Ιδρύματος Ωνάση και τον επικεφαλής startup seed της Εθνικής Τράπεζας της Ελλάδος.',
       },
       {
-        en: '2022 — pitching our pivot, we won 2nd Prize at the CapsuleT Innovation Contest (Hellenic Chamber of Hotels). 2023 — a place in the CapsuleT Accelerator in Athens.',
-        el: '2022 — με το pitch του pivot κερδίσαμε τη 2η θέση στο CapsuleT Innovation Contest (Ξενοδοχειακό Επιμελητήριο Ελλάδος). 2023 — θέση στο CapsuleT Accelerator στην Αθήνα.',
+        en: 'In 2022 our pivot took 2nd place at Idea Platform. In 2023, as a team of six, we took part in the main CapsuleT competition, at its accelerator in Athens, and came away with a lot of experience.',
+        el: 'Το 2022 το pivot μας πήρε τη 2η θέση στο Idea Platform. Το 2023, ομάδα έξι ατόμων, πήραμε μέρος στον κεντρικό διαγωνισμό του CapsuleT, στο accelerator του στην Αθήνα, και φύγαμε με πολλές εμπειρίες.',
       },
       {
         en: "We learned to write a business plan, trained in pitching with Linda Plano for two weeks, joined Google's digital marketing workshops, and were guided by three mentors for six months.",
@@ -228,8 +228,8 @@ export const art = {
     sales: 80,
     salesLabel: { en: 'sales in the first year', el: 'πωλήσεις τον πρώτο χρόνο' },
     idea: 'Idea Platform · CapsuleT',
-    prize: { en: '2nd Prize', el: '2η θέση' },
-    contest: 'CapsuleT Innovation Contest · 2022',
+    prize: { en: '2nd place', el: '2η θέση' },
+    contest: 'Idea Platform · 2022',
     accelerator: 'CapsuleT Accelerator',
     athens: { en: 'Athens · 2023', el: 'Αθήνα · 2023' },
     /** what the accelerator gave: a card each, at the end of a ray of the noon sun */
