@@ -268,16 +268,16 @@ export const art = {
         el: 'Εκπροσωπήσαμε τα νησιά με δικά μας περίπτερα στις μεγαλύτερες εκθέσεις τουρισμού της Ευρώπης: WTM London και ITB Berlin.',
       },
       {
-        en: 'The UK was our largest market, so I built a portfolio of actions around it: an airline partnership with Jet2, content with National Geographic, a Disney+ campaign and targeted social media.',
-        el: 'Η Βρετανία ήταν η μεγαλύτερη αγορά μας, οπότε έστησα γύρω της ένα portfolio δράσεων: συνεργασία με τη Jet2, περιεχόμενο με το National Geographic, καμπάνια στο Disney+ και στοχευμένα social media.',
+        en: 'The UK was our largest market, so I built a portfolio of actions around it: an airline partnership with Jet2, content with National Geographic, a Disney+ campaign and targeted social media, plus a few smaller ones.',
+        el: 'Η Βρετανία ήταν η μεγαλύτερη αγορά μας, οπότε έστησα γύρω της ένα portfolio δράσεων: συνεργασία με τη Jet2, περιεχόμενο με το National Geographic, καμπάνια στο Disney+ και στοχευμένα social media, και μερικές ακόμα μικρότερης κλίμακας.',
       },
       {
-        en: 'The goal was to show airlines that the islands invest strategically in their routes, not just in ads.',
-        el: 'Ο στόχος ήταν να δείξουμε στις αεροπορικές ότι τα νησιά επενδύουν στρατηγικά στις διαδρομές τους, όχι απλώς σε διαφημίσεις.',
+        en: 'The aim was to show it, as a portfolio of actions, to the airlines of the countries we would target, to open the routes we wanted.',
+        el: 'Σκοπός ήταν να το δείξουμε ως portfolio δράσεων στις αεροπορικές των χωρών που θα στοχεύαμε, για να ανοίξουμε τα δρομολόγια που μας ενδιέφεραν.',
       },
       {
-        en: "Working with Fraport Greece's marketing team, we set out to attract new airlines and, through them, open new markets.",
-        el: 'Σε συνεργασία με το marketing της Fraport Greece, στόχος ήταν να προσελκύσουμε νέες αεροπορικές και, μέσα από αυτές, νέες αγορές.',
+        en: "We would choose those countries strategically with Fraport Greece's marketing team, to bring in new airlines and, through them, new markets. Somewhere along the way, political disagreements stopped the strategy halfway.",
+        el: 'Τις χώρες αυτές θα τις στοχεύαμε στρατηγικά μαζί με το marketing της Fraport Greece, για να φέρουμε νέες αεροπορικές και, μέσα από αυτές, νέες αγορές. Κάπου εκεί, λόγω πολιτικών διαφωνιών, η στρατηγική σταμάτησε στη μέση.',
       },
       {
         en: 'Behind it: a multidisciplinary team run with Agile and Jira, and an 8-member consortium that secured EU funding (ESPA 2021–2027) for digital technologies and data management.',
@@ -292,7 +292,8 @@ export const art = {
     me: { en: 'Petros', el: 'Πέτρος' },
     budget: '€500K',
     /** the departures board: its name, its columns, and a row for each move (shown from the beat it arrives at;
-     *  each status from its beat on; the closing clears the board for its own row) */
+     *  each status from its beat on, at k + 0.5 once that beat has played a while; the closing clears the board for
+     *  its own row) */
     board: { name: { en: 'Departures', el: 'Αναχωρήσεις' }, dest: { en: 'Destination', el: 'Προορισμός' }, status: { en: 'Status', el: 'Κατάσταση' } },
     rows: [
       { at: 1, dest: { en: '3 ISLANDS', el: '3 ΝΗΣΙΑ' }, act: { en: 'DIGITAL TRANSFORMATION · OUTREACH', el: 'ΨΗΦΙΑΚΗ ΜΕΤΑΒΑΣΗ · ΕΞΩΣΤΡΕΦΕΙΑ' }, status: [[1, { en: 'CHECK-IN', el: 'CHECK-IN' }]] },
@@ -302,7 +303,7 @@ export const art = {
       { at: 3, dest: { en: 'UK', el: 'ΗΒ' }, act: { en: 'DOCUMENTARY & TRAVEL CONTENT · NATIONAL GEOGRAPHIC', el: 'ΝΤΟΚΙΜΑΝΤΕΡ & ΤΑΞΙΔΙΩΤΙΚΟ ΠΕΡΙΕΧΟΜΕΝΟ · NATIONAL GEOGRAPHIC' }, status: [[3, { en: 'SCHEDULED', el: 'ΠΡΟΓΡΑΜΜ.' }], [4, { en: 'ON TIME', el: 'ΣΤΗΝ ΩΡΑ' }]] },
       { at: 3, dest: { en: 'UK', el: 'ΗΒ' }, act: { en: 'STREAMING CAMPAIGN · DISNEY+', el: 'ΚΑΜΠΑΝΙΑ STREAMING · DISNEY+' }, status: [[3, { en: 'SCHEDULED', el: 'ΠΡΟΓΡΑΜΜ.' }], [4, { en: 'ON TIME', el: 'ΣΤΗΝ ΩΡΑ' }]] },
       { at: 3, dest: { en: 'UK', el: 'ΗΒ' }, act: { en: 'SOCIAL MEDIA CAMPAIGNS · UK AUDIENCE', el: 'ΚΑΜΠΑΝΙΕΣ SOCIAL MEDIA · ΚΟΙΝΟ ΗΒ' }, status: [[3, { en: 'SCHEDULED', el: 'ΠΡΟΓΡΑΜΜ.' }], [4, { en: 'ON TIME', el: 'ΣΤΗΝ ΩΡΑ' }]] },
-      { at: 5, dest: { en: 'NEW MARKETS', el: 'ΝΕΕΣ ΑΓΟΡΕΣ' }, act: { en: 'NEW AIRLINES · WITH FRAPORT GREECE', el: 'ΝΕΕΣ ΑΕΡΟΠΟΡΙΚΕΣ · ΜΕ ΤΗ FRAPORT GREECE' }, status: [[5, { en: 'BOARDING', el: 'ΕΠΙΒΙΒΑΣΗ' }]] },
+      { at: 5, dest: { en: 'NEW MARKETS', el: 'ΝΕΕΣ ΑΓΟΡΕΣ' }, act: { en: 'NEW AIRLINES · WITH FRAPORT GREECE', el: 'ΝΕΕΣ ΑΕΡΟΠΟΡΙΚΕΣ · ΜΕ ΤΗ FRAPORT GREECE' }, status: [[5, { en: 'BOARDING', el: 'ΕΠΙΒΙΒΑΣΗ' }], [5.5, { en: 'HALTED', el: 'ΔΙΑΚΟΠΗΚΕ' }]] },
       { at: 7, dest: { en: 'AI ENGINEERING', el: 'AI ENGINEERING' }, act: { en: 'NEXT DESTINATION', el: 'ΕΠΟΜΕΝΟΣ ΠΡΟΟΡΙΣΜΟΣ' }, status: [[7, { en: 'BOARDING', el: 'ΕΠΙΒΙΒΑΣΗ' }]] },
     ] as { at: number; dest: Copy; act: Copy; status: [number, Copy][] }[],
     /** the fairs, at their cities on the map */
@@ -315,7 +316,9 @@ export const art = {
       { what: { en: 'Streaming campaign', el: 'Καμπάνια streaming' }, with: { en: 'Disney+', el: 'Disney+' } },
       { what: { en: 'Social media campaigns', el: 'Καμπάνιες social media' }, with: { en: 'UK audience', el: 'κοινό ΗΒ' } },
     ] as { what: Copy; with: Copy }[],
-    chart: { en: 'visibility', el: 'προβολή' },
+    more: { en: '+ a few smaller actions', el: '+ μερικές μικρότερες δράσεις' },
+    portfolio: { en: 'Portfolio of actions', el: 'Portfolio δράσεων' },
+    airlines: { en: 'airlines', el: 'αεροπορικές' },
     airport: { en: 'Kos airport', el: 'Αεροδρόμιο Κω' },
     fraport: { en: 'Fraport Greece marketing', el: 'Marketing Fraport Greece' },
     kanban: [{ en: 'To do', el: 'Προς υλοποίηση' }, { en: 'In progress', el: 'Σε εξέλιξη' }, { en: 'Done', el: 'Ολοκληρώθηκε' }] as Copy[],

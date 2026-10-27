@@ -7,7 +7,7 @@ import { chapter } from './chapter';
  * as a chapter (src/scripts/chapter.ts: the sticky screen, a stop at each beat). Two things carry it: the departures
  * board, whose rows flip in place letter by letter to each move (a destination, what was done, its status), and
  * the map, where each beat draws its own picture as it arrives: the runway, the mandate, the fairs, the UK (the map
- * comes in close), the proof, the new routes, the machine behind it (the map steps back), and the line lifting off.
+ * comes in close), the portfolio shown to airlines, the new routes stopping halfway, the machine behind it (the map steps back), and the line lifting off.
  * With reduced motion the board is set at once and each picture is shown as it ends.
  */
 
@@ -15,8 +15,10 @@ import { chapter } from './chapter';
 const STEPS = [0.75, 0.75, 0.85, 0.85, 0.85, 0.85, 0.75];
 /** where the map comes in close, by beat: the point to bring to the middle (320, 260), and how close */
 // (for the UK, London stays where the actions fan out round it)
-const FOCUS: Record<number, [number, number, number]> = { 1: [500, 372, 1.9], 2: [214, 190, 1.5], 3: [245, 218.75, 1.6] };
+const FOCUS: Record<number, [number, number, number]> = { 1: [500, 372, 1.9], 2: [214, 190, 1.5], 3: [245, 218.75, 1.6], 5: [418, 252, 1.3] };
 const clamp01 = gsap.utils.clamp(0, 1);
+/** when a status that changes during its beat turns (as the new routes stop, beat 5) */
+const TURN = 2.0;
 
 type Row = { at: number; dest: string; act: string; status: [number, string][] };
 type Beat = (tl: Tl, g: SVGGElement, svg: SVGSVGElement, idle: gsap.core.Animation[]) => void;
@@ -60,27 +62,31 @@ const BEATS: Record<number, Beat> = {
     show(tl, uk.querySelector('text'), 0.3, true, 0.4);
     parts(g, 'ko-card-').forEach((c, i) => tl.fromTo(c, { opacity: 0, x: -24, rotation: -6 + i * 3, transformOrigin: '0% 50%' },
       { opacity: 1, x: 0, rotation: 0, duration: 0.55, ease: 'power3.out' }, 1.1 + i * 0.25));
+    show(tl, part(g, 'ko-more')!.querySelector('text'), 2.2);
     loop(idle, gsap.fromTo(part(svg, 'ko-pulse'), { strokeDashoffset: 1.06 }, { strokeDashoffset: 0, duration: 1.8, ease: 'none', repeat: -1 }));
   },
-  // the proof: visibility rising; the route splitting, one partnership feeding the next
+  // the aim: the actions gathered into one portfolio; dotted lines from it to the airlines of the markets we'd target
   4(tl, g) {
-    const chart = part(g, 'ko-chart')!;
-    draw(tl, strokes(chart).filter((e) => e.getAttribute('data-p') !== 'ko-rise'), 0, 0.5, 0.05);
-    show(tl, chart.querySelector('text'), 0.3);
-    draw(tl, strokes(part(g, 'ko-rise')), 0.5, 1.2);
-    drawIn(tl, strokes(part(g, 'ko-split')), 1.2, 0.5, 0.2);
+    const folder = part(g, 'ko-folder')!;
+    drawIn(tl, strokes(folder), 0, 0.6, 0.03);
+    show(tl, folder.querySelector('text'), 0.4);
+    parts(g, 'ko-fin-').forEach((f, i) => drawIn(tl, strokes(f), 0.9 + i * 0.25, 0.4));
+    parts(g, 'ko-ask-').forEach((l, i) => tl.fromTo(l.children, { opacity: 0 }, { opacity: 1, duration: 0.08, stagger: 0.05 }, 1.0 + i * 0.25));
+    show(tl, part(g, 'ko-airlines')!.querySelector('text'), 1.9);
   },
-  // new routes: the airport and its tower, Fraport Greece's marketing, new routes in cobalt reaching out
-  5(tl, g, svg, idle) {
+  // new routes: the airport and its tower, Fraport Greece's marketing, new routes in cobalt heading out; each stops
+  // halfway (its bar), the rest of its way left in faded dots (the board turns to HALTED as they stop)
+  5(tl, g) {
     drawIn(tl, strokes(part(g, 'ko-airport')), 0, 0.6, 0.04);
     show(tl, part(g, 'ko-airport')!.querySelector('text'), 0.5);
     drawIn(tl, strokes(part(g, 'ko-fraport')), 0.6, 0.5);
     show(tl, part(g, 'ko-fraport')!.querySelector('text'), 0.9);
     parts(g, 'ko-new-').forEach((n, i) => {
-      draw(tl, strokes(n), 1.2 + i * 0.3, 0.7);
-      pop(tl, n.querySelector('circle'), 1.8 + i * 0.3);
-      loop(idle, gsap.to(n.querySelector('circle'), { scale: 1.6, opacity: 0.5, transformOrigin: '50% 50%', duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: i * 0.2 }));
+      const [route, stop] = strokes(n);
+      draw(tl, [route], 1.2 + i * 0.25, 0.8);
+      draw(tl, [stop], 2.0 + i * 0.25, 0.2);
     });
+    parts(g, 'ko-plan-').forEach((p, i) => tl.fromTo(p.children, { opacity: 0 }, { opacity: 1, duration: 0.1, stagger: 0.05 }, 2.4 + i * 0.1));
   },
   // the machine behind it: the kanban, the team moving a card along, the ring of eight closing round it, ESPA
   6(tl, g) {
@@ -124,8 +130,8 @@ function departures(el: HTMLElement, still: boolean) {
   const blank = ' ';
   const letters = (text: string, n: number) => text.toUpperCase().padEnd(n).slice(0, n).split('').map((c) => (c === ' ' ? blank : c));
   type Flip = { el: HTMLElement; to: string; start: number; end: number; step: number };
-  let run: gsap.core.Tween | null = null;
-  return (k: number, shown: number) => {
+  let run: gsap.core.Tween | null = null, later: gsap.core.Tween | null = null;
+  const set = (k: number, shown: number) => {
     // (whatever was flipping lands first)
     run?.progress(1);
     const want = rowsAt(rows, k).slice(-shown);
@@ -162,6 +168,14 @@ function departures(el: HTMLElement, still: boolean) {
         });
       },
     });
+  };
+  return (k: number, shown: number) => {
+    later?.kill();
+    // a status that changes during the beat (at k + 0.5) turns once the beat has played a while
+    const turn = rows.some((r) => r.status.some(([at]) => at === k + 0.5));
+    if (!turn || still) { set(turn ? k + 0.5 : k, shown); return; }
+    set(k, shown);
+    later = gsap.delayedCall(TURN, () => set(k + 0.5, shown));
   };
 }
 

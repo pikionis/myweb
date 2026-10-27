@@ -22,12 +22,23 @@ const NIS = [512, 440];
 const KOS_PORT = [506, 390];
 /** the route from the largest market */
 const UK_WAY = [LON, [250, 175], [410, 290], KOS_PORT];
-const bez = (q: N, [a, b, c, d]: N[][]) => [0, 1].map((i) => (1 - q) ** 3 * a[i] + 3 * (1 - q) ** 2 * q * b[i] + 3 * (1 - q) * q * q * c[i] + q ** 3 * d[i]);
 const way = (pts: N[][]) => `M${pts[0][0]} ${pts[0][1]}C${pts.slice(1).map((p) => p.join(' ')).join(' ')}`;
-/** a route from a to b, bowing up */
-const arc = (a: N[], b: N[], bow = 0.25) => {
+/** a route from a to b, bowing up (its control point, and the path) */
+const bend = (a: N[], b: N[], bow: N) => {
   const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1];
-  return `M${a[0]} ${a[1]}Q${r1(mx + dy * bow)} ${r1(my - Math.abs(dx) * bow)} ${b[0]} ${b[1]}`;
+  return [r1(mx + dy * bow), r1(my - Math.abs(dx) * bow)];
+};
+const arc = (a: N[], b: N[], bow = 0.25) => `M${a[0]} ${a[1]}Q${bend(a, b, bow).join(' ')} ${b[0]} ${b[1]}`;
+/** the same route flown only to q: the part flown, where it stops and which way it was heading, and points along
+ *  the part left (n of them, short of b) */
+const cut = (a: N[], b: N[], bow: N, q: N, n: N) => {
+  const c = bend(a, b, bow), lerp = (p: N[], s: N[], f: N) => [p[0] + (s[0] - p[0]) * f, p[1] + (s[1] - p[1]) * f];
+  const p1 = lerp(a, c, q), p2 = lerp(c, b, q), at = lerp(p1, p2, q);
+  const left = Array.from({ length: n }, (_, i) => {
+    const f = (i + 1) / (n + 1);
+    return lerp(lerp(at, p2, f), lerp(p2, b, f), f).map(r1);
+  });
+  return { flown: `M${a[0]} ${a[1]}Q${p1.map(r1).join(' ')} ${at.map(r1).join(' ')}`, at: at.map(r1), dir: [p2[0] - p1[0], p2[1] - p1[1]], left };
 };
 
 // ---- the map that stays
@@ -108,28 +119,39 @@ const beat3 = () => G('ko-b3', K.actions.map((a, i) => {
   const [x, y] = CARDS[i];
   return G(`ko-card-${i}`, P(R(x, y, 262, 44, 9), 'solid') + SIGN[i](x + 22, y + 22) +
     X(x + 44, y + 19, t(a.what), 12, 'bold') + X(x + 44, y + 35, t(a.with), 12, 't-ac'));
-}).join(''), 'opacity="0"');
+}).join('') + G('ko-more', X(CARDS[3][0] + 14, CARDS[3][1] + 66, t(K.more), 12, 'muted')), 'opacity="0"');
 
-/** Beat 4, the proof: visibility rising; the route splits, each partnership feeding the next */
-const beat4 = () => {
-  const nodes = [0.2, 0.4, 0.6, 0.8].map((q) => bez(q, UK_WAY).map(r1));
-  return G('ko-b4', [
-    G('ko-chart', pen('M44 344V470H232', 'thin') + pen('M44 384H232M44 424H232', 'faint thin') +
-      pen('M50 462L86 452L120 440L150 418L182 404L214 370L228 352', 'thick-ish', 'data-p="ko-rise"') + X(52, 338, t(K.chart), 12, 'bold')),
-    G('ko-split', nodes.map(([x, y], i) => (i ? pen(`M${nodes[i - 1][0]} ${nodes[i - 1][1]}Q${r1((nodes[i - 1][0] + x) / 2 + 22)} ${r1((nodes[i - 1][1] + y) / 2 - 30)} ${x} ${y}`, 'thin') : '') +
-      P(C(x, y, 6), 'solid')).join('')),
-  ].join(''), 'opacity="0"');
-};
+/** the markets the strategy would target (left unnamed, clear of the route from the UK): the portfolio goes to
+ *  their airlines, the new routes head for them */
+const NEW = [MARKETS[8], MARKETS[3]];
+/** where the new routes leave from: the airport's runway */
+const AIR = [528, 376];
+/** an airline over a market: a tail fin on a stub of fuselage (no livery: partners in words, never logos) */
+const fin = (x: N, y: N) => pen(`M${x - 16} ${y - 10}H${x + 12}`, 'thin') + P(`M${x - 9} ${y - 10}L${x + 1} ${y - 30}H${x + 8}L${x + 6} ${y - 10}Z`, 'solid');
+/** Beat 4, the aim: the actions gathered into one portfolio, and dotted lines from it to the airlines of the markets
+ *  we would target */
+const FROM = [[178, 364], [212, 364]];
+const beat4 = () => G('ko-b4', [
+  G('ko-folder', P(R(56, 356, 64, 24, 6), 'solid') + P(R(56, 368, 172, 94, 8), 'solid') +
+    X(142, 396, t(K.portfolio), 12, 'mid bold') + SIGN.map((s, i) => s(85 + i * 38, 432)).join('')),
+  ...NEW.map(([x, y], i) => G(`ko-ask-${i}`, dots(FROM[i], [x, y - 2], Math.round(Math.hypot(x - FROM[i][0], y - FROM[i][1]) / 18)))),
+  ...NEW.map(([x, y], i) => G(`ko-fin-${i}`, fin(x, y))),
+  G('ko-airlines', X(NEW[1][0] + 20, NEW[1][1] - 18, t(K.airlines), 12, 'bold')),
+].join(''), 'opacity="0"');
 
-/** Beat 5, new routes: Kos airport and its tower; with Fraport Greece's marketing, new routes in cobalt reach out to
- *  markets of Europe not yet flown (left unnamed) */
-const NEW = [MARKETS[3], MARKETS[6], MARKETS[7], MARKETS[2]];
+/** Beat 5, new routes: Kos airport and its tower; with Fraport Greece's marketing, new routes in cobalt leave its
+ *  runway for the markets we would target, and stop halfway (a bar where each stops; the rest of the way in faded dots) */
 const beat5 = () => G('ko-b5', [
   G('ko-airport', pen('M524 378L600 368', 'thick') + pen('M532 377L540 376M556 374L564 373M580 371L588 370', 'thin') +
     P('M610 372V340H618V372Z', 'solid') + P('M602 340L606 326H622L626 340Z', 'solid') + pen('M614 326V318', 'thin') +
     X(566, 360, t(K.airport), 11, 'mid')),
-  G('ko-fraport', person(596, 280, 0.5) + X(548, 266, t(K.fraport), 11, 'mid bold')),
-  ...NEW.map((m, i) => G(`ko-new-${i}`, pen(arc(KOS_PORT, m, 0.18), 'ac') + `<circle class="ac-fill" cx="${m[0]}" cy="${m[1]}" r="5"/>`)),
+  G('ko-fraport', person(596, 280, 0.5) + X(566, 262, t(K.fraport), 11, 'mid bold')),
+  ...NEW.map((m, i) => {
+    const { flown, at, dir, left } = cut(AIR, m, 0.18, 0.5, Math.round(Math.hypot(m[0] - AIR[0], m[1] - AIR[1]) / 30));
+    const l = Math.hypot(dir[0], dir[1]), nx = (-dir[1] / l) * 8, ny = (dir[0] / l) * 8;
+    return G(`ko-new-${i}`, pen(flown, 'ac') + pen(`M${r1(at[0] - nx)} ${r1(at[1] - ny)}L${r1(at[0] + nx)} ${r1(at[1] + ny)}`, 'ac thick-ish')) +
+      G(`ko-plan-${i}`, left.map(([x, y]) => `<circle class="ko-plan" cx="${x}" cy="${y}" r="2"/>`).join(''));
+  }),
 ].join(''), 'opacity="0"');
 
 /** Beat 6, the machine behind it: a kanban the team works through; a ring of eight around it, ESPA at its heart */
