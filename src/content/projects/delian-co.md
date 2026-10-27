@@ -8,6 +8,7 @@ tags: ["Web design"]
 stack: ["React", "Vite", "Tailwind CSS"]
 url: "https://delianco.com"
 live_url: "https://delianco.com"
+cover: "/projects/delian-co.webp"
 order: 2
 ---
 

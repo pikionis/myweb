@@ -1,0 +1,35 @@
+---
+// A live site full screen, at the phone's own width, to scroll and tap through (livePreview in
+// src/scripts/livesites.ts moves it to <body>). Any `[data-preview]` button on the page opens it: the home page's
+// project cards, the site on /projects.
+import { ui } from '../data/site';
+
+const arrow = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>';
+const close = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>';
+---
+<div class="lp" data-lp role="dialog" aria-modal="true" aria-labelledby="lp-name" hidden>
+  <div class="lp-bar">
+    <p class="lp-name" id="lp-name" data-lp-name></p>
+    <a class="lp-visit" data-lp-visit href="#" target="_blank" rel="noopener">{ui.visitSite}<Fragment set:html={arrow} /></a>
+    <button type="button" class="lp-close" data-lp-close aria-label={ui.live.close}><Fragment set:html={close} /></button>
+  </div>
+  <div class="lp-frame" data-lp-frame></div>
+</div>
+
+<style>
+  .lp { position: fixed; inset: 0; z-index: 95; display: flex; flex-direction: column; background: #141414; color: #f4f3ef; }
+  .lp[hidden] { display: none; }
+  .lp-bar { flex: none; display: flex; align-items: center; gap: 10px; padding: calc(8px + env(safe-area-inset-top, 0px)) 10px 8px 18px; }
+  .lp-name { flex: 1; min-width: 0; margin: 0; font-size: 1.0625rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lp-visit {
+    flex: none; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 6px;
+    color: inherit; font-size: 0.9375rem; font-weight: 500; text-decoration: underline; text-underline-offset: 0.25em;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  }
+  .lp-close { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: #f4f3ef; color: #141414; cursor: pointer; }
+  .lp-visit:focus-visible, .lp-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .lp-frame { flex: 1; min-height: 0; margin: 0 8px calc(8px + env(safe-area-inset-bottom, 0px)); border-radius: 14px; overflow: hidden; background: #1f201d; }
+  /* the frame is made by the script, so it carries none of this component's scoping */
+  .lp-frame :global(iframe) { display: block; width: 100%; height: 100%; border: 0; }
+  :global(html.lp-open) { overflow: hidden; overscroll-behavior: none; }
+</style>

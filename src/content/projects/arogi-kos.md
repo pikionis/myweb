@@ -8,6 +8,7 @@ url: "https://arogikos.gr"
 live_url: "https://arogikos.gr"
 # seen on the live site: confirm
 stack: ["Claude Design", "Laravel", "Tailwind CSS"]
+cover: "/projects/arogi-kos.webp"
 order: 1
 ---
 

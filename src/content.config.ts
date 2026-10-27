@@ -29,7 +29,8 @@ const projects = defineCollection({
     // engineering work shows its figure and scope on its card instead of a picture
     metric: z.object({ value: z.string(), label: z.string() }).optional(),
     scope: z.array(z.string()).optional(),
-    // the carousel card (an image in public/ or a URL); without one the project gets a typeset title card
+    // its picture (an image in public/ or a URL): a tall capture of the site works best, its top shows on the
+    // /projects panel and a hover runs down it; without one the project gets a typeset title card
     cover: z.string().optional(),
     // the design video shown when the project is opened (mp4/webm in public/ or a URL)
     video: z.string().optional(),

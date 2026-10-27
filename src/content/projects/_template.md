@@ -14,7 +14,7 @@ stack: ["Laravel", "Tailwind CSS"]   # what it is built with (shown on /projects
 # badge: "Launching soon"        # optional: a small label beside the name
 # metric: { value: "800K+", label: "products a day" }   # optional, with scope: engineering work shows these
 # scope: ["Product feeds", "Pricing"]                    # on its card instead of a picture
-# cover: "/projects/my-project.jpg"   # optional: the card in the carousel (portrait 3:4 looks best)
+# cover: "/projects/my-project.webp"  # optional: its picture on /projects (a tall capture of the site, 800px wide)
 # video: "/projects/my-project.mp4"   # optional: the design video shown when the project is opened
 order: 10                       # lower comes first within a service
 draft: true                     # remove (or set false) to publish

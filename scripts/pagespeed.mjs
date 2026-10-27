@@ -42,7 +42,10 @@ function lab(lhr) {
   if (lhr.runtimeError) throw new Error(lhr.runtimeError.code);
   return {
     scores: Object.fromEntries(CATEGORIES.map((c) => [c, round((lhr.categories[c]?.score ?? 0) * 100)])),
-    lab: Object.fromEntries(Object.entries(LAB).map(([k, a]) => [k, round(lhr.audits[a]?.numericValue, k === 'cls' ? 3 : 0)])),
+    // each metric's value and Lighthouse's score for it (0–1: how PageSpeed colours it)
+    lab: Object.fromEntries(Object.entries(LAB).map(([k, a]) => [k, {
+      v: round(lhr.audits[a]?.numericValue, k === 'cls' ? 3 : 0), s: round(lhr.audits[a]?.score, 2),
+    }])),
     at: lhr.fetchTime,
   };
 }

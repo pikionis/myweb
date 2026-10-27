@@ -9,6 +9,7 @@ url: "https://arangia.gr"
 live_url: "https://arangia.gr/?lang=en"
 # seen on the live site: confirm
 stack: ["React", "Vite", "Tailwind CSS"]
+cover: "/projects/arangia.webp"
 order: 2
 ---
 

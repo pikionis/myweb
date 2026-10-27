@@ -308,6 +308,43 @@ export const ui = {
   footerLine: 'Custom websites, web applications, e-commerce, AI search, marketing and ads, designed, built and run end to end.',
   /** the heading for projects that sit outside the four services, on /projects */
   moreWork: 'More work',
+  /** /projects: the panel of every project at the top, the one picked under it */
+  projectsPage: {
+    title: 'Projects',
+    /** after the number of projects */
+    lede: 'projects. Pick one for its PageSpeed results, its stack, its story and, where it is live, the site itself.',
+    previous: 'Previous projects',
+    more: 'More projects',
+    /** the switch that shows the numbers, and the site, as a phone or a desktop gets them */
+    viewAs: 'View as',
+    phone: 'Phone',
+    desktop: 'Desktop',
+    speed: 'PageSpeed',
+    scores: { performance: 'Performance', accessibility: 'Accessibility', 'best-practices': 'Best practices', seo: 'SEO' },
+    vitals: 'Web Vitals',
+    metrics: {
+      lcp: ['LCP', 'Largest Contentful Paint'], fcp: ['FCP', 'First Contentful Paint'], tbt: ['TBT', 'Total Blocking Time'],
+      cls: ['CLS', 'Cumulative Layout Shift'], si: ['SI', 'Speed Index'], inp: ['INP', 'Interaction to Next Paint'],
+      ttfb: ['TTFB', 'Time to First Byte'],
+    },
+    verdict: { good: 'Good', average: 'Needs work', poor: 'Poor' },
+    /** CrUX: what Google saw from real visitors */
+    field: 'Real visitors, last 28 days',
+    /** where the numbers come from: the tool, the device, the date */
+    source: { pagespeed: 'PageSpeed Insights', lighthouse: 'Lighthouse' },
+    measured: 'measured',
+    report: 'Measure it again on PageSpeed Insights',
+    stack: 'Built with',
+    story: 'The story',
+    /** the live site in its frame */
+    site: 'The site',
+    open: 'Open in a new tab',
+    /** on a phone: the site full screen */
+    browse: 'Browse the site',
+    /** a project that is not live yet, or not ours to measure */
+    soon: 'Not live yet, so there is no site to measure or browse.',
+    next: 'Next',
+  },
   servicesPage: {
     title: 'Services',
     hint: 'Scroll down',

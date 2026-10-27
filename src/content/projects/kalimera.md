@@ -8,6 +8,7 @@ tags: ["Product", "Startup"]
 stack: ["Statamic", "Laravel", "Alpine.js", "Tailwind CSS"]
 url: "https://kalimeraapp.gr"
 live_url: "https://kalimeraapp.gr"
+cover: "/projects/kalimera.webp"
 order: 1
 ---
 

@@ -9,6 +9,7 @@ tags: ["Web", "E-commerce"]
 stack: ["PrestaShop"]
 url: "https://la-islakos.gr"
 live_url: "https://la-islakos.gr"
+cover: "/projects/la-islakos.webp"
 order: 1
 ---
 

@@ -9,6 +9,7 @@ tags: ["Web design", "Hotel"]
 stack: ["Statamic", "Laravel"]
 url: "https://sunnydayskos.gr"
 live_url: "https://sunnydayskos.gr"
+cover: "/projects/sunny-days.webp"
 order: 3
 ---
 

@@ -45,7 +45,7 @@ export function livePreview(root: HTMLElement) {
 
   /** The card's box, as a clip on the full screen (the preview grows out of it, and folds back into it). */
   const cardClip = () => {
-    const r = opener?.closest('[data-live]')?.getBoundingClientRect();
+    const r = opener?.closest('[data-live], [data-browser]')?.getBoundingClientRect();
     return r ? `inset(${r.top}px ${window.innerWidth - r.right}px ${window.innerHeight - r.bottom}px ${r.left}px round 12px)` : null;
   };
   const whole = 'inset(0px 0px 0px 0px round 0px)';
