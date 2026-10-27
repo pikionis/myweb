@@ -14,6 +14,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 import { type Tl, type El, part, parts, strokes, all, draw, faces, show, pop, type, write, count, loop } from './storydraw';
 import { kalimeraChapter } from './kalimera';
+import { koanChapter } from './koan';
+
+/** the scenes told as chapters of their own, in beats */
+const CHAPTERS: Record<string, (step: HTMLElement, still: boolean) => { points: () => number[]; kill: () => void } | null> = {
+  kalimera: kalimeraChapter,
+  koan: koanChapter,
+};
 
 /** a scene's timeline, its svg, its step, and its idle motions (loops that run while it is on screen) */
 type Scene = (tl: Tl, svg: SVGSVGElement, step: HTMLElement, idle: gsap.core.Animation[]) => void;
@@ -145,23 +152,6 @@ const SCENES: Record<string, Scene> = {
     pop(tl, parts(svg, 'market-'), 2.0, '50% 50%', 0.12);
     draw(tl, all(...parts(svg, 'feed-')), 2.3, 0.4, 0.12);
     show(tl, part(svg, 'xml'), 2.5);
-  },
-
-  koan(tl, svg) {
-    draw(tl, strokes(part(svg, 'lead')), 0, 0.2);
-    parts(svg, 'isle-').forEach((isle, i) => {
-      draw(tl, strokes(isle), 0.1 + i * 0.3, 0.6);
-      show(tl, isle.querySelector('text'), 0.5 + i * 0.3);
-    });
-    show(tl, part(svg, 'net'), 1.3, true, 0.4);
-    const jira = part(svg, 'jira');
-    show(tl, jira, 1.8, true, 0.1); draw(tl, strokes(jira), 1.8, 0.5, 0.03);
-    parts(svg, 'role-').forEach((r, i) => { draw(tl, strokes(r), 2.3 + i * 0.15, 0.4); show(tl, r.querySelector('text'), 2.5 + i * 0.15); });
-    pop(tl, part(svg, 'budget'), 2.9);
-    // the consortium: eight around the fund
-    show(tl, jira, 3.4, false, 0.3);
-    draw(tl, strokes(part(svg, 'ring')), 3.5, 0.6, 0.06);
-    show(tl, [...part(svg, 'ring')!.querySelectorAll('text')], 3.9);
   },
 
   ai(tl, svg) {
@@ -462,17 +452,15 @@ export function myStory(root: HTMLElement) {
       const studies = steps.find((s) => s.dataset.scene === 'studies');
       const ride = studies ? journey(studies) : null;
       if (ride) { ride.state.p = 1; ride.place(); }
-      // the Kalimera chapter goes beat by beat, each picture shown drawn
-      const chapter = steps.find((s) => s.dataset.scene === 'kalimera');
-      const kc = chapter ? kalimeraChapter(chapter, true) : null;
+      // the chapters go beat by beat, each picture shown drawn
+      const chapters = steps.map((s) => CHAPTERS[s.dataset.scene ?? '']?.(s, true) ?? null);
       const io = new IntersectionObserver((entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add('seen')), { threshold: 0.15 });
       steps.forEach((s) => io.observe(s));
-      return () => { io.disconnect(); kc?.kill(); };
+      return () => { io.disconnect(); chapters.forEach((c) => c?.kill()); };
     }
     root.classList.add('on');
-    // the Kalimera chapter: a morning in seven beats, with a stop for each (src/scripts/kalimera.ts)
-    const chapter = steps.find((s) => s.dataset.scene === 'kalimera');
-    const kc = chapter ? kalimeraChapter(chapter, false) : null;
+    // the chapters: told in beats, with a stop for each (src/scripts/chapter.ts)
+    const chapters = steps.map((s) => CHAPTERS[s.dataset.scene ?? '']?.(s, false) ?? null);
     const plays = steps.map((step) => {
       // the picture on show (the journey is drawn twice, wide and narrow)
       const svg = [...step.querySelectorAll<SVGSVGElement>('.ms-art svg')].find((v) => v.getClientRects().length) ?? null;
@@ -510,7 +498,8 @@ export function myStory(root: HTMLElement) {
         points.length = 0;
         points.push(0);
         steps.forEach((s) => {
-          if (s === chapter && kc) { kc.points().forEach((y) => points.push(gsap.utils.clamp(0, 1, (y - self.start) / Math.max(1, self.end - self.start)))); return; }
+          const ch = chapters[steps.indexOf(s)];
+          if (ch) { ch.points().forEach((y) => points.push(gsap.utils.clamp(0, 1, (y - self.start) / Math.max(1, self.end - self.start)))); return; }
           const y = s.getBoundingClientRect().top + window.scrollY, h = s.offsetHeight;
           // in the middle of the free space; a scene taller than it starts at its top
           const at = h > bottom - top ? y - top : y + h / 2 - (top + bottom) / 2;
@@ -524,6 +513,6 @@ export function myStory(root: HTMLElement) {
       },
     });
     ScrollTrigger.refresh();
-    return () => { root.classList.remove('on'); snap.kill(); plays.forEach((p) => p?.tl.kill()); kc?.kill(); };
+    return () => { root.classList.remove('on'); snap.kill(); plays.forEach((p) => p?.tl.kill()); chapters.forEach((c) => c?.kill()); };
   });
 }

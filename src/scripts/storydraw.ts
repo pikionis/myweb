@@ -58,3 +58,11 @@ export const count = (tl: Tl, el: El, at: number, duration: number, to: number, 
 
 /** a motion that runs on its own while its scene is on screen */
 export const loop = (idle: gsap.core.Animation[], a: gsap.core.Animation) => { a.pause(); idle.push(a); };
+
+/** strokes drawing themselves, and the solid shapes among them filling in as they do (on the tinted sky an
+ *  empty shape would show its paper before its line) */
+export const drawIn = (tl: Tl, els: Element[], at: number, duration = 0.6, stagger = 0.03) => {
+  draw(tl, els, at, duration, stagger);
+  const solids = els.filter((e) => e.classList.contains('solid'));
+  if (solids.length) tl.fromTo(solids, { fillOpacity: 0 }, { fillOpacity: 1, duration: duration * 0.8, stagger, ease: 'power1.out' }, at + duration * 0.3);
+};

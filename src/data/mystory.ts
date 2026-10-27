@@ -82,11 +82,9 @@ export const scenes: Scene[] = [
   {
     id: 'koan', side: true,
     rail: { en: '2024', el: '2024' }, label: { en: '05/2024–06/2025', el: '05/2024–06/2025' },
-    title: { en: 'KOAN S.A. · Director of Sustainable Tourism Development', el: 'KOAN S.A. · Διευθυντής Ανάπτυξης Βιώσιμου Τουρισμού' },
-    text: {
-      en: 'Leading the digital transformation and outward reach of three islands: €500K programme, a multidisciplinary team, an 8-member consortium that secured EU funding.',
-      el: 'Ψηφιακός μετασχηματισμός και εξωστρέφεια για τρία νησιά: πρόγραμμα €500K, διεπιστημονική ομάδα και κοινοπραξία 8 φορέων που εξασφάλισε ευρωπαϊκή χρηματοδότηση.',
-    },
+    title: { en: 'KOAN S.A.', el: 'ΚΩΑΝ Α.Ε.' },
+    // the chapter's opening line; its beats are in art.koan
+    text: { en: 'Director of Sustainable Tourism Development.', el: 'Διευθυντής Βιώσιμης Τουριστικής Ανάπτυξης.' },
   },
   {
     id: 'ai', side: true,
@@ -262,11 +260,72 @@ export const art = {
       { en: 'team leadership · 6-member team', el: 'ηγεσία ομάδας · ομάδα 6 ατόμων' },
     ] as Copy[],
   },
+  /** the KOAN chapter, "Opening the skies" (KoanChapter.astro): a departures board and a map, a beat for each move;
+   *  the opening line is the scene's text. Partners are named in words only, never as logos */
   koan: {
+    beats: [
+      {
+        en: 'Appointed by the mayors of Kos, Astypalea and Nisyros with one goal: the digital transformation and international outreach of three islands. Budget: €500,000.',
+        el: 'Η θέση μού ανατέθηκε από τους δημάρχους Κω, Αστυπάλαιας και Νισύρου με έναν στόχο: την ψηφιακή μετάβαση και την εξωστρέφεια τριών νησιών. Budget: €500.000.',
+      },
+      {
+        en: "We represented the islands with our own pavilions at Europe's largest tourism fairs: WTM London and ITB Berlin.",
+        el: 'Εκπροσωπήσαμε τα νησιά με δικά μας περίπτερα στις μεγαλύτερες εκθέσεις τουρισμού της Ευρώπης: WTM London και ITB Berlin.',
+      },
+      {
+        en: 'The UK was our largest market, so I built a portfolio of actions around it: an airline partnership with Jet2, content with National Geographic, a Disney+ campaign and targeted social media.',
+        el: 'Η Βρετανία ήταν η μεγαλύτερη αγορά μας, οπότε έστησα γύρω της ένα portfolio δράσεων: συνεργασία με τη Jet2, περιεχόμενο με το National Geographic, καμπάνια στο Disney+ και στοχευμένα social media.',
+      },
+      {
+        en: 'The goal was to show airlines that the islands invest strategically in their routes, not just in ads.',
+        el: 'Ο στόχος ήταν να δείξουμε στις αεροπορικές ότι τα νησιά επενδύουν στρατηγικά στις διαδρομές τους, όχι απλώς σε διαφημίσεις.',
+      },
+      {
+        en: "Working with Fraport Greece's marketing team, we set out to attract new airlines and, through them, open new markets.",
+        el: 'Σε συνεργασία με το marketing της Fraport Greece, στόχος ήταν να προσελκύσουμε νέες αεροπορικές και, μέσα από αυτές, νέες αγορές.',
+      },
+      {
+        en: 'Behind it: a multidisciplinary team run with Agile and Jira, and an 8-member consortium that secured EU funding (ESPA 2021–2027) for digital technologies and data management.',
+        el: 'Από πίσω: μια διεπιστημονική ομάδα με Agile και Jira, και μια κοινοπραξία 8 φορέων που εξασφάλισε ευρωπαϊκή χρηματοδότηση (ΕΣΠΑ 2021–2027) για ψηφιακές τεχνολογίες και διαχείριση δεδομένων.',
+      },
+      {
+        en: 'What I took with me: strategy, negotiation with big partners, and leading people toward one goal.',
+        el: 'Τι κράτησα: στρατηγική, διαπραγμάτευση με μεγάλους συνεργάτες και καθοδήγηση ανθρώπων προς έναν στόχο.',
+      },
+    ] as Copy[],
     islands: [{ en: 'Kos', el: 'Κως' }, { en: 'Astypalea', el: 'Αστυπάλαια' }, { en: 'Nisyros', el: 'Νίσυρος' }] as Copy[],
-    roles: [{ en: 'developers', el: 'developers' }, { en: 'content', el: 'περιεχόμενο' }, { en: 'advertising', el: 'διαφήμιση' }] as Copy[],
+    me: { en: 'Petros', el: 'Πέτρος' },
     budget: '€500K',
-    espa: 'ESPA 2021–2027',
+    /** the departures board: its name, its columns, and a row for each move (shown from the beat it arrives at;
+     *  each status from its beat on; the closing clears the board for its own row) */
+    board: { name: { en: 'Departures', el: 'Αναχωρήσεις' }, dest: { en: 'Destination', el: 'Προορισμός' }, status: { en: 'Status', el: 'Κατάσταση' } },
+    rows: [
+      { at: 1, dest: { en: '3 ISLANDS', el: '3 ΝΗΣΙΑ' }, act: { en: 'DIGITAL TRANSFORMATION · OUTREACH', el: 'ΨΗΦΙΑΚΗ ΜΕΤΑΒΑΣΗ · ΕΞΩΣΤΡΕΦΕΙΑ' }, status: [[1, { en: 'CHECK-IN', el: 'CHECK-IN' }]] },
+      { at: 2, dest: { en: 'LONDON', el: 'ΛΟΝΔΙΝΟ' }, act: { en: 'WTM', el: 'WTM' }, status: [[2, { en: 'OWN PAVILION', el: 'ΔΙΚΟ ΠΕΡΙΠΤ.' }]] },
+      { at: 2, dest: { en: 'BERLIN', el: 'ΒΕΡΟΛΙΝΟ' }, act: { en: 'ITB', el: 'ITB' }, status: [[2, { en: 'OWN PAVILION', el: 'ΔΙΚΟ ΠΕΡΙΠΤ.' }]] },
+      { at: 3, dest: { en: 'UK', el: 'ΗΒ' }, act: { en: 'AIRLINE PARTNERSHIP · JET2', el: 'ΣΥΝΕΡΓΑΣΙΑ ΜΕ ΑΕΡΟΠΟΡΙΚΗ · JET2' }, status: [[3, { en: 'SCHEDULED', el: 'ΠΡΟΓΡΑΜΜ.' }], [4, { en: 'ON TIME', el: 'ΣΤΗΝ ΩΡΑ' }]] },
+      { at: 3, dest: { en: 'UK', el: 'ΗΒ' }, act: { en: 'DOCUMENTARY & TRAVEL CONTENT · NATIONAL GEOGRAPHIC', el: 'ΝΤΟΚΙΜΑΝΤΕΡ & ΤΑΞΙΔΙΩΤΙΚΟ ΠΕΡΙΕΧΟΜΕΝΟ · NATIONAL GEOGRAPHIC' }, status: [[3, { en: 'SCHEDULED', el: 'ΠΡΟΓΡΑΜΜ.' }], [4, { en: 'ON TIME', el: 'ΣΤΗΝ ΩΡΑ' }]] },
+      { at: 3, dest: { en: 'UK', el: 'ΗΒ' }, act: { en: 'STREAMING CAMPAIGN · DISNEY+', el: 'ΚΑΜΠΑΝΙΑ STREAMING · DISNEY+' }, status: [[3, { en: 'SCHEDULED', el: 'ΠΡΟΓΡΑΜΜ.' }], [4, { en: 'ON TIME', el: 'ΣΤΗΝ ΩΡΑ' }]] },
+      { at: 3, dest: { en: 'UK', el: 'ΗΒ' }, act: { en: 'SOCIAL MEDIA CAMPAIGNS · UK AUDIENCE', el: 'ΚΑΜΠΑΝΙΕΣ SOCIAL MEDIA · ΚΟΙΝΟ ΗΒ' }, status: [[3, { en: 'SCHEDULED', el: 'ΠΡΟΓΡΑΜΜ.' }], [4, { en: 'ON TIME', el: 'ΣΤΗΝ ΩΡΑ' }]] },
+      { at: 5, dest: { en: 'NEW MARKETS', el: 'ΝΕΕΣ ΑΓΟΡΕΣ' }, act: { en: 'NEW AIRLINES · WITH FRAPORT GREECE', el: 'ΝΕΕΣ ΑΕΡΟΠΟΡΙΚΕΣ · ΜΕ ΤΗ FRAPORT GREECE' }, status: [[5, { en: 'BOARDING', el: 'ΕΠΙΒΙΒΑΣΗ' }]] },
+      { at: 7, dest: { en: 'AI ENGINEERING', el: 'AI ENGINEERING' }, act: { en: 'NEXT DESTINATION', el: 'ΕΠΟΜΕΝΟΣ ΠΡΟΟΡΙΣΜΟΣ' }, status: [[7, { en: 'BOARDING', el: 'ΕΠΙΒΙΒΑΣΗ' }]] },
+    ] as { at: number; dest: Copy; act: Copy; status: [number, Copy][] }[],
+    /** the fairs, at their cities on the map */
+    fairs: [{ city: { en: 'London', el: 'Λονδίνο' }, fair: 'WTM' }, { city: { en: 'Berlin', el: 'Βερολίνο' }, fair: 'ITB' }] as { city: Copy; fair: string }[],
+    uk: { en: 'UK', el: 'ΗΒ' },
+    /** the actions around the UK: what each is, and with whom (in words) */
+    actions: [
+      { what: { en: 'Airline partnership', el: 'Συνεργασία με αεροπορική' }, with: { en: 'Jet2', el: 'Jet2' } },
+      { what: { en: 'Documentary & travel content', el: 'Ντοκιμαντέρ & ταξιδιωτικό περιεχόμενο' }, with: { en: 'National Geographic', el: 'National Geographic' } },
+      { what: { en: 'Streaming campaign', el: 'Καμπάνια streaming' }, with: { en: 'Disney+', el: 'Disney+' } },
+      { what: { en: 'Social media campaigns', el: 'Καμπάνιες social media' }, with: { en: 'UK audience', el: 'κοινό ΗΒ' } },
+    ] as { what: Copy; with: Copy }[],
+    chart: { en: 'visibility', el: 'προβολή' },
+    airport: { en: 'Kos airport', el: 'Αεροδρόμιο Κω' },
+    fraport: { en: 'Fraport Greece marketing', el: 'Marketing Fraport Greece' },
+    kanban: [{ en: 'To do', el: 'Προς υλοποίηση' }, { en: 'In progress', el: 'Σε εξέλιξη' }, { en: 'Done', el: 'Ολοκληρώθηκε' }] as Copy[],
+    roles: [{ en: 'developers', el: 'developers' }, { en: 'content', el: 'περιεχόμενο' }, { en: 'advertising', el: 'διαφήμιση' }] as Copy[],
+    espa: { en: 'ESPA 2021–2027', el: 'ΕΣΠΑ 2021–2027' },
   },
   ai: ['LLMs', 'RAG', 'Agents', 'MCP'],
   deindeal: {

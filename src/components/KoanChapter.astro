@@ -1,0 +1,90 @@
+---
+// The KOAN chapter of "My story", "Opening the skies" (src/scripts/koan.ts plays it; the map is
+// src/components/koan.ts), in the chapter's shell (Chapter.astro): a departures board, its rows flipping in place
+// letter by letter, one for each move; and a map where the line draws the routes. Board on the left of the map on
+// a wide screen; on a phone over it, three rows at a time. Without script: the board cleared for its last row.
+import Chapter from './Chapter.astro';
+import MyStoryArt from './MyStoryArt.astro';
+import { art, t, type Scene } from '../data/mystory';
+
+interface Props { scene: Scene }
+const { scene } = Astro.props;
+const K = art.koan;
+/** the board's grid: letters for the destination, letters for the status, and rows */
+const DEST = 14, STATUS = 12, SLOTS = 6;
+const rows = K.rows.map((r) => ({ at: r.at, dest: t(r.dest), act: t(r.act), status: r.status.map(([at, c]) => [at, t(c)] as [number, string]) }));
+// as the chapter ends: the board cleared for its last row
+const last = rows.filter((r) => r.at === rows[rows.length - 1].at);
+const cells = (text: string, n: number) => text.padEnd(n).slice(0, n).split('').map((ch) => (ch === ' ' ? ' ' : ch));
+const plane = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 19.5h19M3 13.5l3.5 1 3-1.5L5 8l2-1 6.5 4.5 4.5-2c1.5-.7 3 .2 2.5 1.5-.3.8-1 1.3-1.8 1.6L6.5 17 3 13.5z" /></svg>';
+---
+<Chapter scene={scene} says={[scene.text, ...K.beats]} sky="--wash: 0.35">
+  <div class="ko-body">
+    <div class="fl" data-board data-rows={JSON.stringify(rows)} data-letters={`${DEST},${STATUS}`} aria-hidden="true">
+      <p class="fl-head"><Fragment set:html={plane} /><span>{t(K.board.name)}</span></p>
+      <p class="fl-line fl-cols"><span>{t(K.board.dest)}</span><span>{t(K.board.status)}</span></p>
+      <ol class="fl-rows">
+        {Array.from({ length: SLOTS }, (_, i) => {
+          const r = last[i];
+          return (
+            <li class="fl-row" data-slot={i}>
+              <span class="fl-line">
+                <span class="fl-cells fl-dest">{cells(r?.dest ?? '', DEST).map((ch) => <span class="fl-c">{ch}</span>)}</span>
+                <span class="fl-cells fl-status">{cells(r ? r.status[r.status.length - 1][1] : '', STATUS).map((ch) => <span class="fl-c">{ch}</span>)}</span>
+              </span>
+              <span class="fl-act" data-act>{r?.act ?? ' '}</span>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+    <div class="ko-map"><MyStoryArt name="koan" /></div>
+  </div>
+</Chapter>
+
+<style>
+  .ko-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: center; gap: clamp(16px, 2.4vw, 36px); }
+  :global(.ch.ch-on:not(.ch-measure)) .ko-body { height: 100%; }
+  /* (the map keeps to its box when it comes in close) */
+  .ko-map { position: relative; aspect-ratio: 640 / 520; overflow: hidden; }
+  .ko-map :global(.ms-svg) { position: absolute; inset: 0; width: 100%; height: 100%; }
+  :global(.ch.ch-on:not(.ch-measure)) .ko-map { height: 100%; aspect-ratio: auto; }
+
+  /* the departures board: a frame in ink; each row a destination and a status in split-flap letters (a fine line
+     across each, where the flap folds), and what the move was under them */
+  .fl {
+    container-type: inline-size; padding: 14px 16px 10px; border: 2px solid var(--ink); border-radius: 14px;
+    background: var(--paper); box-shadow: 6px 7px 0 rgb(20 20 20 / 0.08);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .fl-head {
+    display: flex; align-items: center; gap: 8px; margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1.5px solid var(--ink);
+    font-size: 0.875rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .fl-line { display: grid; grid-template-columns: 14fr 12fr; column-gap: 3cqi; }
+  .fl-cols { margin: 0 0 2px; font-size: max(9px, 2.1cqi); color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+  .fl-rows { list-style: none; margin: 0; padding: 0; }
+  .fl-row { padding: 7px 0 6px; border-bottom: 1px dashed color-mix(in srgb, var(--ink) 22%, transparent); }
+  .fl-row:last-child { border-bottom: 0; }
+  .fl-cells { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0.35cqi; }
+  .fl-c {
+    position: relative; display: block; border-radius: 0.3em; background: color-mix(in srgb, var(--ink) 8%, var(--paper));
+    font-size: max(9px, 2.9cqi); font-weight: 700; line-height: 1.5; text-align: center;
+  }
+  .fl-c::after { content: ''; position: absolute; inset: 50% 0 auto; height: 1px; background: color-mix(in srgb, var(--paper) 80%, transparent); }
+  .fl-status .fl-c { color: var(--accent-ink); }
+  .fl-act {
+    display: block; margin-top: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    font-size: max(9px, 2.1cqi); color: var(--muted); letter-spacing: 0.02em;
+  }
+
+  /* a phone: the board over the map, three rows at a time */
+  @media (max-width: 860px) {
+    .ko-body { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    :global(.ch.ch-on:not(.ch-measure)) .ko-body { grid-template-rows: auto minmax(0, 1fr); }
+    .fl { padding: 10px 12px 6px; }
+    .fl-head { font-size: 0.75rem; margin-bottom: 4px; padding-bottom: 6px; }
+    .fl-row:nth-child(n + 4) { display: none; }
+    .fl-row:nth-child(3) { border-bottom: 0; }
+  }
+</style>

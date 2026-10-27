@@ -1,11 +1,12 @@
 ---
-// "My story" on /about (src/scripts/mystory.ts): eleven scenes, a screen each (Kalimera is a chapter of its own,
-// a morning in seven beats: KalimeraChapter.astro). One scroll brings the next, and
+// "My story" on /about (src/scripts/mystory.ts): eleven scenes, a screen each (Kalimera and KOAN are chapters of
+// their own, told in beats: KalimeraChapter.astro, KoanChapter.astro). One scroll brings the next, and
 // it plays by itself: its picture draws itself and its words arrive. On the left (on a phone: the top) runs the timeline: the portrait,
 // the career line in ink and, beside it, the thin cobalt line of client work, with every scene's year.
 // With reduced motion or without script the scenes simply follow one another, drawn, words and all.
 import MyStoryArt from './MyStoryArt.astro';
 import KalimeraChapter from './KalimeraChapter.astro';
+import KoanChapter from './KoanChapter.astro';
 import { scenes, art as A, t, aboutIntro } from '../data/mystory';
 import { person } from '../data/site';
 
@@ -37,7 +38,7 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
   <div class="ms-steps">
     {scenes.map((s, i) => (
       <article class:list={['ms-step', `ms-${s.id}`]} data-scene={s.id} data-index={i}>
-        {s.id === 'kalimera' ? <KalimeraChapter scene={s} /> : (
+        {s.id === 'kalimera' ? <KalimeraChapter scene={s} /> : s.id === 'koan' ? <KoanChapter scene={s} /> : (
         <div class="ms-stage">
           <div class="ms-art">
             {s.id === 'studies' ? (

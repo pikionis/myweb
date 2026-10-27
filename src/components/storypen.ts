@@ -70,3 +70,22 @@ export const burst = (p: string, x: N, y: N, r: N) => G(p, Array.from({ length: 
   const a = (i / 12) * Math.PI * 2, r0 = r * 0.35;
   return pen(`M${r1(x + Math.cos(a) * r0)} ${r1(y + Math.sin(a) * r0)}L${r1(x + Math.cos(a) * r)} ${r1(y + Math.sin(a) * r)}`, i % 2 ? 'ac' : '');
 }).join('') + `<circle class="ac-fill" cx="${x}" cy="${y}" r="4"/>`);
+/** a closed line through these points, smooth (a Catmull-Rom spline, as Bézier curves) */
+export const smooth = (pts: N[][]) => {
+  const n = pts.length;
+  let d = `M${r1(pts[0][0])} ${r1(pts[0][1])}`;
+  for (let i = 0; i < n; i++) {
+    const [a, b, c, e] = [pts[(i - 1 + n) % n], pts[i], pts[(i + 1) % n], pts[(i + 2) % n]];
+    d += `C${r1(b[0] + (c[0] - a[0]) / 6)} ${r1(b[1] + (c[1] - a[1]) / 6)} ${r1(c[0] - (e[0] - b[0]) / 6)} ${r1(c[1] - (e[1] - b[1]) / 6)} ${r1(c[0])} ${r1(c[1])}`;
+  }
+  return d + 'Z';
+};
+/** Kos as a map outline: long, broad in the east (the town at its tip), a narrow neck, the peninsula of Kefalos
+ *  turning south-west (460 wide, from (204, 298)) */
+export const KOS: N[][] = [
+  [652, 298], [614, 302], [570, 312], [520, 322], [470, 330], [420, 338], [372, 350], [330, 362], [300, 372], [276, 376],
+  [254, 372], [226, 374], [204, 388], [206, 408], [226, 424], [250, 420], [268, 404], [288, 392], [320, 390], [370, 388],
+  [420, 384], [470, 376], [520, 364], [570, 350], [616, 338], [650, 330], [664, 314],
+];
+/** points moved and scaled: from (x0, y0), by s, to (x, y) */
+export const place = (pts: N[][], x0: N, y0: N, s: N, x: N, y: N) => pts.map(([a, b]) => [x + (a - x0) * s, y + (b - y0) * s]);

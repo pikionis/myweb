@@ -8,6 +8,7 @@ import { r1, C, R, P as pen, D, cls } from './lineart';
 import { type N, P, G, F, X, width, written, pill, person, doc, poly, block, walker, cheer, cloud, burst } from './storypen';
 import { art as A, t } from '../data/mystory';
 import { kalimeraArt, VIEW as KC, SUN } from './kalimera';
+import { koanArt, VIEW as KO } from './koan';
 
 interface Props { name: string }
 const { name } = Astro.props;
@@ -293,24 +294,6 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
     G('xml', X(596, 214, A.reach.feed, 15, 'mono t-ac mid')),
   ].join('') }),
 
-  // three islands, joined in cobalt; a board, a team and a budget; a ring of eight with the EU fund at its heart
-  koan: () => ({ inner: [
-    G('lead', P('M0 200C20 200 40 200 56 202')),
-    G('isle-0', P('M60 200C100 170 180 150 260 160C300 166 320 184 300 200C260 222 160 230 90 226C60 222 46 212 60 200Z') + X(176, 254, t(A.koan.islands[0]), 18, 'mid')),
-    G('isle-1', P('M150 330C120 300 70 310 80 340C90 370 140 370 160 350C180 370 230 372 236 342C242 312 196 300 170 330C164 336 156 336 150 330Z') + X(158, 400, t(A.koan.islands[1]), 18, 'mid')),
-    G('isle-2', P(C(330, 330, 40)) + P(C(330, 330, 14)) + X(330, 400, t(A.koan.islands[2]), 18, 'mid')),
-    G('net', `<path class="ac net" d="M210 208Q270 270 300 300M140 226Q130 280 150 320M236 340Q262 334 290 332"/>` +
-      `<circle class="ac-fill" cx="210" cy="208" r="5"/><circle class="ac-fill" cx="150" cy="320" r="5"/><circle class="ac-fill" cx="300" cy="300" r="5"/>`),
-    G('jira', P(R(440, 50, 320, 210, 10), 'solid') + P('M547 50V260M654 50V260') +
-      [[452, 70], [452, 120], [559, 70], [666, 70], [666, 120], [559, 170]].map(([x, y]) => P(R(x, y, 82, 36, 5))).join(''), 'opacity="0"'),
-    G('ring', Array.from({ length: 8 }, (_, i) => {
-      const a = (i / 8) * Math.PI * 2 - Math.PI / 2, x = r1(600 + Math.cos(a) * 96), y = r1(150 + Math.sin(a) * 96);
-      return P(C(x, y, 16), i % 2 ? '' : 'ac');
-    }).join('') + X(600, 146, 'ESPA', 20, 'mid bold') + X(600, 170, A.koan.espa.replace('ESPA ', ''), 15, 'mid mono')),
-    A.koan.roles.map((r, i) => G(`role-${i}`, person(490 + i * 110, 300, 0.9) + X(490 + i * 110, 386, t(r), 15, 'mid'))).join(''),
-    G('budget', P(C(724, 410, 40), 'solid ac') + X(724, 416, A.koan.budget, 16, 'mid bold t-ac')),
-  ].join('') }),
-
   // a desk, books and a laptop; the cobalt peak of the courses comes back, with what it holds now
   ai: () => ({ inner: [
     G('lead', P('M0 380C40 380 80 380 120 380')),
@@ -428,7 +411,8 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
 };
 
 const scene: { view?: string; inner: string } = name === 'journey-wide' ? journey(false) : name === 'journey-narrow' ? journey(true)
-  : name === 'kalimera' ? { view: `0 0 ${KC.w} ${KC.h}`, inner: kalimeraArt() } : SCENES[name]();
+  : name === 'kalimera' ? { view: `0 0 ${KC.w} ${KC.h}`, inner: kalimeraArt() }
+  : name === 'koan' ? { view: `0 0 ${KO.w} ${KO.h}`, inner: koanArt() } : SCENES[name]();
 const view = scene.view ?? '0 0 800 500';
 ---
 <svg class:list={['ms-svg', `art-${name}`]} data-art={name} data-world={name.startsWith('journey') ? WORLD : undefined} viewBox={view} aria-hidden="true" focusable="false"
@@ -502,10 +486,15 @@ const view = scene.view ?? '0 0 800 500';
   .ms-svg :global(.kc-hi) { fill: color-mix(in srgb, var(--cobalt) 14%, var(--paper)); stroke: none; }
   .ms-svg :global(.kc-glow) { fill: color-mix(in srgb, var(--cobalt) 24%, transparent); stroke: none; }
   .ms-svg :global(.kc-view) { fill: color-mix(in srgb, var(--cobalt) 10%, var(--paper)); stroke: none; }
+  /* the KOAN chapter's map: Europe's markets as dots, the dotted lines of the mandate, the light running along the
+     route from the UK */
+  .ms-svg :global(.ko-market) { fill: color-mix(in srgb, var(--ink) 35%, transparent); }
+  .ms-svg :global(.ko-dot) { fill: var(--ink); }
+  .ms-svg :global(.ko-pulse) { fill: none; stroke: var(--cobalt); stroke-width: calc(5px * var(--sw, 1)); stroke-linecap: round; stroke-dasharray: 0.06 1; opacity: 0; }
   /* a wide screen sets the accelerator's cards side by side, a phone one under another */
   .art-kalimera :global([data-p='kc-narrow']) { display: none; }
-  :global(.kc.phone) .art-kalimera :global([data-p='kc-narrow']) { display: inline; }
-  :global(.kc.phone) .art-kalimera :global([data-p='kc-wide']), :global(.kc.phone) .art-kalimera :global(.kc-more) { display: none; }
+  :global(.ch.phone) .art-kalimera :global([data-p='kc-narrow']) { display: inline; }
+  :global(.ch.phone) .art-kalimera :global([data-p='kc-wide']), :global(.ch.phone) .art-kalimera :global(.kc-more) { display: none; }
   /* a phone: the picture shows at under half its size; the words that have room grow, so they still read (the
      rest of what a scene says is in its own words, beside it) */
   @media (max-width: 760px) {

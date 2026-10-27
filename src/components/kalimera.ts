@@ -4,7 +4,7 @@
 // standing on the horizon, a function each below. Authored as the chapter ends (noon over Athens, the map of the
 // ecosystem), which is how it rests without script; the script opens the morning from 05:30.
 import { r1, C, R, P as pen, D } from './lineart';
-import { type N, P, G, F, X, width, person, pill, walker } from './storypen';
+import { type N, P, G, F, X, width, person, pill, walker, smooth, KOS } from './storypen';
 import { art, t } from '../data/mystory';
 
 const K = art.kalimera;
@@ -28,16 +28,6 @@ const lines = (text: string, size: N, max: N) => {
   if (width(text, size) <= max || !text.includes(' ')) return [text];
   const words = text.split(' '), half = Math.ceil(words.length / 2);
   return [words.slice(0, half).join(' '), words.slice(half).join(' ')];
-};
-/** a closed line through these points, smooth (a Catmull-Rom spline, as Bézier curves) */
-const smooth = (pts: N[][]) => {
-  const n = pts.length;
-  let d = `M${pts[0][0]} ${pts[0][1]}`;
-  for (let i = 0; i < n; i++) {
-    const [a, b, c, e] = [pts[(i - 1 + n) % n], pts[i], pts[(i + 1) % n], pts[(i + 2) % n]];
-    d += `C${r1(b[0] + (c[0] - a[0]) / 6)} ${r1(b[1] + (c[1] - a[1]) / 6)} ${r1(c[0] - (e[0] - b[0]) / 6)} ${r1(c[1] - (e[1] - b[1]) / 6)} ${c[0]} ${c[1]}`;
-  }
-  return d + 'Z';
 };
 const label = (x: N, y: N, text: string, size: N, max: N, extra = '') =>
   lines(text, size, max).map((l, i) => X(x, y + i * (size + 3), l, size, extra)).join('');
@@ -149,11 +139,7 @@ const beat1 = () => G('kc-b1', [
 
 /** Kos as a map: long, broad in the east (the town at its tip), a narrow neck, the peninsula of Kefalos turning
  *  south-west; its mountains, and the shops of the first year along the north coast */
-const KOS_COAST = smooth([
-  [652, 298], [614, 302], [570, 312], [520, 322], [470, 330], [420, 338], [372, 350], [330, 362], [300, 372], [276, 376],
-  [254, 372], [226, 374], [204, 388], [206, 408], [226, 424], [250, 420], [268, 404], [288, 392], [320, 390], [370, 388],
-  [420, 384], [470, 376], [520, 364], [570, 350], [616, 338], [650, 330], [664, 314],
-]);
+const KOS_COAST = smooth(KOS);
 const SHOPS = [[600, 330], [566, 337], [530, 344], [492, 350], [452, 356], [410, 363], [366, 374], [322, 386]];
 /** Beat 2, first light: the app comes to Kos; one shop after another takes it on; eighty sales */
 const beat2 = () => G('kc-b2', [

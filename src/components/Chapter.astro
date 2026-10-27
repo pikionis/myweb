@@ -1,0 +1,80 @@
+---
+// The shell of a chapter of "My story" (Kalimera, KOAN): a scene told in beats (src/scripts/chapter.ts runs it).
+// Its screen stays while the page scrolls through the chapter, a beat at a time: the sky behind, the name and the
+// words of the beat at the top (something of its own in the corner), and the chapter's own body under them. Without
+// script it is the whole chapter at once: the body as it ends, and every beat's words in order.
+import { t, type Copy, type Scene } from '../data/mystory';
+
+interface Props {
+  scene: Scene;
+  /** the words of each beat, the opening first */
+  says: Copy[];
+  /** the sky as it rests (without script): its --dusk, --warm and --wash */
+  sky?: string;
+}
+const { scene, says, sky = '--wash: 1' } = Astro.props;
+---
+<div class="ch" data-chapter={scene.id}>
+  <div class="ch-stage">
+    <div class="ch-sky" style={sky} aria-hidden="true"></div>
+    <header class="ch-head">
+      <div class="ch-name">
+        <p class="ch-label">{t(scene.label)}</p>
+        <h3>{scene.title && t(scene.title)}</h3>
+      </div>
+      <ol class="ch-say">
+        {says.map((c, i) => <li data-beat={i}>{t(c)}</li>)}
+      </ol>
+      <div class="ch-corner"><slot name="corner" /></div>
+    </header>
+    <div class="ch-body"><slot /></div>
+  </div>
+</div>
+
+<style>
+  .ch { --ch-warm: oklch(0.88 0.07 75); position: relative; margin-block: clamp(20px, 3vh, 36px); }
+  .ch-stage {
+    position: relative; isolation: isolate; display: flex; flex-direction: column; gap: clamp(8px, 1.6vh, 20px);
+    padding: clamp(18px, 2.4vw, 32px); border-radius: 20px; overflow: hidden;
+  }
+  /* the sky: a touch of ink (dawn), a warm light, the light cobalt of day; a chapter's script moves them */
+  .ch-sky {
+    position: absolute; inset: 0; z-index: -1; --dusk: 0; --warm: 0; --wash: 0;
+    background: color-mix(in srgb, var(--cobalt) calc(var(--wash) * 9%),
+      color-mix(in srgb, var(--ch-warm) calc(var(--warm) * 30%), color-mix(in srgb, var(--ink) calc(var(--dusk) * 10%), var(--paper))));
+  }
+  .ch-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: 10px clamp(20px, 3vw, 48px); }
+  .ch-label {
+    margin: 0 0 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700;
+    font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1; letter-spacing: -0.03em;
+  }
+  .ch-name h3 { margin: 0; font-size: clamp(1.25rem, 1.8vw, 1.6rem); line-height: 1.15; letter-spacing: -0.01em; text-transform: none; }
+  .ch-say { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; max-width: 52ch; font-size: clamp(1.05rem, 1.3vw, 1.2rem); line-height: 1.5; }
+  .ch-corner:empty { display: none; }
+  .ch-body { position: relative; }
+
+  /* with script: the chapter is as tall as its scroll, its screen stays (from under the bar) while it is read, the
+     words of one beat at a time */
+  .ch.ch-on { height: var(--ch-h); margin-block: 0; }
+  .ch.ch-on .ch-stage { position: sticky; top: var(--ch-top); height: var(--ch-stage-h); }
+  .ch.ch-on .ch-body { flex: 1; min-height: 0; }
+  /* (a phone measures the screen at its natural height: the words, and the body as it would be) */
+  .ch.ch-on.ch-measure .ch-stage { height: auto; }
+  .ch.ch-on.ch-measure .ch-body { flex: none; }
+  .ch.ch-on .ch-say { grid-template-areas: 'say'; }
+  .ch.ch-on .ch-say li { grid-area: say; opacity: 0; translate: 0 10px; transition: opacity 0.35s ease, translate 0.5s var(--ease-out); }
+  .ch.ch-on .ch-say li.on { opacity: 1; translate: 0 0; }
+  @media (prefers-reduced-motion: reduce) {
+    .ch.ch-on .ch-say li { translate: 0 0; }
+  }
+
+  /* a phone: the name and the corner on top, the words under them, the body below */
+  @media (max-width: 860px) {
+    .ch-stage { padding: 16px; border-radius: 16px; }
+    .ch-head { grid-template-columns: minmax(0, 1fr) auto; }
+    .ch-say { grid-column: 1 / -1; font-size: 1rem; }
+    .ch-corner { grid-column: 2; grid-row: 1; }
+    .ch-label { font-size: 1.6rem; }
+    .ch-name h3 { font-size: 1.125rem; }
+  }
+</style>
