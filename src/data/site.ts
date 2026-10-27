@@ -280,6 +280,8 @@ export const ui = {
     again: 'See again',
   },
   visitSite: 'Visit site',
+  /** beside the name of a project that is not live yet */
+  launching: 'Launching soon',
   /** a project's live site in its card (home page): the frame's name, after the title; on a phone, the button
    *  that opens it full screen, and the one that closes it */
   live: { site: 'website', preview: 'Preview', close: 'Close preview' },

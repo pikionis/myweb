@@ -5,8 +5,11 @@ title: "Project name"
 summary: "One sentence: what it is and what it does."
 # any of: web, apps, commerce, search — it shows under each of those services (none: only on /projects, under More work)
 services: [web]
-tags: ["Web design", "Laravel"]
+tags: ["Web design"]
+stack: ["Laravel", "Tailwind CSS"]   # what it is built with (shown on /projects)
 # url: "https://example.com"   # optional: adds a "Visit site" link
+# live_url: "https://example.com"   # optional: the live site in its frame, measured by PageSpeed (it must allow framing)
+# launching: true               # optional: not live yet ("Launching soon", no link, frame or measurements)
 # blurb: "A few lines about it." # optional: its own text on the service sheet (beside the projects on Custom web & design)
 # badge: "Launching soon"        # optional: a small label beside the name
 # metric: { value: "800K+", label: "products a day" }   # optional, with scope: engineering work shows these

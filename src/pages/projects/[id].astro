@@ -1,13 +1,13 @@
 ---
 import Site from '../../layouts/Site.astro';
 import { render } from 'astro:content';
-import { getProjects, hasStory, type ProjectEntry } from '../../data/projects';
+import { getProjects, type ProjectEntry } from '../../data/projects';
 import { services } from '../../data/site';
 
-// only projects with written text get a page
+// every project has a page
 export async function getStaticPaths() {
   const all = await getProjects();
-  return all.filter(hasStory).map((project) => ({ params: { id: project.id }, props: { project } }));
+  return all.map((project) => ({ params: { id: project.id }, props: { project } }));
 }
 
 const { project } = Astro.props as { project: ProjectEntry };

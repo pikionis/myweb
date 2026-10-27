@@ -7,6 +7,8 @@ tags: ["Web design", "Booking", "Ops"]
 url: "https://arangia.gr"
 # the English version (arangia.gr reads ?lang= once its LanguageContext asks the address first)
 live_url: "https://arangia.gr/?lang=en"
+# seen on the live site: confirm
+stack: ["React", "Vite", "Tailwind CSS"]
 order: 2
 ---
 

@@ -43,7 +43,7 @@ const arrow = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" str
                       <div class="group links">
                         <p class="ptitle">{t.projects}</p>
                         <ul class="projects">
-                          {s.projects.map((p) => <li><a href={`/projects?project=${p.id}`}>{p.data.title}</a></li>)}
+                          {s.projects.map((p) => <li><a href={`/projects/${p.id}`}>{p.data.title}</a></li>)}
                         </ul>
                       </div>
                     )}

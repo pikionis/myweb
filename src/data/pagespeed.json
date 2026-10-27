@@ -1,0 +1,224 @@
+{
+ "arangia": {
+  "url": "https://arangia.gr",
+  "mobile": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 94,
+    "accessibility": 95,
+    "best-practices": 100,
+    "seo": 100
+   },
+   "lab": {
+    "fcp": 1804,
+    "lcp": 2483,
+    "tbt": 170,
+    "cls": 0,
+    "si": 2315
+   },
+   "at": "2026-10-27T19:30:03.359Z"
+  },
+  "desktop": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 99,
+    "accessibility": 95,
+    "best-practices": 100,
+    "seo": 100
+   },
+   "lab": {
+    "fcp": 572,
+    "lcp": 687,
+    "tbt": 6,
+    "cls": 0.003,
+    "si": 927
+   },
+   "at": "2026-10-27T19:30:18.325Z"
+  }
+ },
+ "arogi-kos": {
+  "url": "https://arogikos.gr",
+  "mobile": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 100,
+    "accessibility": 96,
+    "best-practices": 100,
+    "seo": 100
+   },
+   "lab": {
+    "fcp": 1139,
+    "lcp": 1139,
+    "tbt": 0,
+    "cls": 0.001,
+    "si": 1424
+   },
+   "at": "2026-10-27T19:29:12.279Z"
+  },
+  "desktop": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 97,
+    "accessibility": 95,
+    "best-practices": 100,
+    "seo": 100
+   },
+   "lab": {
+    "fcp": 357,
+    "lcp": 360,
+    "tbt": 0,
+    "cls": 0.1,
+    "si": 588
+   },
+   "at": "2026-10-27T19:29:24.748Z"
+  }
+ },
+ "delian-co": {
+  "url": "https://delianco.com",
+  "mobile": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 68,
+    "accessibility": 95,
+    "best-practices": 100,
+    "seo": 100
+   },
+   "lab": {
+    "fcp": 2997,
+    "lcp": 12225,
+    "tbt": 0,
+    "cls": 0,
+    "si": 3935
+   },
+   "at": "2026-10-27T19:29:37.145Z"
+  },
+  "desktop": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 85,
+    "accessibility": 95,
+    "best-practices": 100,
+    "seo": 100
+   },
+   "lab": {
+    "fcp": 974,
+    "lcp": 2354,
+    "tbt": 0,
+    "cls": 0,
+    "si": 1563
+   },
+   "at": "2026-10-27T19:29:50.356Z"
+  }
+ },
+ "kalimera": {
+  "url": "https://kalimeraapp.gr",
+  "mobile": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 71,
+    "accessibility": 82,
+    "best-practices": 100,
+    "seo": 92
+   },
+   "lab": {
+    "fcp": 1075,
+    "lcp": 8814,
+    "tbt": 169,
+    "cls": 0,
+    "si": 4268
+   },
+   "at": "2026-10-27T19:31:01.634Z"
+  },
+  "desktop": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 90,
+    "accessibility": 82,
+    "best-practices": 100,
+    "seo": 92
+   },
+   "lab": {
+    "fcp": 402,
+    "lcp": 1884,
+    "tbt": 0,
+    "cls": 0,
+    "si": 1400
+   },
+   "at": "2026-10-27T19:31:15.393Z"
+  }
+ },
+ "la-islakos": {
+  "url": "https://la-islakos.gr",
+  "mobile": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 70,
+    "accessibility": 89,
+    "best-practices": 100,
+    "seo": 85
+   },
+   "lab": {
+    "fcp": 2518,
+    "lcp": 8751,
+    "tbt": 96,
+    "cls": 0.007,
+    "si": 3623
+   },
+   "at": "2026-10-27T19:31:28.916Z"
+  },
+  "desktop": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 83,
+    "accessibility": 94,
+    "best-practices": 100,
+    "seo": 85
+   },
+   "lab": {
+    "fcp": 1109,
+    "lcp": 2408,
+    "tbt": 0,
+    "cls": 0.02,
+    "si": 1515
+   },
+   "at": "2026-10-27T19:31:51.119Z"
+  }
+ },
+ "sunny-days": {
+  "url": "https://sunnydayskos.gr",
+  "mobile": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 84,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 92
+   },
+   "lab": {
+    "fcp": 1832,
+    "lcp": 2775,
+    "tbt": 10,
+    "cls": 0.118,
+    "si": 6970
+   },
+   "at": "2026-10-27T19:30:32.537Z"
+  },
+  "desktop": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 91,
+    "accessibility": 96,
+    "best-practices": 100,
+    "seo": 92
+   },
+   "lab": {
+    "fcp": 722,
+    "lcp": 1100,
+    "tbt": 0,
+    "cls": 0.009,
+    "si": 2794
+   },
+   "at": "2026-10-27T19:30:47.132Z"
+  }
+ }
+}

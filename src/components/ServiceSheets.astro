@@ -48,7 +48,7 @@ const icon = (d: string, size = 18) =>
               <div class="sheet-links">
                 <h3 class="sheet-label">{s.projects.length ? t.projects : s.proof!.label}</h3>
                 <ul>
-                  {s.projects.map((p) => <li><a href={`/projects?project=${p.id}`}>{p.data.title}</a></li>)}
+                  {s.projects.map((p) => <li><a href={`/projects/${p.id}`}>{p.data.title}</a></li>)}
                   {!s.projects.length && s.proof && <li><a href={s.proof.link.href}>{s.proof.name}</a></li>}
                 </ul>
               </div>

@@ -1,5 +1,5 @@
 # Builds the site and publishes it on GitHub Pages (onehublabs.com) on every push to main,
-# and once a day so the GitHub terrain on /about stays current.
+# and once a day so the GitHub terrain on /about and the projects' PageSpeed results stay current.
 name: Deploy
 
 on:
@@ -28,6 +28,11 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # measures the live projects for /projects (PageSpeed Insights); without the key, or if Google can't be
+      # reached, the saved results stay
+      - run: npm run pagespeed
+        env:
+          PSI_KEY: ${{ secrets.PSI_KEY }}
       # prebuild pulls the GitHub calendar first
       - run: npm run build
       - uses: actions/upload-pages-artifact@v5

@@ -1,5 +1,5 @@
 ---
-import { servicesWithProjects, hasStory } from '../data/projects';
+import { servicesWithProjects, hasStory, projectHref, visitUrl, badgeOf } from '../data/projects';
 import { serviceColors, ui } from '../data/site';
 import { stories } from '../data/stories';
 
@@ -48,7 +48,7 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                     {s.projects.map((p, j) => (
                       <p class:list={['blurb', { on: j === 0 }]} data-blurb>
                         <span class="bname">{p.data.title}</span> {p.data.blurb ?? p.data.summary}
-                        {hasStory(p) && <a class="bstory" href={`/projects/${p.id}`}>{ui.readStory}<Fragment set:html={next} /></a>}
+                        {hasStory(p) && <a class="bstory" href={projectHref(p)}>{ui.readStory}<Fragment set:html={next} /></a>}
                       </p>
                     ))}
                   </div>
@@ -68,10 +68,10 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                   return (
                     <article class="pcard" data-pcard style={`--j: ${j}`}>
                       <div class="pband">
-                        <a class="pname" href={`/projects?project=${p.id}`} data-cascade>{p.data.title}</a>
-                        {p.data.badge && <span class="badge">{p.data.badge}</span>}
-                        {p.data.url && (
-                          <a class="visit" href={p.data.url} target="_blank" rel="noopener" aria-label={`${ui.visitSite}: ${p.data.title}`}>
+                        <a class="pname" href={projectHref(p)} data-cascade>{p.data.title}</a>
+                        {badgeOf(p) && <span class="badge">{badgeOf(p)}</span>}
+                        {visitUrl(p) && (
+                          <a class="visit" href={visitUrl(p)} target="_blank" rel="noopener" aria-label={`${ui.visitSite}: ${p.data.title}`}>
                             {ui.visitSite}<Fragment set:html={arrow} />
                           </a>
                         )}
@@ -85,7 +85,7 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                               sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
                             <!-- a phone: the finger scrolls the page; this opens the site full screen to scroll through it -->
                             <button type="button" class="live-preview" data-preview={live} data-name={p.data.title}
-                              data-frame-title={`${p.data.title} ${ui.live.site}`} data-visit={p.data.url ?? live}
+                              data-frame-title={`${p.data.title} ${ui.live.site}`} data-visit={visitUrl(p) ?? live}
                               aria-label={`${ui.live.preview}: ${p.data.title}`}>
                               <Fragment set:html={expand} />{ui.live.preview}
                             </button>
@@ -107,7 +107,7 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                       <!-- on a phone the project's own text comes under its picture, not before the cards -->
                       <div class="ptext">
                         <p>{ownText(p)}</p>
-                        {hasStory(p) && <a class="bstory" href={`/projects/${p.id}`}>{ui.readStory}<Fragment set:html={next} /></a>}
+                        {hasStory(p) && <a class="bstory" href={projectHref(p)}>{ui.readStory}<Fragment set:html={next} /></a>}
                       </div>
                     </article>
                   );

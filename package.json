@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "github": "node scripts/github.mjs",
+    "pagespeed": "node --env-file-if-exists=.env scripts/pagespeed.mjs",
     "prebuild": "node scripts/github.mjs",
     "build": "astro build",
     "preview": "astro preview"

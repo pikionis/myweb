@@ -14,6 +14,8 @@ const projects = defineCollection({
     summary: z.string(),
     services: z.array(service).default([]),
     tags: z.array(z.string()).default([]),
+    // what it is built with, shown on /projects
+    stack: z.array(z.string()).default([]),
     url: z.string().url().optional(),
     // the live site, shown in the box of its card on the home page (scaled from 1440px wide) in place of
     // the picture; the site must allow being framed (no X-Frame-Options / frame-ancestors against us)
@@ -22,6 +24,8 @@ const projects = defineCollection({
     blurb: z.string().optional(),
     // a small label beside the name, e.g. "Launching soon"
     badge: z.string().optional(),
+    // not live yet: "Launching soon", and no link, live frame or measurements until it is
+    launching: z.boolean().default(false),
     // engineering work shows its figure and scope on its card instead of a picture
     metric: z.object({ value: z.string(), label: z.string() }).optional(),
     scope: z.array(z.string()).optional(),

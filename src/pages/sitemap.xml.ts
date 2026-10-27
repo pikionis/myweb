@@ -1,12 +1,12 @@
-// /sitemap.xml: every page, every project with a page of its own, every published post.
+// /sitemap.xml: every page, every project (each has a page of its own), every published post.
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { pages } from '../data/site';
-import { getProjects, hasStory } from '../data/projects';
+import { getProjects } from '../data/projects';
 
 export const GET: APIRoute = async ({ site }) => {
   const origin = (site ?? new URL('https://onehublabs.com')).origin;
-  const projects = (await getProjects()).filter(hasStory).map((p) => `/projects/${p.id}/`);
+  const projects = (await getProjects()).map((p) => `/projects/${p.id}/`);
   const posts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft)).map((p) => `/blog/${p.id}/`);
   const paths = [...pages.map(({ href }) => (href === '/' ? '/' : `${href}/`)), ...projects, ...posts];
   const xml = [

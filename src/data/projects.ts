@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { services, bots, cardOrder, type CardKey, type Service } from './site';
+import { services, bots, cardOrder, ui, type CardKey, type Service } from './site';
 
 export type ProjectEntry = CollectionEntry<'projects'>;
 
@@ -33,5 +33,20 @@ export async function otherProjects() {
   return (await getProjects()).filter((p) => !p.data.services.length);
 }
 
-/** Only projects with written text get a page of their own. */
-export const hasStory = (p: ProjectEntry) => !!p.body?.trim();
+/** Every project in the order /projects shows them: the services' projects in page order, then the rest. */
+export async function projectsInOrder() {
+  const grouped = (await servicesWithProjects()).flatMap((s) => s.projects);
+  return [...new Set([...grouped, ...(await otherProjects())])];
+}
+
+/** Whether a project has written text (the home page links to it as its story). */
+export const hasStory = (p: ProjectEntry) => !!p.body?.replace(/<!--[\s\S]*?-->/g, '').trim();
+
+/** Its page on /projects. */
+export const projectHref = (p: ProjectEntry) => `/projects/${p.id}`;
+
+/** The live site to visit: none while it is still launching. */
+export const visitUrl = (p: ProjectEntry) => (p.data.launching ? undefined : p.data.url);
+
+/** The label beside its name. */
+export const badgeOf = (p: ProjectEntry) => p.data.badge ?? (p.data.launching ? ui.launching : undefined);

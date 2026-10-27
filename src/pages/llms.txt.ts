@@ -2,14 +2,15 @@
 // their projects, and how to get in touch. Built from the same data as the pages, so it never drifts.
 import type { APIRoute } from 'astro';
 import { person, meta, hero, pages, brand, bots, cardOrder } from '../data/site';
-import { servicesWithProjects, otherProjects, type ProjectEntry } from '../data/projects';
+import { servicesWithProjects, otherProjects, visitUrl, badgeOf, projectHref, type ProjectEntry } from '../data/projects';
 
 export const GET: APIRoute = async ({ site }) => {
   const origin = (site ?? new URL('https://onehublabs.com')).origin;
   const project = (p: ProjectEntry) => {
-    const live = p.data.url ? ` Live site: ${p.data.url}` : '';
-    const badge = p.data.badge ? ` (${p.data.badge})` : '';
-    return `- [${p.data.title}](${origin}/projects?project=${p.id}): ${p.data.summary}${badge}${live}`;
+    const live = visitUrl(p) ? ` Live site: ${visitUrl(p)}` : '';
+    const badge = badgeOf(p) ? ` (${badgeOf(p)})` : '';
+    const stack = p.data.stack.length ? ` Built with ${p.data.stack.join(', ')}.` : '';
+    return `- [${p.data.title}](${origin}${projectHref(p)}/): ${p.data.summary}${badge}${stack}${live}`;
   };
   const services = await servicesWithProjects();
   const others = await otherProjects();
