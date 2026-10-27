@@ -198,8 +198,8 @@ export const art = {
       { en: 'We launched the MVP in a local market: 80 sales in the first year.', el: 'Βγάλαμε το MVP σε τοπική αγορά: 80 πωλήσεις τον πρώτο χρόνο.' },
       { en: "Real customers, real feedback. We tested the product and learned what worked and what didn't.", el: 'Πραγματικοί πελάτες, πραγματικό feedback. Δοκιμάσαμε το προϊόν και μάθαμε τι δουλεύει και τι όχι.' },
       {
-        en: "We took part in Idea Platform, the competition of CapsuleT, Greece's incubator for technology and tourism. We pivoted and proposed a new business model to its judges: the president of the hoteliers' association, the director of [TODO: which airport], the head of the Onassis Foundation and the head of startup seed at the National Bank of Greece.",
-        el: 'Πήραμε μέρος στο Idea Platform, τον διαγωνισμό του CapsuleT, του incubator της Ελλάδας για τεχνολογία και τουρισμό. Κάναμε pivot και προτείναμε νέο business model στους κριτές του: τον πρόεδρο της ένωσης ξενοδόχων, τη διευθύντρια του [TODO: ποιο αεροδρόμιο], τον head του Ιδρύματος Ωνάση και τον επικεφαλής startup seed της Εθνικής Τράπεζας της Ελλάδος.',
+        en: "We took part in Idea Platform, the competition of CapsuleT, Greece's incubator for technology and tourism. We pivoted and proposed a new business model to its judges: the president of the hoteliers' association, the director of Athens Eleftherios Venizelos International Airport (ATH), the head of the Onassis Foundation and the head of startup seed at the National Bank of Greece.",
+        el: 'Πήραμε μέρος στο Idea Platform, τον διαγωνισμό του CapsuleT, του incubator της Ελλάδας για τεχνολογία και τουρισμό. Κάναμε pivot και προτείναμε νέο business model στους κριτές του: τον πρόεδρο της ένωσης ξενοδόχων, τη διευθύντρια του Διεθνούς Αερολιμένα Αθηνών «Ελευθέριος Βενιζέλος» (ATH), τον head του Ιδρύματος Ωνάση και τον επικεφαλής startup seed της Εθνικής Τράπεζας της Ελλάδος.',
       },
       {
         en: '2022 — pitching our pivot, we won 2nd Prize at the CapsuleT Innovation Contest (Hellenic Chamber of Hotels). 2023 — a place in the CapsuleT Accelerator in Athens.',
