@@ -12,63 +12,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-type Tl = gsap.core.Timeline;
-type El = Element | null;
-const part = (root: Element, p: string) => root.querySelector<SVGGraphicsElement>(`[data-p="${p}"]`);
-const parts = (root: Element, prefix: string) => [...root.querySelectorAll<SVGGraphicsElement>(`[data-p^="${prefix}"]`)];
-/** the strokes of a part that draw on (itself, if it is one) */
-const strokes = (el: El): Element[] => (!el ? [] : el.matches('.sa-d') ? [el] : [...el.querySelectorAll('.sa-d')]);
-const all = (...els: El[]) => els.flatMap(strokes);
-
-/** the soft shadows of the solid shapes among these strokes (each sits just before its shape) */
-const shades = (els: Element[]) => els.map((e) => e.previousElementSibling).filter((e): e is Element => !!e?.matches('.shade'));
-const draw = (tl: Tl, els: Element[], at: number, duration = 0.6, stagger = 0.03) => {
-  if (!els.length) return;
-  tl.fromTo(els, { strokeDashoffset: 1.01 }, { strokeDashoffset: 0, duration, ease: 'power1.inOut', stagger }, at);
-  const sh = shades(els);
-  if (sh.length) tl.fromTo(sh, { opacity: 0 }, { opacity: 1, duration: duration * 0.8, ease: 'power1.out' }, at + duration * 0.4);
-};
-const undraw = (tl: Tl, els: Element[], at: number, duration = 0.4) => {
-  if (!els.length) return;
-  tl.to(els, { strokeDashoffset: 1.01, duration, ease: 'power1.in' }, at);
-  const sh = shades(els);
-  if (sh.length) tl.to(sh, { opacity: 0, duration: duration * 0.6 }, at);
-};
-/** a block's faces fill in once its edges are drawn */
-const faces = (tl: Tl, root: Element, prefix: string, at: number, stagger = 0.1) =>
-  void tl.fromTo(root.querySelectorAll(`[data-p^="${prefix}"][data-p$="-faces"]`), { opacity: 0 }, { opacity: 1, duration: 0.4, stagger, ease: 'power1.out' }, at);
-/** a part that rests hidden shows (set up in advance), or one that rests shown leaves (at its moment) */
-const show = (tl: Tl, el: El | El[], at: number, on = true, duration = 0.25) =>
-  void tl.fromTo(el, { opacity: on ? 0 : 1 }, { opacity: on ? 1 : 0, duration, ease: 'power1.out', immediateRender: on }, at);
-const pop = (tl: Tl, el: El | El[], at: number, origin = '50% 50%', stagger = 0) =>
-  void tl.fromTo(el, { opacity: 0, scale: 0.6, transformOrigin: origin }, { opacity: 1, scale: 1, duration: 0.45, ease: 'expo.out', stagger }, at);
-/** words are written in, a letter at a time (as plain text: code such as <iostream> stays as it is). Hidden until
- *  their moment, so a scene starting over shows them blank again */
-const type = (tl: Tl, el: El, at: number, duration: number) => {
-  if (!el) return;
-  const full = el.textContent ?? '';
-  const o = { n: 0 };
-  show(tl, el, at, true, 0.01);
-  tl.fromTo(o, { n: 0 }, { n: full.length, duration, ease: 'none', onUpdate: () => { el.textContent = full.slice(0, Math.round(o.n)); } }, at);
-};
-/** words that write themselves (`written` in MyStoryArt): the rect that clips them widens from nothing */
-const write = (tl: Tl, svg: Element, p: string, at: number, duration: number) => {
-  const pen = part(svg, `${p}-pen`);
-  if (!pen) return;
-  tl.fromTo(pen, { attr: { width: 0 } }, { attr: { width: Number(pen.getAttribute('width')) }, duration, ease: 'power1.inOut' }, at);
-};
-/** a number counts up to what the picture says */
-const count = (tl: Tl, el: El, at: number, duration: number, to: number, format: (v: number) => string) => {
-  if (!el) return;
-  const o = { v: 0 };
-  el.textContent = format(0);
-  tl.fromTo(o, { v: 0 }, { v: to, duration, ease: 'power1.out', onUpdate: () => { el.textContent = format(o.v); } }, at);
-};
+import { type Tl, type El, part, parts, strokes, all, draw, faces, show, pop, type, write, count, loop } from './storydraw';
+import { kalimeraChapter } from './kalimera';
 
 /** a scene's timeline, its svg, its step, and its idle motions (loops that run while it is on screen) */
 type Scene = (tl: Tl, svg: SVGSVGElement, step: HTMLElement, idle: gsap.core.Animation[]) => void;
-/** a motion that runs on its own while its scene is on screen */
-const loop = (idle: gsap.core.Animation[], a: gsap.core.Animation) => { a.pause(); idle.push(a); };
 
 const SCENES: Record<string, Scene> = {
   intro(tl, svg, step) {
@@ -197,34 +145,6 @@ const SCENES: Record<string, Scene> = {
     pop(tl, parts(svg, 'market-'), 2.0, '50% 50%', 0.12);
     draw(tl, all(...parts(svg, 'feed-')), 2.3, 0.4, 0.12);
     show(tl, part(svg, 'xml'), 2.5);
-  },
-
-  kalimera(tl, svg, step) {
-    const notes = [...step.querySelectorAll('[data-note]')];
-    draw(tl, strokes(part(svg, 'lead')), 0, 0.2);
-    draw(tl, strokes(part(svg, 'phone')), 0.1, 0.5);
-    // a sun rises on the screen: good morning
-    tl.fromTo(part(svg, 'sun'), { y: 80 }, { y: 0, duration: 0.6, ease: 'power2.out' }, 0.6);
-    draw(tl, strokes(part(svg, 'sun')), 0.6, 0.5);
-    draw(tl, strokes(part(svg, 'horizon')), 0.6, 0.3);
-    show(tl, notes[0], 1.0);
-    // the team, and the businesses on it
-    parts(svg, 'team-').forEach((m, i) => draw(tl, strokes(m), 1.3 + i * 0.1, 0.3));
-    count(tl, part(svg, 'count')?.querySelector('[data-count]') ?? null, 1.6, 0.9, 80, (v) => `${Math.round(v)}${v >= 79.5 ? '+' : ''}`);
-    // the pitch, the prize, the door, and what it taught
-    const pitch = part(svg, 'pitch'), trophy = part(svg, 'trophy'), door = part(svg, 'door'), board = part(svg, 'board');
-    gsap.set(board, { opacity: 0 });
-    show(tl, pitch, 2.6, true, 0.1); draw(tl, strokes(pitch), 2.6, 0.5, 0.03);
-    show(tl, pitch, 3.3, false, 0.2);
-    show(tl, trophy, 3.4, true, 0.1); draw(tl, strokes(trophy), 3.4, 0.5, 0.05); show(tl, notes[1], 3.6);
-    show(tl, trophy, 4.2, false, 0.2);
-    show(tl, door, 4.3, true, 0.1); draw(tl, strokes(door), 4.3, 0.4, 0.04);
-    tl.fromTo(part(svg, 'panel'), { scaleX: 1, transformOrigin: '0% 50%' }, { scaleX: 0.22, transformOrigin: '0% 50%', duration: 0.5, ease: 'power2.inOut' }, 4.8);
-    show(tl, notes[2], 4.9);
-    show(tl, door, 5.5, false, 0.2);
-    tl.to(board, { opacity: 1, duration: 0.2 }, 5.6);
-    draw(tl, strokes(board).slice(0, 3), 5.6, 0.4);
-    tl.fromTo(parts(svg, 'word-'), { y: -220, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power2.in', stagger: 0.14 }, 5.9);
   },
 
   koan(tl, svg) {
@@ -542,11 +462,17 @@ export function myStory(root: HTMLElement) {
       const studies = steps.find((s) => s.dataset.scene === 'studies');
       const ride = studies ? journey(studies) : null;
       if (ride) { ride.state.p = 1; ride.place(); }
+      // the Kalimera chapter goes beat by beat, each picture shown drawn
+      const chapter = steps.find((s) => s.dataset.scene === 'kalimera');
+      const kc = chapter ? kalimeraChapter(chapter, true) : null;
       const io = new IntersectionObserver((entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add('seen')), { threshold: 0.15 });
       steps.forEach((s) => io.observe(s));
-      return () => io.disconnect();
+      return () => { io.disconnect(); kc?.kill(); };
     }
     root.classList.add('on');
+    // the Kalimera chapter: a morning in seven beats, with a stop for each (src/scripts/kalimera.ts)
+    const chapter = steps.find((s) => s.dataset.scene === 'kalimera');
+    const kc = chapter ? kalimeraChapter(chapter, false) : null;
     const plays = steps.map((step) => {
       // the picture on show (the journey is drawn twice, wide and narrow)
       const svg = [...step.querySelectorAll<SVGSVGElement>('.ms-art svg')].find((v) => v.getClientRects().length) ?? null;
@@ -584,6 +510,7 @@ export function myStory(root: HTMLElement) {
         points.length = 0;
         points.push(0);
         steps.forEach((s) => {
+          if (s === chapter && kc) { kc.points().forEach((y) => points.push(gsap.utils.clamp(0, 1, (y - self.start) / Math.max(1, self.end - self.start)))); return; }
           const y = s.getBoundingClientRect().top + window.scrollY, h = s.offsetHeight;
           // in the middle of the free space; a scene taller than it starts at its top
           const at = h > bottom - top ? y - top : y + h / 2 - (top + bottom) / 2;
@@ -597,6 +524,6 @@ export function myStory(root: HTMLElement) {
       },
     });
     ScrollTrigger.refresh();
-    return () => { root.classList.remove('on'); snap.kill(); plays.forEach((p) => p?.tl.kill()); };
+    return () => { root.classList.remove('on'); snap.kill(); plays.forEach((p) => p?.tl.kill()); kc?.kill(); };
   });
 }

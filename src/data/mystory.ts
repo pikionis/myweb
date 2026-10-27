@@ -75,11 +75,9 @@ export const scenes: Scene[] = [
   {
     id: 'kalimera', side: true,
     rail: { en: '2021', el: '2021' }, label: { en: '2021–2024', el: '2021–2024' },
-    title: { en: 'Kalimera, my own product', el: 'Kalimera, το δικό μου προϊόν' },
-    text: {
-      en: 'Building my own product taught me to see software as a business.',
-      el: 'Φτιάχνοντας το δικό μου προϊόν, έμαθα να βλέπω το λογισμικό ως επιχείρηση.',
-    },
+    title: { en: 'Kalimera', el: 'Kalimera' },
+    // the chapter's opening line; its beats are in art.kalimera
+    text: { en: 'How I learned the startup ecosystem from the inside.', el: 'Πώς γνώρισα το startup οικοσύστημα από μέσα.' },
   },
   {
     id: 'koan', side: true,
@@ -200,16 +198,68 @@ export const art = {
     markets: ['Skroutz', 'Amazon', 'Google'],
     feed: 'XML',
   },
+  /** the Kalimera chapter, "From dawn to daylight" (KalimeraChapter.astro): one morning, a beat for each step of
+   *  the startup; the opening line is the scene's text */
   kalimera: {
-    mvp: { en: '2021 — MVP launch', el: '2021 — Λανσάρισμα MVP' },
-    profiles: { en: 'business profiles', el: 'επαγγελματικά προφίλ' },
-    count: 80,
-    prize: { en: '2022 — 2nd Prize, CapsuleT Innovation Contest (Hellenic Chamber of Hotels)', el: '2022 — 2ο Βραβείο, CapsuleT Innovation Contest (Ξενοδοχειακό Επιμελητήριο Ελλάδος)' },
-    accelerator: { en: '2023 — Selected for the CapsuleT Accelerator', el: '2023 — Επιλογή στον CapsuleT Accelerator' },
+    /** the clock in the corner: the opening, then each beat */
+    clock: ['05:30', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00'],
+    beats: [
+      { en: 'I led the product design and shaped the business model.', el: 'Καθοδήγησα το design του προϊόντος και διαμόρφωσα το business model.' },
+      { en: 'We launched the MVP in a local market: 80 sales in the first year.', el: 'Βγάλαμε το MVP σε τοπική αγορά: 80 πωλήσεις τον πρώτο χρόνο.' },
+      { en: "Real customers, real feedback. We tested the product and learned what worked and what didn't.", el: 'Πραγματικοί πελάτες, πραγματικό feedback. Δοκιμάσαμε το προϊόν και μάθαμε τι δουλεύει και τι όχι.' },
+      { en: 'We joined an idea platform, pivoted, and proposed a new business model.', el: 'Πήραμε μέρος σε idea platform, κάναμε pivot και προτείναμε νέο business model.' },
+      {
+        en: '2022 — pitching our pivot, we won 2nd Prize at the CapsuleT Innovation Contest (Hellenic Chamber of Hotels). 2023 — a place in the CapsuleT Accelerator in Athens.',
+        el: '2022 — με το pitch του pivot κερδίσαμε τη 2η θέση στο CapsuleT Innovation Contest (Ξενοδοχειακό Επιμελητήριο Ελλάδος). 2023 — θέση στο CapsuleT Accelerator στην Αθήνα.',
+      },
+      {
+        en: "We learned to write a business plan, trained in pitching with Linda Plano for two weeks, joined Google's digital marketing workshops, and were guided by three mentors for six months.",
+        el: 'Μάθαμε να φτιάχνουμε business plan, κάναμε δύο εβδομάδες pitching με τη Linda Plano, workshops ψηφιακού μάρκετινγκ με τη Google και είχαμε τρεις μέντορες για έξι μήνες.',
+      },
+      {
+        en: "That's how I learned how the startup ecosystem really works, and how to build software as a business.",
+        el: 'Έτσι γνώρισα πώς λειτουργεί πραγματικά το startup οικοσύστημα και πώς χτίζεται το λογισμικό ως επιχείρηση.',
+      },
+    ] as Copy[],
+    app: 'Kalimera',
+    canvas: { en: 'Business Model Canvas', el: 'Business Model Canvas' },
+    /** the canvas's four named blocks: the ones the pivot rewrites */
+    blocks: {
+      value: { en: 'Value proposition', el: 'Πρόταση αξίας' },
+      channels: { en: 'Channels', el: 'Κανάλια' },
+      segments: { en: 'Customer segments', el: 'Τμήματα πελατών' },
+      revenue: { en: 'Revenue streams', el: 'Ροές εσόδων' },
+    },
+    kos: { en: 'Kos', el: 'Κως' },
+    mvp: 'MVP',
+    sales: 80,
+    salesLabel: { en: 'sales in the first year', el: 'πωλήσεις τον πρώτο χρόνο' },
+    idea: { en: 'Idea platform', el: 'Idea platform' },
+    prize: { en: '2nd Prize', el: '2η θέση' },
+    contest: 'CapsuleT Innovation Contest · 2022',
+    accelerator: 'CapsuleT Accelerator',
+    athens: { en: 'Athens · 2023', el: 'Αθήνα · 2023' },
+    /** what the accelerator gave: a card each, at the end of a ray of the noon sun */
+    cards: [
+      { title: { en: 'Business plan', el: 'Business plan' }, note: { en: 'growth and financials', el: 'ανάπτυξη και οικονομικά' } },
+      { title: { en: 'Pitch training', el: 'Pitch training' }, note: { en: 'Linda Plano · 2 weeks', el: 'Linda Plano · 2 εβδομάδες' } },
+      { title: { en: 'Digital marketing', el: 'Ψηφιακό μάρκετινγκ' }, note: { en: 'workshops with Google', el: 'workshops με τη Google' } },
+      { title: { en: '3 mentors', el: '3 μέντορες' }, note: { en: '6 months', el: '6 μήνες' } },
+    ] as { title: Copy; note: Copy }[],
+    /** the ecosystem, as the closing map draws it */
+    nodes: {
+      founders: { en: 'founders', el: 'ιδρυτές' },
+      mentors: { en: 'mentors', el: 'μέντορες' },
+      investors: { en: 'investors', el: 'επενδυτές' },
+      customers: { en: 'customers', el: 'πελάτες' },
+      partners: { en: 'partners', el: 'συνεργάτες' },
+      accelerator: { en: 'accelerator', el: 'accelerator' },
+    },
+    flows: { funding: { en: 'funding', el: 'χρηματοδότηση' }, product: { en: 'product', el: 'προϊόν' }, market: { en: 'market', el: 'αγορά' } },
     words: [
       { en: 'funding', el: 'χρηματοδότηση' }, { en: 'pitching', el: 'pitching' }, { en: 'scalability', el: 'κλιμάκωση' },
       { en: 'roadmap', el: 'roadmap' }, { en: 'go-to-market', el: 'go-to-market' }, { en: 'sales', el: 'πωλήσεις' },
-      { en: 'team leadership', el: 'ηγεσία ομάδας' },
+      { en: 'team leadership · 6-member team', el: 'ηγεσία ομάδας · ομάδα 6 ατόμων' },
     ] as Copy[],
   },
   koan: {
