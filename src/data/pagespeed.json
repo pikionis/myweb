@@ -138,19 +138,19 @@
   "mobile": {
    "source": "lighthouse",
    "scores": {
-    "performance": 68,
-    "accessibility": 95,
+    "performance": 99,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 100
    },
    "lab": {
     "fcp": {
-     "v": 2997,
-     "s": 0.5
+     "v": 1422,
+     "s": 0.97
     },
     "lcp": {
-     "v": 12225,
-     "s": 0
+     "v": 1868,
+     "s": 0.98
     },
     "tbt": {
      "v": 0,
@@ -161,43 +161,43 @@
      "s": 1
     },
     "si": {
-     "v": 3935,
-     "s": 0.82
+     "v": 2758,
+     "s": 0.96
     }
    },
-   "at": "2026-10-27T19:29:37.145Z"
+   "at": "2026-10-27T22:26:07.775Z"
   },
   "desktop": {
    "source": "lighthouse",
    "scores": {
-    "performance": 85,
-    "accessibility": 95,
+    "performance": 99,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 100
    },
    "lab": {
     "fcp": {
-     "v": 974,
-     "s": 0.88
+     "v": 337,
+     "s": 1
     },
     "lcp": {
-     "v": 2354,
-     "s": 0.51
+     "v": 533,
+     "s": 1
     },
     "tbt": {
      "v": 0,
      "s": 1
     },
     "cls": {
-     "v": 0,
-     "s": 1
+     "v": 0.064,
+     "s": 0.97
     },
     "si": {
-     "v": 1563,
-     "s": 0.81
+     "v": 464,
+     "s": 1
     }
    },
-   "at": "2026-10-27T19:29:50.356Z"
+   "at": "2026-10-27T22:26:20.536Z"
   }
  },
  "kalimera": {
@@ -272,22 +272,22 @@
   "mobile": {
    "source": "lighthouse",
    "scores": {
-    "performance": 83,
+    "performance": 94,
     "accessibility": 100,
     "best-practices": 100,
-    "seo": 92
+    "seo": 100
    },
    "lab": {
     "fcp": {
-     "v": 2404,
-     "s": 0.71
+     "v": 2014,
+     "s": 0.84
     },
     "lcp": {
-     "v": 3979,
-     "s": 0.5
+     "v": 2492,
+     "s": 0.9
     },
     "tbt": {
-     "v": 116,
+     "v": 121,
      "s": 0.97
     },
     "cls": {
@@ -295,43 +295,43 @@
      "s": 1
     },
     "si": {
-     "v": 3291,
-     "s": 0.91
+     "v": 2984,
+     "s": 0.94
     }
    },
-   "at": "2026-10-27T21:44:04.277Z"
+   "at": "2026-10-27T22:39:57.421Z"
   },
   "desktop": {
    "source": "lighthouse",
    "scores": {
-    "performance": 91,
+    "performance": 96,
     "accessibility": 100,
     "best-practices": 100,
-    "seo": 92
+    "seo": 100
    },
    "lab": {
     "fcp": {
-     "v": 827,
-     "s": 0.94
+     "v": 957,
+     "s": 0.88
     },
     "lcp": {
-     "v": 1781,
-     "s": 0.7
+     "v": 1234,
+     "s": 0.89
     },
     "tbt": {
      "v": 0,
      "s": 1
     },
     "cls": {
-     "v": 0.017,
+     "v": 0.001,
      "s": 1
     },
     "si": {
-     "v": 1206,
-     "s": 0.93
+     "v": 992,
+     "s": 0.97
     }
    },
-   "at": "2026-10-27T21:44:37.303Z"
+   "at": "2026-10-27T22:38:52.451Z"
   }
  },
  "sunny-days": {
