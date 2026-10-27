@@ -205,51 +205,51 @@
   "mobile": {
    "source": "lighthouse",
    "scores": {
-    "performance": 71,
+    "performance": 99,
     "accessibility": 82,
     "best-practices": 100,
     "seo": 92
    },
    "lab": {
     "fcp": {
-     "v": 1075,
+     "v": 1072,
      "s": 0.99
     },
     "lcp": {
-     "v": 8814,
-     "s": 0.01
+     "v": 1144,
+     "s": 1
     },
     "tbt": {
-     "v": 169,
-     "s": 0.93
+     "v": 125,
+     "s": 0.97
     },
     "cls": {
      "v": 0,
      "s": 1
     },
     "si": {
-     "v": 4268,
-     "s": 0.76
+     "v": 2193,
+     "s": 0.99
     }
    },
-   "at": "2026-10-27T19:31:01.634Z"
+   "at": "2026-10-27T20:34:01.420Z"
   },
   "desktop": {
    "source": "lighthouse",
    "scores": {
-    "performance": 90,
+    "performance": 97,
     "accessibility": 82,
     "best-practices": 100,
     "seo": 92
    },
    "lab": {
     "fcp": {
-     "v": 402,
+     "v": 344,
      "s": 1
     },
     "lcp": {
-     "v": 1884,
-     "s": 0.67
+     "v": 1190,
+     "s": 0.9
     },
     "tbt": {
      "v": 0,
@@ -260,11 +260,11 @@
      "s": 1
     },
     "si": {
-     "v": 1400,
-     "s": 0.87
+     "v": 894,
+     "s": 0.98
     }
    },
-   "at": "2026-10-27T19:31:15.393Z"
+   "at": "2026-10-27T20:34:14.641Z"
   }
  },
  "la-islakos": {
@@ -339,50 +339,50 @@
   "mobile": {
    "source": "lighthouse",
    "scores": {
-    "performance": 84,
-    "accessibility": 100,
-    "best-practices": 100,
-    "seo": 92
-   },
-   "lab": {
-    "fcp": {
-     "v": 1832,
-     "s": 0.89
-    },
-    "lcp": {
-     "v": 2775,
-     "s": 0.84
-    },
-    "tbt": {
-     "v": 10,
-     "s": 1
-    },
-    "cls": {
-     "v": 0.118,
-     "s": 0.85
-    },
-    "si": {
-     "v": 6970,
-     "s": 0.33
-    }
-   },
-   "at": "2026-10-27T19:30:32.537Z"
-  },
-  "desktop": {
-   "source": "lighthouse",
-   "scores": {
-    "performance": 91,
+    "performance": 81,
     "accessibility": 96,
     "best-practices": 100,
     "seo": 92
    },
    "lab": {
     "fcp": {
-     "v": 722,
-     "s": 0.97
+     "v": 2927,
+     "s": 0.52
     },
     "lcp": {
-     "v": 1100,
+     "v": 3783,
+     "s": 0.56
+    },
+    "tbt": {
+     "v": 112,
+     "s": 0.97
+    },
+    "cls": {
+     "v": 0.001,
+     "s": 1
+    },
+    "si": {
+     "v": 4247,
+     "s": 0.77
+    }
+   },
+   "at": "2026-10-27T20:34:27.783Z"
+  },
+  "desktop": {
+   "source": "lighthouse",
+   "scores": {
+    "performance": 97,
+    "accessibility": 96,
+    "best-practices": 100,
+    "seo": 92
+   },
+   "lab": {
+    "fcp": {
+     "v": 372,
+     "s": 1
+    },
+    "lcp": {
+     "v": 1094,
      "s": 0.92
     },
     "tbt": {
@@ -390,15 +390,15 @@
      "s": 1
     },
     "cls": {
-     "v": 0.009,
+     "v": 0.001,
      "s": 1
     },
     "si": {
-     "v": 2794,
-     "s": 0.32
+     "v": 1289,
+     "s": 0.9
     }
    },
-   "at": "2026-10-27T19:30:47.132Z"
+   "at": "2026-10-27T20:34:41.193Z"
   }
  }
 }
