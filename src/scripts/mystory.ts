@@ -15,11 +15,13 @@ gsap.registerPlugin(ScrollTrigger);
 import { type Tl, type El, part, parts, strokes, all, draw, faces, show, pop, type, write, count, loop } from './storydraw';
 import { kalimeraChapter } from './kalimera';
 import { koanChapter } from './koan';
+import { deindealChapter } from './deindeal';
 
 /** the scenes told as chapters of their own, in beats */
 const CHAPTERS: Record<string, (step: HTMLElement, still: boolean) => { points: () => number[]; kill: () => void } | null> = {
   kalimera: kalimeraChapter,
   koan: koanChapter,
+  deindeal: deindealChapter,
 };
 
 /** a scene's timeline, its svg, its step, and its idle motions (loops that run while it is on screen) */
@@ -162,49 +164,6 @@ const SCENES: Record<string, Scene> = {
     // the cobalt peak of the courses comes back
     tl.fromTo(part(svg, 'peak'), { x: -420, y: 160, opacity: 0, scale: 0.5, transformOrigin: '50% 100%' }, { x: 0, y: 0, opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' }, 1.0);
     pop(tl, parts(svg, 'ai-'), 1.8, '50% 50%', 0.15);
-  },
-
-  deindeal(tl, svg, _step, idle) {
-    // Zurich, opened out over the whole picture, draws itself: the sky, the towers and the guild houses, the river,
-    // the bridge (the line coming in from the timeline is its balustrade), the boat
-    const zurich = part(svg, 'zurich')!, boat = part(svg, 'boat')!, waves = parts(svg, 'zwave-');
-    tl.fromTo(zurich, { x: 0, y: 0, scale: 1, svgOrigin: '0 0' }, { x: 0, y: 0, scale: 1, svgOrigin: '0 0', duration: 0.01 }, 0);
-    show(tl, part(svg, 'zframe'), 3.5, true, 0.3);
-    draw(tl, strokes(part(svg, 'lead')), 0, 0.3);
-    draw(tl, parts(svg, 'zcloud-').flatMap(strokes), 0, 0.6, 0.1);
-    write(tl, svg, 'zurich-name', 0.4, 1.1);
-    draw(tl, strokes(part(svg, 'city')), 0.1, 0.8, 0.006);
-    show(tl, [...zurich.querySelectorAll('.face-r, .face-l, .ac-fill')], 0.7, true, 0.5);
-    draw(tl, waves.flatMap(strokes), 0.4, 0.8, 0.06);
-    draw(tl, strokes(part(svg, 'bridge')).filter((e) => !e.closest('[data-p="lead"]')), 0.3, 0.6, 0.01);
-    draw(tl, strokes(boat), 0.8, 0.5, 0.02);
-    // the river flows, the boat glides downstream, the flag flies
-    waves.forEach((w, i) => loop(idle, gsap.to(w, { x: (i % 2 ? 1 : -1) * Number(w.dataset.per), duration: 2.6 + i * 0.5, ease: 'none', repeat: -1 })));
-    tl.fromTo(boat, { x: -110 }, { x: 0, duration: 4.4, ease: 'sine.out' }, 0.6);
-    loop(idle, gsap.to(boat, { y: 2, duration: 1.4, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
-    loop(idle, gsap.to(part(svg, 'zflag'), { skewY: 5, scaleX: 0.92, svgOrigin: '712 173', duration: 0.7, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
-    parts(svg, 'zcloud-').forEach((c, i) => loop(idle, gsap.to(c, { x: 24 + i * 10, duration: 9 + i * 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })));
-    // then it folds into a postcard in the corner, and the work starts
-    tl.to(zurich, { x: 30, y: 10, scale: 0.32, svgOrigin: '0 0', duration: 0.8, ease: 'power3.inOut' }, 3.0);
-    const W = 3.2;
-    // the files tumble in, and down the funnel
-    const files = parts(svg, 'file-');
-    files.forEach((f, i) => tl.fromTo(f, { opacity: 0, y: -90, rotation: (i % 2 ? 1 : -1) * 30, transformOrigin: '50% 50%' },
-      { opacity: 1, y: 0, rotation: (i % 2 ? -1 : 1) * 12, duration: 0.4, ease: 'power2.out' }, W + 0.7 + i * 0.12));
-    show(tl, part(svg, 'funnel'), W + 1.2, true, 0.01);
-    draw(tl, strokes(part(svg, 'funnel')), W + 1.2, 0.4);
-    files.forEach((f, i) => {
-      const b = f.getBBox();
-      tl.to(f, { x: 480 - (b.x + b.width / 2), y: 220 - (b.y + b.height / 2), rotation: 0, scale: 0.3, opacity: 0, duration: 0.5, ease: 'power2.in' }, W + 1.7 + i * 0.12);
-    });
-    tl.fromTo(parts(svg, 'stage-'), { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.2 }, W + 2.0);
-    // clean products come out, and keep coming
-    tl.fromTo(parts(svg, 'card-'), { y: -60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power2.out', stagger: 0.12 }, W + 2.8);
-    show(tl, part(svg, 'count'), W + 2.9, true, 0.2);
-    count(tl, part(svg, 'count')?.querySelector('[data-count]') ?? null, W + 2.9, 1, 800000, (v) => `${Math.round(v).toLocaleString('en-US')}+`);
-    draw(tl, strokes(part(svg, 'refresh')), W + 3.6, 0.4, 0.1);
-    show(tl, part(svg, 'refresh')!.querySelector('text'), W + 3.8);
-    tl.fromTo(part(svg, 'refresh'), { rotation: 0, svgOrigin: '150 330' }, { rotation: -360, svgOrigin: '150 330', duration: 0.8, ease: 'none' }, W + 4.0);
   },
 
   side(tl, svg, step) {

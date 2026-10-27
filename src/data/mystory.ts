@@ -94,12 +94,10 @@ export const scenes: Scene[] = [
   },
   {
     id: 'deindeal', side: true,
-    rail: { en: '2026', el: '2026' }, label: { en: '2026', el: '2026' },
-    title: { en: 'DeinDeal.ch · AI Software Engineer', el: 'DeinDeal.ch · AI Software Engineer' },
-    text: {
-      en: 'Responsible for integrating, filtering, translating and preparing 800,000+ products for a Swiss marketplace, with an AI application I built from scratch.',
-      el: 'Υπεύθυνος για το integration, το φιλτράρισμα, τη μετάφραση και την προετοιμασία 800.000+ προϊόντων για ελβετικό marketplace, με AI εφαρμογή που έχτισα από το μηδέν.',
-    },
+    rail: { en: '2026', el: '2026' }, label: { en: '01/2026–09/2026', el: '01/2026–09/2026' },
+    title: { en: 'DeinDeal.ch', el: 'DeinDeal.ch' },
+    // the chapter's opening line; its beats are in art.deindeal
+    text: { en: 'Swiss e-commerce marketplace. AI Software Engineer.', el: 'Ελβετικό e-commerce marketplace. AI Software Engineer.' },
   },
   {
     id: 'side',
@@ -328,18 +326,71 @@ export const art = {
     espa: { en: 'ESPA 2021–2027', el: 'ΕΣΠΑ 2021–2027' },
   },
   ai: ['LLMs', 'RAG', 'Agents', 'MCP'],
+  /** the DeinDeal chapter, "Swiss precision" (DeinDealChapter.astro): a watch movement that turns into a product
+   *  line, a beat for each step; the opening line is the scene's text */
   deindeal: {
     city: { en: 'Zurich', el: 'Ζυρίχη' },
-    files: ['XML', 'CSV', 'JSON', 'FTP'],
-    stages: [{ en: 'filter', el: 'φιλτράρισμα' }, { en: 'translate', el: 'μετάφραση' }, { en: 'enrich', el: 'εμπλουτισμός' }, { en: 'validate', el: 'έλεγχος' }] as Copy[],
+    beats: [
+      {
+        en: 'For years I helped small e-shops get their products onto big marketplaces. At DeinDeal I switched sides: I became the one onboarding them.',
+        el: 'Για χρόνια βοηθούσα μικρά e-shops να περάσουν τα προϊόντα τους σε μεγάλα marketplaces. Στη DeinDeal άλλαξα πλευρά: έγινα αυτός που τα κάνει onboard.',
+      },
+      {
+        en: 'I built the integrations: every partner, every format, every feed, connected end to end.',
+        el: 'Έστησα τα integrations: κάθε συνεργάτης, κάθε format, κάθε feed, συνδεδεμένο από άκρη σε άκρη.',
+      },
+      {
+        en: 'I was responsible for managing more than 800,000 unique product codes.',
+        el: 'Ήμουν υπεύθυνος για τη διαχείριση περισσότερων από 800.000 μοναδικών κωδικών προϊόντων.',
+      },
+      {
+        en: 'My job was to make it manageable: filter it, fix it and translate it into four languages, with an AI application I built from scratch.',
+        el: 'Ο στόχος μου ήταν να γίνουν διαχειρίσιμα: να φιλτραριστούν, να διορθωθούν και να μεταφραστούν σε τέσσερις γλώσσες, με μια AI εφαρμογή που έχτισα από το μηδέν.',
+      },
+      {
+        en: 'The result: 800,000+ products refreshed daily, ready for the marketplace, no spreadsheets.',
+        el: 'Το αποτέλεσμα: 800.000+ προϊόντα με καθημερινή ανανέωση, έτοιμα για το marketplace, χωρίς spreadsheets.',
+      },
+      {
+        en: 'Somewhere in there my first AI SaaS was born: Feedgenix. Upload a large dataset, pick the fields you want translated and the languages you need.',
+        el: 'Κάπου εκεί γεννήθηκε το πρώτο μου AI SaaS: το Feedgenix. Ανεβάζεις ένα μεγάλο dataset, διαλέγεις ποια fields θέλεις να μεταφραστούν και σε ποιες γλώσσες.',
+      },
+      {
+        en: "From solving one company's problem to building a product for many.",
+        el: 'Από τη λύση ενός προβλήματος για μία εταιρεία, σε ένα προϊόν για πολλές.',
+      },
+    ] as Copy[],
+    /** the other side of the counter: then, and now */
+    then: '2017–2021',
+    now: '2026',
+    marketplace: { en: 'marketplace', el: 'marketplace' },
+    hub: 'DeinDeal',
+    formats: ['XML', 'CSV', 'JSON', 'FTP', 'SFTP', 'API'],
     count: 800000,
-    products: { en: 'products', el: 'προϊόντα' },
+    codes: { en: 'unique product codes', el: 'μοναδικοί κωδικοί προϊόντων' },
+    /** the movement: a gear for each stage, round the AI that drives them */
+    gears: [{ en: 'Filter', el: 'Φιλτράρισμα' }, { en: 'Fix', el: 'Διόρθωση' }, { en: 'Translate', el: 'Μετάφραση' }, { en: 'Validate', el: 'Έλεγχος' }] as Copy[],
+    /** the four languages, and one product's title in each (an example) */
+    langs: [['DE', 'Ledersofa'], ['FR', 'Canapé en cuir'], ['IT', 'Divano in pelle'], ['EN', 'Leather sofa']],
+    tags: [
+      { en: 'structured JSON outputs', el: 'δομημένα JSON outputs' }, { en: 'multi-model routing', el: 'multi-model routing' },
+      { en: 'content-hash caching', el: 'content-hash caching' }, { en: 'daily refresh', el: 'καθημερινή ανανέωση' },
+    ] as Copy[],
     refresh: { en: 'daily refresh', el: 'καθημερινή ανανέωση' },
+    feedgenix: {
+      name: 'Feedgenix', site: 'feedgenix.com', url: 'https://feedgenix.com',
+      visit: { en: 'Visit feedgenix.com', el: 'Δες το feedgenix.com' },
+      dataset: 'dataset.csv',
+      fields: [{ en: 'title', el: 'τίτλος' }, { en: 'description', el: 'περιγραφή' }, { en: 'attributes', el: 'χαρακτηριστικά' }] as Copy[],
+      fieldsLabel: { en: 'Fields', el: 'Πεδία' },
+      langsLabel: { en: 'Languages', el: 'Γλώσσες' },
+      go: { en: 'Translate', el: 'Μετάφραση' },
+    },
   },
   side: [
     { name: 'Arogi Kos · Arangia · La Islakos', text: { en: 'Brand-led websites and an online store.', el: 'Brand-led ιστοσελίδες και ένα online κατάστημα.' } },
-    { name: 'Feed Intelligence', text: { en: '6-stage translation pipeline, 220,000-SKU catalogue.', el: 'Pipeline μετάφρασης 6 σταδίων, κατάλογος 220.000 SKU.' } },
-  ],
+    { name: 'Feedgenix', site: 'feedgenix.com', url: 'https://feedgenix.com', text: { en: '6-stage translation pipeline, multi-provider routing, 220,000-SKU catalogue.', el: 'Pipeline μετάφρασης 6 σταδίων, multi-provider routing, κατάλογος 220.000 SKU.' } },
+  ] as { name: string; site?: string; url?: string; text: Copy }[],
   roles: [{ en: 'Engineer', el: 'Engineer' }, { en: 'Manager', el: 'Manager' }, { en: 'Problem solver', el: 'Problem solver' }] as Copy[],
   cta: { en: "Let's build something together.", el: 'Ας χτίσουμε κάτι μαζί.' },
   contact: { en: 'Contact', el: 'Επικοινωνία' },

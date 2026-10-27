@@ -1,0 +1,23 @@
+---
+// The DeinDeal chapter of "My story", "Swiss precision" (src/scripts/deindeal.ts plays it; the drawing is
+// src/components/deindeal.ts), in the chapter's shell (Chapter.astro): a watch movement that turns into a product
+// line, and the birth of Feedgenix (its beat links to the product). Without script: the movement, and Feedgenix a
+// dot on the line of client work.
+import Chapter from './Chapter.astro';
+import MyStoryArt from './MyStoryArt.astro';
+import { art, type Scene } from '../data/mystory';
+
+interface Props { scene: Scene }
+const { scene } = Astro.props;
+const K = art.deindeal;
+---
+<Chapter scene={scene} says={[scene.text, ...K.beats]} sky="--wash: 0.2" links={{ 6: { href: K.feedgenix.url, label: K.feedgenix.visit } }}>
+  <div class="dd-world"><MyStoryArt name="deindeal" /></div>
+</Chapter>
+
+<style>
+  /* the drawing at its own proportions; while the chapter runs, it fills the screen under the words */
+  .dd-world { position: relative; aspect-ratio: 960 / 540; overflow: hidden; }
+  .dd-world :global(.ms-svg) { position: absolute; inset: 0; width: 100%; height: 100%; }
+  :global(.ch.ch-on:not(.ch-measure)) .dd-world { height: 100%; aspect-ratio: auto; }
+</style>

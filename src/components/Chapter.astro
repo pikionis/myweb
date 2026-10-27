@@ -11,8 +11,11 @@ interface Props {
   says: Copy[];
   /** the sky as it rests (without script): its --dusk, --warm and --wash */
   sky?: string;
+  /** a link after a beat's words, by beat (it opens in a new tab) */
+  links?: Record<number, { href: string; label: Copy }>;
 }
-const { scene, says, sky = '--wash: 1' } = Astro.props;
+const { scene, says, sky = '--wash: 1', links = {} } = Astro.props;
+const arrow = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>';
 ---
 <div class="ch" data-chapter={scene.id}>
   <div class="ch-stage">
@@ -23,7 +26,12 @@ const { scene, says, sky = '--wash: 1' } = Astro.props;
         <h3>{scene.title && t(scene.title)}</h3>
       </div>
       <ol class="ch-say">
-        {says.map((c, i) => <li data-beat={i}>{t(c)}</li>)}
+        {says.map((c, i) => (
+          <li data-beat={i}>
+            {t(c)}
+            {links[i] && <a class="ch-link" href={links[i].href} target="_blank" rel="noopener">{t(links[i].label)}<Fragment set:html={arrow} /></a>}
+          </li>
+        ))}
       </ol>
       <div class="ch-corner"><slot name="corner" /></div>
     </header>
@@ -62,8 +70,16 @@ const { scene, says, sky = '--wash: 1' } = Astro.props;
   .ch.ch-on.ch-measure .ch-stage { height: auto; }
   .ch.ch-on.ch-measure .ch-body { flex: none; }
   .ch.ch-on .ch-say { grid-template-areas: 'say'; }
-  .ch.ch-on .ch-say li { grid-area: say; opacity: 0; translate: 0 10px; transition: opacity 0.35s ease, translate 0.5s var(--ease-out); }
-  .ch.ch-on .ch-say li.on { opacity: 1; translate: 0 0; }
+  .ch.ch-on .ch-say li {
+    grid-area: say; opacity: 0; translate: 0 10px; visibility: hidden;
+    transition: opacity 0.35s ease, translate 0.5s var(--ease-out), visibility 0s linear 0.35s;
+  }
+  .ch.ch-on .ch-say li.on { opacity: 1; translate: 0 0; visibility: visible; transition-delay: 0s; }
+  .ch-link {
+    display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; color: var(--accent-ink); font-weight: 600;
+    text-decoration: underline; text-underline-offset: 3px; white-space: nowrap;
+  }
+  .ch-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
   @media (prefers-reduced-motion: reduce) {
     .ch.ch-on .ch-say li { translate: 0 0; }
   }
