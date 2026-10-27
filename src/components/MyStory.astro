@@ -73,11 +73,6 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
               </>
             )}
             {s.id === 'intro' ? <p class="ms-headline" data-words>{t(s.text)}</p> : s.id !== 'studies' && <p class="ms-words" data-t>{t(s.text)}</p>}
-            {s.id === 'side' && (
-              <ul class="ms-cards">
-                {A.side.map((p, k) => <li data-note={k}><b>{p.name}{p.url && <> · <a href={p.url} target="_blank" rel="noopener">{p.site}</a></>}</b> {t(p.text)}</li>)}
-              </ul>
-            )}
             {s.id === 'today' && (
               <div class="ms-end" data-t>
                 <p class="ms-cta">{t(A.cta)}</p>
@@ -113,8 +108,6 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
   .ms-line > span { position: absolute; inset: 0; transform-origin: 50% 0; transform: scaleY(var(--fill, 0)); }
   .ms-line.ink > span { background: var(--ink); }
   .ms-line.cob > span { background: var(--cobalt); }
-  /* the scene of the client work: its line comes forward */
-  .ms-rail.side-on .ms-line.cob { width: 4px; left: 14px; }
   .ms-years { list-style: none; margin: 0; padding: 0; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
   .ms-years li { position: relative; display: flex; align-items: center; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.8125rem; color: var(--muted); transition: color 0.3s ease; }
   .ms-dot { position: absolute; left: -32px; width: 10px; height: 10px; border-radius: 50%; background: var(--paper); border: 2px solid color-mix(in srgb, var(--ink) 25%, transparent); transition: background-color 0.3s ease, border-color 0.3s ease, scale 0.3s var(--ease-out); }
@@ -142,13 +135,9 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
   }
   .ms-text h3 { margin: 0 0 12px; font-size: clamp(1.25rem, 1.8vw, 1.6rem); line-height: 1.15; letter-spacing: -0.01em; text-transform: none; }
   .ms-words { margin: 0; max-width: 40ch; font-size: clamp(1.05rem, 1.35vw, 1.25rem); line-height: 1.5; }
-  .ms-notes, .ms-cards, .ms-course-list { list-style: none; margin: 18px 0 0; padding: 0; }
+  .ms-notes, .ms-course-list { list-style: none; margin: 18px 0 0; padding: 0; }
   .ms-notes { display: grid; gap: 8px; font-size: 0.9375rem; line-height: 1.45; color: var(--muted); }
   .ms-notes li { padding-left: 14px; border-left: 2px solid var(--cobalt); }
-  .ms-cards { display: grid; gap: 10px; }
-  .ms-cards li { padding: 12px 14px; border-radius: 12px; background: var(--surface); font-size: 0.9375rem; line-height: 1.45; }
-  .ms-cards b { display: block; margin-bottom: 2px; }
-  .ms-cards b a { color: var(--accent-ink); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
   /* the course the cart is passing; the full list for readers, and for everyone without motion */
   .ms-course { display: none; }
   :global(html.js) .ms.on .ms-course { display: block; margin: 4px 0 16px; min-height: 2.6em; font-size: clamp(1.05rem, 1.4vw, 1.25rem); font-weight: 600; }
@@ -228,7 +217,6 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
     .ms-line { top: auto; bottom: auto; left: 0; right: 0; width: auto; height: 2px; }
     .ms-line.ink { top: 4px; left: 0; }
     .ms-line.cob { top: 12px; left: 0; width: auto; height: 1px; }
-    .ms-rail.side-on .ms-line.cob { height: 3px; top: 11px; left: 0; width: auto; }
     .ms-line > span { transform-origin: 0 50%; transform: scaleX(var(--fill, 0)); }
     .ms-years { position: absolute; inset: 0; flex-direction: row; height: auto; }
     .ms-years li { width: 8px; }
@@ -243,8 +231,7 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
     .ms-label { font-size: clamp(1.6rem, 8vw, 2.2rem); margin-bottom: 6px; }
     .ms-text h3 { font-size: 1.125rem; margin-bottom: 6px; }
     .ms-words { font-size: 1rem; }
-    .ms-notes, .ms-cards { margin-top: 12px; gap: 6px; }
-    .ms-cards li { padding: 8px 12px; font-size: 0.875rem; }
+    .ms-notes { margin-top: 12px; gap: 6px; }
     .ms-coaster .wide { display: none; }
     .ms-coaster .narrow { display: block; }
     :global(html.js) .ms.on .ms-lines { min-height: 8em; }

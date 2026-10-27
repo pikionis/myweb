@@ -166,17 +166,6 @@ const SCENES: Record<string, Scene> = {
     pop(tl, parts(svg, 'ai-'), 1.8, '50% 50%', 0.15);
   },
 
-  side(tl, svg, step) {
-    draw(tl, strokes(part(svg, 'lead')), 0, 0.2);
-    draw(tl, [part(svg, 'line')!], 0.1, 1);
-    const notes = [...step.querySelectorAll('[data-note]')];
-    notes.forEach((_, i) => {
-      pop(tl, part(svg, `sdot-${i}`), 0.5 + i * 0.25);
-      pop(tl, part(svg, `scard-${i}`), 1.2 + i * 0.5, i === 0 ? '50% 100%' : '50% 0%');
-      tl.fromTo(notes[i], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 1.3 + i * 0.5);
-    });
-  },
-
   today(tl, svg) {
     draw(tl, strokes(part(svg, 'lead')), 0, 0.5, 0);
     draw(tl, strokes(part(svg, 'one')), 0.5, 0.2);
@@ -397,7 +386,6 @@ export function myStory(root: HTMLElement) {
   const active = (i: number) => {
     items.forEach((li, k) => { li.classList.toggle('past', k < i); li.classList.toggle('now', k === i); });
     if (now) now.textContent = items[i]?.querySelector('.ms-year')?.textContent ?? '';
-    rail?.classList.toggle('side-on', steps[i]?.dataset.scene === 'side');
   };
   steps.forEach((step, i) => ScrollTrigger.create({ trigger: step, start: 'top 50%', end: 'bottom 50%', onToggle: (s) => s.isActive && active(i) }));
   ScrollTrigger.create({

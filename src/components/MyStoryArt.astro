@@ -305,18 +305,6 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
     A.ai.map((a, i) => G(`ai-${i}`, pill([560, 690, 700, 540][i], [70, 60, 200, 210][i], a, 16, i % 2 ? 'ac' : ''))).join(''),
   ].join('') }),
 
-  // the cobalt line that ran beside it all comes forward; its dots open into the work built along the way
-  side: () => ({ inner: [
-    G('lead', pen('M0 250C40 250 60 250 80 250')),
-    `<path class="ac thick sa-d" data-p="line" pathLength="1" d="M80 250C200 180 300 320 420 250C540 180 640 320 790 250"/>`,
-    A.side.map((s, i) => {
-      const x = [260, 580][i], y = [216, 284][i], up = i === 0;
-      const by = up ? y - 120 : y + 40;
-      return `<circle class="ac-fill" data-p="sdot-${i}" cx="${x}" cy="${y}" r="9"/>` +
-        G(`scard-${i}`, pen(`M${x} ${y + (up ? -12 : 12)}V${up ? by + 64 : by}`, 'ac') + P(R(x - 120, by, 240, 64, 10), 'solid ac') + X(x, by + 38, s.name.split(' · ')[0], 17, 'mid bold'));
-    }).join(''),
-  ].join('') }),
-
   // the two lines meet and, as one, draw an engineer's brackets, a team, and a maze with its way out
   today: () => ({ inner: [
     G('lead', P('M0 220C80 220 120 240 200 250') + P('M0 280C80 280 120 260 200 250', 'ac')),

@@ -100,12 +100,6 @@ export const scenes: Scene[] = [
     text: { en: 'Swiss e-commerce marketplace. AI Software Engineer.', el: 'Ελβετικό e-commerce marketplace. AI Software Engineer.' },
   },
   {
-    id: 'side',
-    rail: { en: 'Side', el: 'Πελάτες' }, label: { en: 'All along', el: 'Σε όλη τη διαδρομή' },
-    title: { en: 'The parallel line', el: 'Η παράλληλη γραμμή' },
-    text: { en: 'And through all of it, I never stopped building for my own clients.', el: 'Και σε όλη τη διαδρομή, δεν σταμάτησα ποτέ να χτίζω για τους δικούς μου πελάτες.' },
-  },
-  {
     id: 'today',
     rail: { en: 'Today', el: 'Σήμερα' }, label: { en: 'Today', el: 'Σήμερα' },
     text: { en: 'Engineer. Manager. Problem solver.', el: 'Engineer. Manager. Problem solver.' },
@@ -203,7 +197,10 @@ export const art = {
       { en: 'I led the product design and shaped the business model.', el: 'Καθοδήγησα το design του προϊόντος και διαμόρφωσα το business model.' },
       { en: 'We launched the MVP in a local market: 80 sales in the first year.', el: 'Βγάλαμε το MVP σε τοπική αγορά: 80 πωλήσεις τον πρώτο χρόνο.' },
       { en: "Real customers, real feedback. We tested the product and learned what worked and what didn't.", el: 'Πραγματικοί πελάτες, πραγματικό feedback. Δοκιμάσαμε το προϊόν και μάθαμε τι δουλεύει και τι όχι.' },
-      { en: 'We joined an idea platform, pivoted, and proposed a new business model.', el: 'Πήραμε μέρος σε idea platform, κάναμε pivot και προτείναμε νέο business model.' },
+      {
+        en: "We took part in Idea Platform, the competition of CapsuleT, Greece's incubator for technology and tourism. We pivoted and proposed a new business model to its judges: the president of the hoteliers' association, the director of [TODO: which airport], the head of the Onassis Foundation and the head of startup seed at the National Bank of Greece.",
+        el: 'Πήραμε μέρος στο Idea Platform, τον διαγωνισμό του CapsuleT, του incubator της Ελλάδας για τεχνολογία και τουρισμό. Κάναμε pivot και προτείναμε νέο business model στους κριτές του: τον πρόεδρο της ένωσης ξενοδόχων, τη διευθύντρια του [TODO: ποιο αεροδρόμιο], τον head του Ιδρύματος Ωνάση και τον επικεφαλής startup seed της Εθνικής Τράπεζας της Ελλάδος.',
+      },
       {
         en: '2022 — pitching our pivot, we won 2nd Prize at the CapsuleT Innovation Contest (Hellenic Chamber of Hotels). 2023 — a place in the CapsuleT Accelerator in Athens.',
         el: '2022 — με το pitch του pivot κερδίσαμε τη 2η θέση στο CapsuleT Innovation Contest (Ξενοδοχειακό Επιμελητήριο Ελλάδος). 2023 — θέση στο CapsuleT Accelerator στην Αθήνα.',
@@ -230,7 +227,7 @@ export const art = {
     mvp: 'MVP',
     sales: 80,
     salesLabel: { en: 'sales in the first year', el: 'πωλήσεις τον πρώτο χρόνο' },
-    idea: { en: 'Idea platform', el: 'Idea platform' },
+    idea: 'Idea Platform · CapsuleT',
     prize: { en: '2nd Prize', el: '2η θέση' },
     contest: 'CapsuleT Innovation Contest · 2022',
     accelerator: 'CapsuleT Accelerator',
@@ -387,10 +384,6 @@ export const art = {
       go: { en: 'Translate', el: 'Μετάφραση' },
     },
   },
-  side: [
-    { name: 'Arogi Kos · Arangia · La Islakos', text: { en: 'Brand-led websites and an online store.', el: 'Brand-led ιστοσελίδες και ένα online κατάστημα.' } },
-    { name: 'Feedgenix', site: 'feedgenix.com', url: 'https://feedgenix.com', text: { en: '6-stage translation pipeline, multi-provider routing, 220,000-SKU catalogue.', el: 'Pipeline μετάφρασης 6 σταδίων, multi-provider routing, κατάλογος 220.000 SKU.' } },
-  ] as { name: string; site?: string; url?: string; text: Copy }[],
   roles: [{ en: 'Engineer', el: 'Engineer' }, { en: 'Manager', el: 'Manager' }, { en: 'Problem solver', el: 'Problem solver' }] as Copy[],
   cta: { en: "Let's build something together.", el: 'Ας χτίσουμε κάτι μαζί.' },
   contact: { en: 'Contact', el: 'Επικοινωνία' },
