@@ -1,13 +1,10 @@
 // "My story" on /about (src/components/MyStory.astro, src/components/MyStoryArt.astro, src/scripts/mystory.ts):
 // Petros's path as a scroll-driven story in thirteen scenes. Every word is here, in English and Greek (German
-// later); the page shows `lang`. Words drawn inside the pictures (labels, code, formulas) are here too.
+// later); the page shows the site's `lang` (src/data/lang.ts). Words drawn inside the pictures (labels, code,
+// formulas) are here too.
+import { lang, t, type Lang, type Copy } from './lang';
 
-/** The language the story shows now. */
-export const lang = 'en' as const;
-export type Lang = 'en' | 'el' | 'de';
-export type Copy = { en: string; el: string; de?: string };
-/** The copy in the story's language (English when a translation is missing). */
-export const t = (c: Copy) => c[lang] ?? c.en;
+export { lang, t, type Lang, type Copy };
 
 /** The top of /about: the portrait, a few lines about the work, the CV. */
 export const aboutIntro = {

@@ -1,0 +1,127 @@
+---
+// The closing form on /services: who you are, what you need (pre-selected by a section's call), your business or
+// idea, and the language you'd like to be answered in. It sends like the brief form on /contact (`post` in
+// src/scripts/brief.ts, FormSubmit for now) and answers with a drawn tick (src/scripts/startform.ts). Without
+// script it is a plain form that FormSubmit receives. The budget field shows once there are ranges to pick.
+import ServiceArt from './ServiceArt.astro';
+import { servicesPage } from '../data/servicespage';
+import { brief } from '../data/site';
+import { t, lang } from '../data/lang';
+
+const s = servicesPage.start;
+const action = `https://formsubmit.co/${brief.formsubmit}`;
+const site = Astro.site ? new URL('/services/', Astro.site).href : '/services/';
+const needs = [...servicesPage.sections.map((x) => ({ key: x.key as string, label: t(x.short) })), { key: 'unsure', label: t(s.unsure) }];
+---
+<section id="start" class="start" aria-labelledby="start-title" data-start>
+  <div class="start-art" data-draw><ServiceArt name="envelope" /></div>
+  <div class="start-body">
+    <h2 id="start-title">{t(s.title)}</h2>
+    <p class="start-sub">{t(s.sub)}</p>
+
+    <form class="sf" action={action} method="POST" data-start-form>
+      <input type="hidden" name="_subject" value={s.subject} />
+      <input type="hidden" name="_template" value="table" />
+      <input type="hidden" name="_next" value={site} />
+      <input type="text" name="_honey" class="honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+      <div class="row">
+        <label class="field"><span class="lab">{t(s.name)}</span><input name="name" required autocomplete="name" /></label>
+        <label class="field"><span class="lab">{t(s.email)}</span><input type="email" name="email" required autocomplete="email" /></label>
+      </div>
+      <label class="field"><span class="lab">{t(s.phone)} <i>{t(s.optional)}</i></span><input type="tel" name="phone" autocomplete="tel" /></label>
+
+      <fieldset>
+        <legend class="lab">{t(s.need)}</legend>
+        <div class="opts">
+          {needs.map((n, i) => (
+            <label class="opt"><input type="radio" name="need" value={n.label} data-key={n.key} checked={i === needs.length - 1} /><span>{n.label}</span></label>
+          ))}
+        </div>
+      </fieldset>
+
+      <label class="field"><span class="lab">{t(s.idea)}</span>
+        <textarea name="message" rows="5" required placeholder={t(s.ideaHint)}></textarea>
+      </label>
+
+      {s.budgets.length > 0 && (
+        <label class="field"><span class="lab">{t(s.budget)} <i>{t(s.optional)}</i></span>
+          <select name="budget">
+            <option value="">{t(s.budgetPick)}</option>
+            {s.budgets.map((b) => <option>{t(b)}</option>)}
+          </select>
+        </label>
+      )}
+
+      <fieldset>
+        <legend class="lab">{t(s.language)}</legend>
+        <div class="opts">
+          {s.languages.map(([code, name]) => (
+            <label class="opt"><input type="radio" name="language" value={name} checked={code === lang} /><span>{name}</span></label>
+          ))}
+        </div>
+      </fieldset>
+
+      <div class="send-row">
+        <button class="btn primary send" type="submit" data-label={t(s.send)} data-busy={t(s.sending)}>{t(s.send)}</button>
+        <p class="sf-error" role="alert" data-error hidden>{t(s.error)}</p>
+      </div>
+    </form>
+
+    <div class="done" data-done hidden tabindex="-1">
+      <div class="done-art" data-check><ServiceArt name="check" /></div>
+      <p class="done-text">{t(s.done)}</p>
+      <button type="button" class="btn ghost" data-again>{t(s.another)}</button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .start { display: grid; gap: 24px; padding: clamp(96px, 16vh, 180px) 0 0; scroll-margin-top: var(--topbar-h); }
+  .start-art { width: min(64%, 300px); margin-inline: auto; }
+  .start h2 { font-size: clamp(2.3rem, 9.6vw, 5.4rem); letter-spacing: -0.045em; }
+  .start-sub { margin: 14px 0 0; font-size: clamp(1.2rem, 4.6vw, 1.6rem); font-weight: 500; }
+
+  .sf { display: grid; gap: 22px; margin-top: 36px; }
+  .honey { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .row { display: grid; gap: 22px; }
+  .field { display: block; }
+  .lab { display: block; margin-bottom: 10px; padding: 0; font-size: 0.9375rem; font-weight: 500; color: var(--muted); }
+  .lab i { font-style: normal; }
+  /* fields are the one place the page keeps an edge: a white ground, a hairline, and the focus ring */
+  input:not([type='radio'], [type='hidden']), textarea, select {
+    display: block; width: 100%; min-height: 52px; padding: 13px 16px; border: 1px solid color-mix(in srgb, var(--fg) 18%, transparent);
+    border-radius: 14px; background: var(--surface); color: var(--fg); font: inherit; font-size: 1.0625rem; line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea { resize: vertical; min-height: 140px; }
+  input:not([type='radio'], [type='hidden']):focus-visible, textarea:focus-visible, select:focus-visible { outline: none; border-color: var(--accent-ink); box-shadow: 0 0 0 2px var(--accent); }
+  input:user-invalid, textarea:user-invalid { border-color: #b3261e; }
+
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opt { position: relative; cursor: pointer; }
+  .opt input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .opt span {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 100px;
+    border: 1px solid color-mix(in srgb, var(--fg) 22%, transparent); font-size: 0.9375rem; font-weight: 500;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  @media (hover: hover) and (pointer: fine) { .opt:hover span { border-color: var(--fg); } }
+  .opt input:checked + span { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .opt input:focus-visible + span { box-shadow: 0 0 0 2px var(--accent); }
+
+  .send-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; }
+  .sf-error { margin: 0; color: #b3261e; font-size: 0.9375rem; font-weight: 500; }
+
+  .done { display: grid; justify-items: start; gap: 18px; margin-top: 36px; outline: none; }
+  .done-art { width: 96px; }
+  .done-text { margin: 0; font-size: clamp(1.6rem, 5.6vw, 2.4rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+
+  @media (min-width: 640px) { .row { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 900px) {
+    .start { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: clamp(40px, 6vw, 96px); align-items: start; }
+    .start-art { position: sticky; top: calc(var(--topbar-h) + 64px); width: 100%; max-width: 440px; margin: 40px 0 0; }
+    .start h2 { font-size: clamp(2.6rem, 4.6vw, 4.6rem); }
+  }
+</style>

@@ -9,7 +9,8 @@
     "pagespeed": "node --env-file-if-exists=.env scripts/pagespeed.mjs",
     "prebuild": "node scripts/github.mjs",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "thumbs": "node scripts/thumbs.mjs"
   },
   "dependencies": {
     "@fontsource/space-grotesk": "^5.3.0",

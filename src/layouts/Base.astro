@@ -2,8 +2,14 @@
 import '@fontsource/space-grotesk/400.css';
 import '@fontsource/space-grotesk/500.css';
 import '@fontsource/space-grotesk/700.css';
+// the two weights the first screen sets (text and headings), fetched with the page rather than after its styles
+import font400 from '@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff2?url';
+import font700 from '@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2?url';
 import '../styles/global.css';
 import { person, meta, brand, services } from '../data/site';
+// the site's language, which the page declares: Greek capitals lose their accents when uppercased only on a page
+// that says it is Greek
+import { lang } from '../data/lang';
 
 // `light`: the page opens on the warm light ground (every page but the home page, whose dark hero comes first)
 interface Props { title?: string; description?: string; light?: boolean }
@@ -43,13 +49,13 @@ const ld = {
     },
     {
       '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: person.name, description: meta.description,
-      inLanguage: 'en', author: { '@id': `${origin}/#person` }, publisher: { '@id': `${origin}/#business` },
+      inLanguage: lang, author: { '@id': `${origin}/#person` }, publisher: { '@id': `${origin}/#business` },
     },
   ],
 };
 ---
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -59,7 +65,7 @@ const ld = {
     <meta name="theme-color" content={light ? '#f4f3ef' : '#0a0b0a'} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={person.name} />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content={{ en: 'en_US', el: 'el_GR', de: 'de_CH' }[lang]} />
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -74,17 +80,20 @@ const ld = {
     <meta name="twitter:image:alt" content={meta.imageAlt} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    <link rel="preload" href={font700} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={font400} as="font" type="font/woff2" crossorigin />
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
-    <!-- Picks the opening intro before the first paint (src/scripts/intro.ts): the full intro once per session,
-         a still logo with reduced motion, otherwise only the header logo fading in. If the intro's script
-         never arrives, the failsafe takes the overlay away so the page is never left covered. -->
+    <!-- Picks the opening intro before the first paint (src/scripts/intro.ts): the full intro once per session on
+         the home page (a still logo with reduced motion), otherwise only the header logo fading in, so a visitor who
+         arrives on another page gets that page at once. If the intro's script never arrives, the failsafe takes the
+         overlay away so the page is never left covered. -->
     <script is:inline>
       (function () {
         var html = document.documentElement, mode = 'quick';
         // script is running: things that only open with script (the service stories) can start closed
         html.classList.add('js');
         try {
-          if (!sessionStorage.getItem('ohl-intro')) {
+          if (location.pathname === '/' && !sessionStorage.getItem('ohl-intro')) {
             mode = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'still' : 'full';
           }
         } catch (e) { /* no storage: no intro */ }

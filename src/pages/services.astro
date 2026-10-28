@@ -1,224 +1,246 @@
 ---
+// /services: for someone who doesn't know the technical name of what they need. The idea and its four directions,
+// "where are you right now?", each service with its proof, how we work, timelines, the questions as a chat, and
+// the form. Every word is in src/data/servicespage.ts; the drawings are ServiceArt.astro (and the home page's story
+// pictures for "How we work"); the motion is src/scripts/servicespage.ts.
 import Site from '../layouts/Site.astro';
 import ServiceArt from '../components/ServiceArt.astro';
-import ServiceSheets from '../components/ServiceSheets.astro';
-import { serviceCards } from '../data/projects';
-import { serviceColors, artAccent, howIWork, ui } from '../data/site';
+import ServiceSection from '../components/ServiceSection.astro';
+import FaqChat from '../components/FaqChat.astro';
+import StartForm from '../components/StartForm.astro';
+import StoryArt from '../components/StoryArt.astro';
+import StoryDefs from '../components/StoryDefs.astro';
+import { servicesPage as P } from '../data/servicespage';
+import { t } from '../data/lang';
 
-const services = await serviceCards();
-const n = services.length;
-const t = ui.servicesPage;
-const expand = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>';
-const arrow = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M5 13l7 7 7-7"/></svg>';
+const { hero: h, picker: pk, sections, how: hw, prices: pr } = P;
+const arrow = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+const down = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>';
+const title = (key: string) => t(sections.find((s) => s.key === key)!.title);
 ---
-<Site title="Services — Petros Pikionis" description="Custom websites, AI services and bots, AI SaaS and web applications, e-commerce and marketplaces, and AI search, marketing & ads — what Petros Pikionis builds." light>
-  <main class="theme-light services-page">
-    <section class="intro">
-      <p class="hint"><span class="bob" set:html={arrow} /> {t.hint} <span class="bob late" set:html={arrow} /></p>
-      <h1>{t.title}</h1>
-      <p class="lede">{t.lede}</p>
-    </section>
-
-    <!-- one screen of scroll per card; each folds up and away to show the next -->
-    <div class="flip" data-flip style={`--n: ${n}`}>
-      <div class="stage">
-        <div class="deck">
-          {services.map((s, i) => {
-            const [bg, fg] = serviceColors[s.key];
-            return (
-              <article class="card" data-card={s.key} style={`z-index: ${n - i}; --bg: ${bg}; --fg: ${fg}; --art-bg: ${bg}; --art-ac: ${artAccent[s.key]}`} aria-labelledby={`svc-${s.key}`}>
-                <div class="inner" data-inner>
-                  <div class="copy">
-                    <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-                    <div class="text">
-                      <p class="eyebrow">{s.title}</p>
-                      <h2 id={`svc-${s.key}`}>{s.claim ?? s.lead}</h2>
-                      <p class="desc">{s.summary ?? s.lead}</p>
-                    </div>
-                  </div>
-                  <div class="panel">
-                    <!-- the drawing, as it ends; it plays when the card opens -->
-                    <div class="poster"><ServiceArt name={s.key} /></div>
-                    {s.projects.length > 0 && (
-                      <div class="group links">
-                        <p class="ptitle">{t.projects}</p>
-                        <ul class="projects">
-                          {s.projects.map((p) => <li><a href={`/projects/${p.id}`}>{p.data.title}</a></li>)}
-                        </ul>
-                      </div>
-                    )}
-                    {s.proof && (
-                      <div class="group links">
-                        <p class="ptitle">{s.proof.label}</p>
-                        <ul class="projects">
-                          <li><a href={s.proof.link.href}>{s.proof.name}</a></li>
-                        </ul>
-                      </div>
-                    )}
-                    <button type="button" class="open" data-open={s.key} aria-controls={`service-${s.key}`} aria-expanded="false">
-                      <span>{t.open}</span><span class="count" aria-hidden="true">{s.includes.length}</span><Fragment set:html={expand} />
-                    </button>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
+<Site title={t(P.meta.title)} description={t(P.meta.description)} light>
+  <StoryDefs />
+  <main class="theme-light svcs" data-svcs>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <h1 id="hero-title">{t(h.title)}</h1>
+        <p class="sub">{t(h.sub)}</p>
+        <div class="actions">
+          <a class="btn primary" href="#start">{t(h.primary)} <Fragment set:html={arrow} /></a>
+          <a class="btn ghost" href="#picker">{t(h.secondary)} <Fragment set:html={down} /></a>
         </div>
       </div>
-    </div>
+      <div class="hero-art" data-hero-art><ServiceArt name="hero" /></div>
+    </section>
 
-    <!-- true of every service, so it runs under all of them -->
-    <section class="how" aria-labelledby="how-title">
-      <h2 id="how-title" class="how-title" data-rise>{howIWork.title}</h2>
-      <ol class="how-steps" data-rise>
-        {howIWork.steps.map((st, i) => (
+    <section id="picker" class="picker" aria-labelledby="picker-title">
+      <h2 id="picker-title">{t(pk.title)}</h2>
+      <ul class="picks" data-picks>
+        {pk.items.map((it) => (
           <li>
-            <span class="how-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-            <h3>{st.title}</h3>
-            <p>{st.text}</p>
+            <a class="pick" href={`#${it.key}`} data-pick>
+              <span class="pick-art"><ServiceArt name={`icon-${it.key}`} /></span>
+              <span class="pick-text">{t(it.text)}</span>
+              <span class="pick-to">{title(it.key)} <Fragment set:html={arrow} /></span>
+            </a>
           </li>
         ))}
-      </ol>
+      </ul>
     </section>
 
-    <section class="end">
-      <p class="end-label">{t.end}</p>
-      <a class="end-cta" href="/contact">{t.cta}</a>
+    {sections.map((s, n) => <ServiceSection s={s} n={n} />)}
+
+    <section id="how" class="how" aria-labelledby="how-title">
+      <h2 id="how-title">{t(hw.title)}</h2>
+      <div class="how-track" data-how>
+        <span class="how-rail" data-rail aria-hidden="true"></span>
+        <ol class="how-steps">
+          {hw.steps.map((st, i) => (
+            <li class="how-step" data-step>
+              <span class="how-node" data-node aria-hidden="true">{i + 1}</span>
+              <div class="how-text">
+                <h3 data-say>{t(st.title)}</h3>
+                {st.note && <p class="how-note" data-say>{t(st.note)}</p>}
+              </div>
+              <div class="how-art" style={`--w: ${st.box.split(' ')[2]}`}><StoryArt name={st.art} box={st.box} /></div>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <a class="how-story" href={hw.storyHref}>{t(hw.story)} <Fragment set:html={arrow} /></a>
     </section>
+
+    <section id="prices" class="prices" aria-labelledby="prices-title">
+      <h2 id="prices-title">{t(sections.some((s) => s.startingFrom) ? pr.title : pr.titleNoPrices)}</h2>
+      <ul class="tl">
+        {sections.map((s) => (
+          <li class="tl-col">
+            <h3>{t(s.short)}</h3>
+            <p class="tl-time"><span class="label">{t(pr.timeline)}</span> <b>{t(s.timeline)}</b></p>
+            <div class="tl-scale" aria-hidden="true">
+              <span class="tl-axis"></span>
+              {s.then && <span class="tl-then" style={`--b: ${s.weeks[1] / 12}`}></span>}
+              <span class="tl-range" data-range style={`--a: ${s.weeks[0] / 12}; --b: ${s.weeks[1] / 12}`}></span>
+              <span class="tl-ticks"><i>0</i><i>4</i><i>8</i><i>12 {t(pr.weeks)}</i></span>
+            </div>
+            {s.startingFrom && <p class="tl-price"><span class="label">{t(P.section.from)}</span> <b>{t(s.startingFrom)}</b></p>}
+          </li>
+        ))}
+      </ul>
+      <p class="tl-note">{t(pr.note)}</p>
+    </section>
+
+    <FaqChat />
+    <StartForm />
   </main>
-  <ServiceSheets cards={services} />
 </Site>
 
 <script>
-  import { flipStack } from '../scripts/flipstack';
-  const root = document.querySelector<HTMLElement>('[data-flip]');
-  if (root) flipStack(root);
+  import { servicesPage } from '../scripts/servicespage';
+  const root = document.querySelector<HTMLElement>('[data-svcs]');
+  if (root) servicesPage(root);
 </script>
 
 <style>
-  .services-page { padding: 0; }
+  /* 16px gutters on a phone, more as the screen grows; the content holds at 1240px */
+  .svcs {
+    --gut: 16px;
+    padding: 0 max(var(--gut), env(safe-area-inset-left, 0px)) clamp(96px, 14vh, 160px);
+    max-width: calc(1240px + 2 * var(--gut)); margin: 0 auto;
+  }
+  @media (min-width: 600px) { .svcs { --gut: 28px; } }
+  @media (min-width: 1100px) { .svcs { --gut: 48px; } }
+  .svcs :global(h2) { letter-spacing: -0.045em; }
 
-  .intro {
-    position: relative; min-height: max(640px, 82vh); padding: clamp(120px, 18vh, 190px) 20px 40px;
-    display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(28px, 6vh, 64px);
+  /* the page's buttons: the accent for the way forward, an outline for the rest */
+  .svcs :global(.btn) {
+    display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 22px; border: 0; border-radius: 100px;
+    font: inherit; font-size: 1rem; font-weight: 700; text-decoration: none; cursor: pointer; white-space: nowrap;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, scale 0.16s var(--ease-out);
   }
-  .hint { display: flex; align-items: center; gap: clamp(14px, 2.5vw, 32px); margin: 0; font-size: clamp(1.6rem, 3.5vw, 3.25rem); font-weight: 500; letter-spacing: -0.05em; }
-  .bob { display: inline-flex; color: var(--accent-ink); animation: bob 1.4s ease-in-out infinite; }
-  .bob.late { animation-delay: 0.18s; }
-  @keyframes bob { 50% { transform: translateY(10px); } }
-  .intro h1 { font-size: clamp(3rem, 11vw, 9.5rem); letter-spacing: -0.05em; }
-  .lede { margin: 0; max-width: 34ch; font-size: clamp(1.15rem, 1.6vw, 1.4rem); line-height: 1.45; }
+  .svcs :global(.btn.primary) { background: var(--accent); color: #0a0b0a; }
+  .svcs :global(.btn.ghost) { background: transparent; color: inherit; box-shadow: inset 0 0 0 1.5px currentColor; }
+  @media (hover: hover) and (pointer: fine) {
+    .svcs :global(.btn.primary:hover) { background: #6b92ff; }
+    .svcs :global(.btn.ghost:hover) { background: color-mix(in srgb, currentColor 8%, transparent); }
+  }
+  .svcs :global(.btn:active) { scale: 0.97; }
+  .svcs :global(.btn:disabled) { opacity: 0.6; cursor: progress; }
 
-  /* the pinned screen plus one screen of scroll for each card that folds away (all but the last) */
-  .flip { position: relative; height: calc(var(--n) * 100vh); }
-  .stage {
-    position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
-    display: flex; align-items: center; justify-content: center; padding: 84px clamp(14px, 4vw, 64px) 28px;
+  /* ---- hero: the promise first, the drawing under it on a phone and beside it on a wide screen ---- */
+  .hero {
+    display: grid; gap: 28px; align-content: center;
+    min-height: min(100svh, 980px); padding: calc(var(--topbar-h) + 28px) 0 32px;
   }
-  .deck { position: relative; width: min(100%, 1120px, calc((100svh - 140px) * 1.76)); aspect-ratio: 1.76 / 1; perspective: 800px; }
-  .card { position: absolute; inset: 0; transform-style: preserve-3d; backface-visibility: hidden; will-change: transform; }
-  /* the cards float in a pile, so here a shadow is earned */
-  .inner {
-    height: 100%; display: grid; grid-template-columns: 1.15fr 0.85fr; overflow: hidden;
-    border-radius: clamp(18px, 2vw, 30px); background: var(--bg); color: var(--fg);
-    box-shadow: 0 16px 50px rgb(20 17 10 / 0.18);
+  .hero h1 { font-size: clamp(2.5rem, 11vw, 6rem); letter-spacing: -0.05em; max-width: 13ch; }
+  .sub { margin: 22px 0 0; max-width: 34ch; font-size: clamp(1.1rem, 4.4vw, 1.5rem); line-height: 1.4; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .hero-art { width: 100%; max-width: 620px; margin-inline: auto; }
+  .hero-art :global(.sv) { --sw: 3.2; }
+  /* until its script takes it, the bulb waits undrawn, so it never shows drawn and then starts over */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .hero-art:not(:global(.ready)) :global(.sa-d) { stroke-dashoffset: 1.01; }
+    :global(html.js) .hero-art:not(:global(.ready)) :global(.sa-f) { opacity: 0; }
   }
-  .copy { display: flex; flex-direction: column; min-width: 0; padding: clamp(24px, 3vw, 48px); }
-  .num { font-size: clamp(1.5rem, 2.5vw, 2.25rem); font-weight: 500; line-height: 1; letter-spacing: -0.06em; }
-  .text { margin-top: auto; padding-top: 24px; }
-  .eyebrow { margin: 0 0 clamp(10px, 1.5vw, 20px); font-size: 0.9375rem; font-weight: 500; opacity: 0.75; }
-  .card h2 { max-width: 16ch; font-size: clamp(1.8rem, 3.4vw, 3.25rem); line-height: 0.96; letter-spacing: -0.04em; text-wrap: balance; }
-  .desc { margin: clamp(16px, 1.8vw, 24px) 0 0; max-width: 42ch; font-size: clamp(1rem, 1.15vw, 1.125rem); line-height: 1.5; opacity: 0.9; }
+  /* on a phone the two buttons share a row when they fit, and each takes the whole width when they don't */
+  @media (max-width: 599px) {
+    .actions .btn { flex: 1 1 auto; justify-content: center; }
+  }
+  @media (min-width: 900px) {
+    .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(32px, 5vw, 80px); align-items: center; }
+    .hero h1 { font-size: clamp(3.2rem, 5.6vw, 6rem); }
+    .hero-art { max-width: 680px; }
+    .hero-art :global(.sv) { --sw: 2.6; }
+  }
 
-  .panel {
-    margin: clamp(10px, 1.2vw, 18px) clamp(10px, 1.2vw, 18px) clamp(10px, 1.2vw, 18px) 0;
-    border-radius: clamp(12px, 1.4vw, 22px); padding: clamp(20px, 2.4vw, 36px);
-    background: color-mix(in srgb, var(--fg) 9%, var(--bg));
-    display: flex; flex-direction: column; gap: 10px; overflow: hidden;
+  /* ---- where are you right now? four sentences in the visitor's own words, each leading to its service ---- */
+  .picker { padding: clamp(48px, 9vh, 96px) 0 0; scroll-margin-top: var(--topbar-h); }
+  .picker h2 { font-size: clamp(2.3rem, 9.6vw, 5.4rem); max-width: 14ch; }
+  .picks { list-style: none; margin: clamp(28px, 5vw, 48px) 0 0; padding: 0; border-top: 1px solid color-mix(in srgb, var(--fg) 16%, transparent); }
+  .picks li { border-bottom: 1px solid color-mix(in srgb, var(--fg) 16%, transparent); }
+  .pick {
+    display: grid; grid-template-columns: 64px minmax(0, 1fr); grid-template-areas: 'art text' 'art to'; gap: 8px 16px; align-items: center;
+    padding: 20px 4px; border-radius: 14px; text-decoration: none; transition: background-color 0.2s ease;
   }
-  /* the drawing fills what the panel has left; a click anywhere on the card (but a link) opens it */
-  .poster { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
-  .poster :global(.sv) { width: auto; max-width: 100%; height: 100%; max-height: 340px; }
-  :global(html.js) .inner { cursor: pointer; }
-  .open {
-    align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; margin-top: 6px; padding: 0 8px 0 20px;
-    border: 0; border-radius: 100px; background: var(--fg); color: var(--bg); font: inherit; font-size: 0.9375rem; font-weight: 700; cursor: pointer;
-    transition: scale 0.16s var(--ease-out), opacity 0.2s ease;
+  .pick-art { grid-area: art; align-self: center; }
+  .pick-art :global(.sv) { --sw: 4; }
+  .pick-text { grid-area: text; font-size: clamp(1.2rem, 5vw, 2.1rem); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; text-wrap: balance; }
+  .pick-to { grid-area: to; display: inline-flex; align-items: center; gap: 6px; font-size: 0.9375rem; font-weight: 500; color: var(--accent-ink); }
+  .pick-to :global(svg) { transition: transform 0.2s var(--ease-out); }
+  @media (hover: hover) and (pointer: fine) {
+    .pick:hover { background: var(--surface); }
+    .pick:hover .pick-to :global(svg) { transform: translateX(4px); }
   }
-  .open :global(svg) { margin-right: 8px; }
-  .count {
-    display: grid; place-items: center; min-width: 26px; height: 26px; padding: 0 6px; border-radius: 100px;
-    background: color-mix(in srgb, var(--bg) 18%, transparent); font-size: 0.8125rem; font-variant-numeric: tabular-nums;
+  @media (min-width: 900px) {
+    .pick { grid-template-columns: 112px minmax(0, 1fr) 260px; grid-template-areas: 'art text to'; gap: 32px; padding: 26px 20px; }
+    .pick-art :global(.sv) { --sw: 3; }
+    .pick-to { justify-self: end; font-size: 1rem; }
   }
-  @media (hover: hover) and (pointer: fine) { .inner:hover .open { opacity: 0.88; } }
-  .open:active { scale: 0.97; }
-  .open:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
-  :global(html:not(.js)) .open { display: none; }
-  .group { display: grid; gap: 10px; }
-  .group + .group { margin-top: 8px; }
-  .ptitle { margin: 0; font-size: 0.9375rem; font-weight: 500; opacity: 0.7; }
-  .projects { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-  .projects { flex-direction: column; gap: 6px; }
-  .projects a { font-size: clamp(1.05rem, 1.4vw, 1.3rem); font-weight: 700; letter-spacing: -0.01em; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--fg) 35%, transparent); text-underline-offset: 0.2em; transition: text-decoration-color 0.2s ease; }
-  @media (hover: hover) and (pointer: fine) { .projects a:hover { text-decoration-color: currentColor; } }
 
-  .how { padding: clamp(96px, 14vh, 160px) clamp(20px, 4vw, 64px) 0; max-width: 1240px; margin: 0 auto; }
-  .how-title { font-size: clamp(2.6rem, 7vw, 6rem); letter-spacing: -0.05em; }
-  .how-steps {
-    list-style: none; margin: clamp(32px, 5vw, 64px) 0 0; padding: 0;
-    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(16px, 2vw, 28px);
+  /* ---- how we work: a line through six steps, each with its picture ---- */
+  .how { padding: clamp(96px, 16vh, 180px) 0 0; scroll-margin-top: var(--topbar-h); }
+  .how h2 { font-size: clamp(2.3rem, 9.6vw, 5.4rem); }
+  .how-track { position: relative; margin-top: clamp(32px, 5vw, 56px); }
+  .how-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 36px; }
+  .how-step { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 16px; row-gap: 10px; }
+  .how-node {
+    position: relative; z-index: 1; grid-row: 1 / span 2; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--bg); box-shadow: inset 0 0 0 2px var(--ink); color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums;
   }
-  .how-steps li { padding-top: 18px; border-top: 2px solid var(--ink); }
-  .how-num { display: block; font-size: 0.9375rem; font-weight: 500; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
-  .how-steps h3 { margin: 10px 0 0; font-size: clamp(1.15rem, 1.6vw, 1.45rem); line-height: 1.05; letter-spacing: -0.02em; text-transform: none; }
-  .how-steps p { margin: 10px 0 0; max-width: 28ch; font-size: 1rem; line-height: 1.5; }
-  @media (max-width: 980px) { .how-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 32px; } }
-  @media (max-width: 520px) { .how-steps { grid-template-columns: minmax(0, 1fr); row-gap: 24px; } }
+  .how-step:last-child .how-node { background: var(--cobalt); color: var(--ivory); box-shadow: none; }
+  .how-text { align-self: center; }
+  .how-step h3 { font-size: clamp(1.25rem, 5vw, 1.6rem); line-height: 1.1; letter-spacing: -0.02em; text-transform: none; }
+  .how-note { margin: 6px 0 0; font-size: 0.9375rem; color: var(--muted); }
+  .how-art { grid-column: 2; max-width: 340px; }
+  .how-art :global(.sa) { display: block; width: 100%; height: auto; overflow: visible; }
+  .how-art :global(.sa path), .how-art :global(.sa use) { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .how-art :global(.sa .sa-d) { stroke-dasharray: 1 2; }
+  .how-art :global(.sa .ac) { stroke: var(--cobalt); }
+  .how-art :global(.sa .thick) { stroke-width: 7; }
+  .how-art :global(.sa .solid) { fill: var(--paper); }
+  .how-art :global(.sa circle) { fill: var(--ink); }
+  .how-art :global(.sa circle.ac) { fill: var(--cobalt); }
+  .how-art :global(.sa text) { fill: var(--ink); font-size: 15px; font-weight: 500; }
+  /* the line between the steps: drawn by the scroll (--p), whole without script */
+  .how-rail {
+    position: absolute; left: 19px; top: 20px; bottom: 20px; width: 2px; background: var(--ink);
+    transform-origin: 50% 0; transform: scaleY(var(--p, 1));
+  }
+  .how-story { display: inline-flex; align-items: center; gap: 8px; margin-top: 36px; font-size: 1.0625rem; font-weight: 700; color: var(--accent-ink); text-underline-offset: 0.25em; }
+  @media (min-width: 900px) {
+    .how-steps { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(16px, 2vw, 28px); }
+    .how-step { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr; row-gap: 18px; }
+    .how-node { grid-row: auto; }
+    .how-text { grid-row: 3; align-self: start; }
+    /* side by side the pictures share one scale (the stories' 400 wide), each centred in the same frame */
+    .how-art { grid-column: 1; grid-row: 2; max-width: none; aspect-ratio: 4 / 3; display: grid; place-items: center; }
+    .how-art :global(.sa) { width: calc(var(--w) / 400 * 100%); }
+    .how-art :global(.sa path), .how-art :global(.sa use) { stroke-width: 3.4; }
+    .how-step h3 { font-size: clamp(1.05rem, 1.4vw, 1.3rem); }
+    .how-rail { left: 20px; right: 20px; top: 19px; bottom: auto; width: auto; height: 2px; transform-origin: 0 50%; transform: scaleX(var(--p, 1)); }
+  }
 
-  .end { min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 36px; padding: 80px 20px; text-align: center; }
-  .end-label { margin: 0; font-size: clamp(3rem, 9vw, 8.5rem); font-weight: 700; line-height: 0.95; letter-spacing: -0.06em; text-transform: uppercase; }
-  .end-cta {
-    display: inline-flex; align-items: center; min-height: 56px; padding: 0 32px; border-radius: 100px;
-    background: var(--accent); color: #0a0b0a; font-weight: 700; font-size: 1.0625rem; text-decoration: none;
-    transition: background-color 0.2s ease, scale 0.16s var(--ease-out);
+  /* ---- timelines: each service on the same scale of twelve weeks; a price shows once there is one ---- */
+  .prices { padding: clamp(96px, 16vh, 180px) 0 0; }
+  .prices h2 { font-size: clamp(2.3rem, 9.6vw, 5.4rem); }
+  .tl { list-style: none; margin: clamp(28px, 5vw, 48px) 0 0; padding: 0; display: grid; gap: 14px; }
+  /* the scale sits at the foot of every column, so the four line up whatever their words */
+  .tl-col { padding: 22px 20px 20px; border-radius: 20px; background: var(--surface); display: flex; flex-direction: column; gap: 14px; }
+  .tl-col h3 { font-size: 1.25rem; line-height: 1.1; letter-spacing: -0.02em; text-transform: none; }
+  .tl-time { margin: 0; display: grid; gap: 4px; }
+  .tl-time b, .tl-price b { font-size: 1.125rem; line-height: 1.3; }
+  .label { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--muted); }
+  .tl-scale { position: relative; height: 40px; margin-top: auto; padding-top: 4px; }
+  .tl-axis { position: absolute; left: 0; right: 0; top: 9px; height: 2px; background: color-mix(in srgb, var(--fg) 14%, transparent); border-radius: 2px; }
+  .tl-range {
+    position: absolute; top: 5px; height: 10px; border-radius: 10px; background: var(--cobalt);
+    left: calc(var(--a) * 100%); width: max(10px, calc((var(--b) - var(--a)) * 100%)); transform-origin: 0 50%;
   }
-  @media (hover: hover) and (pointer: fine) { .end-cta:hover { background: #6b92ff; } }
-  .end-cta:active { scale: 0.97; }
+  .tl-then { position: absolute; top: 9px; right: 0; left: calc(var(--b) * 100%); height: 2px; background: repeating-linear-gradient(90deg, var(--cobalt) 0 4px, transparent 4px 9px); }
+  .tl-ticks { position: absolute; left: 0; right: 0; top: 22px; display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .tl-ticks i { font-style: normal; }
+  .tl-note { margin: 22px 0 0; max-width: 56ch; font-size: 1.0625rem; line-height: 1.5; }
+  @media (min-width: 700px) { .tl { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1100px) { .tl { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
-  /* a phone gets tall cards: the copy, then the panel */
-  @media (max-width: 760px) {
-    /* the cards end above the menu that floats at the bottom of a phone */
-    .stage { padding-bottom: 92px; }
-    .deck { width: 100%; aspect-ratio: auto; height: calc(100svh - 190px); }
-    .inner { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-    .copy { padding: 22px; }
-    .text { padding-top: 14px; }
-    .card h2 { font-size: clamp(1.6rem, 7.4vw, 2.2rem); }
-    .desc { font-size: 0.9375rem; }
-    .panel { margin: 0 10px 10px; padding: 18px; justify-content: flex-start; }
-    /* the projects come first, so a long list of what's included never pushes them off the card */
-    .links { order: -1; }
-    .poster :global(.sv) { max-height: 170px; }
-    .open { min-height: 44px; font-size: 0.875rem; }
-    .group + .group { margin-top: 4px; }
-  }
-  /* a short phone: the drawing gives up its room first, so the button always stays on the card */
-  @media (max-width: 760px) and (max-height: 720px) {
-    .poster :global(.sv) { max-height: 110px; }
-  }
-  /* without script, the cards simply follow one another down the page too */
-  :global(html:not(.js)) .flip { height: auto; }
-  :global(html:not(.js)) .stage { position: static; height: auto; overflow: visible; display: block; }
-  :global(html:not(.js)) .deck { width: min(100%, 1120px); margin: 0 auto; aspect-ratio: auto; height: auto; display: grid; gap: 24px; perspective: none; }
-  :global(html:not(.js)) .card { position: relative; inset: auto; }
-  :global(html:not(.js)) .inner { min-height: 480px; }
-  /* reduced motion: no pile, the cards follow one another down the page */
-  @media (prefers-reduced-motion: reduce) {
-    .bob { animation: none; }
-    .flip { height: auto; }
-    .stage { position: static; height: auto; overflow: visible; display: block; }
-    .deck { width: min(100%, 1120px); margin: 0 auto; aspect-ratio: auto; height: auto; display: grid; gap: 24px; perspective: none; }
-    .card { position: relative; inset: auto; }
-    .inner { min-height: 480px; }
-  }
 </style>

@@ -7,8 +7,9 @@
 // symbols in StoryDefs.astro, used with <use>.
 import { r1, C, R, cls, P, D, T } from './lineart';
 
-interface Props { name: string }
-const { name } = Astro.props;
+// `box`: a viewBox of its own, cropped to the picture (/services shows them small, one after another)
+interface Props { name: string; box?: string }
+const { name, box = '0 0 400 300' } = Astro.props;
 
 type N = number;
 /** a shared person or prop */
@@ -272,4 +273,4 @@ const ART: Record<string, () => string> = {
 const inner = ART[name]?.() ?? '';
 if (!inner) throw new Error(`StoryArt: no illustration called "${name}"`);
 ---
-<svg class="sa" viewBox="0 0 400 300" aria-hidden="true" focusable="false" set:html={inner} />
+<svg class="sa" viewBox={box} aria-hidden="true" focusable="false" set:html={inner} />

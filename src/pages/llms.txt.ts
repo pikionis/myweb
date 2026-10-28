@@ -3,6 +3,8 @@
 import type { APIRoute } from 'astro';
 import { person, meta, hero, pages, brand, bots, cardOrder } from '../data/site';
 import { servicesWithProjects, otherProjects, visitUrl, badgeOf, projectHref, type ProjectEntry } from '../data/projects';
+import { servicesPage } from '../data/servicespage';
+import { t } from '../data/lang';
 
 export const GET: APIRoute = async ({ site }) => {
   const origin = (site ?? new URL('https://onehublabs.com')).origin;
@@ -14,7 +16,7 @@ export const GET: APIRoute = async ({ site }) => {
   };
   const services = await servicesWithProjects();
   const others = await otherProjects();
-  // in the order of the /services cards, AI services & bots among them
+  // the four services, and AI services & bots among them
   const offer = cardOrder.map((key) => services.find((s) => s.key === key) ?? bots);
   const includes = (list: readonly string[]) => [...list.map((x) => `- ${x}`), ''];
 
@@ -39,6 +41,18 @@ export const GET: APIRoute = async ({ site }) => {
       ...(s.proof ? [`${s.proof.label} (${s.proof.name}): ${s.proof.items.join('; ')}.`, ''] : []),
     ] : [`### ${s.title}`, '', s.summary, '', ...includes(s.includes)])),
     ...(others.length ? ['## More work', '', ...others.map(project), ''] : []),
+    // what /services says about timelines and how we work, and its questions and answers
+    '## Timelines',
+    '',
+    ...servicesPage.sections.map((s) => `- ${t(s.title)}: ${t(s.timeline)}`),
+    '',
+    '## How we work',
+    '',
+    ...servicesPage.how.steps.map((st, i) => `${i + 1}. ${t(st.title)}${st.note ? ` (${t(st.note)})` : ''}`),
+    '',
+    '## Questions',
+    '',
+    ...servicesPage.faq.items.flatMap((i) => [`### ${t(i.q)}`, '', t(i.a), '']),
     '## Pages',
     '',
     ...pages.map(({ href, name }) => `- [${name}](${origin}${href === '/' ? '/' : `${href}/`})`),

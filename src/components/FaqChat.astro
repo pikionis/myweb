@@ -1,0 +1,130 @@
+---
+// The questions I hear most, as a chat: the visitor asks (ink outline), Petros answers (cobalt). The whole
+// conversation is in the page as a description list (a question, its answer), so it reads without script and
+// for search engines and assistants (with FAQPage structured data). With script and motion, each pair is played
+// as it scrolls into view: typing dots, the question, Petros typing, the answer word by word
+// (src/scripts/faqchat.ts). The chips jump to any question; on a phone "Next question" does too.
+import { servicesPage } from '../data/servicespage';
+import { t } from '../data/lang';
+
+const f = servicesPage.faq;
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: f.items.map((i) => ({ '@type': 'Question', name: t(i.q), acceptedAnswer: { '@type': 'Answer', text: t(i.a) } })),
+};
+const visitor = '<svg viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="16" cy="12" r="5"/><path d="M7 27c0-5.5 4-9 9-9s9 3.5 9 9"/></svg>';
+const down = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>';
+---
+<section id="faq" class="faq" aria-labelledby="faq-title" data-faq>
+  <div class="faq-side">
+    <h2 id="faq-title">{t(f.title)}</h2>
+    <nav class="faq-chips" aria-label={t(f.jump)}>
+      <ul>
+        {f.items.map((i, n) => <li><a href={`#faq-${n + 1}`} data-jump={n}>{t(i.short)}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="faq-window">
+    <div class="faq-bar">
+      <span class="mono" aria-hidden="true">P</span>
+      <b>{t(f.petros)}</b>
+      <button type="button" class="faq-next" data-next>{t(f.next)} <Fragment set:html={down} /></button>
+    </div>
+    <dl class="thread">
+      {f.items.map((i, n) => (
+        <div class="pair" id={`faq-${n + 1}`} data-pair>
+          <dt class="msg them">
+            <span class="av" aria-hidden="true" set:html={visitor} />
+            <span class="bubble" data-q>{t(i.q)}</span>
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          </dt>
+          <dd class="msg me">
+            <span class="bubble" data-a>{t(i.a)}</span>
+            <span class="av mono" aria-hidden="true">P</span>
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          </dd>
+        </div>
+      ))}
+    </dl>
+    <p class="faq-end"><a class="btn ghost" href="#start" data-ask>{t(f.ask)}</a></p>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+</section>
+
+<style>
+  .faq { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; padding: clamp(96px, 16vh, 180px) 0 0; scroll-margin-top: var(--topbar-h); }
+  .faq-side, .faq-window { min-width: 0; }
+  .faq h2 { font-size: clamp(2.3rem, 9.6vw, 4.6rem); letter-spacing: -0.045em; }
+
+  /* the chips: a strip that scrolls sideways on a phone, a block that wraps on a wide screen */
+  .faq-chips ul {
+    list-style: none; margin: 18px -16px 0; padding: 0 16px 4px; display: flex; gap: 8px;
+    overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none;
+  }
+  .faq-chips ul::-webkit-scrollbar { display: none; }
+  .faq-chips li { flex: none; scroll-snap-align: start; }
+  .faq-chips a {
+    display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 100px;
+    border: 1px solid color-mix(in srgb, var(--fg) 22%, transparent); font-size: 0.9375rem; font-weight: 500;
+    text-decoration: none; white-space: nowrap; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .faq-chips a[aria-current='true'] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  @media (hover: hover) and (pointer: fine) { .faq-chips a:hover { border-color: var(--fg); } }
+
+  /* the window: an ivory frame in the ink line, its header holding under the bar while the chat scrolls */
+  .faq-window { border: 2px solid var(--ink); border-radius: 24px; background: var(--ivory); color: var(--ink); }
+  .faq-bar {
+    position: sticky; top: var(--topbar-h); z-index: 2; display: flex; align-items: center; gap: 10px;
+    padding: 12px 12px 12px 16px; border-bottom: 2px solid var(--ink); border-radius: 22px 22px 0 0; background: var(--ivory);
+  }
+  .faq-bar b { font-size: 1.0625rem; }
+  .faq-next {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px;
+    border: 0; border-radius: 100px; background: transparent; color: var(--cobalt); font-size: 0.9375rem; font-weight: 700; cursor: pointer;
+  }
+  @media (hover: hover) and (pointer: fine) { .faq-next:hover { background: color-mix(in srgb, var(--cobalt) 10%, transparent); } }
+  .faq-next:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+  :global(html:not(.js)) .faq-next { display: none; }
+
+  .thread { margin: 0; padding: 20px 14px 8px; display: grid; gap: 28px; }
+  .pair { display: grid; gap: 12px; scroll-margin-top: calc(var(--topbar-h) + 84px); }
+  .msg { position: relative; margin: 0; display: flex; align-items: flex-end; gap: 8px; }
+  .msg.me { justify-content: flex-end; }
+  .bubble { display: block; max-width: min(82%, 34em); padding: 12px 16px; font-size: 1.0625rem; line-height: 1.5; }
+  .them .bubble { border: 2px solid var(--ink); border-radius: 20px 20px 20px 6px; font-weight: 500; }
+  .me .bubble { border-radius: 20px 20px 6px 20px; background: var(--cobalt); color: var(--ivory); }
+  .av { flex: none; display: grid; place-items: center; width: 34px; height: 34px; }
+  .mono { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--cobalt); color: var(--ivory); font-size: 1rem; font-weight: 700; flex: none; }
+
+  /* typing: three dots where the bubble will be (they take no room of their own, so nothing moves) */
+  .dots {
+    position: absolute; bottom: 0; display: none; align-items: center; gap: 5px; height: 44px; padding: 0 16px; border-radius: 22px;
+  }
+  .them .dots { left: 42px; border: 2px solid var(--ink); }
+  .me .dots { right: 42px; background: var(--cobalt); }
+  .dots i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: hop 1s ease-in-out infinite; }
+  .me .dots i { background: var(--ivory); }
+  .dots i:nth-child(2) { animation-delay: 0.15s; }
+  .dots i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes hop { 0%, 60%, 100% { transform: translateY(0); opacity: 0.45; } 30% { transform: translateY(-4px); opacity: 1; } }
+  .msg.typing .dots { display: inline-flex; }
+
+  /* what has not been played yet keeps its room, unseen; an answer's words light up one by one */
+  .msg.hold .bubble, .msg.hold .av, .msg.typing .bubble { visibility: hidden; }
+  .bubble :global(.w) { transition: opacity 0.22s ease; }
+  .bubble.words :global(.w:not(.on)) { opacity: 0; }
+
+  .faq-end { margin: 0; padding: 8px 14px 22px; display: flex; justify-content: flex-end; }
+
+  @media (min-width: 900px) {
+    .faq { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); column-gap: clamp(40px, 6vw, 96px); align-items: start; }
+    .faq-side { position: sticky; top: calc(var(--topbar-h) + 32px); }
+    .faq h2 { font-size: clamp(2.6rem, 4.6vw, 4.6rem); }
+    .faq-chips ul { margin: 28px 0 0; padding: 0; flex-wrap: wrap; overflow: visible; }
+    .thread { padding: 28px 28px 12px; gap: 32px; }
+    .faq-end { padding: 8px 28px 28px; }
+    .faq-bar { padding-left: 20px; }
+  }
+</style>

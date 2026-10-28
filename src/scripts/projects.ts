@@ -83,6 +83,8 @@ export function projectsHub(root: HTMLElement) {
   const load = (b: HTMLElement) => {
     if (small.matches || b.closest('[hidden]') || b.querySelector('iframe')) return;
     const frame = document.createElement('iframe');
+    // a preview needs no cookies: without them the site's own (a shop's session) never become third-party cookies here
+    frame.setAttribute('credentialless', '');
     frame.src = b.dataset.src!;
     frame.title = b.dataset.name ?? '';
     frame.setAttribute('sandbox', SANDBOX);

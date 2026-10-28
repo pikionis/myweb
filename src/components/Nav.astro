@@ -15,7 +15,7 @@ const dark = here === '/' || here === '/contact';
     <div class="row">
       {pages.map(({ href, name, short }, i) => (
         <div class:list={['seg', { on: i === current, pinned: i === current, 'home-seg': href === '/' }]}>
-          <a class="link" href={href} draggable="false" aria-current={i === current ? 'page' : undefined}>
+          <a class="link" href={href} draggable="false" aria-current={i === current ? 'page' : undefined} aria-label={short ? name : undefined}>
             {i > 0 && <span class="cap l" aria-hidden="true"></span>}
             {i < pages.length - 1 && <span class="cap r" aria-hidden="true"></span>}
             <!-- a phone shows the short name, drawn in CSS, so the page's text holds each name once -->

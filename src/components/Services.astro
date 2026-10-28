@@ -81,7 +81,7 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                           <!-- the live site (src/scripts/livesites.ts); its title card shows until the site paints over it -->
                           <div class="site-live" data-live>
                             <span class="pfallback" aria-hidden="true" data-t={p.data.title}></span>
-                            <iframe src={live} title={`${p.data.title} ${ui.live.site}`} loading="lazy" tabindex="-1"
+                            <iframe src={live} title={`${p.data.title} ${ui.live.site}`} loading="lazy" tabindex="-1" credentialless
                               sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
                             <!-- a phone: the finger scrolls the page; this opens the site full screen to scroll through it -->
                             <button type="button" class="live-preview" data-preview={live} data-name={p.data.title}

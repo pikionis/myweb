@@ -8,9 +8,31 @@ import { previewAssistant, type Answer, type BriefAssistant, type BriefSection, 
  * 2. It drafts a final brief, written into an editable document as it streams.
  * 3. The send button slides right and becomes "Submit your brief"; files and progress ride along.
  *
- * Sending goes through `send()` only. It posts to FormSubmit's AJAX endpoint for now; when the site
- * gets its own backend, point the request there and keep the rest.
+ * Every form on the site sends through `post()` only (this one, and the closing form on /services). It posts to
+ * FormSubmit's AJAX endpoint for now; when the site gets its own backend, point the request there and keep the rest.
  */
+
+/** Sends a form's data to where the form points (its action), with upload progress for files. Rejects with
+ *  what went wrong, in words a visitor can read. */
+export function post(form: HTMLFormElement, data: FormData, onProgress?: (share: number) => void) {
+  return new Promise<void>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'));
+    xhr.setRequestHeader('Accept', 'application/json');
+    if (onProgress) xhr.upload.addEventListener('progress', (e) => { if (e.lengthComputable) onProgress(e.loaded / e.total); });
+    xhr.addEventListener('load', () => {
+      let reply: { success?: string | boolean; message?: string } = {};
+      try { reply = JSON.parse(xhr.responseText); } catch { /* not JSON */ }
+      const ok = xhr.status >= 200 && xhr.status < 300 && String(reply.success) !== 'false';
+      if (ok) resolve();
+      else reject(new Error(reply.message || `the server answered ${xhr.status}`));
+    });
+    xhr.addEventListener('error', () => reject(new Error('check your connection')));
+    xhr.addEventListener('timeout', () => reject(new Error('it took too long')));
+    xhr.timeout = 120000;
+    xhr.send(data);
+  });
+}
 
 // the real assistant arrives with the backend; until then only `npm run dev` gets the local preview
 const assistant: BriefAssistant | null = import.meta.env.DEV ? previewAssistant : null;
@@ -321,30 +343,17 @@ export function briefForm(form: HTMLFormElement) {
     });
     button.disabled = true;
 
-    const fail = (why: string) => {
-      button.disabled = false;
-      island.update(id, { status: 'error', label: "Couldn't send", detail: why, progress: undefined, action: { label: 'Retry', onClick: send } });
-    };
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'));
-    xhr.setRequestHeader('Accept', 'application/json');
-    if (withFiles) xhr.upload.addEventListener('progress', (e) => { if (e.lengthComputable) island.update(id, { progress: e.loaded / e.total }); });
-    xhr.addEventListener('load', () => {
-      let reply: { success?: string | boolean; message?: string } = {};
-      try { reply = JSON.parse(xhr.responseText); } catch { /* not JSON */ }
-      const ok = xhr.status >= 200 && xhr.status < 300 && String(reply.success) !== 'false';
-      if (!ok) { fail(reply.message || `the server answered ${xhr.status}`); return; }
+    post(form, data, withFiles ? (share) => island.update(id, { progress: share }) : undefined).then(() => {
       button.disabled = false;
       form.reset();
       files = [];
       renderFiles();
       resetAssistant();
       island.update(id, { status: 'done', label: what === 'brief' ? 'Brief submitted' : 'Idea sent', detail: "I'll reply by email", progress: undefined, action: undefined });
+    }, (err: Error) => {
+      button.disabled = false;
+      island.update(id, { status: 'error', label: "Couldn't send", detail: err.message, progress: undefined, action: { label: 'Retry', onClick: send } });
     });
-    xhr.addEventListener('error', () => fail('check your connection'));
-    xhr.addEventListener('timeout', () => fail('it took too long'));
-    xhr.timeout = 120000;
-    xhr.send(data);
   };
 
   // the browser checks the required fields first; only a valid form gets here

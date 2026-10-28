@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { services, bots, cardOrder, ui, type CardKey, type Service } from './site';
+import { services, ui } from './site';
 
 export type ProjectEntry = CollectionEntry<'projects'>;
 
@@ -15,17 +15,6 @@ export async function getProjects() {
 export async function servicesWithProjects() {
   const all = await getProjects();
   return services.map((s) => ({ ...s, projects: all.filter((p) => p.data.services.includes(s.key)) }));
-}
-
-/** What a /services card shows. */
-export type ServiceCard = Pick<Service, 'title' | 'need' | 'claim' | 'summary' | 'proof'> & {
-  key: CardKey; lead?: string; includes: readonly string[]; projects: ProjectEntry[];
-};
-
-/** The /services cards in their order: the four services with their projects, and AI services & bots. */
-export async function serviceCards(): Promise<ServiceCard[]> {
-  const withProjects = await servicesWithProjects();
-  return cardOrder.map((key) => withProjects.find((s) => s.key === key) ?? { ...bots, projects: [] });
 }
 
 /** Projects outside the four services: they stay on /projects, under "More work". */

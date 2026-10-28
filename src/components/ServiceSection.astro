@@ -1,0 +1,138 @@
+---
+// One service on /services, from its data (src/data/servicespage.ts): its drawing, title and promise, what it
+// covers, who it is for (chips), real projects as proof, the timeline, and a call that pre-selects it in the
+// closing form. On a phone: title, promise, drawing, the rest; on a wide screen the drawing holds beside the words
+// (left or right, in turn) and draws itself as the section scrolls by (src/scripts/servicespage.ts).
+import ServiceArt from './ServiceArt.astro';
+import { servicesPage, type ServiceSection } from '../data/servicespage';
+import { t } from '../data/lang';
+
+interface Props { s: ServiceSection; n: number }
+const { s, n } = Astro.props;
+const w = servicesPage.section;
+const tick = '<svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 10.5l3.6 3.6L15.5 6"/></svg>';
+const clock = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+const arrow = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+---
+<section id={s.key} class:list={['svc', { flip: n % 2 === 1 }]} aria-labelledby={`svc-${s.key}`} data-svc={s.key}>
+  <header class="svc-head">
+    <p class="svc-num" aria-hidden="true">{String(n + 1).padStart(2, '0')}</p>
+    <h2 id={`svc-${s.key}`}>{t(s.title)}</h2>
+    <p class="svc-promise">{t(s.promise)}</p>
+  </header>
+
+  <div class="svc-art"><div class="svc-art-in" data-draw><ServiceArt name={s.key} /></div></div>
+
+  <div class="svc-rest">
+    {s.intro && <p class="svc-intro">{t(s.intro)}</p>}
+    <ul class="svc-list">
+      {s.bullets.map((b) => <li><Fragment set:html={tick} /><span>{t(b)}</span></li>)}
+    </ul>
+
+    <div class="svc-for">
+      <p class="label" id={`for-${s.key}`}>{t(s.chipsLabel)}</p>
+      <ul class="chips" aria-labelledby={`for-${s.key}`} data-chips>
+        {s.chips.map((c) => <li>{t(c)}</li>)}
+      </ul>
+    </div>
+
+    <div class="svc-proof">
+      <p class="label" id={`proof-${s.key}`}>{t(w.proof)}</p>
+      <ul class="proofs" aria-labelledby={`proof-${s.key}`}>
+        {s.proof.map((p) => (
+          <li class="proof">
+            <div class="proof-pic">
+              {p.icon
+                ? <ServiceArt name={`proof-${p.icon}`} />
+                : <img src={`/projects/thumbs/${p.project}.webp`} alt="" width="640" height="400" loading="lazy" decoding="async" />}
+            </div>
+            <div class="proof-text">
+              {p.url
+                ? <a class="proof-name" href={p.url}>{p.name}</a>
+                : <p class="proof-name">{p.name}</p>}
+              <p class="proof-line">{t(p.line)}</p>
+              {p.url && <span class="proof-go" aria-hidden="true">{t(w.open)} <Fragment set:html={arrow} /></span>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="svc-go">
+      <p class="svc-time"><Fragment set:html={clock} /><span><span class="label">{t(w.timeline)}</span> <b>{t(s.timeline)}</b></span></p>
+      {s.startingFrom && <p class="svc-price"><span class="label">{t(w.from)}</span> <b>{t(s.startingFrom)}</b></p>}
+      <a class="btn primary" href="#start" data-need={s.key}>{t(s.cta)} <Fragment set:html={arrow} /></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .svc {
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px;
+    padding: clamp(72px, 12vh, 140px) 0 0; scroll-margin-top: var(--topbar-h);
+  }
+  .svc-num { margin: 0 0 14px; font-size: 0.9375rem; font-weight: 500; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+  .svc h2 { font-size: clamp(2.3rem, 9.6vw, 5.4rem); letter-spacing: -0.045em; }
+  .svc-promise { margin: 18px 0 0; max-width: 24ch; font-size: clamp(1.35rem, 5.2vw, 2.1rem); font-weight: 500; line-height: 1.18; letter-spacing: -0.02em; text-wrap: balance; }
+
+  /* the drawing: as wide as the phone (it is the section's picture), beside the words on a wide screen */
+  .svc-art { margin-inline: -4px; }
+  .svc-art-in { max-width: 560px; margin-inline: auto; }
+
+  .svc-rest { display: grid; gap: 36px; }
+  .svc-intro { margin: 0; max-width: 56ch; font-size: 1.125rem; line-height: 1.55; }
+  .svc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .svc-list li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; align-items: start; font-size: 1.0625rem; line-height: 1.5; }
+  .svc-list :global(svg) { margin-top: 2px; color: var(--accent-ink); }
+
+  .label { margin: 0 0 12px; font-size: 0.9375rem; font-weight: 500; color: var(--muted); }
+  .chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips li {
+    display: inline-flex; align-items: center; min-height: 36px; padding: 6px 14px; border-radius: 100px;
+    border: 1px solid color-mix(in srgb, var(--fg) 22%, transparent); font-size: 0.9375rem; line-height: 1.3;
+  }
+
+  .proofs { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .proof {
+    position: relative; display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 16px; align-items: center;
+    padding: 10px; border-radius: 16px; background: var(--surface);
+    transition: box-shadow 0.2s ease;
+  }
+  .proof-pic { aspect-ratio: 16 / 10; border-radius: 10px; overflow: hidden; background: var(--paper); display: grid; place-items: center; }
+  .proof-pic img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .proof-pic :global(.sv) { width: 86%; --sw: 3.4; }
+  .proof-text { min-width: 0; display: grid; gap: 4px; padding-right: 6px; }
+  .proof-name { margin: 0; font-size: 1.125rem; font-weight: 700; letter-spacing: -0.01em; text-decoration: none; }
+  /* the whole card answers the link */
+  a.proof-name::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+  .proof-line { margin: 0; font-size: 0.9375rem; line-height: 1.4; color: var(--muted); }
+  .proof-go { display: inline-flex; align-items: center; gap: 6px; margin-top: 2px; font-size: 0.875rem; font-weight: 500; color: var(--accent-ink); }
+  .proof-go :global(svg) { transition: transform 0.2s var(--ease-out); }
+  @media (hover: hover) and (pointer: fine) {
+    .proof:has(a:hover) { box-shadow: 0 0 0 1px color-mix(in srgb, var(--fg) 30%, transparent); }
+    .proof:has(a:hover) .proof-go :global(svg) { transform: translateX(3px); }
+  }
+  .proof:has(a:focus-visible) { box-shadow: 0 0 0 2px var(--accent); }
+  .proof a:focus-visible { outline: none; }
+
+  .svc-go { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; }
+  .svc-time, .svc-price { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 1.0625rem; }
+  .svc-time :global(svg) { flex: none; color: var(--accent-ink); }
+  .svc-time .label, .svc-price .label { display: block; margin: 0; font-size: 0.8125rem; }
+  .svc-time b { font-weight: 700; }
+
+  /* a wide screen: the drawing holds in its column while the words scroll beside it; every other one swaps sides */
+  @media (min-width: 900px) {
+    .svc { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); grid-template-rows: auto 1fr; column-gap: clamp(40px, 6vw, 96px); row-gap: 32px; }
+    .svc-head { grid-column: 2; grid-row: 1; }
+    .svc-rest { grid-column: 2; grid-row: 2; }
+    .svc-art { grid-column: 1; grid-row: 1 / span 2; margin: 0; }
+    .svc-art-in { position: sticky; top: calc(var(--topbar-h) + max(24px, (100svh - var(--topbar-h) - 480px) / 2)); }
+    .svc.flip { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); }
+    .svc.flip .svc-head, .svc.flip .svc-rest { grid-column: 1; }
+    .svc.flip .svc-art { grid-column: 2; }
+    .svc h2 { font-size: clamp(2.6rem, 4.6vw, 4.6rem); }
+    .svc-promise { font-size: clamp(1.5rem, 2.1vw, 2rem); }
+    .proof { grid-template-columns: 168px minmax(0, 1fr); }
+  }
+</style>

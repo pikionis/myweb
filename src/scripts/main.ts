@@ -8,7 +8,6 @@ import { workStack } from './workstack';
 import { liveSite, livePreview } from './livesites';
 import { myStory } from './mystory';
 import { serviceStories } from './stories';
-import { serviceSheets } from './servicesheets';
 import { letterCascade } from './cascade';
 import { ditheredText } from './dither';
 import { logoIntro } from './intro';
@@ -145,9 +144,6 @@ export function init() {
   if (story) myStory(story);
   const bubble = document.querySelector<HTMLElement>('[data-bubble]');
   if (bubble) serviceStories(bubble, intro.handoff);
-  // the /services cards, opened
-  const sheets = document.querySelector<HTMLElement>('[data-sheets]');
-  if (sheets) serviceSheets(sheets, intro.handoff);
   document.querySelectorAll<HTMLElement>('[data-dither]').forEach(ditheredText);
   // titles ripple letter by letter on hover; a project's name answers a hover anywhere on its card
   document.querySelectorAll<HTMLElement>('[data-cascade]').forEach((el) =>

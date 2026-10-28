@@ -40,13 +40,24 @@
 /* the sheet covers the viewport from here on; this only colours overscroll */
 body.light { background-color: var(--paper); }
 
+/* Arial sized to Space Grotesk, so the page keeps its lines while the font loads and nothing moves when it arrives:
+   text by the width of lowercase, the bold by the width of capitals (the uppercase headings) */
+@font-face {
+  font-family: 'Space Grotesk Fallback'; font-weight: 400 500; src: local('Arial'), local('ArialMT');
+  size-adjust: 110.7%; ascent-override: 88.9%; descent-override: 26.4%; line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Space Grotesk Fallback'; font-weight: 600 700; src: local('Arial Bold'), local('Arial-BoldMT');
+  size-adjust: 90.3%; ascent-override: 109%; descent-override: 32.3%; line-gap-override: 0%;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Space Grotesk', 'Space Grotesk Fallback', 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;

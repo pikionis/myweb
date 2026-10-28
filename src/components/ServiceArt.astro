@@ -1,14 +1,21 @@
 ---
-// One drawing per /services card, by service: line art in the card's ink with one accent (--art-ac) on the
-// card's ground (--art-bg). Each is drawn as it ends, which is how it rests on the closed card and with reduced
-// motion; src/scripts/serviceart.ts plays it from nothing when the card opens. The parts it moves are named
-// by data-p; strokes draw on as in the stories (lineart.ts). The words are in src/data/serviceart.ts.
+// The drawings of /services, by name: one continuous ink line on the page's ivory, with one cobalt accent
+// (the pen of the story illustrations, lineart.ts). Each is drawn as it ends, which is how it rests with reduced
+// motion or without script; src/scripts/serviceart.ts plays it from nothing. Parts it moves are named by data-p;
+// `wire` lines (the web drawing's wireframe) only show while it is being built. The words are in
+// src/data/servicespage.ts (`art`).
+//   hero: a lightbulb whose line unrolls into the four services (a browser, a phone, a bag, a magnifier)
+//   icon-<key>: that service's icon alone (the picker)
+//   web / apps / commerce / search: each service's story (its section)
+//   envelope: the closing form's envelope; check: a sent form
+//   proof-<icon>: the picture of a proof card that has no capture
 import { r1, C, R, P, D, cls } from './lineart';
-import { serviceArt as A } from '../data/serviceart';
-import type { CardKey } from '../data/site';
+import { servicesPage } from '../data/servicespage';
+import { t } from '../data/lang';
 
-interface Props { name: CardKey }
-const { name } = Astro.props;
+interface Props { name: string; class?: string }
+const { name, class: extra = '' } = Astro.props;
+const A = servicesPage.art;
 
 type N = number;
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -16,169 +23,193 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const G = (p: string, inner: string, attrs = '') => `<g data-p="${p}"${attrs ? ` ${attrs}` : ''}>${inner}</g>`;
 /** a filled shape (it does not draw on) */
 const F = (d: string, extra: string, attrs = '') => `<path class="${extra}" d="${d}"${attrs ? ` ${attrs}` : ''}/>`;
-/** a line of words */
+/** words; 'mid' centres them on x */
 const X = (x: N, y: N, text: string, size: N, extra = '', attrs = '') =>
-  `<text class="${cls('t', extra)}" x="${x}" y="${y}" font-size="${size}"${attrs ? ` ${attrs}` : ''}>${esc(text)}</text>`;
-/** how wide a line of words comes out (Space Grotesk, medium, near enough) */
-const width = (text: string, size: N) => Math.round(text.length * size * 0.56);
-/** a five-pointed star */
-const star = (cx: N, cy: N, r: N) => 'M' + Array.from({ length: 10 }, (_, i) => {
-  const a = -Math.PI / 2 + (i * Math.PI) / 5, d = i % 2 ? r * 0.45 : r;
-  return `${r1(cx + d * Math.cos(a))} ${r1(cy + d * Math.sin(a))}`;
-}).join('L') + 'Z';
+  `<text class="${cls('t', extra)}" x="${x}" y="${y}" font-size="${size}"${extra.split(' ').includes('mid') ? ' text-anchor="middle"' : ''}${attrs ? ` ${attrs}` : ''}>${esc(text)}</text>`;
+/** a wireframe line: dashed, shown only while the page is being built */
+const W = (d: string) => `<path class="wire" d="${d}"/>`;
+/** a dot that fades in, in the accent */
+const Dac = (cx: N, cy: N, r: N) => `<circle class="sa-f ac-fill" cx="${cx}" cy="${cy}" r="${r}"/>`;
 /** a four-pointed sparkle: the drawings' sign for AI at work */
 const spark = (cx: N, cy: N, r: N) => `M${cx} ${cy - r}Q${cx} ${cy} ${cx + r} ${cy}Q${cx} ${cy} ${cx} ${cy + r}Q${cx} ${cy} ${cx - r} ${cy}Q${cx} ${cy} ${cx} ${cy - r}Z`;
-/** three dots: someone is typing */
-const dots = (x: N, y: N, inv = false) => [0, 1, 2].map((i) => `<circle class="${inv ? 'dot inv-fill' : 'dot'}" cx="${x + i * 10}" cy="${y}" r="3"/>`).join('');
-
-const ART: Record<CardKey, () => string> = {
-  // ---- Custom web & design: a site builds itself, ready for AI, in three languages, with a chat on the side ----
-  web: () => {
-    const w = A.web;
-    const hello = width(w.greet, 12) + 28;
-    return [
-      G('w-llms', P('M392 116H454L472 134V238H392Z', 'solid') + P('M454 116V134H472') + P('M426 150H460') + P('M426 164H452') + P('M426 178H460') + X(422, 222, w.llms, 10.5)),
-      G('w-frame', P(R(64, 56, 352, 236, 14), 'solid') + P('M64 86H416') + D(84, 71, 3.2) + D(96, 71, 3.2) + D(108, 71, 3.2)),
-      G('w-nav', P(R(84, 100, 30, 10, 3)) + P('M232 105H254') + P('M266 105H288')),
-      G('w-lang', P(R(320, 94, 44, 22, 11)) + w.langs.map((l, i) => X(342, 109, l, 11, '', `text-anchor="middle" data-l="${i}"${i ? ' opacity="0"' : ''}`)).join('')),
-      G('w-hero', P(R(84, 124, 312, 70, 10))),
-      G('w-copy', P('M102 146H250', 'thick') + P('M102 162H206')),
-      G('w-btn', F(R(102, 172, 62, 14, 7), 'ac-fill')),
-      G('w-ring', F(R(96, 166, 74, 26, 13), 'ac ring')),
-      G('w-cards', [84, 192, 300].map((x) => P(R(x, 208, 96, 64, 8)) + P(`M${x + 12} 248H${x + 64}`) + P(`M${x + 12} 260H${x + 44}`)).join('')),
-      G('w-data', P(R(22, 36, 66, 34, 17), 'solid ac') + X(55, 58, w.data, 14, 't-ac', 'text-anchor="middle"')),
-      G('w-hello', P(R(398 - hello, 218, hello, 30, 15), 'solid') + G('w-typing', dots(398 - hello + 16, 233), 'opacity="0"') + G('w-greet', X(398 - hello + 14, 237, w.greet, 12))),
-      G('w-chat', `<circle class="ac-fill" cx="404" cy="276" r="17"/>` + F('M396 270h16v10h-9l-5 4v-4h-2z', 'inv')),
-    ].join('');
-  },
-
-  // ---- AI services & bots: a guest asks, the bot answers and books, the guest is delighted ----
-  bots: () => {
-    const h = 32, gap = 12, y0 = 28;
-    const chat = A.bots.map((m, i) => {
-      const y = y0 + i * (h + gap);
-      const bot = m.from === 'bot';
-      const done = bot && i === A.bots.length - 1;
-      const w = width(m.text, 13) + 28 + (done ? 18 : 0);
-      const x = bot ? 340 - w : 140;
-      const shape = bot ? F(R(x, y, w, h, 16), 'fill') : P(R(x, y, w, h, 16), 'solid');
-      const check = done ? F(`M${x + 13} ${y + 16}l4 4 8-9`, 'inv') : '';
-      const typing = bot ? G(`typing-${i}`, F(R(340 - 54, y, 54, h, 16), 'fill') + dots(340 - 54 + 17, y + 16, true), 'opacity="0"') : '';
-      return typing + G(`msg-${i}`, shape + check + X(x + 14 + (done ? 18 : 0), y + 21, m.text, 13, bot ? 't-inv' : ''), `data-from="${m.from}"`);
-    }).join('');
-    const guest = G('guest', [
-      G('g-burst', P('M56 166L46 156', 'ac') + P('M88 158V144', 'ac') + P('M120 166L130 156', 'ac')),
-      G('g-arms', P('M62 258L40 218') + P('M114 258L136 218')),
-      G('g-head', P(C(88, 196, 20)) + D(81, 193, 2.4) + D(95, 193, 2.4)
-        + G('g-flat', P('M82 205H94'), 'opacity="0"') + G('g-smile', P('M79 202Q88 213 97 202'))),
-      P('M50 300C50 254 68 234 88 234C108 234 126 254 126 300'),
-    ].join(''));
-    const robot = G('robot', [
-      P('M392 150V139'),
-      `<circle data-p="r-light" class="ac-fill sa-f" cx="392" cy="133" r="5"/>`,
-      P(R(358, 150, 68, 50, 12)),
-      P('M358 166H352V184H358') + P('M426 166H432V184H426'),
-      G('r-eyes', P(R(374, 166, 10, 12, 4)) + P(R(400, 166, 10, 12, 4))),
-      P('M382 188H402'),
-      P('M392 200V224'),
-      P('M352 300V242Q352 224 370 224H414Q432 224 432 242V300'),
-    ].join(''));
-    return guest + robot + chat;
-  },
-
-  // ---- AI SaaS & web applications: five tools become one system, and the data answers in plain words ----
-  apps: () => {
-    const a = A.apps;
-    const ys = [96, 138, 180, 222, 264];
-    // where each tool floats before it joins the system
-    const from = [[62, 40], [430, 34], [30, 196], [456, 200], [252, 336]];
-    const icon = [
-      (x: N, y: N) => P(R(x - 8, y - 7, 16, 11, 3)) + P(`M${x - 4} ${y + 4}l-2 4 5-4`),
-      (x: N, y: N) => P(R(x - 8, y - 6, 16, 14, 3)) + P(`M${x - 8} ${y - 1}H${x + 8}`) + P(`M${x - 4} ${y - 9}v4M${x + 4} ${y - 9}v4`),
-      (x: N, y: N) => P(C(x - 2, y - 3, 3.5)) + P(`M${x - 8} ${y + 8}c0-5 2.5-7 6-7s6 2 6 7`) + P(C(x + 6, y - 4, 2.5)),
-      (x: N, y: N) => P(`M${x - 6} ${y - 8}h12v16l-3-2-3 2-3-2-3 2z`) + P(`M${x - 3} ${y - 3}h6M${x - 3} ${y + 1}h6`),
-      (x: N, y: N) => P(`M${x - 8} ${y - 3}v6h3l8 5v-16l-8 5z`) + P(`M${x + 6} ${y - 4}q3 4 0 8`),
-    ];
-    const tools = ys.map((y, i) => G(`tool-${i}`, P(R(108, y - 15, 30, 30, 8), 'solid') + icon[i](123, y),
-      `data-dx="${from[i][0] - 123}" data-dy="${from[i][1] - y}"`)).join('');
-    const ly = [62, 84, 96, 74], ty = [80, 104, 132, 92];
-    const bars = a.months.map((m, i) => {
-      const x = 184 + i * 56;
-      return `<rect class="ly" data-p="bar" x="${x}" y="${276 - ly[i]}" width="16" height="${ly[i]}" rx="2"/>`
-        + `<rect class="ac-fill" data-p="bar" x="${x + 20}" y="${276 - ty[i]}" width="16" height="${ty[i]}" rx="2"/>`
-        + X(x + 18, 293, m, 10, i === 2 ? 't-strong' : '', 'text-anchor="middle"');
-    }).join('');
-    return [
-      G('a-frame', P(R(96, 60, 332, 244, 14), 'solid') + P('M152 60V304')),
-      G('a-ask', P(R(166, 76, 248, 28, 14)) + F(spark(181, 90, 6), 'ac-fill') + X(193, 94, a.ask, 10.5, '', 'data-type')),
-      G('a-chart', P('M170 276H414') + bars),
-      G('a-fore', F('M388 184L414 150', 'ac dash') + F('M404 150H414V160', 'ac')),
-      tools,
-    ].join('');
-  },
-
-  // ---- E-commerce & marketplaces: AI writes the product, twenty languages, in sync with the marketplaces ----
-  commerce: () => {
-    const c = A.commerce;
-    const shops = [110, 190, 270];
-    const curve = (y: N) => `M204 190C262 190 300 ${y} 376 ${y}`;
-    const pills = [...c.langs, c.more].map((l, i) => {
-      const x = 48 + i * 42, more = i === c.langs.length;
-      return G(`lang-${i}`, P(R(x, 36, 36, 24, 12), more ? 'solid ac' : 'solid') + X(x + 18, 52, l, 11, more ? 't-ac' : '', 'text-anchor="middle"'));
-    }).join('');
-    return [
-      G('c-card', P(R(48, 88, 156, 200, 14), 'solid') + P(R(62, 102, 128, 86, 8)) + P('M104 132H148L152 174H100Z') + P('M114 132V126a12 12 0 0 1 24 0V132') + P(R(62, 252, 54, 22, 11))),
-      G('c-desc', P('M62 206H190') + P('M62 220H172') + P('M62 234H182')),
-      G('c-spark', F(spark(196, 198, 9), 'ac-fill')),
-      pills,
-      shops.map((y, i) => G(`c-line-${i}`, P(curve(y), '', `data-path="${i}"`))).join(''),
-      shops.map((y, i) => G(`shop-${i}`, P(R(376, y - 20, 72, 42, 8), 'solid') + P(`M376 ${y - 8}H448`) + P(`M406 ${y + 22}V${y + 6}H418V${y + 22}`))).join(''),
-      // the packets in flight between the shop and the marketplaces (they rest halfway)
-      shops.map((y, i) => `<circle class="ac-fill" data-p="packet-${i}" cx="${r1(0.125 * 204 + 0.375 * 262 + 0.375 * 300 + 0.125 * 376)}" cy="${r1(0.5 * 190 + 0.5 * y)}" r="4.5"/>`).join(''),
-      G('c-mail', P(R(80, 308, 52, 36, 6), 'solid') + P('M80 312L106 330L132 312') + F('M146 302c-3-4-9-2-8 3 1 4 8 8 8 8s7-4 8-8c1-5-5-7-8-3z', 'ac-fill')),
-    ].join('');
-  },
-
-  // ---- AI search, marketing & ads: an AI answers with your business first; reviews answered; ads that grow ----
-  search: () => {
-    const s = A.search;
-    const qw = width(s.ask, 12) + 28;
-    const rows = [130, 178, 226].map((y, i) => G(`row-${i}`,
-      P(R(56, y, 280, 40, 10), i ? 'solid' : 'solid ac') + P(R(64, y + 8, 24, 24, 6), i ? '' : 'ac')
-      + (i ? P(`M98 ${y + 15}H190`) : X(98, y + 19, s.you, 12, 't-ac t-strong'))
-      + P(`M98 ${y + 28}H${i ? 160 : 210}`)
-      + (i ? '' : G('s-star', F(star(316, y + 20, 9), 'ac-fill'))))).join('');
-    const stars = [0, 1, 2, 3, 4].map((i) => F(star(382 + i * 17, 112, 6.5), 'ac-fill', `data-p="rstar"`)).join('');
-    return [
-      G('s-frame', P(R(40, 40, 312, 268, 16), 'solid') + P('M40 74H352') + F(spark(62, 57, 7), 'ac-fill') + P('M80 57H128')),
-      G('s-q', F(R(336 - qw, 86, qw, 30, 15), 'fill') + X(336 - qw + 14, 106, s.ask, 12, 't-inv', 'data-type')),
-      G('s-typing', P(R(56, 130, 56, 30, 15), 'solid') + dots(73, 145), 'opacity="0"'),
-      rows,
-      G('s-review', P(R(364, 92, 104, 70, 10), 'solid') + stars + P('M376 134H454') + P('M376 146H430')),
-      G('s-reply', F(R(364, 172, 104, 40, 12), 'fill') + F('M376 186H448M376 198H422', 'inv') + F(spark(466, 170, 7), 'ac-fill')),
-      G('s-ads', P('M364 304H470') + P('M368 298L392 282L414 288L440 260L464 242', 'ac') + P('M455 241L464 242L462 251', 'ac')),
-    ].join('');
-  },
+/** a gear: n teeth round a circle of radius r */
+const gear = (cx: N, cy: N, r: N, n: N, depth: N) => {
+  const pts: string[] = [];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2, w = Math.PI / n;
+    for (const [da, rr] of [[-w * 0.55, r], [-w * 0.35, r + depth], [w * 0.35, r + depth], [w * 0.55, r]] as [N, N][]) {
+      pts.push(`${r1(cx + Math.cos(a + da) * rr)} ${r1(cy + Math.sin(a + da) * rr)}`);
+    }
+  }
+  return `M${pts.join('L')}Z`;
 };
+
+/** the lightbulb: its glass centred on (cx, cy), scaled by s; the filament and the rays are the accent */
+const bulb = (p: string, cx: N, cy: N, s = 1) => {
+  const x = (v: N) => r1(cx + v * s), y = (v: N) => r1(cy + v * s);
+  const rays = Array.from({ length: 7 }, (_, i) => {
+    const a = ((-160 + i * (140 / 6)) * Math.PI) / 180;
+    return `M${x(Math.cos(a) * 76)} ${y(Math.sin(a) * 76)}L${x(Math.cos(a) * 94)} ${y(Math.sin(a) * 94)}`;
+  }).join('');
+  return G(p,
+    G(`${p}-glass`, P(`M${x(-28)} ${y(82)}C${x(-28)} ${y(62)} ${x(-58)} ${y(48)} ${x(-58)} ${y(4)}C${x(-58)} ${y(-32)} ${x(-32)} ${y(-58)} ${x(0)} ${y(-58)}C${x(32)} ${y(-58)} ${x(58)} ${y(-32)} ${x(58)} ${y(4)}C${x(58)} ${y(48)} ${x(28)} ${y(62)} ${x(28)} ${y(82)}`, 'solid'))
+    + G(`${p}-base`, P(`M${x(-28)} ${y(82)}H${x(28)}`) + P(`M${x(-26)} ${y(94)}H${x(26)}M${x(-23)} ${y(106)}H${x(23)}`) + P(`M${x(-14)} ${y(116)}Q${x(0)} ${y(128)} ${x(14)} ${y(116)}`))
+    + G(`${p}-filament`, P(`M${x(-12)} ${y(80)}L${x(-16)} ${y(22)}M${x(12)} ${y(80)}L${x(16)} ${y(22)}`, 'ac thin') + P(`M${x(-16)} ${y(22)}C${x(-10)} ${y(2)} ${x(-6)} ${y(34)} ${x(0)} ${y(14)}C${x(6)} ${y(-6)} ${x(10)} ${y(28)} ${x(16)} ${y(22)}`, 'ac'))
+    + G(`${p}-rays`, P(rays, 'ac')),
+  );
+};
+
+// the four services' icons, each from the middle of its top edge
+const ICONS: Record<string, (cx: N, top: N) => string> = {
+  web: (cx, top) => P(R(cx - 50, top, 100, 72, 9), 'solid') + P(`M${cx - 50} ${top + 18}H${cx + 50}`)
+    + D(cx - 38, top + 9, 2.4) + D(cx - 30, top + 9, 2.4) + D(cx - 22, top + 9, 2.4)
+    + P(`M${cx - 38} ${top + 34}H${cx + 30}M${cx - 38} ${top + 46}H${cx + 12}M${cx - 38} ${top + 58}H${cx}`),
+  apps: (cx, top) => P(R(cx - 24, top, 48, 88, 10), 'solid') + P(`M${cx - 8} ${top + 10}H${cx + 8}`)
+    + P(`M${cx - 14} ${top + 28}H${cx + 14}M${cx - 14} ${top + 40}H${cx + 6}M${cx - 14} ${top + 52}H${cx + 10}`) + D(cx, top + 77, 3.2),
+  commerce: (cx, top) => P(`M${cx - 16} ${top + 22}V${top + 14}C${cx - 16} ${top - 4} ${cx + 16} ${top - 4} ${cx + 16} ${top + 14}V${top + 22}`)
+    + P(`M${cx - 36} ${top + 22}H${cx + 36}L${cx + 30} ${top + 88}H${cx - 30}Z`, 'solid'),
+  search: (cx, top) => P(C(cx - 6, top + 28, 28), 'solid') + P(`M${cx - 20} ${top + 20}A16 16 0 0 1 ${cx - 8} ${top + 12}`, 'thin')
+    + P(`M${cx + 14} ${top + 48}L${cx + 36} ${top + 70}`, 'thick'),
+};
+const KEYS = ['web', 'apps', 'commerce', 'search'];
+
+const ART: Record<string, () => string> = {
+  // ---- the idea, and the four things it can become ----
+  hero: () => {
+    const xs = [82, 214, 346, 478];
+    return bulb('bulb', 280, 112)
+      + G('stem', P('M280 236V266'))
+      + xs.map((x, i) => G(`branch-${i}`, P(`M280 266C280 288 ${x} 278 ${x} 300`))).join('')
+      + xs.map((x, i) => G(`icon-${i}`, ICONS[KEYS[i]](x, 300))).join('');
+  },
+
+  // ---- a website: the window, its wireframe, then the real page fills it in ----
+  web: () => {
+    const cards = [48, 182, 316];
+    const glyph = [
+      (x: N) => P(`M${x + 16} 300L${x + 40} 280L${x + 56} 294L${x + 70} 284L${x + 100} 300`, 'thin') + P(C(x + 86, 276, 6), 'thin ac'),
+      (x: N) => P(`M${x + 14} 290Q${x + 26} 282 ${x + 38} 290T${x + 62} 290T${x + 86} 290T${x + 106} 290`, 'thin') + P(`M${x + 24} 300Q${x + 36} 292 ${x + 48} 300T${x + 72} 300T${x + 96} 300`, 'thin'),
+      (x: N) => P(`M${x + 58} 302C${x + 46} 290 ${x + 46} 276 ${x + 58} 272C${x + 70} 276 ${x + 70} 290 ${x + 58} 302Z`, 'thin ac') + P(C(x + 58, 284, 3.5), 'thin ac'),
+    ];
+    return G('frame', P(R(24, 30, 432, 336, 16), 'solid') + P('M24 66H456') + D(46, 48, 3.2) + D(60, 48, 3.2) + D(74, 48, 3.2)
+        + P(R(118, 38, 224, 20, 10)) + X(230, 52.5, t(A.domain), 12, 'mid'))
+      + G('wires', W(R(48, 84, 44, 14, 4)) + W('M250 91H276M288 91H318') + W(R(334, 81, 98, 20, 10)) + W(R(48, 112, 384, 124, 10))
+        + W('M72 144H232M72 162H196') + W(R(72, 172, 76, 22, 11))
+        + cards.map((x) => W(R(x, 252, 116, 94, 9)) + W(R(x + 10, 262, 96, 44, 6)) + W(`M${x + 10} 320H${x + 80}M${x + 10} 332H${x + 60}`)).join(''))
+      + G('nav', P(C(58, 91, 7), 'ac') + P('M72 91H96', 'thick') + P('M250 91H276M288 91H318') + P(R(334, 81, 98, 20, 10)) + X(383, 95, 'EL · EN · DE', 11, 'mid'))
+      + G('hero-pic', P(R(48, 112, 384, 124, 10), 'solid') + P(C(382, 146, 15), 'ac')
+        + P('M48 214C110 190 168 206 232 196C296 186 352 204 432 188')
+        + P('M62 228Q76 221 90 228T118 228T146 228M300 229Q314 222 328 229T356 229T384 229T412 229', 'thin'))
+      + G('heading', P('M72 142H226', 'thick') + P('M72 160H184'))
+      + G('button', F(R(72, 172, 76, 22, 11), 'ac-fill'))
+      + cards.map((x, i) => G(`card-${i}`, P(R(x, 252, 116, 94, 9), 'solid') + P(R(x + 10, 262, 96, 44, 6)) + glyph[i](x) + P(`M${x + 10} 322H${x + 84}M${x + 10} 334H${x + 58}`))).join('');
+  },
+
+  // ---- an app: the idea, sketched on a napkin, built for a laptop and a phone, then its numbers light up ----
+  apps: () => {
+    const chart = 'M48 332L80 320L108 326L138 300L168 292L194 270';
+    return bulb('bulb', 104, 86, 0.6)
+      + G('l1', P('M146 100C190 114 224 98 262 92'))
+      + G('napkin', P('M264 36H392L408 52V166H264Z', 'solid') + P('M392 36V52H408')
+        + P('M292 58C290 88 292 118 294 146C308 147 320 147 332 145C334 116 333 88 331 57C318 56 304 56 292 58Z', 'thin')
+        + P('M300 74H322M300 88H316', 'thin') + P(C(368, 80, 12), 'thin') + P('M338 102Q352 98 358 90', 'thin') + P('M356 130L364 138L382 116', 'ac'),
+        'transform="rotate(-4 336 100)"')
+      + G('l2', P('M336 168C336 196 342 206 342 224'))
+      + G('laptop', P(R(262, 226, 148, 96, 8), 'solid') + P('M244 324H428V330Q428 338 420 338H252Q244 338 244 330Z', 'solid')
+        + P('M274 242H398') + P(R(274, 252, 60, 56, 6)) + Dac(290, 268, 5) + P('M282 286H326M282 296H312', 'thin') + P('M346 258H398M346 272H388M346 286H396M346 300H380'))
+      + G('phone', P(R(418, 252, 46, 84, 9), 'solid') + P('M426 268H456') + P(R(426, 276, 30, 24, 4)) + Dac(434, 288, 3.5) + P('M426 312H456M426 322H448'))
+      + G('l3', P('M244 331C230 331 226 300 214 296'))
+      + G('dash', P(R(24, 226, 190, 138, 10), 'solid') + P('M24 248H214') + D(38, 237, 2.6) + D(48, 237, 2.6)
+        + P('M44 346V272M44 346H198', 'thin') + P(chart))
+      + G('lit', P(chart, 'ac thick-ish') + [[48, 332], [80, 320], [108, 326], [138, 300], [168, 292], [194, 270]].map(([x, y]) => Dac(x, y, 4.5)).join(''));
+  },
+
+  // ---- a store: products into the bag, out to the marketplaces, in every language, into more countries ----
+  commerce: () => {
+    const boxes = [166, 218, 270];
+    const ends = [186, 238, 290];
+    const lines = ['M176 262C250 262 270 186 342 186', 'M176 276C260 276 280 238 342 238', 'M174 292C260 292 280 290 342 290'];
+    const langs = A.languages.map((l, i) => {
+      const a = ((i * 60 + 30) * Math.PI) / 180;
+      return X(r1(236 + Math.cos(a) * 128), r1(99 + Math.sin(a) * 74), l, 15, 't-b mid', `data-p="lang-${i}"`);
+    }).join('');
+    return G('card', P(R(190, 38, 92, 112, 10), 'solid') + P(R(200, 48, 72, 46, 6)) + P(R(224, 60, 24, 28, 4)) + P('M222 60H250')
+        + P('M200 108H262M200 122H244') + P('M200 136H230', 'ac'))
+      + G('langs', langs)
+      + lines.map((d, i) => G(`feed-${i}`, P(d))).join('')
+      + G('handle', P('M80 238V222C80 188 140 188 140 222V238'))
+      + G('p-bottle', P('M92 300V250Q92 240 100 236V214H110V236Q118 240 118 250V300Z', 'solid') + P('M96 262H114', 'ac'))
+      + G('p-jar', P(R(124, 228, 34, 40, 6), 'solid') + P(R(122, 220, 38, 10, 3), 'solid'))
+      + G('p-box', P(R(56, 232, 30, 30, 3), 'solid') + P('M71 232V262', 'thin'))
+      + G('bag', P('M40 238H180L170 362H50Z', 'solid'))
+      + A.marketplaces.map((m, i) => G(`market-${i}`, P(R(342, boxes[i], 116, 40, 10), 'solid') + X(400, boxes[i] + 25, m, 16, 'mid') + Dac(342, ends[i], 4))).join('')
+      + G('countries', P(R(300, 330, 158, 40, 20), 'solid') + P(C(324, 350, 11), 'thin')
+        + P('M313 350H335M324 339C318 344 318 356 324 361C330 356 330 344 324 339', 'thin')
+        + X(344, 357, '5', 19, 't-b t-ac', 'data-p="count"') + X(362, 356, t(A.countries), 14));
+  },
+
+  // ---- being found: the search, your card rising to the top, the AI naming you, the speed at 100 ----
+  search: () => {
+    const rows = [104, 168, 232];
+    const row = (y: N, you = false) => P(R(28, y, 270, 54, 10), you ? 'solid ac' : 'solid') + P(R(40, y + 12, 30, 30, 7), you ? 'ac' : '')
+      + (you ? X(82, y + 25, t(A.you), 14, 't-b') + P(`M82 ${y + 38}H160`) + P(`M276 ${y + 38}C268 ${y + 30} 268 ${y + 20} 276 ${y + 16}C284 ${y + 20} 284 ${y + 30} 276 ${y + 38}Z`, 'ac') + Dac(276, y + 25, 2.6)
+        : P(`M82 ${y + 20}H210`) + P(`M82 ${y + 36}H170`, 'thin'));
+    return G('bar', P(R(28, 34, 300, 46, 23), 'solid') + P(C(54, 57, 9), 'thin') + P('M61 64L67 70', 'thin') + X(76, 62, t(A.query), 15))
+      + G('lens', P(C(316, 52, 32)) + P('M298 44A20 20 0 0 1 312 34', 'thin ac') + P('M339 75L368 104', 'thick'))
+      + G('row-1', row(rows[1])) + G('row-2', row(rows[2]))
+      + G('you', row(rows[0], true))
+      + G('ai', P(R(312, 124, 152, 84, 16), 'solid') + P('M332 207L324 222L350 207', 'solid') + F(spark(332, 147, 8), 'ac-fill sa-f')
+        + X(346, 152, t(A.recommend), 13) + X(328, 184, t(A.you), 15, 't-b t-ac'))
+      + G('gauge', P('M330 344A60 60 0 0 1 450 344', 'thin') + P('M330 344A60 60 0 0 1 450 344', 'ac thick-ish', 'data-p="sweep"')
+        + P('M336 344H344M347 314L353 318M390 284V292M433 314L427 318M444 344H436', 'thin')
+        + G('needle', P('M390 344L436 344')) + `<circle class="sa-f fill" cx="390" cy="344" r="5"/>` + X(390, 380, '100', 22, 't-b mid', 'data-p="score"'));
+  },
+
+  // ---- the closing form: a line comes down from above and becomes an envelope that opens ----
+  envelope: () => G('line', P('M200 0C200 36 92 40 92 104'))
+    + G('back', P(R(92, 104, 216, 150, 10), 'solid'))
+    + G('flap-open', P('M92 114L200 38L308 114', 'solid'))
+    + G('letter', P(R(118, 64, 164, 130, 6), 'solid') + P('M138 92H262M138 108H246M138 124H254', 'thin') + P('M138 146H206', 'ac'))
+    + G('pocket', P('M92 114L200 192L308 114V244Q308 254 298 254H102Q92 254 92 244Z', 'solid') + P('M96 250L172 188M304 250L228 188', 'thin'))
+    + G('flap', P('M92 114L200 192L308 114', 'solid'), 'opacity="0"'),
+
+  check: () => P(C(48, 48, 38)) + P('M30 50L43 63L67 36', 'ac thick-ish'),
+
+  'proof-gear': () => P(gear(80, 52, 24, 9, 7), 'solid') + P(C(80, 52, 9))
+    + X(30, 34, 'DE', 13, 't-b mid') + X(132, 30, 'FR', 13, 't-b mid t-ac') + X(134, 82, 'IT', 13, 't-b mid'),
+  'proof-cards': () => P(R(66, 18, 50, 62, 6), 'solid') + P(R(54, 26, 50, 62, 6), 'solid') + P(R(42, 34, 50, 62, 6), 'solid')
+    + P(R(50, 42, 34, 22, 4)) + P('M50 74H80M50 84H70', 'thin') + X(124, 64, '800K+', 15, 't-b t-ac'),
+  'proof-sail': () => P('M82 16V72') + P('M86 20L118 66H86Z', 'ac') + P('M78 24L50 66H78Z') + P('M42 72H122L110 84H54Z', 'solid')
+    + P('M24 92Q34 86 44 92T64 92T84 92T104 92T124 92T140 92', 'thin'),
+  'proof-gauge': () => P('M40 80A40 40 0 0 1 120 80', 'thin') + P('M40 80A40 40 0 0 1 120 80', 'ac thick-ish') + P('M80 80L114 80')
+    + `<circle class="fill" cx="80" cy="80" r="4"/>` + X(80, 60, '100', 16, 't-b mid'),
+};
+for (const k of KEYS) ART[`icon-${k}`] = () => ICONS[k](60, 16);
+
+const BOX: Record<string, string> = { hero: '0 0 560 410', envelope: '0 0 400 270', check: '0 0 96 96' };
+const box = BOX[name] ?? (name.startsWith('icon-') ? '0 0 120 112' : name.startsWith('proof-') ? '0 0 160 100' : '0 0 480 400');
+const inner = ART[name]?.() ?? '';
+if (!inner) throw new Error(`ServiceArt: no drawing called "${name}"`);
 ---
-<svg class="sv" data-art={name} viewBox="0 0 480 360" aria-hidden="true" focusable="false" set:html={ART[name]()} />
+<svg class:list={['sv', extra]} data-art={name} viewBox={box} aria-hidden="true" focusable="false" set:html={inner} />
 
 <style>
-  .sv { display: block; width: 100%; height: auto; overflow: visible; }
-  .sv :global(path), .sv :global(rect) { fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  /* the line keeps about two pixels at any size: thicker in the drawing's own units when it is drawn small */
+  .sv { display: block; width: 100%; height: auto; overflow: visible; --sw: 2.6; color: var(--ink); }
+  .sv :global(path) { fill: none; stroke: currentColor; stroke-width: var(--sw); stroke-linecap: round; stroke-linejoin: round; }
   .sv :global(.sa-d) { stroke-dasharray: 1 2; }
-  .sv :global(.thick) { stroke-width: 7; }
-  .sv :global(.ac) { stroke: var(--art-ac); }
-  .sv :global(.solid) { fill: var(--art-bg); }
+  .sv :global(.thin) { stroke-width: calc(var(--sw) * 0.62); }
+  .sv :global(.thick-ish) { stroke-width: calc(var(--sw) * 1.5); }
+  .sv :global(.thick) { stroke-width: calc(var(--sw) * 2.4); }
+  .sv :global(.ac) { stroke: var(--sv-ac, var(--cobalt)); }
+  .sv :global(.solid) { fill: var(--sv-paper, var(--paper)); }
   .sv :global(.fill) { fill: currentColor; stroke: none; }
-  .sv :global(.ac-fill) { fill: var(--art-ac); stroke: none; }
-  .sv :global(.inv) { stroke: var(--art-bg); }
-  .sv :global(.ring), .sv :global(.dash) { stroke-dasharray: 5 6; }
-  .sv :global(.ly) { stroke-width: 2; }
+  .sv :global(.ac-fill) { fill: var(--sv-ac, var(--cobalt)); stroke: none; }
   .sv :global(circle) { fill: currentColor; }
-  .sv :global(circle.inv-fill) { fill: var(--art-bg); }
-  .sv :global(.t) { fill: currentColor; stroke: none; font-weight: 500; }
-  .sv :global(.t-inv) { fill: var(--art-bg); }
-  .sv :global(.t-ac) { fill: var(--art-ac); }
-  .sv :global(.t-strong) { font-weight: 700; }
+  .sv :global(circle.ac-fill) { fill: var(--sv-ac, var(--cobalt)); }
+  /* the wireframe only shows while the site is being built */
+  .sv :global(.wire) { stroke-width: calc(var(--sw) * 0.62); stroke-dasharray: 4 6; opacity: 0; }
+  .sv :global(.t) { fill: currentColor; stroke: none; font-weight: 500; font-family: inherit; }
+  .sv :global(.t-b) { font-weight: 700; }
+  .sv :global(.t-ac) { fill: var(--sv-ac, var(--cobalt)); }
 </style>

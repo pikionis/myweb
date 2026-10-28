@@ -216,8 +216,8 @@ export const services: Service[] = [
   },
 ];
 
-/** AI services & bots: a service of its own on /services (and in llms.txt), not on the home page, where every
- *  service carries its real projects and this one has none yet. Its card works like the others'. */
+/** AI services & bots: a service of its own in llms.txt, not on the home page, where every service carries its real
+ *  projects and this one has none yet (on /services, its chat and automation are part of AI SaaS & Mobile Apps). */
 export const bots = {
   key: 'bots',
   title: 'AI services & bots',
@@ -235,22 +235,10 @@ export const bots = {
   ],
 } as const;
 export type CardKey = ServiceKey | typeof bots.key;
-/** The /services cards, in order. */
+/** The order llms.txt lists the services in. */
 export const cardOrder: CardKey[] = ['web', 'bots', 'apps', 'commerce', 'search'];
 
-/** How I work: true of every service, so it runs under the /services cards. */
-export const howIWork = {
-  title: 'How I work',
-  steps: [
-    { title: 'Find the leak', text: 'Where you lose the most time or money' },
-    { title: 'Start small', text: 'One measurable pilot (e.g. a booking-questions bot)' },
-    { title: 'Connect', text: 'AI plugged into the systems you already use' },
-    { title: 'Stay safe', text: 'Human approval, limits, GDPR, cost control' },
-    { title: 'Measure, then grow', text: 'Hours saved, conversions, then expand' },
-  ],
-};
-
-/** Each service's colours (ground, ink) for its projects' title cards, here and on /projects and /services. */
+/** Each service's colours (ground, ink) for its projects' title cards, on the home page and /projects. */
 export const serviceColors: Record<CardKey | 'none', [string, string]> = {
   web: ['#141414', '#f4f3ef'],
   bots: ['#cfdaf8', '#141414'],
@@ -260,14 +248,6 @@ export const serviceColors: Record<CardKey | 'none', [string, string]> = {
   none: ['#2a2b27', '#f4f3ef'],
 };
 
-/** The accent in each /services card's drawing, chosen to read on its ground. */
-export const artAccent: Record<CardKey, string> = {
-  web: '#4d7cff',
-  bots: '#2a55d9',
-  apps: '#f4f3ef',
-  commerce: '#2a55d9',
-  search: '#8fb0ff',
-};
 
 // Words the service sections and project cards use around the content
 export const ui = {
@@ -344,20 +324,6 @@ export const ui = {
     /** a project that is not live yet, or not ours to measure */
     soon: 'Not live yet, so there is no site to measure or browse.',
     next: 'Next',
-  },
-  servicesPage: {
-    title: 'Services',
-    hint: 'Scroll down',
-    lede: 'Five things I build end to end. Open a card for everything it includes.',
-    included: "What's included",
-    /** the button on each card that opens it */
-    open: "See what's included",
-    close: 'Close',
-    start: 'Start a project',
-    replay: 'Play again',
-    projects: 'Projects',
-    end: 'Your project next.',
-    cta: 'Pitch your idea',
   },
 };
 

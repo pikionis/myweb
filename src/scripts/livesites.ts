@@ -55,6 +55,8 @@ export function livePreview(root: HTMLElement) {
     open = true;
     opener = button;
     const frame = document.createElement('iframe');
+    // a preview needs no cookies: without them the site's own (a shop's session) never become third-party cookies here
+    frame.setAttribute('credentialless', '');
     frame.src = button.dataset.preview!;
     frame.title = button.dataset.frameTitle ?? '';
     frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox');
