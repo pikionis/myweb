@@ -225,8 +225,8 @@ export const servicesPage = {
         { en: 'Any business with an old, slow site', el: 'Κάθε επιχείρηση με παλιό, αργό site' },
       ],
       proof: [
-        // [TODO: confirm] the PageSpeed of every client site is measured on each deploy (scripts/pagespeed.mjs, on
-        // /projects); the AI agent that checks and fixes them every 15 days is still to be set up
+        // the Site Health dashboard (a claude.ai artifact) with its weekly agent, which reads the scan of every site
+        // (pikionis/site-monitor) and opens fix PRs, and its monthly report; on /projects, scripts/pagespeed.mjs
         {
           name: 'Site Health Monitor', icon: 'gauge', url: '/projects',
           line: { en: 'My own system: it tracks the performance and SEO scores of client sites, and an AI agent fixes what drops', el: 'Δικό μου σύστημα: παρακολουθεί τις βαθμολογίες ταχύτητας και SEO των sites των πελατών, και ένας AI agent διορθώνει ό,τι πέφτει' },
