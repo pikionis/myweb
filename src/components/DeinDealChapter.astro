@@ -3,6 +3,7 @@
 // src/components/deindeal.ts), in the chapter's shell (Chapter.astro): a watch movement that turns into a product
 // line, and the birth of Feedgenix (its beat links to the product). Without script: the movement, and Feedgenix a
 // dot on the line of client work.
+import { getEntry } from 'astro:content';
 import Chapter from './Chapter.astro';
 import MyStoryArt from './MyStoryArt.astro';
 import { art, type Scene } from '../data/mystory';
@@ -10,8 +11,10 @@ import { art, type Scene } from '../data/mystory';
 interface Props { scene: Scene }
 const { scene } = Astro.props;
 const K = art.deindeal;
+// the link waits, like the project's own, while feedgenix.com is not live yet
+const live = !(await getEntry('projects', 'feedgenix'))?.data.launching;
 ---
-<Chapter scene={scene} says={[scene.text, ...K.beats]} sky="--wash: 0.2" links={{ 6: { href: K.feedgenix.url, label: K.feedgenix.visit } }}>
+<Chapter scene={scene} says={[scene.text, ...K.beats]} sky="--wash: 0.2" links={live ? { 6: { href: K.feedgenix.url, label: K.feedgenix.visit } } : {}}>
   <div class="dd-world"><MyStoryArt name="deindeal" /></div>
 </Chapter>
 
