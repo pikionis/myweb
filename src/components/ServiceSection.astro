@@ -48,7 +48,7 @@ const arrow = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" strok
             </div>
             <div class="proof-text">
               {p.url
-                ? <a class="proof-name" href={p.url}>{p.name}</a>
+                ? <a class="proof-name" href={p.url} {...(/^https?:/.test(p.url) ? { target: '_blank', rel: 'noopener' } : {})}>{p.name}</a>
                 : <p class="proof-name">{p.name}</p>}
               <p class="proof-line">{t(p.line)}</p>
               {p.url && <span class="proof-go" aria-hidden="true">{t(w.open)} <Fragment set:html={arrow} /></span>}

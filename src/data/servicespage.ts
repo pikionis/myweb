@@ -149,8 +149,7 @@ export const servicesPage = {
           project: 'feedgenix', name: 'Feedgenix', icon: 'gear', url: '/projects/feedgenix',
           line: { en: 'AI SaaS: translates large product datasets. Pick the fields and the languages.', el: 'AI SaaS: μεταφράζει μεγάλα σύνολα δεδομένων προϊόντων. Διαλέγεις πεδία και γλώσσες.' },
         },
-        // [TODO: Archon Yachting's address, once it is live]
-        { name: 'Archon Yachting', icon: 'sail', url: null, line: { en: 'Charter platform with bookings and payments', el: 'Πλατφόρμα ναύλωσης σκαφών με κρατήσεις και πληρωμές' } },
+        { name: 'Archon Yachting', icon: 'sail', url: 'https://archonyachting.com', line: { en: 'Charter platform with bookings and payments', el: 'Πλατφόρμα ναύλωσης σκαφών με κρατήσεις και πληρωμές' } },
         {
           project: 'kalimera', name: 'Kalimera', url: '/projects/kalimera',
           // 2nd place was at Idea Platform, the contest in which CapsuleT filters ideas, not the main CapsuleT competition
