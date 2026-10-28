@@ -41,6 +41,14 @@ const report = (url: string, run: 'mobile' | 'desktop') =>
   `https://pagespeed.web.dev/report?url=${encodeURIComponent(url)}&form_factor=${run}`;
 const RUNS = [['mobile', t.phone], ['desktop', t.desktop]] as const;
 const LAB: Metric[] = ['lcp', 'fcp', 'tbt', 'cls', 'si'];
+// a site's results show only while they are all green, on a phone and on a desktop: every score 90 or more, every
+// vital (and real visitors' data, where Google has it) good. Below that the site is being worked on and shows none,
+// never a number other than the one measured.
+const green = (r?: Run) => !!r
+  && Object.values(r.scores).every((n) => n >= 90)
+  && LAB.every((k) => r.lab[k].s >= 0.9)
+  && Object.values(r.field ?? {}).every((m) => typeof m !== 'object' || byCrux(m.category) === 'good');
+const publish = (id: string) => green(speed[id]?.mobile) && green(speed[id]?.desktop);
 
 const arrow = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>';
 const next = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>';
@@ -85,7 +93,7 @@ const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stro
 
   <!-- the project picked: one is shown, the rest wait hidden -->
   {all.map((p, i) => {
-    const run = speed[p.id];
+    const run = publish(p.id) ? speed[p.id] : undefined;
     const live = !p.data.launching && p.data.live_url;
     const visit = visitUrl(p);
     const Content = stories.get(p.id);
@@ -191,6 +199,13 @@ const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stro
             <figure class="p-browser" data-browser data-src={p.data.live_url} data-name={p.data.title}>
               <figcaption class="b-bar">
                 <span class="b-url">{host(p.data.live_url!)}</span>
+                {/* without results above, the switch for the site's frame is here */}
+                {!run && (
+                  <div class="s-switch b-switch" role="group" aria-label={t.viewAs} data-switch>
+                    <button type="button" data-mode="phone" aria-pressed="false">{t.phone}</button>
+                    <button type="button" data-mode="desktop" aria-pressed="false">{t.desktop}</button>
+                  </div>
+                )}
                 <a class="b-open" href={visit ?? p.data.live_url} target="_blank" rel="noopener">{t.open}<Fragment set:html={arrow} /></a>
               </figcaption>
               <div class="b-view" data-view>
@@ -396,6 +411,9 @@ const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stro
   }
   .b-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 46px; padding: 0 12px 0 16px; }
   .b-url { font-size: 0.9375rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .b-switch { margin-left: auto; background: color-mix(in srgb, var(--paper) 12%, transparent); }
+  .b-switch button { min-height: 36px; padding: 0 14px; font-size: 0.875rem; }
+  .b-switch button[aria-pressed='true'] { background: var(--paper); color: var(--sheet-ink); }
   .b-open {
     display: inline-flex; align-items: center; gap: 6px; min-height: 40px; color: inherit; font-size: 0.9375rem; font-weight: 500;
     text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 0.25em;
@@ -455,6 +473,7 @@ const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stro
     .p-browser, .p-spec, .p-card { position: relative; top: auto; }
     .b-view { height: auto; aspect-ratio: 4 / 5; }
     .b-browse { display: inline-flex; }
+    .b-switch { display: none; }
     .p-spec, .p-card { min-height: 320px; }
   }
   @media (prefers-reduced-motion: reduce) {
