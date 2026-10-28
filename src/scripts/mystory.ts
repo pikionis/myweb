@@ -227,13 +227,50 @@ function byHand(tl: Tl, step: HTMLElement, ride: NonNullable<ReturnType<typeof j
  *  it (the hills and the clouds slower, for depth), but never past either end; each station's skill drops into its
  *  wagon as the train reaches it; the year, the course count and a course's name follow, the moments of those years
  *  appear as the train nears them, and the lines beside it are read one after another. */
+/** A path's points at even steps along it (N + 1 of them, the first and last on its ends), worked out from its data
+ *  alone: absolute M, H, V, L and C, all the coaster's track uses. Asking the browser costs a walk along the whole
+ *  path for every point, thousands of them on this one (seconds on a phone). */
+function sampled(d: string, step: number) {
+  const pts: number[][] = [];
+  let x = 0, y = 0;
+  for (const [, cmd, args] of d.matchAll(/([MHVLC])([^MHVLC]*)/g)) {
+    const a = args.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+    if (cmd === 'M' || cmd === 'L') for (let i = 0; i + 1 < a.length; i += 2) { x = a[i]; y = a[i + 1]; pts.push([x, y]); }
+    else if (cmd === 'H') for (const v of a) { x = v; pts.push([x, y]); }
+    else if (cmd === 'V') for (const v of a) { y = v; pts.push([x, y]); }
+    else for (let i = 0; i + 5 < a.length; i += 6) {
+      const [x1, y1, x2, y2, x3, y3] = a.slice(i, i + 6);
+      for (let k = 1; k <= 48; k++) {
+        const t = k / 48, u = 1 - t;
+        pts.push([u * u * u * x + 3 * u * u * t * x1 + 3 * u * t * t * x2 + t * t * t * x3, u * u * u * y + 3 * u * u * t * y1 + 3 * u * t * t * y2 + t * t * t * y3]);
+      }
+      x = x3; y = y3;
+    }
+  }
+  const lens = [0];
+  for (let i = 1; i < pts.length; i++) lens.push(lens[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const L = lens[lens.length - 1], N = Math.max(1, Math.ceil(L / step));
+  const xs: number[] = [], ys: number[] = [];
+  let j = 1;
+  for (let i = 0; i <= N; i++) {
+    const s = (i / N) * L;
+    while (j < pts.length - 1 && lens[j] < s) j++;
+    const seg = lens[j] - lens[j - 1], f = seg ? (s - lens[j - 1]) / seg : 0;
+    xs.push(pts[j - 1][0] + (pts[j][0] - pts[j - 1][0]) * f);
+    ys.push(pts[j - 1][1] + (pts[j][1] - pts[j - 1][1]) * f);
+  }
+  return { xs, ys, L, N };
+}
+
 function journey(step: HTMLElement) {
   const svg = [...step.querySelectorAll<SVGSVGElement>('.ms-coaster svg')].find((v) => v.getClientRects().length);
   if (!svg) return null;
   const W = svg.viewBox.baseVal.width, world = Number(svg.dataset.world);
   const near = part(svg, 'near')!, far = part(svg, 'far')!, clouds = part(svg, 'clouds')!;
   const track = part(svg, 'track') as SVGPathElement, station = part(svg, 'station')!, rod = part(svg, 'rod');
-  const L = track.getTotalLength();
+  // the track, sampled once from its own path data, every 4 along it: a camera that only moves forward with it (in
+  // the loop the train turns back for a moment; the camera waits for it), and where each station's stop is
+  const { xs, ys, L, N } = sampled(track.getAttribute('d') ?? '', 4);
   const cars = [0, 1, 2, 3].map((k) => part(svg, `car-${k}`)!).map((el) => ({ el, len: Number(el.dataset.len) }));
   const wheels = parts(svg, 'wheel-').map((w) => ({ el: w, cx: Number(w.dataset.cx), cy: Number(w.dataset.cy), r: Number(w.dataset.r) }));
   const drivers = wheels.filter((w) => w.r === 18);
@@ -246,11 +283,6 @@ function journey(step: HTMLElement) {
   const yearEl = step.querySelector('[data-course-year]');
   const total = Number(step.querySelector<HTMLElement>('[data-course]')?.dataset.total ?? names.length);
   const [y0, y1] = (step.querySelector<HTMLElement>('[data-course]')?.dataset.years ?? '2009,2016').split(',').map(Number);
-  // the track, sampled once: where each station's stop is along it, and a camera that only moves forward with it
-  // (in the loop the train turns back for a moment; the camera waits for it)
-  const N = Math.ceil(L / 4);
-  const xs: number[] = [], ys: number[] = [];
-  for (let i = 0; i <= N; i++) { const q = track.getPointAtLength((i / N) * L); xs.push(q.x); ys.push(q.y); }
   const camX: number[] = [];
   xs.forEach((x, i) => camX.push(Math.max(x, camX[i - 1] ?? x)));
   const ground = ys[0];
@@ -266,7 +298,11 @@ function journey(step: HTMLElement) {
   const s0 = stopS[0], s1 = stopS[stopS.length - 1];
   const stops = stopS.map((v) => (v - s0) / (s1 - s0));
   const TRAIN = cars.reduce((n, c) => n + c.len + 12, -12);
-  const at = (d: number) => track.getPointAtLength(gsap.utils.clamp(0, L, d));
+  // a point along the track, between its samples
+  const at = (d: number) => {
+    const t = (gsap.utils.clamp(0, L, d) / L) * N, i = Math.min(N - 1, Math.floor(t)), f = t - i;
+    return { x: xs[i] + (xs[i + 1] - xs[i]) * f, y: ys[i] + (ys[i + 1] - ys[i]) * f };
+  };
   // how much of the world the window takes in as the train goes: at first the engine and the skills it set off
   // with; at every station, all it carries by then; at the end of the line, the whole train and the station. It
   // only grows, so the more the train has on board, the smaller it looks
@@ -406,60 +442,76 @@ export function myStory(root: HTMLElement) {
       return () => { io.disconnect(); chapters.forEach((c) => c?.kill()); };
     }
     root.classList.add('on');
-    // the chapters: told in beats, with a stop for each (src/scripts/chapter.ts)
-    const chapters = steps.map((s) => CHAPTERS[s.dataset.scene ?? '']?.(s, false) ?? null);
-    const plays = steps.map((step) => {
-      // the picture on show (the journey is drawn twice, wide and narrow)
-      const svg = [...step.querySelectorAll<SVGSVGElement>('.ms-art svg')].find((v) => v.getClientRects().length) ?? null;
-      const scene = SCENES[step.dataset.scene ?? ''];
-      if (!svg || !scene) return null;
-      const tl = gsap.timeline({ paused: true });
-      const idle: gsap.core.Animation[] = [];
-      // the words arrive first: the label, the title, the line
-      tl.fromTo(step.querySelectorAll('[data-t]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.08, ease: 'power2.out' }, 0);
-      scene(tl, svg, step, idle);
-      return { tl, idle };
-    });
-    // a scene plays as it arrives, from either side, and rests once it has gone
-    steps.forEach((step, i) => {
-      const play = plays[i];
-      if (!play) return;
-      const go = () => { play.tl.restart(); play.idle.forEach((a) => a.play()); };
-      const rest = () => { play.tl.pause(); play.idle.forEach((a) => a.pause()); };
-      ScrollTrigger.create({ trigger: step, start: 'top 75%', end: 'bottom 25%', onEnter: go, onEnterBack: go, onLeave: rest, onLeaveBack: rest });
-    });
-    // one scroll, one scene: within the story the page settles on the next scene in the direction it moved
-    const track = root.querySelector<HTMLElement>('.ms-steps')!;
-    const points: number[] = [];
-    // each scene is as tall as it needs, so they sit close together: the page settles with the scene in the middle
-    // of what is free of the bar (and, on a phone, of the timeline strip and the floating menu). It takes hold as
-    // the story comes up the screen, so the first scene is the first stop; the start and the end are stops too,
-    // so a scroll past the first or the last scene leaves the story
-    const phone = window.matchMedia('(max-width: 860px)');
-    const snap = ScrollTrigger.create({
-      trigger: track, start: 'top 60%', end: 'bottom center',
-      onRefresh: (self) => {
-        const bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 72;
-        const top = bar + (phone.matches ? (rail?.offsetHeight ?? 0) : 0);
-        const bottom = window.innerHeight - (phone.matches ? 90 : 0);
-        points.length = 0;
-        points.push(0);
-        steps.forEach((s) => {
-          const ch = chapters[steps.indexOf(s)];
-          if (ch) { ch.points().forEach((y) => points.push(gsap.utils.clamp(0, 1, (y - self.start) / Math.max(1, self.end - self.start)))); return; }
-          const y = s.getBoundingClientRect().top + window.scrollY, h = s.offsetHeight;
-          // in the middle of the free space; a scene taller than it starts at its top
-          const at = h > bottom - top ? y - top : y + h / 2 - (top + bottom) / 2;
-          points.push(gsap.utils.clamp(0, 1, (at - self.start) / Math.max(1, self.end - self.start)));
-        });
-        points.push(1);
-      },
-      snap: {
-        snapTo: (value: number, self?: ScrollTrigger) => ScrollTrigger.snapDirectional(points)(value, self?.direction),
-        duration: { min: 0.25, max: 0.6 }, delay: 0.04, ease: 'power2.inOut', inertia: false,
-      },
-    });
-    ScrollTrigger.refresh();
-    return () => { root.classList.remove('on'); snap.kill(); plays.forEach((p) => p?.tl.kill()); chapters.forEach((c) => c?.kill()); };
+    // set up a piece at a time, the page handed back in between: the chapters and the scenes' pictures are a lot to
+    // prepare, and a phone would freeze for all of it at once
+    let stopped = false;
+    const chapters: ReturnType<(typeof CHAPTERS)[string]>[] = [];
+    const plays: ({ tl: Tl; idle: gsap.core.Animation[] } | null)[] = [];
+    const triggers: ScrollTrigger[] = [];
+    let snap: ScrollTrigger | null = null;
+    const handBack = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
+    (async () => {
+      // the chapters: told in beats, with a stop for each (src/scripts/chapter.ts)
+      for (const s of steps) {
+        const make = CHAPTERS[s.dataset.scene ?? ''] as (typeof CHAPTERS)[string] | undefined;
+        chapters.push(make ? make(s, false) : null);
+        if (make) { await handBack(); if (stopped) return; }
+      }
+      for (const step of steps) {
+        // the picture on show (the journey is drawn twice, wide and narrow)
+        const svg = [...step.querySelectorAll<SVGSVGElement>('.ms-art svg')].find((v) => v.getClientRects().length) ?? null;
+        const scene = SCENES[step.dataset.scene ?? ''];
+        if (!svg || !scene) { plays.push(null); continue; }
+        const tl = gsap.timeline({ paused: true });
+        const idle: gsap.core.Animation[] = [];
+        // the words arrive first: the label, the title, the line
+        tl.fromTo(step.querySelectorAll('[data-t]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.08, ease: 'power2.out' }, 0);
+        scene(tl, svg, step, idle);
+        plays.push({ tl, idle });
+        // a scene plays as it arrives, from either side, and rests once it has gone
+        const go = () => { tl.restart(); idle.forEach((a) => a.play()); };
+        const rest = () => { tl.pause(); idle.forEach((a) => a.pause()); };
+        triggers.push(ScrollTrigger.create({ trigger: step, start: 'top 75%', end: 'bottom 25%', onEnter: go, onEnterBack: go, onLeave: rest, onLeaveBack: rest }));
+        await handBack();
+        if (stopped) return;
+      }
+      // one scroll, one scene: within the story the page settles on the next scene in the direction it moved
+      const track = root.querySelector<HTMLElement>('.ms-steps')!;
+      const points: number[] = [];
+      // each scene is as tall as it needs, so they sit close together: the page settles with the scene in the middle
+      // of what is free of the bar (and, on a phone, of the timeline strip and the floating menu). It takes hold as
+      // the story comes up the screen, so the first scene is the first stop; the start and the end are stops too,
+      // so a scroll past the first or the last scene leaves the story
+      const phone = window.matchMedia('(max-width: 860px)');
+      snap = ScrollTrigger.create({
+        trigger: track, start: 'top 60%', end: 'bottom center',
+        onRefresh: (self) => {
+          const bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 72;
+          const top = bar + (phone.matches ? (rail?.offsetHeight ?? 0) : 0);
+          const bottom = window.innerHeight - (phone.matches ? 90 : 0);
+          points.length = 0;
+          points.push(0);
+          steps.forEach((s) => {
+            const ch = chapters[steps.indexOf(s)];
+            if (ch) { ch.points().forEach((y) => points.push(gsap.utils.clamp(0, 1, (y - self.start) / Math.max(1, self.end - self.start)))); return; }
+            const y = s.getBoundingClientRect().top + window.scrollY, h = s.offsetHeight;
+            // in the middle of the free space; a scene taller than it starts at its top
+            const at = h > bottom - top ? y - top : y + h / 2 - (top + bottom) / 2;
+            points.push(gsap.utils.clamp(0, 1, (at - self.start) / Math.max(1, self.end - self.start)));
+          });
+          points.push(1);
+        },
+        snap: {
+          snapTo: (value: number, self?: ScrollTrigger) => ScrollTrigger.snapDirectional(points)(value, self?.direction),
+          duration: { min: 0.25, max: 0.6 }, delay: 0.04, ease: 'power2.inOut', inertia: false,
+        },
+      });
+      ScrollTrigger.refresh();
+    })();
+    return () => {
+      stopped = true;
+      root.classList.remove('on');
+      snap?.kill(); triggers.forEach((t) => t.kill()); plays.forEach((p) => p?.tl.kill()); chapters.forEach((c) => c?.kill());
+    };
   });
 }

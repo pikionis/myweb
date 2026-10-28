@@ -180,11 +180,10 @@ export function kalimeraChapter(step: HTMLElement, still: boolean) {
   }
   trail.style.strokeDasharray = `${L} ${L}`;
 
-  // ---- the beats' pictures, each ready to play from nothing
+  // ---- the beats' pictures, each ready to play from nothing (built as its beat first arrives)
   const beats = [{}, ...[1, 2, 3, 4, 5, 6, 7].map((k) => {
-    const group = part(svg, `kc-b${k}`)!, tl = gsap.timeline({ paused: true }), idle: gsap.core.Animation[] = [];
-    BEATS[k](tl, group, svg, idle);
-    return { group, tl, idle };
+    const group = part(svg, `kc-b${k}`)!;
+    return { group, make: (tl: Tl, idle: gsap.core.Animation[]) => BEATS[k](tl, group, svg, idle) };
   })];
   // the horizon from the pivot on: Kos undraws, Athens draws in
   const kos = part(svg, 'kc-kos')!, athens = part(svg, 'kc-athens')!;
@@ -200,6 +199,38 @@ export function kalimeraChapter(step: HTMLElement, still: boolean) {
   const open = gsap.timeline({ paused: true });
   draw(open, [horizon], 0, 1.2);
 
+  // ---- the camera: a wide screen holds the whole morning (pulling back a little at the end). A phone gives the
+  // drawing only its width, with sky to spare above, so the camera comes in on each beat's picture (as authored,
+  // measured before any beat is built) as close as the width allows, the horizon kept at the foot
+  const W = svg.viewBox.baseVal.width, H = svg.viewBox.baseVal.height, HZ = horizon.getBBox().y, FOOT = H - 20;
+  type Shot = { l: number; t: number; r: number; b: number };
+  let shots: (Shot | null)[] = [];
+  const measure = () => {
+    root.classList.toggle('phone', phone.matches);
+    shots = [0, 1, 2, 3, 4, 5, 6, 7].map((k) => {
+      const g = part(svg, `kc-b${k}`);
+      if (!g) return null;
+      const b = g.getBBox();
+      return { l: Math.max(0, b.x), t: Math.max(0, b.y), r: Math.min(W, b.x + b.width), b: Math.min(H, b.y + b.height) };
+    });
+  };
+  measure();
+  const view = { x: 0, y: 0, z: 1 };
+  const look = () => cam.setAttribute('transform', `translate(${view.x.toFixed(1)} ${view.y.toFixed(1)}) scale(${view.z.toFixed(4)})`);
+  const aim = (k: number) => {
+    if (!phone.matches) return k === 7 ? { x: 450 * 0.06, y: 480 * 0.06, z: 0.94 } : { x: 0, y: 0, z: 1 };
+    const s = shots[k] ?? { l: 0, r: W, t: HZ - 160, b: H };
+    const box = svg.getBoundingClientRect();
+    // the height on show, in the drawing's units (it sits at the foot of its box)
+    const tall = box.width ? box.height / Math.min(box.width / W, box.height / H) : H;
+    const l = s.l - 24, r = s.r + 24, top = Math.min(s.t, HZ - 120) - 24;
+    const z = Math.max(1, Math.min(1.8, W / (r - l), tall / (FOOT - top)));
+    const half = W / 2 / z, cx = Math.min(W - half, Math.max(half, (l + r) / 2));
+    return { x: W / 2 - cx * z, y: FOOT * (1 - z), z };
+  };
+  let beatNow = 0;
+  phone.addEventListener('change', () => { measure(); Object.assign(view, aim(beatNow)); look(); });
+
   const ch = chapter(root, {
     still, steps: STEPS, beats,
     // the clock moves on; Kos until the pivot, Athens from it; at the end the view pulls back and the landscape
@@ -214,10 +245,11 @@ export function kalimeraChapter(step: HTMLElement, still: boolean) {
       const jump = still || was < 0;
       if (jump) morph.progress(k >= 4 ? 1 : 0);
       else if (k >= 4) morph.play(); else morph.reverse();
-      const view = { scale: k === 7 ? 0.94 : 1, svgOrigin: '450 480' };
-      if (jump) { gsap.set(cam, view); gsap.set(land, { opacity: k === 7 ? 0.45 : 1 }); }
+      beatNow = k;
+      const at = aim(k);
+      if (jump) { Object.assign(view, at); look(); gsap.set(land, { opacity: k === 7 ? 0.45 : 1 }); }
       else {
-        gsap.to(cam, { ...view, duration: 1.4, ease: 'power2.inOut', overwrite: true });
+        gsap.to(view, { ...at, duration: 1.4, ease: 'power2.inOut', overwrite: true, onUpdate: look });
         gsap.to(land, { opacity: k === 7 ? 0.45 : 1, duration: 0.8, overwrite: true });
       }
     },

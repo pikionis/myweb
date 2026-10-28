@@ -184,7 +184,8 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
   .ms-headline {
     margin: 0 auto; max-width: 22ch; font-size: clamp(1.9rem, 4.2vw, 3.6rem); font-weight: 700; line-height: 1.08; letter-spacing: -0.03em; text-wrap: balance;
   }
-  .ms-headline :global(.w) { color: color-mix(in srgb, var(--ink) 20%, transparent); transition: color 0.3s ease; }
+  /* the words wait in a grey that still reads (3:1 at this size), then light up in turn */
+  .ms-headline :global(.w) { color: color-mix(in srgb, var(--ink) 52%, var(--paper)); transition: color 0.3s ease; }
   .ms-headline :global(.w.lit) { color: var(--ink); }
 
   /* the close: the roles, the invitation and the two ways forward */

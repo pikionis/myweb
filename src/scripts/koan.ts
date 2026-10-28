@@ -196,9 +196,8 @@ export function koanChapter(step: HTMLElement, still: boolean) {
   };
 
   const beats = [0, 1, 2, 3, 4, 5, 6, 7].map((k) => {
-    const group = part(svg, `ko-b${k}`)!, tl = gsap.timeline({ paused: true }), idle: gsap.core.Animation[] = [];
-    BEATS[k](tl, group, svg, idle);
-    return { group, tl, idle };
+    const group = part(svg, `ko-b${k}`)!;
+    return { group, make: (tl: Tl, idle: gsap.core.Animation[]) => BEATS[k](tl, group, svg, idle) };
   });
 
   const ch = chapter(root, {
@@ -213,7 +212,10 @@ export function koanChapter(step: HTMLElement, still: boolean) {
       to(uk, { opacity: k < 3 ? 0 : k === 6 ? 0.15 : 1 });
       to(pulse, { opacity: k === 3 ? 1 : 0 });
       // close in where the beat happens
-      const [fx, fy, z] = FOCUS[k] ?? [320, 260, 1];
+      // (a phone shows the map small, under the board: at the fairs it comes in half as close again, the one beat
+      // whose picture has the room)
+      const [fx, fy, z0] = FOCUS[k] ?? [320, 260, 1];
+      const z = k === 2 && phone.matches ? z0 * 1.5 : z0;
       const at = { x: 320 - fx * z, y: 260 - fy * z, z };
       if (jump) { Object.assign(view, at); look(); }
       else gsap.to(view, { ...at, duration: 1.2, ease: 'power2.inOut', overwrite: true, onUpdate: look });

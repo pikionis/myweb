@@ -21,6 +21,10 @@ export type Beat = {
   tl?: Tl | null;
   /** motions that run while it is on screen */
   idle?: gsap.core.Animation[];
+  /** builds its picture (`tl`, `idle`) later than the chapter: in the page's spare moments after it opens, or as
+   *  the beat arrives if that comes first. A chapter holds a lot of drawing, and preparing all of it as the page
+   *  opens would freeze a phone */
+  make?: (tl: Tl, idle: gsap.core.Animation[]) => void;
 };
 
 export type ChapterOptions = {
@@ -37,6 +41,12 @@ export type ChapterOptions = {
   onEnter?: () => void;
 };
 
+/** A beat with its picture built (see `make`). */
+export function ready(b: Beat | undefined) {
+  if (b?.make && !b.tl) { b.tl = gsap.timeline({ paused: true }); b.idle = []; b.make(b.tl, b.idle); }
+  return b;
+}
+
 export function chapter(root: HTMLElement, o: ChapterOptions) {
   const { still, steps, beats } = o;
   const stage = root.querySelector<HTMLElement>('.ch-stage')!;
@@ -45,14 +55,14 @@ export function chapter(root: HTMLElement, o: ChapterOptions) {
   root.classList.add('ch-on');
   beats.forEach((b) => b.group && gsap.set(b.group, { opacity: 0 }));
 
-  // ---- the beat on screen
+  // ---- the beat on screen (its picture built when the page has a spare moment, or when it is needed)
   let active = -1;
   const go = (k: number) => {
     if (k === active) return;
     const was = active;
     active = k;
     says.forEach((s, i) => s.classList.toggle('on', i === k));
-    const before = beats[was], now = beats[k];
+    const before = beats[was], now = ready(beats[k]);
     if (before) {
       before.tl?.pause();
       before.idle?.forEach((a) => a.pause());
@@ -117,6 +127,15 @@ export function chapter(root: HTMLElement, o: ChapterOptions) {
   });
   render();
 
+  // the beats' pictures, one per spare moment, in order: each starts blank, so the chapter is ready before it is reached
+  let killed = false;
+  const later = (fn: () => void) => (typeof requestIdleCallback === 'function' ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 30));
+  const prepare = (k: number) => {
+    if (killed || k >= beats.length) return;
+    later(() => { if (!killed) { ready(beats[k]); prepare(k + 1); } });
+  };
+  prepare(0);
+
   return {
     /** where the page stops for the opening and each beat (from the top of the document) */
     points: () => {
@@ -125,6 +144,7 @@ export function chapter(root: HTMLElement, o: ChapterOptions) {
     },
     phone: () => phone.matches,
     kill: () => {
+      killed = true;
       ScrollTrigger.removeEventListener('refreshInit', size);
       scrub.scrollTrigger?.kill(); scrub.kill(); enter.kill();
       beats.forEach((b) => b.tl?.kill());

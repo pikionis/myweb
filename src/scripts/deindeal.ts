@@ -1,7 +1,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { type Tl, part, parts, strokes, draw, drawIn, show, pop, write, loop } from './storydraw';
-import { chapter } from './chapter';
+import { chapter, ready, type Beat as ChapterBeat } from './chapter';
 
 /*
  * The DeinDeal chapter of "My story" (DeinDealChapter.astro; the drawing is src/components/deindeal.ts): "Swiss
@@ -205,10 +205,9 @@ export function deindealChapter(step: HTMLElement, still: boolean) {
   if (!still) gsap.ticker.add(tick);
   const watch = ScrollTrigger.create({ trigger: root, start: 'top bottom', end: 'bottom top', onToggle: (s) => (running = s.isActive) });
 
-  const beats = [0, 1, 2, 3, 4, 5, 6, 7].map((k) => {
-    const group = part(svg, `dd-b${k}`)!, tl = gsap.timeline({ paused: true }), idle: gsap.core.Animation[] = [];
-    BEATS[k](tl, group, svg, idle);
-    return { group, tl, idle };
+  const beats: ChapterBeat[] = [0, 1, 2, 3, 4, 5, 6, 7].map((k) => {
+    const group = part(svg, `dd-b${k}`)!;
+    return { group, make: (tl: Tl, idle: gsap.core.Animation[]) => BEATS[k](tl, group, svg, idle) };
   });
   gsap.set(move, { opacity: 0 });
 
@@ -219,9 +218,9 @@ export function deindealChapter(step: HTMLElement, still: boolean) {
       const jump = still || was < 0;
       const to = (el: Element, vars: gsap.TweenVars) => (jump ? gsap.set(el, vars) : gsap.to(el, { ...vars, duration: 0.5, overwrite: 'auto' }));
       // the integrations stay faintly behind the flood
-      if (k === 3) { beats[2].tl.progress(1); to(net, { opacity: 0.3 }); } else if (k !== 2) to(net, { opacity: 0 });
+      if (k === 3) { ready(beats[2])?.tl?.progress(1); to(net, { opacity: 0.3 }); } else if (k !== 2) to(net, { opacity: 0 });
       // the movement, from the beat it is built; behind Feedgenix and the close, faint
-      if (k > 4) beats[4].tl.progress(1);
+      if (k > 4) ready(beats[4])?.tl?.progress(1);
       to(move, { opacity: k < 4 ? 0 : k > 5 ? 0.15 : 1 });
       // the Translate gear: in the movement, then Feedgenix's mark, then a dot on the line
       to(tpos, { opacity: k < 4 || k > 7 ? 0 : 1 });
