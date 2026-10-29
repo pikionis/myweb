@@ -182,31 +182,50 @@ type Target = { tex: WebGLTexture; fbo: WebGLFramebuffer; w: number; h: number }
 type Double = { read: Target; write: Target; swap: () => void };
 type Program = { program: WebGLProgram; uniforms: Record<string, WebGLUniformLocation | null> };
 
-function compile(gl: WebGL2RenderingContext, type: number, source: string) {
-  const shader = gl.createShader(type);
-  if (!shader) return null;
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) { gl.deleteShader(shader); return null; }
-  return shader;
-}
-
-function link(gl: WebGL2RenderingContext, vertex: WebGLShader, source: string): Program | null {
-  const fragment = compile(gl, gl.FRAGMENT_SHADER, source);
-  const program = gl.createProgram();
-  if (!(fragment && program)) return null;
-  gl.attachShader(program, vertex);
-  gl.attachShader(program, fragment);
-  gl.bindAttribLocation(program, 0, 'aPos');
-  gl.linkProgram(program);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return null;
-  const uniforms: Program['uniforms'] = {};
-  const count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-  for (let i = 0; i < count; i++) {
-    const info = gl.getActiveUniform(program, i);
-    if (info) uniforms[info.name] = gl.getUniformLocation(program, info.name);
-  }
-  return { program, uniforms };
+/**
+ * Every program, compiled and linked at once (null if one fails). Asking whether a shader compiled makes the page
+ * wait for it, so nothing is asked until all are sent; with KHR_parallel_shader_compile the GPU compiles them on
+ * its own threads and the page is not held at all while it does.
+ */
+function linkAll(gl: WebGL2RenderingContext): Promise<Record<ProgramName, Program> | null> {
+  const parallel = gl.getExtension('KHR_parallel_shader_compile');
+  const shader = (type: number, source: string) => {
+    const s = gl.createShader(type)!;
+    gl.shaderSource(s, source);
+    gl.compileShader(s);
+    return s;
+  };
+  const vertex = shader(gl.VERTEX_SHADER, VERTEX);
+  const pending = (Object.keys(SHADERS) as ProgramName[]).map((name) => {
+    const program = gl.createProgram()!;
+    gl.attachShader(program, vertex);
+    gl.attachShader(program, shader(gl.FRAGMENT_SHADER, SHADERS[name]));
+    gl.bindAttribLocation(program, 0, 'aPos');
+    gl.linkProgram(program);
+    return { name, program };
+  });
+  const linked = () => {
+    const programs = {} as Record<ProgramName, Program>;
+    for (const { name, program } of pending) {
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return null;
+      const uniforms: Program['uniforms'] = {};
+      const count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+      for (let i = 0; i < count; i++) {
+        const info = gl.getActiveUniform(program, i);
+        if (info) uniforms[info.name] = gl.getUniformLocation(program, info.name);
+      }
+      programs[name] = { program, uniforms };
+    }
+    return programs;
+  };
+  // the rest is a task of its own either way (creating the context was the first)
+  return new Promise((resolve) => {
+    const check = () => {
+      if (!parallel || pending.every(({ program }) => gl.getProgramParameter(program, parallel.COMPLETION_STATUS_KHR))) resolve(linked());
+      else window.setTimeout(check, 16);
+    };
+    window.setTimeout(check, 0);
+  });
 }
 
 /** Parses any CSS colour by painting it into one pixel. */
@@ -223,17 +242,11 @@ function toRgb(color: string, probe: CanvasRenderingContext2D) {
  * pressure), in the spirit of Jos Stam's paper and Pavel Dobryakov's WebGL port.
  * Returns null where half-float render targets aren't available.
  */
-function createFluid(gl: WebGL2RenderingContext) {
+async function createFluid(gl: WebGL2RenderingContext) {
   if (!gl.getExtension('EXT_color_buffer_float')) return null;
   gl.getExtension('OES_texture_float_linear');
-  const vertex = compile(gl, gl.VERTEX_SHADER, VERTEX);
-  if (!vertex) return null;
-  const programs = {} as Record<ProgramName, Program>;
-  for (const name of Object.keys(SHADERS) as ProgramName[]) {
-    const made = link(gl, vertex, SHADERS[name]);
-    if (!made) return null;
-    programs[name] = made;
-  }
+  const programs = await linkAll(gl);
+  if (!programs) return null;
 
   const quad = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, quad);
@@ -471,12 +484,15 @@ function drawMask(canvas: HTMLCanvasElement, h1: HTMLElement, words: Word[], wid
   }
 }
 
-export function inkHeadline(root: HTMLElement, canvas: HTMLCanvasElement, h1: HTMLElement) {
+/**
+ * Sets the ink up over the title (the slow part: the shaders) without showing it, and resolves to `bloom`, which
+ * writes the title in. Null without WebGL2 or half-float targets: the real <h1> stays as it is.
+ */
+export async function inkHeadline(root: HTMLElement, canvas: HTMLCanvasElement, h1: HTMLElement): Promise<{ bloom: () => void } | null> {
   const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false, depth: false });
   const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
-  const fluid = gl && probe ? createFluid(gl) : null;
-  // No WebGL2 or half-float targets: the real <h1> stays as it is.
-  if (!fluid || !probe) return;
+  const fluid = gl && probe ? await createFluid(gl) : null;
+  if (!fluid || !probe) return null;
 
   const maskCanvas = document.createElement('canvas');
   const cs = getComputedStyle(root);
@@ -486,7 +502,9 @@ export function inkHeadline(root: HTMLElement, canvas: HTMLCanvasElement, h1: HT
   // Time of the last stir, and of the last thing that moved the fluid.
   let touched = -Infinity;
   let active = performance.now();
-  const born = performance.now();
+  let born = performance.now();
+  // nothing moves, and nothing is stirred, until the title blooms
+  let live = false;
   const hand = { x: 0, y: 0, on: false, down: false, moved: 0 };
   const shown = () => canvas.style.visibility !== 'hidden' && document.visibilityState === 'visible';
 
@@ -505,7 +523,7 @@ export function inkHeadline(root: HTMLElement, canvas: HTMLCanvasElement, h1: HT
   };
 
   // Ink drops land over the headline and the letters pull them in.
-  const bloom = () => {
+  const drops = () => {
     const r = h1.getBoundingClientRect(), o = root.getBoundingClientRect();
     for (let i = 0; i < 12; i++) {
       const x = (r.left - o.left + r.width * ((i + Math.random() * 0.6) / 12)) / width;
@@ -532,13 +550,10 @@ export function inkHeadline(root: HTMLElement, canvas: HTMLCanvasElement, h1: HT
     if (now - active < SLEEP_AFTER || age < 4000) raf = requestAnimationFrame(frame);
   };
   const start = () => {
-    if (!raf && shown()) { last = 0; raf = requestAnimationFrame(frame); }
+    if (live && !raf && shown()) { last = 0; raf = requestAnimationFrame(frame); }
   };
 
   build();
-  root.classList.add('inked');
-  bloom();
-  start();
 
   let rt = 0;
   new ResizeObserver(() => {
@@ -557,6 +572,7 @@ export function inkHeadline(root: HTMLElement, canvas: HTMLCanvasElement, h1: HT
     return { x: (e.clientX - rect.left) / rect.width, y: 1 - (e.clientY - rect.top) / rect.height };
   };
   root.addEventListener('pointermove', (e) => {
+    if (!live) return;
     const p = local(e);
     if (hand.on) {
       const dx = p.x - hand.x, dy = p.y - hand.y;
@@ -572,7 +588,7 @@ export function inkHeadline(root: HTMLElement, canvas: HTMLCanvasElement, h1: HT
   });
   root.addEventListener('pointerleave', () => { hand.on = false; hand.down = false; });
   root.addEventListener('pointerdown', (e) => {
-    if ((e.target as HTMLElement).closest('a, button')) return;
+    if (!live || (e.target as HTMLElement).closest('a, button')) return;
     const p = local(e);
     hand.down = true; hand.on = true; hand.x = p.x; hand.y = p.y;
     // A drop: a dab of accent ink pushed out in a ring.
@@ -588,4 +604,15 @@ export function inkHeadline(root: HTMLElement, canvas: HTMLCanvasElement, h1: HT
   const up = () => { hand.down = false; };
   root.addEventListener('pointerup', up);
   root.addEventListener('pointercancel', up);
+
+  return {
+    bloom: () => {
+      if (live) return;
+      live = true;
+      born = active = performance.now();
+      root.classList.add('inked');
+      drops();
+      start();
+    },
+  };
 }

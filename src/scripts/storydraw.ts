@@ -66,3 +66,38 @@ export const drawIn = (tl: Tl, els: Element[], at: number, duration = 0.6, stagg
   const solids = els.filter((e) => e.classList.contains('solid'));
   if (solids.length) tl.fromTo(solids, { fillOpacity: 0 }, { fillOpacity: 1, duration: duration * 0.8, stagger, ease: 'power1.out' }, at + duration * 0.3);
 };
+
+/** A path's points at even steps along it (N + 1 of them, the first and last on its ends), worked out from its data
+ *  alone: absolute M, H, V, L and C, all the coaster's track and the sun's way in Kalimera use. Asking the browser costs a walk along the whole
+ *  path for every point, thousands of them on this one (seconds on a phone). */
+export function sampled(d: string, step: number) {
+  const pts: number[][] = [];
+  let x = 0, y = 0;
+  for (const [, cmd, args] of d.matchAll(/([MHVLC])([^MHVLC]*)/g)) {
+    const a = args.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+    if (cmd === 'M' || cmd === 'L') for (let i = 0; i + 1 < a.length; i += 2) { x = a[i]; y = a[i + 1]; pts.push([x, y]); }
+    else if (cmd === 'H') for (const v of a) { x = v; pts.push([x, y]); }
+    else if (cmd === 'V') for (const v of a) { y = v; pts.push([x, y]); }
+    else for (let i = 0; i + 5 < a.length; i += 6) {
+      const [x1, y1, x2, y2, x3, y3] = a.slice(i, i + 6);
+      for (let k = 1; k <= 48; k++) {
+        const t = k / 48, u = 1 - t;
+        pts.push([u * u * u * x + 3 * u * u * t * x1 + 3 * u * t * t * x2 + t * t * t * x3, u * u * u * y + 3 * u * u * t * y1 + 3 * u * t * t * y2 + t * t * t * y3]);
+      }
+      x = x3; y = y3;
+    }
+  }
+  const lens = [0];
+  for (let i = 1; i < pts.length; i++) lens.push(lens[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const L = lens[lens.length - 1], N = Math.max(1, Math.ceil(L / step));
+  const xs: number[] = [], ys: number[] = [];
+  let j = 1;
+  for (let i = 0; i <= N; i++) {
+    const s = (i / N) * L;
+    while (j < pts.length - 1 && lens[j] < s) j++;
+    const seg = lens[j] - lens[j - 1], f = seg ? (s - lens[j - 1]) / seg : 0;
+    xs.push(pts[j - 1][0] + (pts[j][0] - pts[j - 1][0]) * f);
+    ys.push(pts[j - 1][1] + (pts[j][1] - pts[j - 1][1]) * f);
+  }
+  return { xs, ys, L, N };
+}

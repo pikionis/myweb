@@ -1,6 +1,6 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { type Tl, part, parts, strokes, draw, drawIn, show, pop, count, loop } from './storydraw';
+import { type Tl, part, parts, strokes, draw, drawIn, show, pop, count, loop, sampled } from './storydraw';
 import { chapter } from './chapter';
 
 /*
@@ -11,8 +11,6 @@ import { chapter } from './chapter';
  * itself and its words come in (the beat before fades); the clock moves on; from the pivot the horizon is Athens,
  * and at the end the view pulls back. With reduced motion the day goes beat by beat, its pictures shown drawn.
  */
-
-gsap.registerPlugin(ScrollTrigger);
 
 /** the scroll from one beat to the next, in heights of the screen: the pivot (beat 4 to 5) holds longer */
 const STEPS = [0.75, 0.75, 0.75, 0.85, 1.3, 0.75, 0.75];
@@ -151,6 +149,7 @@ function canvasIn(tl: Tl, c: SVGGElement, at: number) {
 }
 
 export function kalimeraChapter(step: HTMLElement, still: boolean) {
+  gsap.registerPlugin(ScrollTrigger);
   const root = step.querySelector<HTMLElement>('[data-chapter]');
   const svg = root?.querySelector<SVGSVGElement>('svg.ms-svg');
   if (!root || !svg) return null;
@@ -164,15 +163,17 @@ export function kalimeraChapter(step: HTMLElement, still: boolean) {
   const sails = parts(svg, 'kc-mill-').filter((m) => m.dataset.p!.endsWith('-sails'));
 
   // ---- the sun's way: where each beat's point lies along it
+  // (its points every 2 along it worked out from its own path data: asked of the browser, they held a phone a tenth
+  // of a second)
   const SUN = (svg.dataset.sun ?? '').split(',').map(Number);
-  const L = trail.getTotalLength(), N = Math.ceil(L / 2);
-  const pts = Array.from({ length: N + 1 }, (_, i) => trail.getPointAtLength((i / N) * L));
+  const L = trail.getTotalLength();
+  const { xs, ys, N } = sampled(trail.getAttribute('d') ?? '', 2);
   const stops: number[] = [];
   let from = 0;
   for (let k = 0; k < SUN.length / 2; k++) {
     let best = from, bd = Infinity;
     for (let i = from; i <= N; i++) {
-      const dd = Math.hypot(pts[i].x - SUN[k * 2], pts[i].y - SUN[k * 2 + 1]);
+      const dd = Math.hypot(xs[i] - SUN[k * 2], ys[i] - SUN[k * 2 + 1]);
       if (dd < bd) { bd = dd; best = i; }
     }
     stops.push((best / N) * L);

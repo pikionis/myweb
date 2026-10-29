@@ -10,9 +10,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
  * With reduced motion every scene is shown as it ends, one after another, and simply fades in as it arrives.
  */
 
-gsap.registerPlugin(ScrollTrigger);
-
-import { type Tl, type El, part, parts, strokes, all, draw, faces, show, pop, type, write, count, loop } from './storydraw';
+import { type Tl, type El, part, parts, strokes, all, draw, faces, show, pop, type, write, count, loop, sampled } from './storydraw';
 import { kalimeraChapter } from './kalimera';
 import { koanChapter } from './koan';
 import { deindealChapter } from './deindeal';
@@ -227,40 +225,6 @@ function byHand(tl: Tl, step: HTMLElement, ride: NonNullable<ReturnType<typeof j
  *  it (the hills and the clouds slower, for depth), but never past either end; each station's skill drops into its
  *  wagon as the train reaches it; the year, the course count and a course's name follow, the moments of those years
  *  appear as the train nears them, and the lines beside it are read one after another. */
-/** A path's points at even steps along it (N + 1 of them, the first and last on its ends), worked out from its data
- *  alone: absolute M, H, V, L and C, all the coaster's track uses. Asking the browser costs a walk along the whole
- *  path for every point, thousands of them on this one (seconds on a phone). */
-function sampled(d: string, step: number) {
-  const pts: number[][] = [];
-  let x = 0, y = 0;
-  for (const [, cmd, args] of d.matchAll(/([MHVLC])([^MHVLC]*)/g)) {
-    const a = args.trim().split(/[\s,]+/).filter(Boolean).map(Number);
-    if (cmd === 'M' || cmd === 'L') for (let i = 0; i + 1 < a.length; i += 2) { x = a[i]; y = a[i + 1]; pts.push([x, y]); }
-    else if (cmd === 'H') for (const v of a) { x = v; pts.push([x, y]); }
-    else if (cmd === 'V') for (const v of a) { y = v; pts.push([x, y]); }
-    else for (let i = 0; i + 5 < a.length; i += 6) {
-      const [x1, y1, x2, y2, x3, y3] = a.slice(i, i + 6);
-      for (let k = 1; k <= 48; k++) {
-        const t = k / 48, u = 1 - t;
-        pts.push([u * u * u * x + 3 * u * u * t * x1 + 3 * u * t * t * x2 + t * t * t * x3, u * u * u * y + 3 * u * u * t * y1 + 3 * u * t * t * y2 + t * t * t * y3]);
-      }
-      x = x3; y = y3;
-    }
-  }
-  const lens = [0];
-  for (let i = 1; i < pts.length; i++) lens.push(lens[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
-  const L = lens[lens.length - 1], N = Math.max(1, Math.ceil(L / step));
-  const xs: number[] = [], ys: number[] = [];
-  let j = 1;
-  for (let i = 0; i <= N; i++) {
-    const s = (i / N) * L;
-    while (j < pts.length - 1 && lens[j] < s) j++;
-    const seg = lens[j] - lens[j - 1], f = seg ? (s - lens[j - 1]) / seg : 0;
-    xs.push(pts[j - 1][0] + (pts[j][0] - pts[j - 1][0]) * f);
-    ys.push(pts[j - 1][1] + (pts[j][1] - pts[j - 1][1]) * f);
-  }
-  return { xs, ys, L, N };
-}
 
 function journey(step: HTMLElement) {
   const svg = [...step.querySelectorAll<SVGSVGElement>('.ms-coaster svg')].find((v) => v.getClientRects().length);
@@ -412,6 +376,9 @@ function splitWords(el: HTMLElement | null): HTMLSpanElement[] {
 }
 
 export function myStory(root: HTMLElement) {
+  // registered when the story is set up, not as the script loads: loading it then measured every page before
+  // its first picture
+  gsap.registerPlugin(ScrollTrigger);
   const steps = [...root.querySelectorAll<HTMLElement>('[data-scene]')];
   const rail = root.querySelector<HTMLElement>('.ms-rail');
   const items = [...(rail?.querySelectorAll<HTMLElement>('[data-rail]') ?? [])];

@@ -12,8 +12,6 @@ import type { Tl } from './storydraw';
  * from beat to beat and each picture is shown as it ends.
  */
 
-gsap.registerPlugin(ScrollTrigger);
-
 export type Beat = {
   /** what fades in with the beat and out after it */
   group?: Element | null;
@@ -47,22 +45,31 @@ export function ready(b: Beat | undefined) {
   return b;
 }
 
+// the top bar's height (the --topbar-h token, the same at every size), read once: reading it works the whole page's
+// styles out again, and this page is long
+let topbar = 0;
+const barHeight = () => (topbar ||= parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 72);
+
 export function chapter(root: HTMLElement, o: ChapterOptions) {
+  gsap.registerPlugin(ScrollTrigger);
   const { still, steps, beats } = o;
   const stage = root.querySelector<HTMLElement>('.ch-stage')!;
   const says = [...root.querySelectorAll<HTMLElement>('[data-beat]')];
   const phone = window.matchMedia('(max-width: 860px)');
   root.classList.add('ch-on');
-  beats.forEach((b) => b.group && gsap.set(b.group, { opacity: 0 }));
+  // (in one go: set one by one, each read of the page came between two writes)
+  gsap.set(beats.map((b) => b.group).filter((g): g is Element => !!g), { opacity: 0 });
 
-  // ---- the beat on screen (its picture built when the page has a spare moment, or when it is needed)
+  // ---- the beat on screen (its picture built when the page has a spare moment, or when it is needed; none is
+  // built while the chapter is still far down the page, see `near` below)
   let active = -1;
+  let near = false;
   const go = (k: number) => {
     if (k === active) return;
     const was = active;
     active = k;
     says.forEach((s, i) => s.classList.toggle('on', i === k));
-    const before = beats[was], now = ready(beats[k]);
+    const before = beats[was], now = near ? ready(beats[k]) : beats[k];
     if (before) {
       before.tl?.pause();
       before.idle?.forEach((a) => a.pause());
@@ -80,7 +87,7 @@ export function chapter(root: HTMLElement, o: ChapterOptions) {
   let top = 0, unit = 0;
   const offsets: number[] = [];
   const size = () => {
-    const bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 72;
+    const bar = barHeight();
     const strip = phone.matches ? (document.querySelector<HTMLElement>('.ms-rail')?.offsetHeight ?? 0) : 0;
     const free = window.innerHeight - bar - strip - (phone.matches ? 96 : 16);
     root.classList.toggle('phone', phone.matches);
@@ -127,14 +134,25 @@ export function chapter(root: HTMLElement, o: ChapterOptions) {
   });
   render();
 
-  // the beats' pictures, one per spare moment, in order: each starts blank, so the chapter is ready before it is reached
+  // the beats' pictures, one per spare moment, in order, from when the chapter is three screens away (building them
+  // is what costs a phone; the page opens without it): each starts blank, so the chapter is ready before it is reached
   let killed = false;
   const later = (fn: () => void) => (typeof requestIdleCallback === 'function' ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 30));
   const prepare = (k: number) => {
     if (killed || k >= beats.length) return;
     later(() => { if (!killed) { ready(beats[k]); prepare(k + 1); } });
   };
-  prepare(0);
+  const approach = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting || killed) return;
+    approach.disconnect();
+    near = true;
+    // the beat already showing gets its picture now
+    const k = active;
+    active = -1;
+    go(k);
+    prepare(0);
+  }, { rootMargin: '300% 0px' });
+  approach.observe(root);
 
   return {
     /** where the page stops for the opening and each beat (from the top of the document) */
@@ -145,6 +163,7 @@ export function chapter(root: HTMLElement, o: ChapterOptions) {
     phone: () => phone.matches,
     kill: () => {
       killed = true;
+      approach.disconnect();
       ScrollTrigger.removeEventListener('refreshInit', size);
       scrub.scrollTrigger?.kill(); scrub.kill(); enter.kill();
       beats.forEach((b) => b.tl?.kill());

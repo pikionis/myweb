@@ -2,8 +2,10 @@
 import '@fontsource/space-grotesk/400.css';
 import '@fontsource/space-grotesk/500.css';
 import '@fontsource/space-grotesk/700.css';
-// the two weights the first screen sets (text and headings), fetched with the page rather than after its styles
+// the weights the first screen sets (text and headings), fetched with the page rather than after its styles; on the
+// home page also the intro's (its logo line wraps differently in the stand-in face, so it would move)
 import font400 from '@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff2?url';
+import font500 from '@fontsource/space-grotesk/files/space-grotesk-latin-500-normal.woff2?url';
 import font700 from '@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2?url';
 import '../styles/global.css';
 import { person, meta, brand, services } from '../data/site';
@@ -82,6 +84,7 @@ const ld = {
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <link rel="preload" href={font700} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={font400} as="font" type="font/woff2" crossorigin />
+    {path === '/' && <link rel="preload" href={font500} as="font" type="font/woff2" crossorigin />}
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
     <!-- Picks the opening intro before the first paint (src/scripts/intro.ts): the full intro once per session on
          the home page (a still logo with reduced motion), otherwise only the header logo fading in, so a visitor who

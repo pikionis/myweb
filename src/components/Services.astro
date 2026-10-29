@@ -78,11 +78,14 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                       </div>
                       <div class:list={['pmedia', { spec: scope && !live }]} style={`--mbg: ${bg}; --mfg: ${fg}`}>
                         {live ? (
-                          <!-- the live site (src/scripts/livesites.ts); its title card shows until the site paints over it -->
-                          <div class="site-live" data-live>
+                          <!-- the live site (src/scripts/livesites.ts): its frame is made as its card comes near (on a
+                               slow connection the browser's own lazy loading fetched every site with the page, and an
+                               empty frame in the page made it lay the page out while still reading it); its title card
+                               shows until the site paints over it. Without script, the frame is the <noscript> one -->
+                          <div class="site-live" data-live data-src={live} data-title={`${p.data.title} ${ui.live.site}`}>
                             <span class="pfallback" aria-hidden="true" data-t={p.data.title}></span>
-                            <iframe src={live} title={`${p.data.title} ${ui.live.site}`} loading="lazy" tabindex="-1" credentialless
-                              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
+                            <noscript><iframe src={live} title={`${p.data.title} ${ui.live.site}`} loading="lazy" tabindex="-1" credentialless
+                              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe></noscript>
                             <!-- a phone: the finger scrolls the page; this opens the site full screen to scroll through it -->
                             <button type="button" class="live-preview" data-preview={live} data-name={p.data.title}
                               data-frame-title={`${p.data.title} ${ui.live.site}`} data-visit={visitUrl(p) ?? live}
@@ -246,11 +249,11 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
      On a phone it is only to look at (a finger always scrolls the page), and a tap opens the project like
      the rest of the card */
   .site-live { position: absolute; inset: 0; overflow: hidden; }
-  .site-live iframe { position: absolute; top: 0; left: 0; width: 1440px; height: 100%; border: 0; transform-origin: 0 0; pointer-events: none; }
+  .site-live :global(iframe) { position: absolute; top: 0; left: 0; width: 1440px; height: 100%; border: 0; transform-origin: 0 0; pointer-events: none; }
   @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
     /* above the card's own link, so the pointer here is on the site */
     .site-live { z-index: 2; }
-    .site-live iframe { pointer-events: auto; }
+    .site-live :global(iframe) { pointer-events: auto; }
   }
   /* a phone (or any touch screen): "Preview" in the middle of the site opens it full screen */
   .live-preview { display: none; }

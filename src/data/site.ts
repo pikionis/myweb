@@ -10,8 +10,9 @@ export const person = {
   // the contribution terrain is pulled from this account at build time (scripts/github.mjs)
   github: 'https://github.com/pikionis',
   location: 'Kos · Greece',
-  // the portrait (public/petros.jpg): black and white in the site's ink and ivory, the shirt in the accent blue
-  photo: '/petros.jpg' as string,
+  // the portrait (public/petros.webp, a third of public/petros.jpg, the original): black and white in the site's ink
+  // and ivory, the shirt in the accent blue
+  photo: '/petros.webp' as string,
   // the CV for "Download CV" on /about: a PDF at this address in public/ (the button shows on the live site once
   // the file is there) [TODO: add the CV PDF]
   cv: '/petros-pikionis-cv.pdf' as string,

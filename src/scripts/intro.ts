@@ -12,7 +12,11 @@ import { centers, symbolBox, wordBox, type LoopKey } from '../data/logo';
  *   2.95–3.4 shine     one band of light crosses the symbol
  *   3.0–4.35 wordmark  o n e h u b rise in, one letter at a time
  *   4.0–4.5  line      the motto and its tail under the logo
- *   4.75+    hand-off  the logo and its motto fly into the header (top left) while the ivory lifts off the page
+ *   4.75+    hand-off  the logo and its motto fly into the header (top left) while the intro's ground lifts off
+ *                      the page
+ *
+ * It plays on the hero's own dark ground, in the header's colours there, so the page it hands over to is the same
+ * ground (and a phone that waits for the script waits on the site's own colour, not a blank one).
  *
  * The head script in Base.astro picks the mode before the first paint (html[data-intro]): `full` once per
  * session, `still` with reduced motion (the logo and its line for a moment, then a fade), `quick` on later
@@ -45,9 +49,11 @@ export type IntroHandle = {
   handoff: Promise<void>;
   /** resolves when the overlay is gone */
   done: Promise<void>;
+  /** whether an intro covers the page now (full or still) */
+  playing: boolean;
 };
 
-const settled: IntroHandle = { handoff: Promise.resolve(), done: Promise.resolve() };
+const settled: IntroHandle = { handoff: Promise.resolve(), done: Promise.resolve(), playing: false };
 
 export function logoIntro(): IntroHandle {
   const html = document.documentElement;
@@ -116,20 +122,32 @@ export function logoIntro(): IntroHandle {
     // reduced motion: the logo and its line hold for a moment, then the overlay fades
     const t = window.setTimeout(() => fadeOut(0.3), STILL_HOLD);
     listen(() => { clearTimeout(t); fadeOut(0.2); });
-    return { handoff, done };
+    return { handoff, done, playing: true };
   }
 
-  try {
-    play(el, release, finish, listen, fadeOut);
-  } catch (err) {
-    // whatever went wrong, the page must not stay covered
-    finish();
-    console.error(err);
-  }
-  return { handoff, done };
+  // its words and line are set in the site's face at 500: laid out in the stand-in face the line wraps differently,
+  // and everything would move when the face arrived, so it is measured once the face is in (a second at most)
+  const face = document.fonts?.load('500 1em "Space Grotesk"').catch(() => []) ?? Promise.resolve([]);
+  // (and after the page's first picture: setting up never holds that back)
+  Promise.all([Promise.race([face, new Promise((r) => window.setTimeout(r, 1000))]), painted()])
+    .then(() => play(el, release, finish, listen, fadeOut))
+    .catch((err) => {
+      // whatever went wrong, the page must not stay covered
+      finish();
+      console.error(err);
+    });
+  return { handoff, done, playing: true };
 }
 
-function play(
+/** A new task: the page is handed back for a moment, so setting the intro up never holds a phone for long. */
+const turn = () => new Promise<void>((r) => window.setTimeout(r, 0));
+
+let firstPicture: Promise<void> | null = null;
+/** Resolves once the page's first picture is on screen (a task after the frame that drew it). */
+export const painted = () =>
+  (firstPicture ??= new Promise<void>((r) => requestAnimationFrame(() => window.setTimeout(r, 0))));
+
+async function play(
   el: HTMLElement,
   release: () => void,
   finish: () => void,
@@ -161,38 +179,48 @@ function play(
   })));
   const letters = [...word.querySelectorAll('use')];
 
-  // ---- measure the master lockup and lay out the first frame ----
+  // ---- measure the master lockup: every read before any write, so the page is laid out once ----
   const vw = window.innerWidth, vh = window.innerHeight;
   const narrow = vw < 760;
   const S = narrow ? NARROW : WIDE;
   const box = sym.getBoundingClientRect();
   const u = box.width / symbolBox.w;
   const wu = word.getBoundingClientRect().width / wordBox.w;
+  const drawn = [...pens, ...arcPens];
+  const lengths = drawn.map((p) => p.getTotalLength());
+  // the words' letters rise by 0.4em, given in px (in em, each letter would be measured on its own)
+  const em = parseFloat(getComputedStyle(says[0]).fontSize) || 16;
+  const sizes = says.map((say) => say.getBoundingClientRect());
+  const sayLetters = says.flatMap((say) => [...say.children]);
+  // what GSAP moves has its transform read now too (it reads each one the first time it touches it)
+  [...layers, ...says, ...sayLetters, ...letters, sym, word, motto, line, glow].forEach((t) => gsap.getProperty(t, 'x'));
 
-  const penLength = (p: SVGPathElement) => {
-    const len = p.getTotalLength();
-    gsap.set(p, { strokeDasharray: `${len} ${len}`, strokeDashoffset: len });
-    return len;
-  };
-  pens.forEach(penLength);
-  arcPens.forEach(penLength);
-
-  KEYS.forEach((k, i) => {
+  // where each loop scatters and each word goes (beside its loop on a wide screen, under it on a narrow one)
+  const spots = KEYS.map((k) => {
     const c = centers[k], s = S[k];
-    // move the loop's centre from its place in the symbol to its scatter point
-    const x = vw / 2 + s.x * vw - (box.left + c.x * u);
-    const y = vh / 2 + s.y * vh - (box.top + c.y * u);
-    gsap.set(layers[i], { x, y, rotation: s.r - 6, scale: s.s * 0.9, autoAlpha: 0, filter: `blur(${Math.round(s.s * 7)}px)` });
-    // the word goes beside the loop (wide) or under it (narrow), from the loop's scattered bounds
     const cx = vw / 2 + s.x * vw + (c.bx + c.bw / 2 - c.x) * u * s.s;
     const cy = vh / 2 + s.y * vh + (c.by + c.bh / 2 - c.y) * u * s.s;
-    gsap.set(says[i], narrow
-      ? { left: cx, top: cy + (c.bh * u * s.s) / 2 + 14, xPercent: -50 }
-      : { left: cx + (c.bw * u * s.s) / 2 + 22, top: cy, yPercent: -50 });
-    gsap.set(says[i].children, { autoAlpha: 0, y: '0.4em', filter: 'blur(4px)' });
+    return {
+      // the loop's centre moves from its place in the symbol to its scatter point
+      x: vw / 2 + s.x * vw - (box.left + c.x * u),
+      y: vh / 2 + s.y * vh - (box.top + c.y * u),
+      left: narrow ? cx : cx + (c.bw * u * s.s) / 2 + 22,
+      top: narrow ? cy + (c.bh * u * s.s) / 2 + 14 : cy,
+    };
   });
+  await turn();
+
+  // ---- the first frame: writes only ----
+  drawn.forEach((p, i) => gsap.set(p, { strokeDasharray: `${lengths[i]} ${lengths[i]}`, strokeDashoffset: lengths[i] }));
+  KEYS.forEach((k, i) => {
+    const s = S[k], spot = spots[i];
+    gsap.set(layers[i], { x: spot.x, y: spot.y, rotation: s.r - 6, scale: s.s * 0.9, autoAlpha: 0, filter: `blur(${Math.round(s.s * 7)}px)` });
+    gsap.set(says[i], narrow ? { left: spot.left, top: spot.top, xPercent: -50 } : { left: spot.left, top: spot.top, yPercent: -50 });
+  });
+  gsap.set(sayLetters, { autoAlpha: 0, y: 0.4 * em, filter: 'blur(4px)' });
   gsap.set([arc, shine, glow, line, ...letters], { autoAlpha: 0 });
   el.classList.add('run');
+  await turn();
 
   // ---- the timeline ----
   const tl = gsap.timeline({ defaults: { ease: base } });
@@ -214,8 +242,9 @@ function play(
   const C = 1.6;
   tl.call(unmask(layers), [], C);
   says.forEach((say, i) => {
-    const r = say.getBoundingClientRect();
-    const dx = r.left + r.width / 2 - vw / 2, dy = r.top + r.height / 2 - vh / 2;
+    // its centre, from where it was put (centred on its left on a narrow screen, on its top on a wide one)
+    const { width: w, height: h } = sizes[i];
+    const dx = spots[i].left + (narrow ? 0 : w / 2) - vw / 2, dy = spots[i].top + (narrow ? h / 2 : 0) - vh / 2;
     const d = Math.hypot(dx, dy) || 1;
     tl.to(say, { x: (dx / d) * 28, y: (dy / d) * 28, autoAlpha: 0, filter: 'blur(6px)', duration: 0.45, ease: 'power2.inOut' }, C + i * 0.04);
   });
@@ -266,7 +295,7 @@ function play(
     const headMotto = document.querySelector<HTMLElement>('.brand-motto');
     out = gsap.timeline({ onComplete: () => { if (!over) { over = true; finish(); } } });
     // the end of the line bows out as the logo leaves (on a phone it sits on a line of its own, under the
-    // motto, so riding up with the ivory would cross it)
+    // motto, so riding up with the ground would cross it)
     out.to([skipBtn, tail], { autoAlpha: 0, duration: 0.2, ease: 'power1.out' }, 0)
       .to(el.querySelector('.ohl-bg'), { yPercent: -100, duration: 0.8, ease: 'expo.inOut' }, 0.06);
     // the motto goes with the logo: it lands under the wordmark in the header, so the message stays
@@ -279,8 +308,8 @@ function play(
     if (head) {
       // FLIP: from where the logo is to where the header's logo is
       const a = sym.getBoundingClientRect(), b = head.getBoundingClientRect();
-      // the ivory lifts the same way the logo flies, so the logo only reaches the page's own ground at the
-      // very end of its flight: that is when it takes the header's colour
+      // the ground lifts the same way the logo flies; at the end of its flight the logo takes the header's colour
+      // (the same ivory on the hero)
       out.to(sym, { x: b.left - a.left, y: b.top - a.top, scale: b.width / a.width, transformOrigin: '0 0', duration: 0.85, ease: 'expo.inOut' }, 0)
         .to(stage, { color: getComputedStyle(head).color, duration: 0.2, ease: 'power1.inOut' }, 0.5);
     }

@@ -68,7 +68,8 @@ export function workStack(root: HTMLElement) {
     phoneWidth = window.innerWidth;
     phone.add(PHONE, () => holdPhone(root, pin, sheets));
   };
-  (document.fonts?.ready ?? Promise.resolve()).then(() => { setupPhone(); ScrollTrigger.refresh(); });
+  // (the refresh in a task of its own: together they held a phone too long)
+  (document.fonts?.ready ?? Promise.resolve()).then(() => { setupPhone(); setTimeout(() => ScrollTrigger.refresh(), 0); });
 
   let wait = 0;
   window.addEventListener('resize', () => {
@@ -135,6 +136,10 @@ function holdPhone(root: HTMLElement, pin: HTMLElement, sheets: HTMLElement[]) {
   root.classList.add('phone');
   // one screen of scroll for each second of the timeline
   const unit = pin.clientHeight;
+  // the screen's height for the tweens below, read once per refresh (read in each, it laid the page out each time)
+  let screen = unit;
+  // every sheet is measured before any is changed, so the page is laid out once, not once per sheet (each sheet is
+  // a screen of its own: its --area changes nothing in the others)
   const plans = sheets.map((sheet) => {
     const inner = sheet.querySelector<HTMLElement>('.svc-in')!;
     const title = sheet.querySelector<HTMLElement>('h3')!;
@@ -143,15 +148,15 @@ function holdPhone(root: HTMLElement, pin: HTMLElement, sheets: HTMLElement[]) {
     const pad = getComputedStyle(inner);
     // the projects get the whole screen under the title
     const area = inner.clientHeight - parseFloat(pad.paddingTop) - parseFloat(pad.paddingBottom) - title.offsetHeight - gap;
-    sheet.style.setProperty('--area', `${Math.max(Math.round(area), 240)}px`);
     // and the words above them scroll up until the projects sit right under the title
     const shift = Math.max(stack.offsetTop - (title.offsetTop + title.offsetHeight + gap), 0);
     return {
-      sheet, shift,
+      sheet, shift, area,
       words: [...inner.children].filter((el) => el !== title),
       cards: [...sheet.querySelectorAll<HTMLElement>('[data-pcard]')],
     };
   });
+  plans.forEach((p) => p.sheet.style.setProperty('--area', `${Math.max(Math.round(p.area), 240)}px`));
 
   const SLIDE = 0.8, CARD = 0.6, LAST = 0.3;
   const total = plans.reduce((t, p, i) => t + (i ? SLIDE : 0) + p.shift / unit + Math.max(p.cards.length - 1, 0) * CARD, 0) + LAST;
@@ -168,13 +173,16 @@ function holdPhone(root: HTMLElement, pin: HTMLElement, sheets: HTMLElement[]) {
   };
   const tl = gsap.timeline({
     onUpdate: cover,
-    scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.3, invalidateOnRefresh: true },
+    scrollTrigger: {
+      trigger: root, start: 'top top', end: 'bottom bottom', scrub: 0.3, invalidateOnRefresh: true,
+      onRefreshInit: () => { screen = pin.clientHeight; },
+    },
   });
   let at = 0;
   plans.forEach((p, i) => {
     comes.push(at);
     if (i > 0) {
-      tl.fromTo(p.sheet, { y: () => pin.clientHeight }, { y: 0, ease: 'none', duration: SLIDE }, at);
+      tl.fromTo(p.sheet, { y: () => screen }, { y: 0, ease: 'none', duration: SLIDE }, at);
       recede(tl, plans.slice(0, i).map((q) => q.sheet), at, SLIDE);
       at += SLIDE;
     }
@@ -185,7 +193,7 @@ function holdPhone(root: HTMLElement, pin: HTMLElement, sheets: HTMLElement[]) {
     }
     p.cards.forEach((card, j) => {
       if (!j) return;
-      tl.fromTo(card, { y: () => pin.clientHeight }, { y: 0, ease: 'none', duration: CARD }, at);
+      tl.fromTo(card, { y: () => screen }, { y: 0, ease: 'none', duration: CARD }, at);
       at += CARD;
     });
   });

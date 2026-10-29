@@ -10,19 +10,54 @@ import { myStory } from './mystory';
 import { serviceStories } from './stories';
 import { letterCascade } from './cascade';
 import { ditheredText } from './dither';
-import { logoIntro } from './intro';
+import { logoIntro, painted } from './intro';
 
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const dpr = () => Math.min(window.devicePixelRatio || 1, 2);
 const cssVar = (el: Element, name: string, fallback: string) =>
   getComputedStyle(el).getPropertyValue(name).trim() || fallback;
 
-/* ---------- hero background bubbles ---------- */
-function heroBubbles() {
+/* ---------- the setup in turns: one part per task, the page handed back in between, so a phone never holds
+   still for long and the intro, which goes first, is not kept waiting. The first waits for the page's first
+   picture, so nothing set up here ever holds that back ---------- */
+const queue: (() => void)[] = [];
+let turning = false;
+function later(...jobs: (() => void)[]) {
+  queue.push(...jobs);
+  if (turning) return;
+  turning = true;
+  const next = () => {
+    const job = queue.shift();
+    try { job?.(); } catch (err) { console.error(err); }
+    if (queue.length) setTimeout(next, 0);
+    else turning = false;
+  };
+  painted().then(next);
+}
+
+/* ---------- a part further down the page is set up as the page nears it (two screens away), or a moment after
+   the intro has handed the page over (its first moments played), whichever comes first ---------- */
+function whenNear(el: Element, handoff: Promise<void>, setUp: () => void) {
+  let done = false;
+  const go = () => {
+    if (done) return;
+    done = true;
+    near.disconnect();
+    later(setUp);
+  };
+  const near = new IntersectionObserver(([e]) => { if (e.isIntersecting) go(); }, { rootMargin: '200% 0px' });
+  near.observe(el);
+  handoff.then(() => window.setTimeout(go, 1200));
+}
+
+/* ---------- hero background bubbles: drawn at once, moving once the intro has handed the page over ---------- */
+function heroBubbles(handoff: Promise<void>) {
   const cv = document.getElementById('bubbles') as HTMLCanvasElement | null;
   if (!cv) return;
   const ctx = cv.getContext('2d')!;
-  let W = 0, H = 0, raf = 0;
+  // read once: asking for it every frame made the browser work out the page's styles every frame
+  const c = cssVar(document.body, '--accent', '#4d7cff');
+  let W = 0, H = 0, raf = 0, shown = false, handed = false;
   let parts: { x: number; y: number; r: number; vy: number; a: number }[] = [];
   const size = () => { const d = dpr(); W = cv.width = cv.offsetWidth * d; H = cv.height = cv.offsetHeight * d; };
   const make = () => {
@@ -33,8 +68,8 @@ function heroBubbles() {
     }));
   };
   const draw = () => {
+    raf = 0;
     ctx.clearRect(0, 0, W, H);
-    const c = cssVar(document.body, '--accent', '#4d7cff');
     for (const p of parts) {
       if (!reduce) { p.y -= p.vy; if (p.y + p.r < 0) { p.y = H + p.r; p.x = Math.random() * W; } }
       ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -42,13 +77,15 @@ function heroBubbles() {
       ctx.globalAlpha = p.a * 1.6; ctx.lineWidth = dpr(); ctx.strokeStyle = c; ctx.stroke();
     }
     ctx.globalAlpha = 1;
-    if (!reduce) raf = requestAnimationFrame(draw);
+    if (!reduce && shown && handed) raf = requestAnimationFrame(draw);
   };
+  const run = () => { if (!raf && !reduce && shown && handed) raf = requestAnimationFrame(draw); };
   size(); make(); draw();
-  // pause when the hero is off screen
+  // still under the intro, and paused when the hero is off screen
+  handoff.then(() => { handed = true; run(); });
   new IntersectionObserver(([e]) => {
-    if (reduce) return;
-    if (e.isIntersecting) { if (!raf) draw(); } else { cancelAnimationFrame(raf); raf = 0; }
+    shown = e.isIntersecting;
+    if (shown) run(); else { cancelAnimationFrame(raf); raf = 0; }
   }).observe(cv);
   window.addEventListener('resize', () => { size(); make(); if (reduce) draw(); });
 }
@@ -125,54 +162,63 @@ function splitChars(el: HTMLElement): HTMLSpanElement[] {
 }
 
 export function init() {
-  // the opening intro goes first; what plays on load waits for it to hand the page over
+  // the opening intro goes first, in a task of its own; what plays on load waits for it to hand the page over
   const intro = logoIntro();
-  heroBubbles();
-  lightZone();
-  copyEmail();
-  document.querySelectorAll<HTMLElement>('[data-terrain]').forEach(activityTerrain);
-  document.querySelectorAll<HTMLElement>('[data-split]').forEach(splitNav);
-  document.querySelectorAll<HTMLFormElement>('form[data-brief]').forEach(briefForm);
-  // the services on the home page: the stack of sheets, and the stories that open from them
-  document.querySelectorAll<HTMLElement>('[data-stack]').forEach(workStack);
-  // projects whose card shows their live site
-  document.querySelectorAll<HTMLElement>('[data-live]').forEach(liveSite);
-  const preview = document.querySelector<HTMLElement>('[data-lp]');
-  if (preview) livePreview(preview);
-  // /about: the story, scene by scene
-  const story = document.querySelector<HTMLElement>('[data-ms]');
-  if (story) myStory(story);
-  const bubble = document.querySelector<HTMLElement>('[data-bubble]');
-  if (bubble) serviceStories(bubble, intro.handoff);
-  document.querySelectorAll<HTMLElement>('[data-dither]').forEach(ditheredText);
-  // titles ripple letter by letter on hover; a project's name answers a hover anywhere on its card
-  document.querySelectorAll<HTMLElement>('[data-cascade]').forEach((el) =>
-    letterCascade(el, el.closest<HTMLElement>('[data-pcard]') ?? el));
+  const all = <T extends Element>(selector: string, setUp: (el: T) => void) => () =>
+    document.querySelectorAll<T>(selector).forEach(setUp);
 
+  // sections already in view rise in as the intro lifts off them, not underneath it; with no intro, at once
+  const rise = () => { gsap.registerPlugin(ScrollTrigger); entrances(); };
   if (reduce) {
     document.querySelectorAll<HTMLElement>('.curtain').forEach((c) => (c.style.display = 'none'));
-    return;
+  } else {
+    // the home page's hero first: it holds the first screen, and scrolling is back as soon as the intro ends
+    if (document.querySelector('.intro-scroll')) later(() => { gsap.registerPlugin(ScrollTrigger); hero(intro.handoff); });
+    if (intro.playing) intro.handoff.then(() => later(rise));
+    else later(rise);
   }
-  gsap.registerPlugin(ScrollTrigger);
-  if (document.querySelector('.intro-scroll')) hero(intro.handoff);
-  // sections already in view rise in as the intro lifts off them, not underneath it
-  intro.handoff.then(entrances);
+  later(
+    () => heroBubbles(intro.handoff),
+    lightZone,
+    copyEmail,
+    all('[data-split]', splitNav),
+    // the services on the home page: the stack of sheets, four screens down (and the stories that open from them)
+    all('[data-stack]', (el: HTMLElement) => whenNear(el, intro.handoff, () => workStack(el))),
+    // /about: the story, scene by scene, and the GitHub terrain; /contact: the brief
+    all('[data-ms]', myStory),
+    all('[data-terrain]', activityTerrain),
+    all<HTMLFormElement>('form[data-brief]', briefForm),
+    // projects whose card shows their live site
+    all('[data-live]', liveSite),
+    all('[data-lp]', livePreview),
+    all('[data-bubble]', (bubble: HTMLElement) => serviceStories(bubble, intro.handoff)),
+    all('[data-dither]', ditheredText),
+    // titles ripple letter by letter on hover; a project's name answers a hover anywhere on its card
+    all('[data-cascade]', (el: HTMLElement) => letterCascade(el, el.closest<HTMLElement>('[data-pcard]') ?? el)),
+  );
 }
 
 /* ---------- the home page hero: curtain, ink title, letter and word reveal, the light sheet ---------- */
 function hero(handoff: Promise<void>) {
-  // the curtain title is written in ink (needs the real font to lay the letters over the h1); it blooms as
-  // the intro hands the page over, so it is not spent underneath the overlay
+  // the curtain title is written in ink (needs the real font to lay the letters over the h1). Its slow part, the
+  // shaders, is done while the intro plays, in a task of its own; it blooms as the intro hands the page over, so
+  // the bloom is not spent underneath the overlay
   const curtain = document.querySelector<HTMLElement>('.curtain');
   const inkCanvas = document.getElementById('ink') as HTMLCanvasElement | null;
   const curtainTitle = curtain?.querySelector('h1');
   if (curtain && inkCanvas && curtainTitle) {
-    Promise.all([document.fonts?.ready, handoff]).then(() => inkHeadline(curtain, inkCanvas, curtainTitle));
+    (document.fonts?.ready ?? Promise.resolve()).then(() => later(() => {
+      inkHeadline(curtain, inkCanvas, curtainTitle).then((ink) => { if (ink) handoff.then(ink.bloom); });
+    }));
   }
 
   const head = document.getElementById('headlineText');
   const chars = head ? splitChars(head) : [];
   const words = splitWords();
+  // what moves has its transform read now, all at once (GSAP reads each the first time it touches it, and read
+  // between writes, each read laid the page out again)
+  [...chars, ...document.querySelectorAll('.curtain .half, .curtain .center, .hero-fig, .corner, .intro-stage')]
+    .forEach((t) => gsap.getProperty(t, 'x'));
 
   // the reveal plays over the first 2.2 screens; the last screen of the intro belongs to the sheet
   const reveal = { trigger: '.intro-scroll', start: 'top top', end: '+=220%' };
@@ -182,8 +228,8 @@ function hero(handoff: Promise<void>) {
   // headline, so it comes first, as the curtain opens, and the copy waits for its headline. Either way the
   // timeline keeps its length, so the scroll has the same pace.
   // What arrives later is set out of sight first and brought in with to(), not from(): a ScrollTrigger refresh
-  // (the services stack makes one on load) undoes a from()'s start before its turn, so the part showed, then
-  // blinked out when its turn came.
+  // (the services stack makes one when it is set up) undoes a from()'s start before its turn, so the part showed,
+  // then blinked out when its turn came.
   gsap.matchMedia().add({ phone: '(max-width: 820px)', wide: '(min-width: 821px)' }, (ctx) => {
     const phone = ctx.conditions?.phone;
     gsap.set(chars, { yPercent: 60, autoAlpha: 0 });
@@ -207,19 +253,22 @@ function hero(handoff: Promise<void>) {
     }
   });
 
-  // 2) once the headline has landed (~0.67), the copy below lights up word by word
-  ScrollTrigger.create({
-    ...reveal,
-    onUpdate: (self) => {
-      const lit = Math.floor(((self.progress - 0.62) / 0.33) * words.length);
-      words.forEach((s, i) => s.classList.toggle('lit', i < lit));
-    },
-  });
+  // (the rest in a task of its own)
+  later(() => {
+    // 2) once the headline has landed (~0.67), the copy below lights up word by word
+    ScrollTrigger.create({
+      ...reveal,
+      onUpdate: (self) => {
+        const lit = Math.floor(((self.progress - 0.62) / 0.33) * words.length);
+        words.forEach((s, i) => s.classList.toggle('lit', i < lit));
+      },
+    });
 
-  // 3) the light sheet slides up over the pinned hero, which sinks back and dims
-  gsap.to('.intro-stage', {
-    scale: 0.92, opacity: 0.25, ease: 'none',
-    scrollTrigger: { trigger: '.sheet', start: 'top bottom', end: 'top top', scrub: true },
+    // 3) the light sheet slides up over the pinned hero, which sinks back and dims
+    gsap.to('.intro-stage', {
+      scale: 0.92, opacity: 0.25, ease: 'none',
+      scrollTrigger: { trigger: '.sheet', start: 'top bottom', end: 'top top', scrub: true },
+    });
   });
 
   // headline leans toward the pointer (desktop only)
@@ -236,11 +285,12 @@ function hero(handoff: Promise<void>) {
 
 /* ---------- every page: parts rise in as they arrive ---------- */
 function entrances() {
-  // each section's parts rise in once, in reading order: heading, text, then the rest
+  // each section's parts rise in once, in reading order: heading, text, then the rest (faded by opacity alone, so
+  // until they rise they are still there to a screen reader and in the page's outline)
   const rise = (parts: Element[], trigger: Element, start = 'top 80%') =>
     parts.length && gsap.from(parts, {
       scrollTrigger: { trigger, start, once: true },
-      y: 24, autoAlpha: 0, duration: 0.8, ease: 'power3.out', stagger: 0.07,
+      y: 24, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.07,
     });
   document.querySelectorAll('.sec-head, .close .top, [data-rise]').forEach((el) =>
     rise([...el.querySelectorAll(':scope > *, :scope > .invite > *')].filter((c) => !c.matches('.invite')), el));

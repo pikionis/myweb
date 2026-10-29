@@ -13,8 +13,6 @@ import { chapter, ready, type Beat as ChapterBeat } from './chapter';
  * With reduced motion every picture is shown as it ends and the gears stand still.
  */
 
-gsap.registerPlugin(ScrollTrigger);
-
 /** the scroll from one beat to the next, in heights of what is free on screen: the movement holds longer */
 const STEPS = [0.75, 0.75, 0.8, 0.85, 1.3, 0.8, 0.85];
 const clamp01 = gsap.utils.clamp(0, 1);
@@ -181,6 +179,7 @@ const BEATS: Record<number, Beat> = {
 };
 
 export function deindealChapter(step: HTMLElement, still: boolean) {
+  gsap.registerPlugin(ScrollTrigger);
   const root = step.querySelector<HTMLElement>('[data-chapter]');
   const svg = root?.querySelector<SVGSVGElement>('svg.ms-svg');
   if (!root || !svg) return null;

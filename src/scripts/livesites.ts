@@ -11,18 +11,37 @@ import { gsap } from 'gsap';
 const SITE_WIDTH = 1440;
 
 export function liveSite(box: HTMLElement) {
-  const frame = box.querySelector<HTMLIFrameElement>('iframe');
-  if (!frame) return;
+  const src = box.dataset.src;
+  if (!src) return;
+  let frame: HTMLIFrameElement | null = null;
 
   // the site at 1440px, scaled to the box's width; it is as tall as the box at that scale
   const fit = () => {
     const scale = box.clientWidth / SITE_WIDTH;
-    if (!scale) return;
+    if (!frame || !scale) return;
     frame.style.transform = `scale(${scale})`;
     frame.style.height = `${box.clientHeight / scale}px`;
   };
+
+  // the frame is made as its card comes within a screen and a half (the browser's own lazy loading reached much
+  // further on a slow connection: every site came with the page). In the held stack a card waiting its turn sits
+  // below the screen, so each loads as the one before it shows.
+  const near = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return;
+    near.disconnect();
+    frame = document.createElement('iframe');
+    frame.title = box.dataset.title ?? '';
+    frame.tabIndex = -1;
+    // a shop's own cookies (its session) never become third-party cookies here
+    frame.setAttribute('credentialless', '');
+    frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox');
+    frame.src = src;
+    fit();
+    // under the "Preview" button
+    box.insertBefore(frame, box.querySelector('.live-preview'));
+  }, { rootMargin: '150% 0px' });
+  near.observe(box);
   new ResizeObserver(fit).observe(box);
-  fit();
 }
 
 /*

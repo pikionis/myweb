@@ -75,7 +75,7 @@ const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stro
             <a class="tile" href={projectHref(p)} data-pick={p.id} aria-current={p.id === selected ? 'page' : undefined}>
               <span class="t-pic" style={`--bg: ${bg}; --fg: ${fg}`}>
                 {p.data.cover ? (
-                  <img src={p.data.cover} alt="" width="800" loading={i < 3 ? 'eager' : 'lazy'} decoding="async" />
+                  <img src={p.data.cover} alt="" width="800" loading={i < 3 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} decoding="async" />
                 ) : p.data.metric ? (
                   <span class="t-card"><b>{p.data.metric.value}</b><span>{p.data.metric.label}</span></span>
                 ) : (
