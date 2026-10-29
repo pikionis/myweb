@@ -4,22 +4,22 @@
   "mobile": {
    "source": "lighthouse",
    "scores": {
-    "performance": 99,
-    "accessibility": 97,
+    "performance": 100,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 100
    },
    "lab": {
     "fcp": {
-     "v": 1465,
-     "s": 0.96
+     "v": 1206,
+     "s": 0.99
     },
     "lcp": {
-     "v": 1465,
+     "v": 1206,
      "s": 1
     },
     "tbt": {
-     "v": 41,
+     "v": 26,
      "s": 1
     },
     "cls": {
@@ -27,27 +27,27 @@
      "s": 1
     },
     "si": {
-     "v": 2485,
-     "s": 0.98
+     "v": 2285,
+     "s": 0.99
     }
    },
-   "at": "2026-10-28T11:37:48.848Z"
+   "at": "2026-10-29T00:54:10.237Z"
   },
   "desktop": {
    "source": "lighthouse",
    "scores": {
     "performance": 100,
-    "accessibility": 97,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 100
    },
    "lab": {
     "fcp": {
-     "v": 556,
+     "v": 558,
      "s": 0.99
     },
     "lcp": {
-     "v": 556,
+     "v": 558,
      "s": 1
     },
     "tbt": {
@@ -55,15 +55,15 @@
      "s": 1
     },
     "cls": {
-     "v": 0.005,
+     "v": 0.006,
      "s": 1
     },
     "si": {
-     "v": 787,
+     "v": 793,
      "s": 0.99
     }
    },
-   "at": "2026-10-28T11:38:39.965Z"
+   "at": "2026-10-29T00:55:32.722Z"
   }
  },
  "arogi-kos": {
@@ -71,51 +71,51 @@
   "mobile": {
    "source": "lighthouse",
    "scores": {
-    "performance": 99,
-    "accessibility": 96,
+    "performance": 100,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 100
    },
    "lab": {
     "fcp": {
-     "v": 1216,
+     "v": 1212,
      "s": 0.99
     },
     "lcp": {
-     "v": 1216,
+     "v": 1212,
      "s": 1
     },
     "tbt": {
-     "v": 129,
-     "s": 0.96
+     "v": 65,
+     "s": 0.99
     },
     "cls": {
      "v": 0.006,
      "s": 1
     },
     "si": {
-     "v": 1366,
+     "v": 1342,
      "s": 1
     }
    },
-   "at": "2026-10-28T11:34:53.384Z"
+   "at": "2026-10-29T00:51:50.384Z"
   },
   "desktop": {
    "source": "lighthouse",
    "scores": {
     "performance": 100,
-    "accessibility": 95,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 100
    },
    "lab": {
     "fcp": {
-     "v": 475,
+     "v": 483,
      "s": 1
     },
     "lcp": {
-     "v": 591,
-     "s": 0.99
+     "v": 583,
+     "s": 1
     },
     "tbt": {
      "v": 0,
@@ -126,11 +126,11 @@
      "s": 1
     },
     "si": {
-     "v": 694,
+     "v": 714,
      "s": 1
     }
    },
-   "at": "2026-10-28T11:52:35.476Z"
+   "at": "2026-10-29T00:53:25.267Z"
   }
  },
  "delian-co": {
