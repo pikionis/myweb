@@ -47,7 +47,7 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                   <div class="blurbs" data-blurbs>
                     {s.projects.map((p, j) => (
                       <p class:list={['blurb', { on: j === 0 }]} data-blurb>
-                        <span class="bname">{p.data.title}</span> {p.data.blurb ?? p.data.summary}
+                        <span class="bname">{p.data.title}</span> {ownText(p)}
                         {hasStory(p) && <a class="bstory" href={projectHref(p)}>{ui.readStory}<Fragment set:html={next} /></a>}
                       </p>
                     ))}
@@ -106,7 +106,7 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
                           <span class="pfallback" aria-hidden="true" data-t={p.data.title}></span>
                         )}
                       </div>
-                      <p class="pline">{beside ? p.data.summary : (p.data.blurb ?? p.data.summary)}</p>
+                      <p class="pline">{beside ? p.data.summary : ownText(p)}</p>
                       <!-- on a phone the project's own text comes under its picture, not before the cards -->
                       <div class="ptext">
                         <p>{ownText(p)}</p>

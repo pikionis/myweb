@@ -67,7 +67,8 @@ const icon = (d: string) =>
         <footer class="story-cta">
           <p class="cta-line">{st.cta.text}</p>
           <a class="cta-btn" href={`/contact?type=project&service=${st.service}`}>{t.start}</a>
-          {st.cta.note && <p class="cta-note">{st.cta.note}</p>}
+          {/* a note still to be confirmed ([TODO]) stays out of the page */}
+          {st.cta.note && !st.cta.note.trimStart().startsWith('[TODO') && <p class="cta-note">{st.cta.note}</p>}
           <button type="button" class="again" data-again>
             <Fragment set:html={icon('M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5')} />{t.again}
           </button>
