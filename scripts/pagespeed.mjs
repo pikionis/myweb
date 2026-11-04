@@ -61,7 +61,30 @@ function field(exp) {
   return Object.keys(out).length ? { ...out, origin: !!exp.origin_fallback } : undefined;
 }
 
+// Google's machines differ from run to run (one page's Speed Index came out 0.8 s and 3.9 s within minutes), so a
+// result is the median of three runs, by performance score, one real run with its own numbers. PageSpeed answers a
+// repeat from its cache for a while: hence the pause, and a run it repeats counts once (`at`, the run's own time).
+const RUNS = 3;
+const PAUSE = 75000;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 async function psi(url, strategy) {
+  const runs = new Map();
+  let failure;
+  for (let i = 0; i < RUNS; i++) {
+    if (i) await sleep(PAUSE);
+    try {
+      const run = await psiRun(url, strategy);
+      runs.set(run.at, run);
+    } catch (e) { failure = e; }
+  }
+  if (!runs.size) throw failure;
+  const sorted = [...runs.values()].sort((a, b) => a.scores.performance - b.scores.performance);
+  console.log(`pagespeed: ${url} ${strategy}: ${sorted.map((r) => r.scores.performance).join(' ')}`);
+  return sorted[Math.floor((sorted.length - 1) / 2)];
+}
+
+async function psiRun(url, strategy) {
   const q = new URLSearchParams({ url, strategy });
   for (const c of CATEGORIES) q.append('category', c.toUpperCase().replace('-', '_'));
   if (KEY) q.set('key', KEY);
@@ -85,8 +108,8 @@ const next = {};
 let measured = 0;
 await Promise.all(list.map(async ({ id, url }) => {
   const before = saved[id]?.url === url ? saved[id] : undefined;
-  const entry = { url };
-  for (const strategy of STRATEGIES) {
+  const entry = { url, mobile: undefined, desktop: undefined };
+  await Promise.all(STRATEGIES.map(async (strategy) => {
     try {
       entry[strategy] = lhrDir ? await fromFile(lhrDir, id, strategy) : await psi(url, strategy);
       measured++;
@@ -94,7 +117,7 @@ await Promise.all(list.map(async ({ id, url }) => {
       if (before?.[strategy]) entry[strategy] = before[strategy];
       console.warn(`pagespeed: ${id} ${strategy}: ${before?.[strategy] ? 'kept the saved results' : 'no results'} (${e.message})`);
     }
-  }
+  }));
   if (entry.mobile || entry.desktop) next[id] = entry;
 }));
 

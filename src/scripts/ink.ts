@@ -486,10 +486,12 @@ function drawMask(canvas: HTMLCanvasElement, h1: HTMLElement, words: Word[], wid
 
 /**
  * Sets the ink up over the title (the slow part: the shaders) without showing it, and resolves to `bloom`, which
- * writes the title in. Null without WebGL2 or half-float targets: the real <h1> stays as it is.
+ * writes the title in. Null without WebGL2 or half-float targets: the real <h1> stays as it is. So too without a
+ * graphics chip (failIfMajorPerformanceCaveat): WebGL then runs on the processor and the browser reads every frame
+ * back while the page waits, 130 ms a frame, for an effect that would only stutter.
  */
 export async function inkHeadline(root: HTMLElement, canvas: HTMLCanvasElement, h1: HTMLElement): Promise<{ bloom: () => void } | null> {
-  const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false, depth: false });
+  const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, failIfMajorPerformanceCaveat: true });
   const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
   const fluid = gl && probe ? await createFluid(gl) : null;
   if (!fluid || !probe) return null;
