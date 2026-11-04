@@ -63,15 +63,17 @@ function field(exp) {
 
 // Google's machines differ from run to run (one page's Speed Index came out 0.8 s and 3.9 s within minutes), so a
 // result is the median of three runs, by performance score, one real run with its own numbers. PageSpeed answers a
-// repeat from its cache for a while: hence the pause, and a run it repeats counts once (`at`, the run's own time).
+// repeat from its cache for a while: hence the pause, and a run it repeats counts once (`at`, the run's own time), so
+// it asks again, a few times at most, until it has three.
 const RUNS = 3;
+const TRIES = 5;
 const PAUSE = 75000;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function psi(url, strategy) {
   const runs = new Map();
   let failure;
-  for (let i = 0; i < RUNS; i++) {
+  for (let i = 0; i < TRIES && runs.size < RUNS; i++) {
     if (i) await sleep(PAUSE);
     try {
       const run = await psiRun(url, strategy);
@@ -80,8 +82,15 @@ async function psi(url, strategy) {
   }
   if (!runs.size) throw failure;
   const sorted = [...runs.values()].sort((a, b) => a.scores.performance - b.scores.performance);
-  console.log(`pagespeed: ${url} ${strategy}: ${sorted.map((r) => r.scores.performance).join(' ')}`);
-  return sorted[Math.floor((sorted.length - 1) / 2)];
+  const median = sorted[Math.floor((sorted.length - 1) / 2)];
+  // what /projects would hide the project for (its numbers show only while all of these are green)
+  const low = [
+    ...Object.entries(median.scores).filter(([, n]) => n < 90).map(([k, n]) => `${k} ${n}`),
+    ...Object.entries(median.lab).filter(([, m]) => !(m.s >= 0.9)).map(([k, m]) => `${k} ${m.v} (${m.s})`),
+    ...Object.entries(median.field ?? {}).filter(([, m]) => typeof m === 'object' && m.category !== 'FAST').map(([k, m]) => `field ${k} ${m.category}`),
+  ];
+  console.log(`pagespeed: ${url} ${strategy}: ${sorted.map((r) => r.scores.performance).join(' ')}${low.length ? ` | not green: ${low.join(', ')}` : ''}`);
+  return median;
 }
 
 async function psiRun(url, strategy) {
