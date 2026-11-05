@@ -318,8 +318,8 @@ const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stro
   .t-card span { font-size: 0.875rem; font-weight: 500; }
   .t-name { font-size: 1.1875rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
   .t-kind { font-size: 0.9375rem; color: color-mix(in srgb, var(--paper) 66%, transparent); }
-  /* the one picked: the rest step back */
-  :global(html.js) .rail:has([aria-current]) .tile:not([aria-current]) .t-pic { opacity: 0.5; }
+  /* the one picked: the rest step back (no further: DeinDeal's tile has words on it, and they must still read at 4.5:1) */
+  :global(html.js) .rail:has([aria-current]) .tile:not([aria-current]) .t-pic { opacity: 0.55; }
   .tile[aria-current] .t-name::before {
     content: ''; display: inline-block; width: 0.5em; height: 0.5em; margin-right: 0.4em; border-radius: 50%;
     background: var(--accent); vertical-align: 0.08em;
