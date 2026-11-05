@@ -83,9 +83,11 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
   .palette { margin: 18px 0 0; font-size: 1.0625rem; line-height: 1.6; max-width: 44ch; color: var(--muted); }
   .cv {
     display: inline-flex; align-items: center; gap: 8px; min-height: 52px; margin-top: 28px; padding: 0 24px; border-radius: 100px;
-    background: var(--ink); color: var(--paper); font-weight: 600; text-decoration: none; transition: scale 0.16s var(--ease-out), opacity 0.2s ease;
+    background: var(--ink); color: var(--paper); font-weight: 600; text-decoration: none; transition: scale 0.16s var(--ease-out), background-color 0.2s ease;
   }
-  @media (hover: hover) and (pointer: fine) { .cv:hover { opacity: 0.86; } }
+  /* its colour, not its opacity: it rises in with the words above it, and a CSS transition on opacity would leave
+     GSAP reading a value on the way and resting there, all but invisible */
+  @media (hover: hover) and (pointer: fine) { .cv:hover { background: color-mix(in srgb, var(--ink) 86%, var(--paper)); } }
   .cv:active { scale: 0.97; }
   .cv:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 

@@ -14,7 +14,7 @@ export const person = {
   // and ivory, the shirt in the accent blue
   photo: '/petros.webp' as string,
   // the CV for "Download CV" on /about: a PDF at this address in public/ (the button shows on the live site once
-  // the file is there) [TODO: add the CV PDF]
+  // the file is there)
   cv: '/petros-pikionis-cv.pdf' as string,
   // Put your logo in public/ (an SVG is best) and set this, e.g. '/logo.svg'; until then the footer sets your name
   logo: '' as string,
