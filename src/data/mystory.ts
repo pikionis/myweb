@@ -349,8 +349,8 @@ export const art = {
         el: 'Το αποτέλεσμα: 800.000+ προϊόντα με καθημερινή ανανέωση, έτοιμα για το marketplace, χωρίς spreadsheets.',
       },
       {
-        en: 'Somewhere in there my first AI SaaS was born: Feedgenix. Upload a large dataset, pick the fields you want translated and the languages you need.',
-        el: 'Κάπου εκεί γεννήθηκε το πρώτο μου AI SaaS: το Feedgenix. Ανεβάζεις ένα μεγάλο dataset, διαλέγεις ποια fields θέλεις να μεταφραστούν και σε ποιες γλώσσες.',
+        en: 'Somewhere in there my first AI SaaS was born: FeedGenix. Upload a large dataset, pick the fields you want translated and the languages you need.',
+        el: 'Κάπου εκεί γεννήθηκε το πρώτο μου AI SaaS: το FeedGenix. Ανεβάζεις ένα μεγάλο dataset, διαλέγεις ποια fields θέλεις να μεταφραστούν και σε ποιες γλώσσες.',
       },
       {
         en: "From solving one company's problem to building a product for many.",
@@ -375,7 +375,7 @@ export const art = {
     ] as Copy[],
     refresh: { en: 'daily refresh', el: 'καθημερινή ανανέωση' },
     feedgenix: {
-      name: 'Feedgenix', site: 'feedgenix.com', url: 'https://feedgenix.com',
+      name: 'FeedGenix', site: 'feedgenix.com', url: 'https://feedgenix.com',
       visit: { en: 'Visit feedgenix.com', el: 'Δες το feedgenix.com' },
       dataset: 'dataset.csv',
       fields: [{ en: 'title', el: 'τίτλος' }, { en: 'description', el: 'περιγραφή' }, { en: 'attributes', el: 'χαρακτηριστικά' }] as Copy[],

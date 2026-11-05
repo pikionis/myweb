@@ -221,6 +221,17 @@ const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stro
               {p.data.metric && <p class="spec-metric"><b>{p.data.metric.value}</b> {p.data.metric.label}</p>}
               <ul>{p.data.scope.map((x) => <li>{x}</li>)}</ul>
             </div>
+          ) : p.data.cover && visit ? (
+            <!-- live, but the site refuses frames: its picture stands for it, and the way to it -->
+            <figure class="p-browser">
+              <figcaption class="b-bar">
+                <span class="b-url">{host(visit)}</span>
+                <a class="b-open" href={visit} target="_blank" rel="noopener">{t.open}<Fragment set:html={arrow} /></a>
+              </figcaption>
+              <div class="b-view">
+                <img class="b-poster" src={p.data.cover} alt={`${p.data.title}: ${t.site}`} width="800" loading="lazy" decoding="async" />
+              </div>
+            </figure>
           ) : (
             <!-- not live yet: where it will be -->
             <div class="p-card" style={`--bg: ${bg}; --fg: ${fg}`}>

@@ -29,6 +29,6 @@ I built the integrations: every partner, every format (XML, CSV, JSON, FTP, SFTP
 
 I was responsible for more than 800,000 unique product codes. To make them manageable I built an internal AI product from scratch, on a medallion pipeline (ingest, map, validate): it filters the data, fixes it and translates it into four languages, with structured JSON outputs, multi-model routing and content-hash caching.
 
-The result: 800,000+ products refreshed daily, ready for the marketplace, no spreadsheets. And somewhere in there, Feedgenix was born.
+The result: 800,000+ products refreshed daily, ready for the marketplace, no spreadsheets. And somewhere in there, FeedGenix was born.
 
 The whole story is a chapter of [My story](/about).

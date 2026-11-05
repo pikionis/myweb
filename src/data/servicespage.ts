@@ -146,7 +146,7 @@ export const servicesPage = {
       ],
       proof: [
         {
-          project: 'feedgenix', name: 'Feedgenix', icon: 'gear', url: '/projects/feedgenix',
+          project: 'feedgenix', name: 'FeedGenix', icon: 'gear', url: '/projects/feedgenix',
           line: { en: 'AI SaaS: translates large product datasets. Pick the fields and the languages.', el: 'AI SaaS: μεταφράζει μεγάλα σύνολα δεδομένων προϊόντων. Διαλέγεις πεδία και γλώσσες.' },
         },
         { name: 'Archon Yachting', icon: 'sail', url: 'https://archonyachting.com', line: { en: 'Charter platform with bookings and payments', el: 'Πλατφόρμα ναύλωσης σκαφών με κρατήσεις και πληρωμές' } },

@@ -267,7 +267,7 @@ export const ui = {
    *  that opens it full screen, and the one that closes it */
   live: { site: 'website', preview: 'Preview', close: 'Close preview' },
   /** under a project's own text, when it has a story to read (its page) */
-  readStory: 'Read the full story of our collaboration',
+  readStory: 'Read the full story',
   /** the service stories (src/components/Stories.astro) */
   stories: {
     readMore: 'Read more',
