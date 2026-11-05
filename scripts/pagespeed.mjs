@@ -61,12 +61,13 @@ function field(exp) {
   return Object.keys(out).length ? { ...out, origin: !!exp.origin_fallback } : undefined;
 }
 
-// Google's machines differ from run to run (one page's Speed Index came out 0.8 s and 3.9 s within minutes), so a
-// result is the median of three runs, by performance score, one real run with its own numbers. PageSpeed answers a
-// repeat from its cache for a while: hence the pause, and a run it repeats counts once (`at`, the run's own time), so
-// it asks again, a few times at most, until it has three.
-const RUNS = 3;
-const TRIES = 5;
+// Google's machines differ from run to run (one page's Speed Index came out 0.8 s and 3.9 s within minutes: now and
+// then a run sees the first paint two seconds late, and Speed Index follows what the run saw), so a result is the
+// median of five runs (Lighthouse's own advice), by performance score, one real run with its own numbers. PageSpeed
+// answers a repeat from its cache for a while: hence the pause, and a run it repeats counts once (`at`, the run's own
+// time), so it asks again, a few times at most, until it has five.
+const RUNS = 5;
+const TRIES = 8;
 const PAUSE = 75000;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
