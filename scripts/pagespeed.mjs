@@ -90,7 +90,23 @@ async function psi(url, strategy) {
     ...Object.entries(median.field ?? {}).filter(([, m]) => typeof m === 'object' && m.category !== 'FAST').map(([k, m]) => `field ${k} ${m.category}`),
   ];
   console.log(`pagespeed: ${url} ${strategy}: ${sorted.map((r) => r.scores.performance).join(' ')}${low.length ? ` | not green: ${low.join(', ')}` : ''}`);
+  for (const r of sorted) console.log(`pagespeed:   ${url} ${strategy} ${r.scores.performance}: ${SEEN.get(r)}`);
   return median;
+}
+
+// One line per run for the deploy log, never saved: what the run saw, which tells a slow page from a far-away test
+// machine (the lab numbers are estimated from what was seen; `lcp parts` = first byte + load delay + load + render).
+const SEEN = new WeakMap();
+function seen(lhr) {
+  const a = lhr.audits, m = a.metrics?.details?.items?.[0] ?? {};
+  const origin = new URL(lhr.finalDisplayedUrl).origin;
+  const at = (k, f) => a[k]?.details?.items?.find((i) => i.origin === origin)?.[f];
+  const parts = a['lcp-breakdown-insight']?.details?.items?.find((i) => i.type === 'table')?.items?.map((i) => Math.round(i.duration)).join('+');
+  const v = (k) => round(a[k]?.numericValue);
+  return `fcp ${v('first-contentful-paint')} lcp ${v('largest-contentful-paint')} si ${v('speed-index')} tbt ${v('total-blocking-time')}`
+    + ` | seen fcp ${m.observedFirstContentfulPaint} lcp ${m.observedLargestContentfulPaint} si ${m.observedSpeedIndex}`
+    + ` | lcp parts ${parts} | rtt ${round(at('network-rtt', 'rtt'))} server ${round(at('network-server-latency', 'serverResponseTime'))}`
+    + ` | machine ${round(lhr.environment?.benchmarkIndex)}`;
 }
 
 async function psiRun(url, strategy) {
@@ -101,7 +117,9 @@ async function psiRun(url, strategy) {
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const j = await res.json();
   const f = field(j.loadingExperience);
-  return { source: 'pagespeed', ...lab(j.lighthouseResult), ...(f && { field: f }) };
+  const run = { source: 'pagespeed', ...lab(j.lighthouseResult), ...(f && { field: f }) };
+  SEEN.set(run, seen(j.lighthouseResult));
+  return run;
 }
 
 async function fromFile(dir, id, strategy) {
