@@ -1,8 +1,8 @@
 ---
-summary: "Onlineshop von La Isla, einer Boutique auf Kos für Kleider und Accessoires griechischer und europäischer Designerinnen und Designer."
+summary: "Online-Shop von La Isla, einer Boutique auf Kos für Mode und Accessoires griechischer und europäischer Designer."
 tags: ["Web", "E-Commerce"]
 ---
 
 ## Ein Atelier, online
 
-La Isla versammelt in ihrem Atelier auf Kos Kleider und Accessoires griechischer und europäischer Designerinnen und Designer. Der Shop bringt das Atelier online, auf Griechisch und Englisch: die Kollektionen, die Designerinnen und Designer, Taschen und Accessoires, eine Resort-Kollektion und den Sale.
+La Isla vereint in ihrem Atelier auf Kos Mode und Accessoires griechischer und europäischer Designer. Der Online-Shop bildet das Atelier auf Griechisch und Englisch ab: Kollektionen, Designer, Taschen und Accessoires, eine Resort-Kollektion und den Sale.

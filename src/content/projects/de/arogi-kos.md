@@ -1,19 +1,19 @@
 ---
-summary: "Website, die aus der Marke heraus entstand, gestaltet mit Claude Design und mit KI-Unterstützung gebaut."
-blurb: "Ilias brachte mir nur ein Logo. Das reichte: Die ganze Website, jede Illustration und jede Grafik sind daraus gewachsen. Eines der schönsten Designs, die ich gemacht habe, für einen sehr lieben Freund der Familie, und ich bin wirklich stolz auf das Ergebnis."
+summary: "Markenorientierte Website, gestaltet mit Claude Design und KI-gestützt entwickelt."
+blurb: "Ausgangspunkt war einzig das Logo, das Ilias mitbrachte. Daraus entstanden die gesamte Website, alle Illustrationen und alle Grafiken. Es ist eines meiner schönsten Designs, realisiert für einen sehr geschätzten Freund der Familie, und ich bin stolz auf das Ergebnis."
 tags: ["Webdesign"]
 ---
 
-## Ein Logo genügte
+## Ein Logo als Ausgangspunkt
 
-Ilias, der Inhaber von Arogi, einem Zentrum für Lernförderung in Kos, kam zu mir, damit ich die Website baue. In seinem digitalen Koffer lag genau eine Sache: ein Logo.
+Ilias, Inhaber von Arogi, einem Zentrum für Lernförderung auf Kos, beauftragte mich mit der Website. Als Grundlage brachte er genau eines mit: ein Logo.
 
-Für mich war das genug.
+Das genügte.
 
-## Eine Idee, die ganze Website
+## Eine Idee, die gesamte Website
 
-Dieses Logo wurde zur Idee hinter allem. Das Konzept der Website, ihre Illustrationen, ihre Grafiken: Alles ist aus diesem einen Zeichen gewachsen. Es ist eines der schönsten Designs, die ich gemacht habe, und zwar für einen sehr lieben Freund der Familie. Ich bin wirklich stolz auf das Ergebnis und ehrlich begeistert davon.
+Das Logo wurde zur Leitidee für alles Weitere. Konzept, Illustrationen und Grafiken der Website gehen auf dieses eine Zeichen zurück. Es ist eines meiner schönsten Designs, realisiert für einen sehr geschätzten Freund der Familie, und ich bin stolz auf das Ergebnis.
 
 ## Hinter den Seiten
 
-Hinter der Website steht ein Dashboard, in dem rund zehn Autorinnen und Autoren für den Blog von Arogi schreiben, einzeln oder gemeinsam. Und der Betrieb der Website ist einfach: Das Content-Management-System dahinter lässt sich leicht bedienen.
+Hinter der Website steht ein Dashboard, in dem rund zehn Autoren einzeln oder gemeinsam für den Blog von Arogi schreiben. Auch die Pflege der Website ist einfach: Das Content-Management-System ist leicht zu bedienen.

@@ -1,23 +1,23 @@
 ---
-summary: "Markenwebsite für eine Unterkunft und der Buchungsbetrieb dahinter, über Airbnb und Booking.com."
-blurb: "Arangia sieht nicht aus wie eine Vermietungs-Website. Es liest sich wie ein Reisemagazin oder wie ein kleines Boutique-Hotel: langsam, ruhig, mit einer Sehnsucht nach dem Mittelmeer. Es verkauft nicht, es lädt ein. Und all das wächst aus einem einzigen Bitterorangenbaum."
+summary: "Markenwebsite für eine Unterkunft sowie das Buchungsmanagement über Airbnb und Booking.com."
+blurb: "Arangia wirkt nicht wie eine Vermietungswebsite, sondern wie ein Reisemagazin oder ein kleines Boutique-Hotel: ruhig, unaufgeregt und geprägt von mediterraner Nostalgie. Die Website verkauft nicht, sie lädt ein. Das gesamte Konzept geht von einem einzigen Bitterorangenbaum aus."
 tags: ["Webdesign", "Buchungen", "Betrieb"]
 ---
 
 ## Drei Wohnungen, ein kleines Reiseziel
 
-Arangia, das sind drei Wohnungen. Die Website lässt sie wirken wie ein kleines Boutique-Reiseziel.
+Arangia umfasst drei Wohnungen. Die Website präsentiert sie als kleines Boutique-Reiseziel.
 
-Sie sieht nicht aus wie eine Vermietungs-Website. Sie liest sich wie ein Reisemagazin oder wie die Website eines kleinen Boutique-Hotels: redaktionell, minimal und warm, mit mediterraner Seele.
+Sie wirkt nicht wie eine Vermietungswebsite, sondern wie ein Reisemagazin oder der Auftritt eines kleinen Boutique-Hotels: redaktionell, minimalistisch und warm, mit mediterranem Charakter.
 
 ## Ein Baum
 
-Die ganze Identität ruht auf einem einzigen Symbol: dem Bitterorangenbaum. Von ihm kommt der Name, *nerantzi* auf Griechisch, *arancia amara* auf Italienisch, und zu ihm kehrt alles zurück: die Texte, der Kalender, der Rhythmus der Seiten.
+Die gesamte Identität beruht auf einem einzigen Symbol: dem Bitterorangenbaum. Von ihm leitet sich der Name ab, *nerantzi* auf Griechisch, *arancia amara* auf Italienisch, und auf ihn beziehen sich die Texte, der Kalender und der Rhythmus der Seiten.
 
-## Langsam leben, ohne Eile
+## Slow Living
 
-Die Stimmung ist langsam und ruhig, mit einer Sehnsucht nach dem Mittelmeer. Die Website will nichts verkaufen, sie lädt ein. Ihre Botschaft ist einfach: langsam leben, ohne Eile.
+Die Stimmung ist ruhig und unaufgeregt, mit einer mediterranen Nostalgie. Die Website will nicht verkaufen, sondern einladen. Ihre Botschaft ist einfach: Slow Living, ohne Eile.
 
 ## Hinter der Website
 
-Hinter der Marke läuft der Buchungsbetrieb, über Airbnb und Booking.com. Und die Website spricht vier Sprachen: Englisch, Griechisch, Deutsch und Italienisch.
+Hinter der Marke steht das Buchungsmanagement über Airbnb und Booking.com. Die Website ist in vier Sprachen verfügbar: Englisch, Griechisch, Deutsch und Italienisch.

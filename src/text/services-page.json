@@ -4,29 +4,29 @@
       "title": {
         "en": "Services — Petros Pikionis",
         "el": "Υπηρεσίες — Πέτρος Πικιώνης",
-        "de": "Leistungen: Petros Pikionis"
+        "de": "Leistungen – Petros Pikionis"
       },
       "description": {
         "en": "Websites, apps, e-shops and AI, from the first idea to a product that works: what I build, how we work, how long it takes, and answers to the questions I hear most.",
-        "el": "Sites, εφαρμογές, e-shops και AI, από την πρώτη ιδέα σε ένα προϊόν που δουλεύει: τι φτιάχνω, πώς δουλεύουμε, πόσο χρόνο παίρνει και απαντήσεις στις πιο συχνές ερωτήσεις.",
-        "de": "Websites, Apps, E-Shops und KI, von der ersten Idee bis zum Produkt, das läuft: was ich baue, wie wir arbeiten, wie lange es dauert, und Antworten auf die Fragen, die ich am häufigsten höre."
+        "el": "Ιστοσελίδες, εφαρμογές, e-shops και AI, από την πρώτη ιδέα μέχρι ένα προϊόν που δουλεύει. Δες τι φτιάχνω, πώς δουλεύουμε, πόσο χρόνο παίρνει, και τις απαντήσεις στις ερωτήσεις που ακούω πιο συχνά.",
+        "de": "Websites, Apps, Online-Shops und KI, von der ersten Idee bis zum funktionierenden Produkt: Leistungen, Vorgehen, Dauer und Antworten auf häufige Fragen."
       }
     },
     "hero": {
       "title": {
         "en": "From idea to a product that works.",
         "el": "Από την ιδέα σε ένα προϊόν που δουλεύει.",
-        "de": "Von der Idee zum Produkt, das läuft."
+        "de": "Von der Idee zum funktionierenden Produkt."
       },
       "sub": {
         "en": "Websites, apps, e-shops and AI, built by one engineer who also understands business.",
-        "el": "Sites, εφαρμογές, e-shops και AI, από έναν μηχανικό που καταλαβαίνει και από επιχείρηση.",
-        "de": "Websites, Apps, E-Shops und KI, von einem einzigen Ingenieur gebaut, der auch etwas vom Geschäft versteht."
+        "el": "Ιστοσελίδες, εφαρμογές, e-shops και AI, από έναν μηχανικό που καταλαβαίνει και την επιχείρησή σου.",
+        "de": "Websites, Apps, Online-Shops und KI, entwickelt von einem Ingenieur mit unternehmerischem Verständnis."
       },
       "primary": {
         "en": "Tell me your idea",
         "el": "Πες μου την ιδέα σου",
-        "de": "Erzählen Sie mir Ihre Idee"
+        "de": "Stellen Sie mir Ihre Idee vor"
       },
       "secondary": {
         "en": "See services",
@@ -37,16 +37,16 @@
     "picker": {
       "title": {
         "en": "Where are you right now?",
-        "el": "Πού βρίσκεσαι τώρα;",
-        "de": "Wo stehen Sie gerade?"
+        "el": "Από πού ξεκινάς;",
+        "de": "Wo stehen Sie aktuell?"
       },
       "items": [
         {
           "key": "web",
           "text": {
             "en": "I have a business and need a website that brings customers.",
-            "el": "Έχω επιχείρηση και θέλω site που φέρνει πελάτες.",
-            "de": "Ich habe ein Geschäft und brauche eine Website, die Kunden bringt."
+            "el": "Έχω μια επιχείρηση και θέλω μια ιστοσελίδα που να μου φέρνει πελάτες.",
+            "de": "Ich führe ein Unternehmen und benötige eine Website, die Kunden gewinnt."
           }
         },
         {
@@ -62,15 +62,15 @@
           "text": {
             "en": "I sell products and want to sell more, in more places.",
             "el": "Πουλάω προϊόντα και θέλω να πουλάω περισσότερα, σε περισσότερα μέρη.",
-            "de": "Ich verkaufe Produkte und möchte mehr verkaufen, an mehr Orten."
+            "de": "Ich verkaufe Produkte und möchte mehr verkaufen, auf mehr Kanälen."
           }
         },
         {
           "key": "search",
           "text": {
             "en": "Nobody finds me on Google, or in ChatGPT.",
-            "el": "Δεν με βρίσκει κανείς στο Google, ούτε στο ChatGPT.",
-            "de": "Mich findet niemand auf Google oder in ChatGPT."
+            "el": "Δεν με βρίσκει κανείς στο Google ούτε στο ChatGPT.",
+            "de": "Mein Unternehmen ist auf Google und in ChatGPT nicht auffindbar."
           }
         }
       ]
@@ -79,7 +79,7 @@
       "proof": {
         "en": "Real projects",
         "el": "Πραγματικά έργα",
-        "de": "Echte Projekte"
+        "de": "Referenzprojekte"
       },
       "timeline": {
         "en": "Timeline",
@@ -107,50 +107,50 @@
         },
         "short": {
           "en": "Web Design",
-          "el": "Web design",
+          "el": "Ιστοσελίδες",
           "de": "Webdesign"
         },
         "promise": {
           "en": "A website made for your business, not a template.",
-          "el": "Ένα site φτιαγμένο για την επιχείρησή σου, όχι ένα template.",
-          "de": "Eine Website, gemacht für Ihr Geschäft. Keine Vorlage."
+          "el": "Μια ιστοσελίδα φτιαγμένη για τη δική σου επιχείρηση, όχι ένα έτοιμο πρότυπο.",
+          "de": "Eine Website für Ihr Unternehmen, keine Vorlage."
         },
         "bullets": [
           {
             "en": "Branding help: logo, palette, typography (with partner designers if needed)",
-            "el": "Βοήθεια με το branding: logo, παλέτα, γραμματοσειρές (με συνεργάτες designers αν χρειάζεται)",
-            "de": "Hilfe beim Branding: Logo, Farben, Schriften (bei Bedarf mit Partner-Designern)"
+            "el": "Βοήθεια με την ταυτότητά σου: λογότυπο, χρώματα, γραμματοσειρές (με συνεργάτες σχεδιαστές, αν χρειαστεί)",
+            "de": "Unterstützung beim Branding: Logo, Farben, Schriften (bei Bedarf mit Partner-Designern)"
           },
           {
             "en": "3–4 design directions to choose from",
-            "el": "3–4 κατευθύνσεις design για να διαλέξεις",
-            "de": "3–4 Design-Richtungen zur Auswahl"
+            "el": "3–4 σχεδιαστικές προτάσεις για να διαλέξεις",
+            "de": "3–4 Designrichtungen zur Auswahl"
           },
           {
             "en": "Fast, mobile-first site (100/100 Core Web Vitals target)",
-            "el": "Γρήγορο, mobile-first site (στόχος 100/100 στα Core Web Vitals)",
-            "de": "Schnelle Website, zuerst fürs Handy gebaut (Ziel: 100/100 bei den Core Web Vitals)"
+            "el": "Γρήγορη ιστοσελίδα, σχεδιασμένη πρώτα για το κινητό (στόχος 100/100 στα Core Web Vitals)",
+            "de": "Schnelle, für Mobilgeräte optimierte Website (Ziel: 100/100 bei den Core Web Vitals)"
           },
           {
             "en": "Content management so you can edit texts and photos yourself",
-            "el": "Διαχείριση περιεχομένου, για να αλλάζεις μόνος σου κείμενα και φωτογραφίες",
+            "el": "Εύκολη διαχείριση, για να αλλάζεις εσύ κείμενα και φωτογραφίες",
             "de": "Content-Management, damit Sie Texte und Fotos selbst ändern können"
           },
           {
             "en": "Multilingual (EL / EN / DE and more)",
-            "el": "Πολυγλωσσικό (EL / EN / DE και άλλες)",
+            "el": "Σε πολλές γλώσσες (ελληνικά, αγγλικά, γερμανικά και άλλες)",
             "de": "Mehrsprachig (EL / EN / DE und weitere)"
           },
           {
             "en": "Bookings, contact forms, maps, Google Business integration",
-            "el": "Κρατήσεις, φόρμες επικοινωνίας, χάρτες, σύνδεση με Google Business",
+            "el": "Κρατήσεις, φόρμες επικοινωνίας, χάρτες και σύνδεση με το Google Business",
             "de": "Buchungen, Kontaktformulare, Karten, Anbindung an Google Business"
           }
         ],
         "chipsLabel": {
           "en": "Made for businesses like",
           "el": "Για επιχειρήσεις όπως",
-          "de": "Gemacht für Betriebe wie"
+          "de": "Geeignet für Betriebe wie"
         },
         "chips": [
           {
@@ -170,7 +170,7 @@
           },
           {
             "en": "Short-term rental",
-            "el": "Airbnb κατάλυμα",
+            "el": "Κατάλυμα Airbnb",
             "de": "Ferienvermietung"
           },
           {
@@ -186,11 +186,11 @@
           {
             "en": "Law or accounting office",
             "el": "Δικηγορικό ή λογιστικό γραφείο",
-            "de": "Anwalts- oder Buchhaltungsbüro"
+            "de": "Anwaltskanzlei oder Treuhandbüro"
           },
           {
             "en": "Gym or yoga studio",
-            "el": "Γυμναστήριο ή studio yoga",
+            "el": "Γυμναστήριο ή στούντιο yoga",
             "de": "Fitness- oder Yogastudio"
           },
           {
@@ -200,8 +200,8 @@
           },
           {
             "en": "Tour or boat trips",
-            "el": "Εκδρομές ή θαλάσσια tours",
-            "de": "Touren oder Bootsausflüge"
+            "el": "Εκδρομές και βόλτες με σκάφος",
+            "de": "Touren- oder Bootsanbieter"
           },
           {
             "en": "Architect",
@@ -215,7 +215,7 @@
             "name": "Arangia",
             "line": {
               "en": "Short-term rental, direct bookings",
-              "el": "Βραχυχρόνια μίσθωση, απευθείας κρατήσεις",
+              "el": "Βραχυχρόνια μίσθωση με απευθείας κρατήσεις",
               "de": "Ferienvermietung, Direktbuchungen"
             },
             "url": "/projects/arangia"
@@ -225,8 +225,8 @@
             "name": "Arogi Kos",
             "line": {
               "en": "Brand-led website",
-              "el": "Site χτισμένο πάνω στο brand",
-              "de": "Website, von der Marke her gedacht"
+              "el": "Ιστοσελίδα που γεννήθηκε από ένα λογότυπο",
+              "de": "Markenorientierte Website"
             },
             "url": "/projects/arogi-kos"
           }
@@ -243,8 +243,8 @@
         "startingFrom": null,
         "cta": {
           "en": "Start my website",
-          "el": "Ξεκίνα το site μου",
-          "de": "Meine Website starten"
+          "el": "Θέλω ιστοσελίδα",
+          "de": "Website anfragen"
         }
       },
       {
@@ -256,80 +256,80 @@
         },
         "short": {
           "en": "AI SaaS & Mobile",
-          "el": "AI SaaS & κινητό",
+          "el": "AI SaaS & εφαρμογές",
           "de": "KI-SaaS & Apps"
         },
         "promise": {
           "en": "You have the idea. I'll turn it into an MVP you can show, sell and grow.",
-          "el": "Εσύ έχεις την ιδέα. Εγώ τη μετατρέπω σε MVP που δείχνεις, πουλάς και μεγαλώνεις.",
-          "de": "Sie haben die Idee. Ich mache daraus ein MVP, das Sie zeigen, verkaufen und ausbauen können."
+          "el": "Εσύ έχεις την ιδέα. Εγώ την κάνω μια πρώτη έκδοση που μπορείς να δείξεις, να πουλήσεις και να εξελίξεις.",
+          "de": "Sie haben die Idee. Ich entwickle daraus ein MVP, das Sie präsentieren, verkaufen und ausbauen können."
         },
         "intro": {
           "en": "Pitch me your idea or send me a brief. We'll talk it through, I'll estimate cost and time, and we'll decide together which features and services the first version needs.",
-          "el": "Κάνε μου pitch την ιδέα σου ή στείλε μου ένα brief. Τη συζητάμε, σου κοστολογώ χρόνο και κόστος, και αποφασίζουμε μαζί τι χρειάζεται η πρώτη έκδοση.",
-          "de": "Stellen Sie mir Ihre Idee vor oder schicken Sie mir ein Briefing. Wir besprechen sie, ich schätze Kosten und Zeit, und gemeinsam entscheiden wir, welche Funktionen und Leistungen die erste Version braucht."
+          "el": "Πες μου την ιδέα σου ή γράψε μου λίγα λόγια. Τη συζητάμε, σου λέω πόσο θα κοστίσει και πόσο χρόνο θα πάρει, και αποφασίζουμε μαζί τι χρειάζεται η πρώτη έκδοση.",
+          "de": "Stellen Sie mir Ihre Idee vor oder senden Sie mir ein Briefing. Wir besprechen das Vorhaben, ich schätze Kosten und Dauer, und gemeinsam legen wir fest, welche Funktionen und Leistungen die erste Version benötigt."
         },
         "bullets": [
           {
             "en": "Product roadmap and MVP scope",
-            "el": "Roadmap προϊόντος και scope του MVP",
+            "el": "Πλάνο προϊόντος και τι θα περιλαμβάνει η πρώτη έκδοση",
             "de": "Produkt-Roadmap und Umfang des MVP"
           },
           {
             "en": "Branding and UX/UI design",
-            "el": "Branding και UX/UI design",
+            "el": "Ταυτότητα και σχεδιασμός της εμπειρίας χρήσης",
             "de": "Branding und UX/UI-Design"
           },
           {
             "en": "Web app + iOS & Android apps (Flutter, one codebase)",
-            "el": "Web app + εφαρμογές iOS & Android (Flutter, ένας κώδικας)",
-            "de": "Web-App + iOS- & Android-Apps (Flutter, eine Codebasis)"
+            "el": "Web εφαρμογή και εφαρμογές για iOS και Android (Flutter, ένας κώδικας για όλες)",
+            "de": "Web-App sowie iOS- und Android-Apps (Flutter, eine Codebasis)"
           },
           {
             "en": "Admin dashboard to manage users, content and data",
-            "el": "Admin dashboard για χρήστες, περιεχόμενο και δεδομένα",
+            "el": "Πίνακας διαχείρισης για χρήστες, περιεχόμενο και δεδομένα",
             "de": "Admin-Dashboard zur Verwaltung von Benutzern, Inhalten und Daten"
           },
           {
             "en": "AI features: chat, search, translation, automation, document processing",
-            "el": "AI λειτουργίες: chat, αναζήτηση, μετάφραση, αυτοματισμοί, επεξεργασία εγγράφων",
+            "el": "Λειτουργίες AI: συνομιλία, αναζήτηση, μετάφραση, αυτοματισμοί, επεξεργασία εγγράφων",
             "de": "KI-Funktionen: Chat, Suche, Übersetzung, Automatisierung, Dokumentenverarbeitung"
           },
           {
             "en": "Payments, subscriptions, notifications, hosting and launch",
-            "el": "Πληρωμές, συνδρομές, notifications, hosting και launch",
-            "de": "Zahlungen, Abos, Benachrichtigungen, Hosting und Lancierung"
+            "el": "Πληρωμές, συνδρομές, ειδοποιήσεις, φιλοξενία και το ξεκίνημα της εφαρμογής",
+            "de": "Zahlungen, Abonnemente, Benachrichtigungen, Hosting und Lancierung"
           }
         ],
         "chipsLabel": {
           "en": "Ideas like",
           "el": "Ιδέες όπως",
-          "de": "Ideen wie"
+          "de": "Beispiele"
         },
         "chips": [
           {
             "en": "Boat / yacht booking app",
-            "el": "App κρατήσεων σκαφών",
-            "de": "Buchungs-App für Boote / Yachten"
+            "el": "Εφαρμογή κρατήσεων για σκάφη",
+            "de": "Buchungs-App für Boote und Yachten"
           },
           {
             "en": "Loyalty app for cafés",
-            "el": "App επιβράβευσης για καφέ",
+            "el": "Εφαρμογή επιβράβευσης για καφετέριες",
             "de": "Treue-App für Cafés"
           },
           {
             "en": "Appointment booking for salons & clinics",
-            "el": "Ραντεβού για κομμωτήρια & ιατρεία",
-            "de": "Terminbuchung für Salons & Praxen"
+            "el": "Ραντεβού για κομμωτήρια και ιατρεία",
+            "de": "Terminbuchung für Salons und Praxen"
           },
           {
             "en": "Marketplace for local producers",
             "el": "Marketplace για τοπικούς παραγωγούς",
-            "de": "Marketplace für lokale Produzenten"
+            "de": "Marktplatz für lokale Produzenten"
           },
           {
             "en": "AI assistant for accountants",
-            "el": "AI βοηθός για λογιστές",
+            "el": "Βοηθός AI για λογιστές",
             "de": "KI-Assistent für Buchhalter"
           },
           {
@@ -339,18 +339,18 @@
           },
           {
             "en": "Tourist guide app for an island",
-            "el": "App ξενάγησης για ένα νησί",
+            "el": "Εφαρμογή ξενάγησης για ένα νησί",
             "de": "Reiseführer-App für eine Insel"
           },
           {
             "en": "Delivery app for a restaurant group",
-            "el": "App delivery για όμιλο εστιατορίων",
+            "el": "Εφαρμογή delivery για όμιλο εστιατορίων",
             "de": "Liefer-App für eine Restaurantgruppe"
           },
           {
             "en": "Internal tool that replaces spreadsheets",
-            "el": "Εσωτερικό εργαλείο που αντικαθιστά τα Excel",
-            "de": "Internes Tool, das Excel-Tabellen ersetzt"
+            "el": "Εσωτερικό εργαλείο αντί για Excel",
+            "de": "Internes Tool als Ersatz für Excel-Tabellen"
           }
         ],
         "proof": [
@@ -361,8 +361,8 @@
             "url": "/projects/feedgenix",
             "line": {
               "en": "AI SaaS: translates large product datasets. Pick the fields and the languages.",
-              "el": "AI SaaS: μεταφράζει μεγάλα σύνολα δεδομένων προϊόντων. Διαλέγεις πεδία και γλώσσες.",
-              "de": "KI-SaaS: übersetzt grosse Produktdatensätze. Sie wählen die Felder und die Sprachen."
+              "el": "AI SaaS που μεταφράζει μεγάλους καταλόγους προϊόντων. Διαλέγεις τα πεδία και τις γλώσσες.",
+              "de": "KI-SaaS zur Übersetzung grosser Produktdatensätze. Felder und Sprachen sind frei wählbar."
             }
           },
           {
@@ -382,13 +382,13 @@
             "line": {
               "en": "My own startup: 2nd place at Idea Platform, CapsuleT's ideas contest",
               "el": "Η δική μου startup: 2η θέση στο Idea Platform, τον διαγωνισμό ιδεών του CapsuleT",
-              "de": "Mein eigenes Startup: 2. Platz bei Idea Platform, dem Ideenwettbewerb von CapsuleT"
+              "de": "Eigenes Start-up: 2. Platz bei Idea Platform, dem Ideenwettbewerb von CapsuleT"
             }
           }
         ],
         "timeline": {
           "en": "MVP in 6–12 weeks",
-          "el": "MVP σε 6–12 εβδομάδες",
+          "el": "Πρώτη έκδοση σε 6–12 εβδομάδες",
           "de": "MVP in 6–12 Wochen"
         },
         "weeks": [
@@ -398,7 +398,7 @@
         "startingFrom": null,
         "cta": {
           "en": "Pitch me your idea",
-          "el": "Κάνε μου pitch",
+          "el": "Πες μου την ιδέα σου",
           "de": "Stellen Sie mir Ihre Idee vor"
         }
       },
@@ -406,55 +406,55 @@
         "key": "commerce",
         "title": {
           "en": "E-commerce: zero to hero",
-          "el": "E-commerce: από το μηδέν στην κορυφή",
-          "de": "E-Commerce: von null an die Spitze"
+          "el": "E-shop: από το μηδέν ως την κορυφή",
+          "de": "E-Commerce: von den Anfängen zum Erfolg"
         },
         "short": {
           "en": "E-commerce",
-          "el": "E-commerce",
+          "el": "E-shops",
           "de": "E-Commerce"
         },
         "promise": {
           "en": "From your first online store to selling automatically across Europe.",
-          "el": "Από το πρώτο σου e-shop μέχρι αυτοματοποιημένες πωλήσεις σε όλη την Ευρώπη.",
-          "de": "Von Ihrem ersten Online-Shop bis zum automatischen Verkauf in ganz Europa."
+          "el": "Από το πρώτο σου e-shop μέχρι αυτόματες πωλήσεις σε όλη την Ευρώπη.",
+          "de": "Von Ihrem ersten Online-Shop bis zum automatisierten Verkauf in ganz Europa."
         },
         "bullets": [
           {
             "en": "Store build and design (Shopify, WooCommerce, PrestaShop or custom)",
-            "el": "Στήσιμο και design του καταστήματος (Shopify, WooCommerce, PrestaShop ή custom)",
+            "el": "Στήσιμο και σχεδιασμός του καταστήματος (Shopify, WooCommerce, PrestaShop ή από την αρχή)",
             "de": "Aufbau und Design des Shops (Shopify, WooCommerce, PrestaShop oder individuell)"
           },
           {
             "en": "Import of your full product catalogue, cleaned and organised",
-            "el": "Πέρασμα ολόκληρου του καταλόγου σου, καθαρού και οργανωμένου",
+            "el": "Περνάω ολόκληρο τον κατάλογό σου, καθαρό και τακτοποιημένο",
             "de": "Import Ihres gesamten Produktkatalogs, bereinigt und geordnet"
           },
           {
             "en": "Automatic connection to big marketplaces in Greece and Europe",
-            "el": "Αυτόματη σύνδεση με μεγάλα marketplaces σε Ελλάδα και Ευρώπη",
-            "de": "Automatische Anbindung an grosse Marketplaces in Griechenland und Europa"
+            "el": "Αυτόματη σύνδεση με τα μεγάλα marketplaces σε Ελλάδα και Ευρώπη",
+            "de": "Automatische Anbindung an grosse Marktplätze in Griechenland und Europa"
           },
           {
             "en": "Automatic translation of products into up to 20 languages",
-            "el": "Αυτόματη μετάφραση προϊόντων σε έως 20 γλώσσες",
+            "el": "Αυτόματη μετάφραση των προϊόντων σε έως και 20 γλώσσες",
             "de": "Automatische Übersetzung der Produkte in bis zu 20 Sprachen"
           },
           {
             "en": "Selling in up to 5 countries, with the right feeds for each",
-            "el": "Πωλήσεις σε έως 5 χώρες, με τα σωστά feeds για την καθεμία",
+            "el": "Πωλήσεις σε έως και 5 χώρες, με τα σωστά feeds για την καθεμία",
             "de": "Verkauf in bis zu 5 Ländern, mit den richtigen Feeds für jedes Land"
           },
           {
             "en": "Step-by-step guidance: the bigger you get, the easier it becomes",
-            "el": "Καθοδήγηση βήμα βήμα: όσο μεγαλώνεις, τόσο πιο εύκολο γίνεται",
-            "de": "Begleitung Schritt für Schritt: Je grösser Sie werden, desto einfacher wird es"
+            "el": "Είμαι δίπλα σου σε κάθε βήμα· όσο μεγαλώνεις, τόσο πιο εύκολο γίνεται",
+            "de": "Begleitung Schritt für Schritt: Mit wachsender Grösse wird es einfacher"
           }
         ],
         "chipsLabel": {
           "en": "For stores like",
           "el": "Για καταστήματα όπως",
-          "de": "Für Shops wie"
+          "de": "Geeignet für Shops wie"
         },
         "chips": [
           {
@@ -490,12 +490,12 @@
           {
             "en": "Electronics or home goods retailer",
             "el": "Κατάστημα ηλεκτρονικών ή ειδών σπιτιού",
-            "de": "Händler für Elektronik oder Haushalt"
+            "de": "Elektronik- oder Haushaltswarenhändler"
           },
           {
             "en": "Wholesaler with a big catalogue",
             "el": "Χονδρέμπορος με μεγάλο κατάλογο",
-            "de": "Grosshändler mit grossem Katalog"
+            "de": "Grosshändler mit umfangreichem Katalog"
           }
         ],
         "proof": [
@@ -516,15 +516,15 @@
             "url": "/projects/deindeal",
             "line": {
               "en": "800,000+ products integrated, filtered and translated for a Swiss marketplace",
-              "el": "800.000+ προϊόντα ενσωματωμένα, φιλτραρισμένα και μεταφρασμένα για ένα ελβετικό marketplace",
-              "de": "800’000+ Produkte integriert, gefiltert und übersetzt für einen Schweizer Marketplace"
+              "el": "Πάνω από 800.000 προϊόντα ενσωματωμένα, φιλτραρισμένα και μεταφρασμένα για ένα ελβετικό marketplace",
+              "de": "Über 800’000 Produkte für einen Schweizer Marktplatz integriert, gefiltert und übersetzt"
             }
           }
         ],
         "timeline": {
           "en": "Store in 3–6 weeks; marketplaces and translations in phases",
-          "el": "Κατάστημα σε 3–6 εβδομάδες· marketplaces και μεταφράσεις σε φάσεις",
-          "de": "Shop in 3–6 Wochen; Marketplaces und Übersetzungen in Etappen"
+          "el": "Κατάστημα σε 3–6 εβδομάδες· τα marketplaces και οι μεταφράσεις σταδιακά",
+          "de": "Shop in 3–6 Wochen; Marktplätze und Übersetzungen in Etappen"
         },
         "weeks": [
           3,
@@ -532,38 +532,38 @@
         ],
         "then": {
           "en": "marketplaces and translations in phases",
-          "el": "marketplaces και μεταφράσεις σε φάσεις",
-          "de": "Marketplaces und Übersetzungen in Etappen"
+          "el": "τα marketplaces και οι μεταφράσεις σταδιακά",
+          "de": "Marktplätze und Übersetzungen in Etappen"
         },
         "startingFrom": null,
         "cta": {
           "en": "Grow my store",
-          "el": "Μεγάλωσε το e-shop μου",
-          "de": "Meinen Shop ausbauen"
+          "el": "Θέλω να μεγαλώσω το e-shop μου",
+          "de": "Shop ausbauen"
         }
       },
       {
         "key": "search",
         "title": {
           "en": "Digital Marketing & AI Search",
-          "el": "Digital marketing & AI αναζήτηση",
+          "el": "Digital marketing & αναζήτηση με AI",
           "de": "Digitales Marketing & KI-Suche"
         },
         "short": {
           "en": "Marketing & AI Search",
-          "el": "Marketing & AI αναζήτηση",
+          "el": "Marketing & AI",
           "de": "Marketing & KI-Suche"
         },
         "promise": {
           "en": "Be found on Google, on the map, and in AI answers.",
-          "el": "Να σε βρίσκουν στο Google, στον χάρτη και στις απαντήσεις των AI.",
-          "de": "Gefunden werden: auf Google, auf der Karte und in KI-Antworten."
+          "el": "Να σε βρίσκουν στο Google, στον χάρτη και στις απαντήσεις του AI.",
+          "de": "Präsenz auf Google, auf der Karte und in KI-Antworten."
         },
         "bullets": [
           {
             "en": "LLM visibility: structure your site so ChatGPT, Claude and Gemini can understand and recommend you",
-            "el": "Ορατότητα σε LLMs: δομή site ώστε ChatGPT, Claude και Gemini να σε καταλαβαίνουν και να σε προτείνουν",
-            "de": "Sichtbarkeit in LLMs: Ihre Website so aufbauen, dass ChatGPT, Claude und Gemini Sie verstehen und empfehlen können"
+            "el": "Ορατότητα στα μοντέλα AI: οργανώνω την ιστοσελίδα σου ώστε το ChatGPT, το Claude και το Gemini να σε καταλαβαίνουν και να σε προτείνουν",
+            "de": "Sichtbarkeit in LLMs: Strukturierung Ihrer Website, damit ChatGPT, Claude und Gemini Sie verstehen und empfehlen können"
           },
           {
             "en": "100/100 on all Core Web Vitals",
@@ -572,35 +572,35 @@
           },
           {
             "en": "Technical and local SEO, Google Business profile",
-            "el": "Τεχνικό και τοπικό SEO, προφίλ Google Business",
+            "el": "Τεχνικό και τοπικό SEO, προφίλ στο Google Business",
             "de": "Technisches und lokales SEO, Google-Business-Profil"
           },
           {
             "en": "Google Ads campaigns built with AI automations",
-            "el": "Καμπάνιες Google Ads με AI αυτοματισμούς",
-            "de": "Google-Ads-Kampagnen, aufgebaut mit KI-Automatisierungen"
+            "el": "Καμπάνιες Google Ads με αυτοματισμούς AI",
+            "de": "Google-Ads-Kampagnen mit KI-Automatisierung"
           },
           {
             "en": "Conversion tracking that shows what actually brings customers",
-            "el": "Tracking μετατροπών που δείχνει τι φέρνει πραγματικά πελάτες",
-            "de": "Conversion-Tracking, das zeigt, was wirklich Kunden bringt"
+            "el": "Μετρήσεις που δείχνουν τι σου φέρνει πραγματικά πελάτες",
+            "de": "Conversion-Tracking, das zeigt, was tatsächlich Kunden bringt"
           },
           {
             "en": "Monthly report in plain language",
-            "el": "Μηνιαίο report σε απλά λόγια",
-            "de": "Monatlicher Bericht in einfachen Worten"
+            "el": "Μηνιαία ενημέρωση με απλά λόγια",
+            "de": "Monatlicher Bericht in verständlicher Sprache"
           }
         ],
         "chipsLabel": {
           "en": "For businesses like",
           "el": "Για επιχειρήσεις όπως",
-          "de": "Für Betriebe wie"
+          "de": "Geeignet für Betriebe wie"
         },
         "chips": [
           {
             "en": "Hotel that wants direct bookings",
             "el": "Ξενοδοχείο που θέλει απευθείας κρατήσεις",
-            "de": "Hotel, das Direktbuchungen will"
+            "de": "Hotel, das Direktbuchungen anstrebt"
           },
           {
             "en": "Restaurant in a tourist area",
@@ -615,22 +615,22 @@
           {
             "en": "Car or bike rental",
             "el": "Ενοικιάσεις αυτοκινήτων ή μηχανών",
-            "de": "Auto- oder Motorradvermietung"
+            "de": "Auto- oder Zweiradvermietung"
           },
           {
             "en": "Real estate agency",
             "el": "Μεσιτικό γραφείο",
-            "de": "Immobilienbüro"
+            "de": "Immobilienagentur"
           },
           {
             "en": "E-shop with low traffic",
-            "el": "E-shop με λίγη επισκεψιμότητα",
-            "de": "E-Shop mit wenig Besuchern"
+            "el": "E-shop με λίγους επισκέπτες",
+            "de": "Online-Shop mit wenig Besuchern"
           },
           {
             "en": "Any business with an old, slow site",
-            "el": "Κάθε επιχείρηση με παλιό, αργό site",
-            "de": "Jeder Betrieb mit einer alten, langsamen Website"
+            "el": "Κάθε επιχείρηση με παλιά, αργή ιστοσελίδα",
+            "de": "Jedes Unternehmen mit einer veralteten, langsamen Website"
           }
         ],
         "proof": [
@@ -640,8 +640,8 @@
             "url": "/projects",
             "line": {
               "en": "My own system: it tracks the performance and SEO scores of client sites, and an AI agent fixes what drops",
-              "el": "Δικό μου σύστημα: παρακολουθεί τις βαθμολογίες ταχύτητας και SEO των sites των πελατών, και ένας AI agent διορθώνει ό,τι πέφτει",
-              "de": "Mein eigenes System: Es überwacht die Performance- und SEO-Werte von Kunden-Websites, und ein KI-Agent behebt, was schlechter wird"
+              "el": "Δικό μου σύστημα που παρακολουθεί την ταχύτητα και το SEO των ιστοσελίδων των πελατών μου, και ένας AI agent διορθώνει ό,τι πέφτει.",
+              "de": "Eigenes System: überwacht die Performance- und SEO-Werte von Kundenwebsites, und ein KI-Agent behebt Verschlechterungen."
             }
           },
           {
@@ -649,16 +649,16 @@
             "name": "Arangia",
             "line": {
               "en": "Direct-booking site, tuned for speed and search",
-              "el": "Site απευθείας κρατήσεων, ρυθμισμένο για ταχύτητα και αναζήτηση",
-              "de": "Website für Direktbuchungen, auf Tempo und Suche abgestimmt"
+              "el": "Ιστοσελίδα απευθείας κρατήσεων, φτιαγμένη για ταχύτητα και αναζήτηση",
+              "de": "Website für Direktbuchungen, optimiert für Geschwindigkeit und Suche"
             },
             "url": "/projects/arangia"
           }
         ],
         "timeline": {
           "en": "Audit in 1 week; ongoing monthly",
-          "el": "Audit σε 1 εβδομάδα· μετά μηνιαία",
-          "de": "Audit in 1 Woche; danach Monat für Monat"
+          "el": "Έλεγχος σε 1 εβδομάδα· μετά, κάθε μήνα",
+          "de": "Audit in 1 Woche; danach laufend monatlich"
         },
         "weeks": [
           0,
@@ -666,14 +666,14 @@
         ],
         "then": {
           "en": "ongoing monthly",
-          "el": "μετά μηνιαία",
-          "de": "danach Monat für Monat"
+          "el": "μετά, κάθε μήνα",
+          "de": "danach laufend monatlich"
         },
         "startingFrom": null,
         "cta": {
           "en": "Check my site",
-          "el": "Τσέκαρε το site μου",
-          "de": "Meine Website prüfen"
+          "el": "Έλεγξε την ιστοσελίδα μου",
+          "de": "Website prüfen lassen"
         }
       }
     ],
@@ -681,13 +681,13 @@
       "title": {
         "en": "How we work",
         "el": "Πώς δουλεύουμε",
-        "de": "So arbeiten wir"
+        "de": "Vorgehen"
       },
       "steps": [
         {
           "title": {
             "en": "Discovery call",
-            "el": "Γνωριμία και συζήτηση",
+            "el": "Γνωριμία και κουβέντα",
             "de": "Erstgespräch"
           },
           "art": "meet",
@@ -696,8 +696,8 @@
         {
           "title": {
             "en": "Branding and material",
-            "el": "Branding και υλικό",
-            "de": "Branding und Material"
+            "el": "Ταυτότητα και υλικό",
+            "de": "Branding und Unterlagen"
           },
           "art": "brand",
           "box": "27 68 343 202"
@@ -705,8 +705,8 @@
         {
           "title": {
             "en": "3–4 design directions",
-            "el": "3–4 κατευθύνσεις design",
-            "de": "3–4 Design-Richtungen"
+            "el": "3–4 σχεδιαστικές προτάσεις",
+            "de": "3–4 Designrichtungen"
           },
           "art": "directions",
           "box": "50 89 301 152"
@@ -714,8 +714,8 @@
         {
           "title": {
             "en": "We agree on scope",
-            "el": "Συμφωνούμε στο τελικό πλάνο",
-            "de": "Wir einigen uns auf den Umfang"
+            "el": "Συμφωνούμε τι θα φτιάξουμε",
+            "de": "Festlegung des Umfangs"
           },
           "art": "agree",
           "box": "24 2 352 272"
@@ -723,8 +723,8 @@
         {
           "title": {
             "en": "I build",
-            "el": "Υλοποίηση",
-            "de": "Ich baue"
+            "el": "Η υλοποίηση",
+            "de": "Umsetzung"
           },
           "art": "build-site",
           "box": "30 30 340 240"
@@ -747,7 +747,7 @@
       "story": {
         "en": "See the full story",
         "el": "Δες όλη την ιστορία",
-        "de": "Die ganze Geschichte ansehen"
+        "de": "Gesamten Ablauf ansehen"
       },
       "storyHref": "/#story-web"
     },
@@ -760,11 +760,11 @@
       "titleNoPrices": {
         "en": "How long it takes",
         "el": "Πόσο χρόνο παίρνει",
-        "de": "Wie lange es dauert"
+        "de": "Projektdauer"
       },
       "timeline": {
         "en": "Typical timeline",
-        "el": "Συνήθης χρόνος",
+        "el": "Συνήθης διάρκεια",
         "de": "Übliche Dauer"
       },
       "weeks": {
@@ -774,15 +774,15 @@
       },
       "note": {
         "en": "After a short call you get a clear quote with everything it includes, so there are no surprises.",
-        "el": "Μετά από μια σύντομη συζήτηση παίρνεις σαφή προσφορά με όλα όσα περιλαμβάνει, χωρίς εκπλήξεις.",
-        "de": "Nach einem kurzen Gespräch erhalten Sie eine klare Offerte mit allem, was dazugehört, damit es keine Überraschungen gibt."
+        "el": "Μετά από μια σύντομη κουβέντα θα έχεις μια ξεκάθαρη προσφορά με όλα όσα περιλαμβάνει, χωρίς εκπλήξεις.",
+        "de": "Nach einem kurzen Gespräch erhalten Sie eine klare Offerte mit allen enthaltenen Leistungen, ohne Überraschungen."
       }
     },
     "faq": {
       "title": {
         "en": "Questions I hear often",
         "el": "Ερωτήσεις που ακούω συχνά",
-        "de": "Fragen, die ich oft höre"
+        "de": "Häufige Fragen"
       },
       "petros": {
         "en": "Petros",
@@ -801,7 +801,7 @@
       },
       "jump": {
         "en": "Jump to a question",
-        "el": "Πήγαινε σε μια ερώτηση",
+        "el": "Διάλεξε ερώτηση",
         "de": "Zu einer Frage springen"
       },
       "next": {
@@ -811,8 +811,8 @@
       },
       "ask": {
         "en": "Ask me something else",
-        "el": "Ρώτα με κάτι άλλο",
-        "de": "Fragen Sie mich etwas anderes"
+        "el": "Ρώτησέ με κάτι άλλο",
+        "de": "Weitere Frage stellen"
       },
       "items": [
         {
@@ -823,13 +823,13 @@
           },
           "q": {
             "en": "How much does a website cost?",
-            "el": "Πόσο κοστίζει ένα site;",
+            "el": "Πόσο κοστίζει μια ιστοσελίδα;",
             "de": "Was kostet eine Website?"
           },
           "a": {
             "en": "It depends on what it needs to do. A presentation site for a shop is very different from a booking platform. After a short call I send you a clear quote with what's included, so there are no surprises.",
-            "el": "Εξαρτάται από το τι πρέπει να κάνει. Ένα site παρουσίασης για μαγαζί διαφέρει πολύ από μια πλατφόρμα κρατήσεων. Μετά από μια σύντομη συζήτηση σου στέλνω σαφή προσφορά με όλα όσα περιλαμβάνει, χωρίς εκπλήξεις.",
-            "de": "Das hängt davon ab, was sie können muss. Eine Präsentations-Website für ein Geschäft ist etwas ganz anderes als eine Buchungsplattform. Nach einem kurzen Gespräch schicke ich Ihnen eine klare Offerte mit allem, was dazugehört, damit es keine Überraschungen gibt."
+            "el": "Εξαρτάται από το τι χρειάζεται να κάνει. Μια απλή ιστοσελίδα για ένα μαγαζί είναι άλλη δουλειά από μια πλατφόρμα κρατήσεων. Αφού τα πούμε λίγο, σου στέλνω μια ξεκάθαρη προσφορά με όλα όσα περιλαμβάνει, για να μην έχεις εκπλήξεις.",
+            "de": "Das hängt vom Funktionsumfang ab. Eine Präsentationswebsite für ein Geschäft unterscheidet sich deutlich von einer Buchungsplattform. Nach einem kurzen Gespräch erhalten Sie eine klare Offerte mit allen enthaltenen Leistungen."
           }
         },
         {
@@ -845,8 +845,8 @@
           },
           "a": {
             "en": "A business website usually takes 2–5 weeks, an e-shop 3–6 weeks, and an app MVP 6–12 weeks. You get a timeline with milestones before we start.",
-            "el": "Ένα site επιχείρησης συνήθως 2–5 εβδομάδες, ένα e-shop 3–6 εβδομάδες και ένα MVP εφαρμογής 6–12 εβδομάδες. Πριν ξεκινήσουμε παίρνεις χρονοδιάγραμμα με ορόσημα.",
-            "de": "Eine Firmen-Website dauert meist 2–5 Wochen, ein E-Shop 3–6 Wochen und ein App-MVP 6–12 Wochen. Bevor wir beginnen, erhalten Sie einen Zeitplan mit Meilensteinen."
+            "el": "Μια ιστοσελίδα επιχείρησης θέλει συνήθως 2–5 εβδομάδες, ένα e-shop 3–6 και μια πρώτη έκδοση εφαρμογής 6–12. Πριν ξεκινήσουμε, θα έχεις χρονοδιάγραμμα με τα βασικά ορόσημα.",
+            "de": "Die Entwicklung einer Unternehmenswebsite dauert in der Regel 2–5 Wochen, die eines Online-Shops 3–6 Wochen und die eines App-MVP 6–12 Wochen. Vor Projektbeginn erhalten Sie einen Zeitplan mit Meilensteinen."
           }
         },
         {
@@ -857,30 +857,30 @@
           },
           "q": {
             "en": "I only have an idea, not a plan. Can we still work together?",
-            "el": "Έχω μόνο μια ιδέα, όχι σχέδιο. Μπορούμε να συνεργαστούμε;",
-            "de": "Ich habe nur eine Idee, keinen Plan. Können wir trotzdem zusammenarbeiten?"
+            "el": "Έχω μόνο μια ιδέα, όχι κάποιο σχέδιο. Μπορούμε να συνεργαστούμε;",
+            "de": "Ich habe eine Idee, aber noch keinen Plan. Ist eine Zusammenarbeit trotzdem möglich?"
           },
           "a": {
             "en": "That's the best place to start. We turn the idea into a scope, a roadmap and a budget together. I've been through it myself with my own startup, from MVP to accelerator.",
-            "el": "Από εκεί είναι το καλύτερο να ξεκινάμε. Κάνουμε μαζί την ιδέα scope, roadmap και budget. Το έχω ζήσει κι εγώ με τη δική μου startup, από το MVP μέχρι τον accelerator.",
-            "de": "Genau dort fängt man am besten an. Gemeinsam machen wir aus der Idee einen Umfang, eine Roadmap und ein Budget. Ich habe das selbst erlebt, mit meinem eigenen Startup, vom MVP bis zum Accelerator."
+            "el": "Αυτή είναι η καλύτερη αφετηρία. Μαζί κάνουμε την ιδέα σχέδιο, με τα βήματά της και τον προϋπολογισμό της. Το έχω ζήσει κι εγώ με τη δική μου startup, από την πρώτη έκδοση ως τον accelerator.",
+            "de": "Das ist ein guter Ausgangspunkt. Gemeinsam entwickeln wir aus der Idee einen Projektumfang, eine Roadmap und ein Budget. Ich kenne diesen Weg aus meinem eigenen Start-up, vom MVP bis zum Accelerator."
           }
         },
         {
           "short": {
             "en": "Editing it myself",
-            "el": "Αλλαγές μόνος μου",
-            "de": "Selbst ändern"
+            "el": "Αλλαγές από εμένα",
+            "de": "Eigene Anpassungen"
           },
           "q": {
             "en": "Will I be able to change things on my own?",
-            "el": "Θα μπορώ να αλλάζω πράγματα μόνος μου;",
-            "de": "Kann ich selbst etwas ändern?"
+            "el": "Θα μπορώ να κάνω αλλαγές χωρίς εσένα;",
+            "de": "Kann ich Inhalte selbst anpassen?"
           },
           "a": {
             "en": "Yes. You get a simple admin panel to edit texts, photos, products and prices without calling me.",
-            "el": "Ναι. Παίρνεις ένα απλό admin panel για να αλλάζεις κείμενα, φωτογραφίες, προϊόντα και τιμές χωρίς να με παίρνεις τηλέφωνο.",
-            "de": "Ja. Sie erhalten ein einfaches Admin-Panel, mit dem Sie Texte, Fotos, Produkte und Preise ändern können, ohne mich anzurufen."
+            "el": "Φυσικά. Θα έχεις έναν απλό πίνακα διαχείρισης, για να αλλάζεις κείμενα, φωτογραφίες, προϊόντα και τιμές χωρίς να χρειάζεται να με πάρεις τηλέφωνο.",
+            "de": "Ja. Sie erhalten ein einfaches Admin-Panel, mit dem Sie Texte, Fotos, Produkte und Preise selbständig ändern können."
           }
         },
         {
@@ -891,13 +891,13 @@
           },
           "q": {
             "en": "Who owns the website and the code?",
-            "el": "Σε ποιον ανήκει το site και ο κώδικας;",
+            "el": "Σε ποιον ανήκουν η ιστοσελίδα και ο κώδικας;",
             "de": "Wem gehören die Website und der Code?"
           },
           "a": {
             "en": "You do. Domain, content and code are yours once the project is paid in full.",
-            "el": "Σε εσένα. Domain, περιεχόμενο και κώδικας είναι δικά σου μόλις εξοφληθεί το έργο.",
-            "de": "Ihnen. Domain, Inhalte und Code gehören Ihnen, sobald das Projekt vollständig bezahlt ist."
+            "el": "Σε εσένα. Το domain, το περιεχόμενο και ο κώδικας είναι δικά σου, μόλις εξοφληθεί το έργο.",
+            "de": "Ihnen. Domain, Inhalte und Code gehen mit der vollständigen Bezahlung des Projekts in Ihr Eigentum über."
           }
         },
         {
@@ -913,8 +913,8 @@
           },
           "a": {
             "en": "The last 30% is paid one month after delivery, after corrections and small additions. After that you can choose a monthly plan for maintenance, updates, security and performance monitoring.",
-            "el": "Το τελευταίο 30% πληρώνεται έναν μήνα μετά, αφού γίνουν οι διορθώσεις και οι μικρές προσθήκες. Μετά μπορείς να διαλέξεις μηνιαίο πλάνο για συντήρηση, ενημερώσεις, ασφάλεια και παρακολούθηση ταχύτητας.",
-            "de": "Die letzten 30% werden einen Monat nach der Übergabe bezahlt, nach Korrekturen und kleinen Ergänzungen. Danach können Sie einen Monatsplan für Wartung, Updates, Sicherheit und Performance-Überwachung wählen."
+            "el": "Το τελευταίο 30% πληρώνεται έναν μήνα μετά την παράδοση, αφού έχουμε κάνει τις διορθώσεις και τις μικρές προσθήκες. Από εκεί και πέρα, αν θέλεις, μπορείς να διαλέξεις ένα μηνιαίο πλάνο για συντήρηση, ενημερώσεις, ασφάλεια και παρακολούθηση της ταχύτητας.",
+            "de": "Die letzten 30 % werden einen Monat nach der Übergabe fällig, nach Korrekturen und kleinen Ergänzungen. Anschliessend können Sie ein monatliches Abonnement für Unterhalt, Updates, Sicherheit und Performance-Überwachung abschliessen."
           }
         },
         {
@@ -926,46 +926,46 @@
           "q": {
             "en": "Do you build mobile apps for both iPhone and Android?",
             "el": "Φτιάχνεις εφαρμογές για iPhone και Android;",
-            "de": "Bauen Sie mobile Apps für iPhone und Android?"
+            "de": "Entwickeln Sie mobile Apps für iPhone und Android?"
           },
           "a": {
             "en": "Yes, with one codebase for both, plus a web version and an admin dashboard if you need them.",
-            "el": "Ναι, με έναν κώδικα και για τα δύο, μαζί με web έκδοση και admin dashboard αν τα χρειάζεσαι.",
-            "de": "Ja, mit einer Codebasis für beide, dazu eine Web-Version und ein Admin-Dashboard, wenn Sie das brauchen."
+            "el": "Ναι, με έναν κώδικα και για τα δύο, και αν τα χρειάζεσαι, με web έκδοση και πίνακα διαχείρισης.",
+            "de": "Ja, mit einer gemeinsamen Codebasis, auf Wunsch ergänzt durch eine Web-Version und ein Admin-Dashboard."
           }
         },
         {
           "short": {
             "en": "Marketplaces",
             "el": "Marketplaces",
-            "de": "Marketplaces"
+            "de": "Marktplätze"
           },
           "q": {
             "en": "Can my products appear on Skroutz, Amazon or other marketplaces?",
-            "el": "Μπορούν τα προϊόντα μου να μπουν στο Skroutz, στο Amazon ή σε άλλα marketplaces;",
-            "de": "Können meine Produkte auf Skroutz, Amazon oder anderen Marketplaces erscheinen?"
+            "el": "Μπορούν τα προϊόντα μου να εμφανίζονται στο Skroutz, στο Amazon ή σε άλλα marketplaces;",
+            "de": "Können meine Produkte auf Skroutz, Amazon oder anderen Marktplätzen erscheinen?"
           },
           "a": {
             "en": "Yes. I connect your store to the marketplaces that fit you and keep the feeds updated automatically, in as many languages as you need.",
-            "el": "Ναι. Συνδέω το κατάστημά σου με τα marketplaces που σου ταιριάζουν και κρατάω τα feeds ενημερωμένα αυτόματα, σε όσες γλώσσες χρειάζεσαι.",
-            "de": "Ja. Ich verbinde Ihren Shop mit den Marketplaces, die zu Ihnen passen, und halte die Feeds automatisch aktuell, in so vielen Sprachen, wie Sie brauchen."
+            "el": "Ναι. Συνδέω το κατάστημά σου με τα marketplaces που σου ταιριάζουν και φροντίζω τα feeds να ενημερώνονται αυτόματα, σε όσες γλώσσες χρειάζεσαι.",
+            "de": "Ja. Ich binde Ihren Shop an die passenden Marktplätze an und halte die Feeds automatisch aktuell, in allen benötigten Sprachen."
           }
         },
         {
           "short": {
             "en": "AI answers",
-            "el": "Απαντήσεις AI",
+            "el": "Απαντήσεις του AI",
             "de": "KI-Antworten"
           },
           "q": {
             "en": "What does 'being found in AI answers' mean?",
-            "el": "Τι σημαίνει «να με βρίσκουν στις απαντήσεις των AI»;",
-            "de": "Was heisst «in KI-Antworten gefunden werden»?"
+            "el": "Τι σημαίνει «να με βρίσκουν στις απαντήσεις του AI»;",
+            "de": "Was bedeutet «in KI-Antworten gefunden werden»?"
           },
           "a": {
             "en": "More and more people ask ChatGPT or Claude instead of Google. I structure your site and information so these assistants understand your business and can recommend it.",
-            "el": "Όλο και περισσότεροι ρωτάνε το ChatGPT ή το Claude αντί για το Google. Οργανώνω το site και τις πληροφορίες σου ώστε αυτοί οι βοηθοί να καταλαβαίνουν την επιχείρησή σου και να την προτείνουν.",
-            "de": "Immer mehr Menschen fragen ChatGPT oder Claude statt Google. Ich strukturiere Ihre Website und Ihre Informationen so, dass diese Assistenten Ihr Geschäft verstehen und empfehlen können."
+            "el": "Όλο και περισσότεροι ρωτούν το ChatGPT ή το Claude αντί για το Google. Οργανώνω την ιστοσελίδα και τα στοιχεία σου ώστε αυτοί οι βοηθοί να καταλαβαίνουν την επιχείρησή σου και να μπορούν να την προτείνουν.",
+            "de": "Immer mehr Menschen fragen ChatGPT oder Claude statt Google. Ich strukturiere Ihre Website und Ihre Angaben so, dass diese Assistenten Ihr Unternehmen verstehen und empfehlen können."
           }
         },
         {
@@ -976,13 +976,13 @@
           },
           "q": {
             "en": "Do you work with clients outside Kos or outside Greece?",
-            "el": "Δουλεύεις με πελάτες εκτός Κω ή εκτός Ελλάδας;",
+            "el": "Δουλεύεις και με πελάτες εκτός Κω ή εκτός Ελλάδας;",
             "de": "Arbeiten Sie auch mit Kunden ausserhalb von Kos oder Griechenland?"
           },
           "a": {
             "en": "Yes. I've worked remotely with companies in Switzerland and across Greece. We meet on video calls and share progress online.",
-            "el": "Ναι. Έχω δουλέψει remote με εταιρείες στην Ελβετία και σε όλη την Ελλάδα. Τα λέμε με video calls και βλέπεις την πρόοδο online.",
-            "de": "Ja. Ich habe remote mit Firmen in der Schweiz und in ganz Griechenland gearbeitet. Wir treffen uns per Videoanruf, und den Fortschritt sehen Sie online."
+            "el": "Ναι. Έχω συνεργαστεί από απόσταση με εταιρείες στην Ελβετία και σε όλη την Ελλάδα. Τα λέμε σε βιντεοκλήσεις και βλέπεις την πρόοδο online.",
+            "de": "Ja. Ich habe remote mit Unternehmen in der Schweiz und in ganz Griechenland zusammengearbeitet. Besprechungen finden per Video statt, den Projektfortschritt sehen Sie online."
           }
         },
         {
@@ -994,19 +994,19 @@
           "q": {
             "en": "How do payments work?",
             "el": "Πώς γίνονται οι πληρωμές;",
-            "de": "Wie funktionieren die Zahlungen?"
+            "de": "Wie sind die Zahlungen geregelt?"
           },
           "a": {
             "en": "30% to start, 40% on delivery, and 30% one month later, after corrections.",
-            "el": "30% στην αρχή, 40% στην παράδοση και 30% έναν μήνα μετά, αφού γίνουν οι διορθώσεις.",
-            "de": "30% zum Start, 40% bei der Übergabe und 30% einen Monat später, nach den Korrekturen."
+            "el": "30% όταν ξεκινάμε, 40% στην παράδοση και 30% έναν μήνα αργότερα, αφού γίνουν οι διορθώσεις.",
+            "de": "30 % bei Projektstart, 40 % bei Übergabe und 30 % einen Monat später, nach den Korrekturen."
           }
         },
         {
           "short": {
             "en": "Working alone?",
             "el": "Δουλεύεις μόνος;",
-            "de": "Allein?"
+            "de": "Team"
           },
           "q": {
             "en": "Do you work alone?",
@@ -1015,8 +1015,8 @@
           },
           "a": {
             "en": "I lead and build every project myself, and bring in trusted designers and specialists when a project needs them.",
-            "el": "Καθοδηγώ και υλοποιώ κάθε έργο ο ίδιος, και φέρνω έμπιστους designers και ειδικούς όταν ένα έργο το χρειάζεται.",
-            "de": "Ich leite und baue jedes Projekt selbst und ziehe Designer und Spezialisten bei, denen ich vertraue, wenn ein Projekt sie braucht."
+            "el": "Κάθε έργο το καθοδηγώ και το φτιάχνω εγώ ο ίδιος, και όταν χρειάζεται, φέρνω σχεδιαστές και ειδικούς που εμπιστεύομαι.",
+            "de": "Ich leite und entwickle jedes Projekt selbst und ziehe bei Bedarf Designer und Spezialisten meines Vertrauens bei."
           }
         }
       ]
@@ -1025,7 +1025,7 @@
       "title": {
         "en": "Tell me your idea.",
         "el": "Πες μου την ιδέα σου.",
-        "de": "Erzählen Sie mir Ihre Idee."
+        "de": "Stellen Sie mir Ihre Idee vor."
       },
       "sub": {
         "en": "I reply within 24 hours.",
@@ -1061,21 +1061,21 @@
       "unsure": {
         "en": "Not sure yet",
         "el": "Δεν ξέρω ακόμα",
-        "de": "Weiss ich noch nicht"
+        "de": "Noch nicht festgelegt"
       },
       "idea": {
         "en": "Your business, or your idea",
         "el": "Η επιχείρησή σου ή η ιδέα σου",
-        "de": "Ihr Geschäft oder Ihre Idee"
+        "de": "Ihr Unternehmen oder Ihre Idee"
       },
       "ideaHint": {
         "en": "A few lines are enough: what you do, what you'd like to build, and by when.",
-        "el": "Λίγες γραμμές αρκούν: τι κάνεις, τι θέλεις να φτιάξουμε και μέχρι πότε.",
-        "de": "Ein paar Zeilen genügen: was Sie tun, was Sie bauen möchten und bis wann."
+        "el": "Λίγες γραμμές αρκούν: τι κάνεις, τι θα ήθελες να φτιάξουμε και μέχρι πότε.",
+        "de": "Wenige Zeilen genügen: Ihre Tätigkeit, Ihr Vorhaben und der gewünschte Termin."
       },
       "budget": {
         "en": "Budget",
-        "el": "Budget",
+        "el": "Προϋπολογισμός",
         "de": "Budget"
       },
       "budgetPick": {
@@ -1086,7 +1086,7 @@
       "budgets": [],
       "language": {
         "en": "Preferred language",
-        "el": "Γλώσσα επικοινωνίας",
+        "el": "Σε ποια γλώσσα να σου απαντήσω",
         "de": "Bevorzugte Sprache"
       },
       "languages": [
@@ -1105,28 +1105,28 @@
       ],
       "send": {
         "en": "Send my idea",
-        "el": "Στείλε την ιδέα μου",
-        "de": "Meine Idee senden"
+        "el": "Στείλε μου την ιδέα σου",
+        "de": "Idee senden"
       },
       "sending": {
         "en": "Sending…",
-        "el": "Αποστολή…",
+        "el": "Στέλνεται…",
         "de": "Wird gesendet…"
       },
       "done": {
         "en": "Got it. Talk soon.",
-        "el": "Το έλαβα. Τα λέμε σύντομα.",
-        "de": "Erhalten. Wir sprechen uns bald."
+        "el": "Το έλαβα. Θα τα πούμε σύντομα.",
+        "de": "Vielen Dank. Ich melde mich in Kürze."
       },
       "error": {
         "en": "Couldn't send it. Check your connection and try again.",
         "el": "Δεν στάλθηκε. Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά.",
-        "de": "Das Senden hat nicht geklappt. Prüfen Sie Ihre Verbindung und versuchen Sie es noch einmal."
+        "de": "Das Senden ist fehlgeschlagen. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut."
       },
       "another": {
         "en": "Send another",
-        "el": "Στείλε κι άλλο",
-        "de": "Noch eine Idee senden"
+        "el": "Στείλε κάτι ακόμα",
+        "de": "Weitere Anfrage senden"
       }
     },
     "art": {
@@ -1148,12 +1148,12 @@
       "you": {
         "en": "Your business",
         "el": "Η επιχείρησή σου",
-        "de": "Ihr Geschäft"
+        "de": "Ihr Unternehmen"
       },
       "recommend": {
         "en": "I recommend",
         "el": "Σου προτείνω",
-        "de": "Mein Tipp"
+        "de": "Empfehlung"
       },
       "marketplaces": [
         "Skroutz",

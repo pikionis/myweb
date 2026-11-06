@@ -5,12 +5,12 @@ tags: ["Produkt", "Start-up"]
 
 ## Drei Seiten einer Reise
 
-Kalimera verbindet einen Reiseführer, ein Online-Buchungssystem und ein Affiliate-Netzwerk. Reisende bekommen bessere Informationen, lokale Betriebe ein kostenloses Buchungssystem und neue Kundschaft. Und wer Nutzerinnen und Nutzer auf die Plattform bringt, wird dafür belohnt.
+Kalimera verbindet einen Reiseführer, ein Online-Buchungssystem und ein Affiliate-Netzwerk. Reisende erhalten bessere Informationen, lokale Betriebe ein kostenloses Buchungssystem und neue Kundschaft, und wer Nutzer auf die Plattform bringt, wird dafür vergütet.
 
 ## Von Kos nach Athen
 
-Ich habe das Produktdesign geleitet und das Geschäftsmodell geprägt. Das MVP haben wir in einem lokalen Markt lanciert: 80 Verkäufe im ersten Jahr.
+Ich leitete das Produktdesign und prägte das Geschäftsmodell. Das MVP lancierten wir auf einem lokalen Markt: 80 Verkäufe im ersten Jahr.
 
-2022 holte unser Pivot den 2. Platz bei Idea Platform, dem Wettbewerb, in dem CapsuleT, der griechische Inkubator für Technologie und Tourismus, Geschäftsideen filtert. 2023 nahmen wir als sechsköpfiges Team am Hauptwettbewerb von CapsuleT teil, im Accelerator in Athen.
+2022 erreichten wir mit unserem Pivot den 2. Platz bei Idea Platform, dem Wettbewerb, mit dem CapsuleT, der griechische Inkubator für Technologie und Tourismus, Geschäftsideen auswählt. 2023 nahmen wir als sechsköpfiges Team am Hauptwettbewerb von CapsuleT in dessen Accelerator in Athen teil.
 
-Die ganze Geschichte ist ein Kapitel in [Meine Geschichte](/de/about).
+Die vollständige Darstellung ist Teil von [Mein Werdegang](/de/about).

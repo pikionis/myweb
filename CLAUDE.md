@@ -65,6 +65,11 @@ scroll-opening curtain intro, corner labels, services each carrying their real p
 Lower page turns warm light (#f4f3ef).
 Keep this world. Refine, don't replace.
 
+## Voice (his brief)
+- **Greek: calm, warm, friendly and professional, in sound Greek syntax. It must never read as translated.** Greek word order («έναν πολύ αγαπημένο οικογενειακό φίλο», not «φίλο της οικογένειας»), whole sentences with verbs rather than chains of nouns and colons, `εσύ`, the reader never assumed to be a man. English only where Greeks say it too (e-shop, marketplace, feed, SEO, Google Ads, AI, startup, accelerator): «ιστοσελίδα», not site; «πες μου την ιδέα σου», not pitch; «περιγραφή», not brief; «σχόλια», not feedback; «πρώτη έκδοση» in running text, not MVP.
+- **German: strictly professional.** Swiss spelling (ss, «quotes», 800’000), formal Sie, KI for AI, no jokes, colloquialisms or exclamation marks. Software is «entwickelt», never «gebaut»; always Marktplatz, Unternehmen, Online-Shop, Start-up, Offerte, innert, Lancierung; generic masculine, no paired forms.
+- The English is his and stays as it is; its jokes ("Hold my beer") exist only there. A rewrite keeps every fact and number. Words in drawings have little room: check them on the page.
+
 ## Skills in `.claude/skills` — use them
 - Before any UI change: `taste` (art direction) and `impeccable` (craft floor, audit, polish).
 - Motion: `emil-design-eng` + `emil-review-animations`; ready transitions from `transitions-dev`.

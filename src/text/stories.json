@@ -6,93 +6,93 @@
       "title": {
         "en": "How we work together",
         "el": "Πώς δουλεύουμε μαζί",
-        "de": "So arbeiten wir zusammen"
+        "de": "Unsere Zusammenarbeit"
       },
       "scenes": [
         {
           "title": {
             "en": "Intro",
-            "el": "Εισαγωγή",
-            "de": "Intro"
+            "el": "Η αρχή",
+            "de": "Einführung"
           },
           "art": "meet",
           "text": {
             "en": "Every great website starts with a conversation. Here's how we'll build yours.",
-            "el": "Κάθε σπουδαίο site ξεκινά με μια συζήτηση. Δες πώς θα φτιάξουμε το δικό σου.",
-            "de": "Jede grossartige Website beginnt mit einem Gespräch. So bauen wir Ihre."
+            "el": "Κάθε καλή ιστοσελίδα ξεκινά από μια κουβέντα. Έλα να δεις πώς θα φτιάξουμε τη δική σου.",
+            "de": "Jede gute Website beginnt mit einem Gespräch. So entwickeln wir Ihre Website."
           }
         },
         {
           "title": {
             "en": "Your brand",
-            "el": "Το brand σου",
+            "el": "Η ταυτότητά σου",
             "de": "Ihre Marke"
           },
           "art": "brand",
           "text": {
             "en": "Already have a logo and brand material? Send it over and we'll build on it. Starting from scratch? My partners and I will shape it with you — colour palette, brand design, brand awareness — until it feels like you.",
-            "el": "Έχεις ήδη logo και υλικό για το brand; Στείλ' τα μου και χτίζουμε πάνω τους. Ξεκινάς από το μηδέν; Με τους συνεργάτες μου το διαμορφώνουμε μαζί σου: παλέτα χρωμάτων, brand design, brand awareness, μέχρι να σου μοιάζει.",
-            "de": "Sie haben schon ein Logo und Markenmaterial? Schicken Sie es mir, wir bauen darauf auf. Sie fangen bei null an? Meine Partner und ich entwickeln es mit Ihnen: Farbpalette, Markendesign, Markenbekanntheit, bis es sich nach Ihnen anfühlt."
+            "el": "Έχεις ήδη λογότυπο και υλικό; Στείλ' τα μου και θα ξεκινήσουμε από εκεί. Ξεκινάς από το μηδέν; Με τους συνεργάτες μου θα τα φτιάξουμε μαζί σου, τα χρώματα, τον σχεδιασμό, τον τρόπο που θα σε γνωρίσει ο κόσμος, ώσπου να νιώσεις ότι σε εκφράζουν.",
+            "de": "Verfügen Sie bereits über ein Logo und Markenmaterial? Senden Sie mir diese Unterlagen, und wir bauen darauf auf. Beginnen Sie bei null, erarbeiten meine Partner und ich die Marke gemeinsam mit Ihnen: Farbpalette, Markendesign und Markenbekanntheit, bis sie zu Ihnen passt."
           }
         },
         {
           "title": {
             "en": "Choose a direction",
-            "el": "Διάλεξε κατεύθυνση",
+            "el": "Διαλέγεις κατεύθυνση",
             "de": "Richtung wählen"
           },
           "art": "directions",
           "text": {
             "en": "I design 3–4 different directions for your site. You pick the one that fits — or we combine the best of each.",
-            "el": "Σχεδιάζω 3–4 διαφορετικές κατευθύνσεις για το site σου. Διαλέγεις αυτή που σου ταιριάζει, ή συνδυάζουμε τα καλύτερα από την καθεμία.",
-            "de": "Ich entwerfe 3–4 verschiedene Richtungen für Ihre Website. Sie wählen die passende, oder wir kombinieren das Beste aus allen."
+            "el": "Σχεδιάζω 3–4 διαφορετικές προτάσεις για την ιστοσελίδα σου. Διαλέγεις αυτή που σου ταιριάζει, ή κρατάμε το καλύτερο από την καθεμία.",
+            "de": "Ich entwerfe 3–4 unterschiedliche Richtungen für Ihre Website. Sie wählen die passende, oder wir kombinieren die besten Elemente."
           }
         },
         {
           "title": {
             "en": "We agree",
             "el": "Συμφωνούμε",
-            "de": "Wir einigen uns"
+            "de": "Festlegung"
           },
           "art": "agree",
           "text": {
             "en": "We lock in the content, the services or products you want to sell, and the final design. No surprises later.",
-            "el": "Κλειδώνουμε το περιεχόμενο, τις υπηρεσίες ή τα προϊόντα που θέλεις να πουλήσεις και το τελικό design. Χωρίς εκπλήξεις αργότερα.",
-            "de": "Wir legen die Inhalte, die Leistungen oder Produkte, die Sie verkaufen möchten, und das finale Design fest. Keine Überraschungen später."
+            "el": "Κλείνουμε μαζί το περιεχόμενο, τις υπηρεσίες ή τα προϊόντα που θέλεις να πουλήσεις και τον τελικό σχεδιασμό, για να μην υπάρξουν εκπλήξεις αργότερα.",
+            "de": "Wir legen die Inhalte, die zu verkaufenden Leistungen oder Produkte und das endgültige Design fest. So gibt es später keine Überraschungen."
           }
         },
         {
           "title": {
             "en": "I build it",
-            "el": "Το φτιάχνω",
-            "de": "Ich baue sie"
+            "el": "Η υλοποίηση",
+            "de": "Umsetzung"
           },
           "art": "build-site",
           "text": {
             "en": "Then I build your one-of-a-kind website — fast, responsive, ready for search and AI from day one.",
-            "el": "Μετά φτιάχνω το μοναδικό σου site: γρήγορο, responsive, έτοιμο για αναζήτηση και AI από την πρώτη μέρα.",
-            "de": "Dann baue ich Ihre einzigartige Website: schnell, responsive, vom ersten Tag an bereit für Suche und KI."
+            "el": "Έπειτα φτιάχνω την ιστοσελίδα σου, μοναδική όπως η επιχείρησή σου: γρήγορη, σωστή σε κάθε οθόνη και έτοιμη για την αναζήτηση και το AI από την πρώτη μέρα.",
+            "de": "Anschliessend entwickle ich Ihre individuelle Website: schnell, responsiv und vom ersten Tag an für Suche und KI vorbereitet."
           }
         },
         {
           "title": {
             "en": "Simple, fair payment",
-            "el": "Απλή, δίκαιη πληρωμή",
-            "de": "Einfache, faire Zahlung"
+            "el": "Απλή και δίκαιη πληρωμή",
+            "de": "Konditionen"
           },
           "art": "payment",
           "text": {
             "en": "30% to start. 40% on delivery. 30% one month later — after we've fine-tuned everything and added whatever new ideas you've had.",
-            "el": "30% στην αρχή. 40% στην παράδοση. 30% έναν μήνα μετά, αφού φινιρίσουμε τα πάντα και προσθέσουμε όσες νέες ιδέες σου έχουν έρθει.",
-            "de": "30 % zum Start. 40 % bei Lieferung. 30 % einen Monat später, wenn wir alles feinjustiert und Ihre neuen Ideen eingebaut haben."
+            "el": "30% όταν ξεκινάμε, 40% στην παράδοση και 30% έναν μήνα αργότερα, αφού έχουμε φροντίσει κάθε λεπτομέρεια και έχουμε προσθέσει όσες νέες ιδέες σου ήρθαν στο μεταξύ.",
+            "de": "30 % bei Projektstart, 40 % bei Übergabe und 30 % einen Monat später, nach der Feinabstimmung und der Umsetzung Ihrer neuen Ideen."
           }
         }
       ],
       "cta": {
         "text": {
           "en": "Ready to start yours?",
-          "el": "Έτοιμος να ξεκινήσεις το δικό σου;",
-          "de": "Bereit für Ihre Website?"
+          "el": "Να ξεκινήσουμε και τη δική σου;",
+          "de": "Möchten Sie Ihr Projekt starten?"
         }
       }
     },
@@ -101,7 +101,7 @@
       "id": "story-saas",
       "title": {
         "en": "From idea to MVP",
-        "el": "Από την ιδέα στο MVP",
+        "el": "Από την ιδέα στην πρώτη έκδοση",
         "de": "Von der Idee zum MVP"
       },
       "scenes": [
@@ -114,81 +114,81 @@
           "art": "idea",
           "text": {
             "en": "You've got an idea. A startup concept. A solution to a real problem — and you want to turn it into a working application.",
-            "el": "Έχεις μια ιδέα. Ένα concept για startup. Μια λύση σε ένα πραγματικό πρόβλημα, και θέλεις να τη μετατρέψεις σε εφαρμογή που δουλεύει.",
-            "de": "Sie haben eine Idee. Ein Startup-Konzept. Eine Lösung für ein echtes Problem. Und daraus soll eine funktionierende Anwendung werden."
+            "el": "Έχεις μια ιδέα. Ίσως μια startup, ίσως τη λύση σε ένα πραγματικό πρόβλημα, και θέλεις να γίνει μια εφαρμογή που δουλεύει.",
+            "de": "Sie haben eine Idee, ein Start-up-Konzept oder eine Lösung für ein konkretes Problem und möchten daraus eine funktionierende Anwendung entwickeln."
           }
         },
         {
           "title": {
             "en": "Pitch me",
-            "el": "Κάνε μου pitch",
-            "de": "Pitchen Sie"
+            "el": "Πες μου τι σκέφτεσαι",
+            "de": "Ihr Vorhaben"
           },
           "art": "pitch",
           "text": {
             "en": "Pitch it to me. Send a brief — a few lines is enough to begin.",
-            "el": "Κάνε μου pitch. Στείλε ένα brief: λίγες γραμμές αρκούν για αρχή.",
-            "de": "Pitchen Sie sie mir. Schicken Sie ein Briefing: Ein paar Zeilen reichen für den Anfang."
+            "el": "Πες μου τι έχεις στο μυαλό σου. Λίγες γραμμές αρκούν για αρχή.",
+            "de": "Stellen Sie mir Ihr Vorhaben vor. Für den Anfang genügt ein kurzes Briefing mit wenigen Zeilen."
           }
         },
         {
           "title": {
             "en": "Cost & time, upfront",
-            "el": "Κόστος & χρόνος, από την αρχή",
-            "de": "Kosten & Dauer, im Voraus"
+            "el": "Κόστος και χρόνος, από την αρχή",
+            "de": "Kosten und Dauer im Voraus"
           },
           "art": "estimate",
           "text": {
             "en": "I'll estimate your idea: what it will cost and how long it will take. Then we sit down together and shape it — which features, which services, what matters for launch and what can wait.",
-            "el": "Κοστολογώ την ιδέα σου: πόσο θα κοστίσει και πόσο χρόνο θα πάρει. Μετά καθόμαστε μαζί και τη διαμορφώνουμε: ποιες λειτουργίες, ποιες υπηρεσίες, τι μετράει για το launch και τι μπορεί να περιμένει.",
-            "de": "Ich schätze Ihre Idee ein: was sie kostet und wie lange sie dauert. Dann setzen wir uns zusammen und formen sie: welche Funktionen, welche Leistungen, was für den Launch zählt und was warten kann."
+            "el": "Σου λέω πόσο θα κοστίσει η ιδέα σου και πόσο χρόνο θα πάρει. Έπειτα καθόμαστε μαζί και τη διαμορφώνουμε: ποιες λειτουργίες θα έχει, ποιες υπηρεσίες, τι πρέπει να υπάρχει από την πρώτη μέρα και τι μπορεί να περιμένει.",
+            "de": "Ich schätze Kosten und Dauer Ihres Vorhabens. Anschliessend legen wir gemeinsam fest, welche Funktionen und Leistungen es umfasst, was für die Lancierung erforderlich ist und was warten kann."
           }
         },
         {
           "title": {
             "en": "Your roadmap",
-            "el": "Το roadmap σου",
+            "el": "Το πλάνο σου",
             "de": "Ihre Roadmap"
           },
           "art": "roadmap",
           "text": {
             "en": "You get a clear roadmap of the services and features, phase by phase, plus the branding to make it look like a real product from day one.",
-            "el": "Παίρνεις ένα σαφές roadmap με τις υπηρεσίες και τις λειτουργίες, φάση φάση, μαζί με το branding για να μοιάζει με πραγματικό προϊόν από την πρώτη μέρα.",
-            "de": "Sie erhalten eine klare Roadmap der Leistungen und Funktionen, Phase für Phase, dazu das Branding, damit es vom ersten Tag an wie ein echtes Produkt aussieht."
+            "el": "Παίρνεις ένα ξεκάθαρο πλάνο με τις υπηρεσίες και τις λειτουργίες, φάση προς φάση, και μια ταυτότητα που κάνει την εφαρμογή σου να μοιάζει με αληθινό προϊόν από την πρώτη μέρα.",
+            "de": "Sie erhalten eine klare Roadmap der Leistungen und Funktionen, Phase für Phase, sowie das Branding, damit Ihre Anwendung vom ersten Tag an als vollwertiges Produkt auftritt."
           }
         },
         {
           "title": {
             "en": "I build it",
-            "el": "Το φτιάχνω",
-            "de": "Ich baue sie"
+            "el": "Η υλοποίηση",
+            "de": "Umsetzung"
           },
           "art": "app",
           "text": {
             "en": "I build the application itself — and the admin dashboard you'll use to run it: users, content, data, settings.",
-            "el": "Φτιάχνω την ίδια την εφαρμογή, και το admin dashboard με το οποίο θα τη διαχειρίζεσαι: χρήστες, περιεχόμενο, δεδομένα, ρυθμίσεις.",
-            "de": "Ich baue die Anwendung selbst und das Admin-Dashboard, mit dem Sie sie steuern: Benutzer, Inhalte, Daten, Einstellungen."
+            "el": "Φτιάχνω την εφαρμογή και, μαζί της, τον πίνακα διαχείρισης που θα έχεις στα χέρια σου: χρήστες, περιεχόμενο, δεδομένα, ρυθμίσεις.",
+            "de": "Ich entwickle die Anwendung und das Admin-Dashboard, mit dem Sie sie steuern: Benutzer, Inhalte, Daten und Einstellungen."
           }
         },
         {
           "title": {
             "en": "Launch",
-            "el": "Launch",
-            "de": "Launch"
+            "el": "Η κυκλοφορία",
+            "de": "Lancierung"
           },
           "art": "launch",
           "text": {
             "en": "Your MVP goes live. Real users, real feedback — and a solid base to grow on.",
-            "el": "Το MVP σου βγαίνει live. Πραγματικοί χρήστες, πραγματικό feedback, και μια γερή βάση για να μεγαλώσεις.",
-            "de": "Ihr MVP geht live. Echte Nutzer, echtes Feedback und eine solide Basis zum Wachsen."
+            "el": "Η πρώτη έκδοση βγαίνει στον κόσμο. Αληθινοί χρήστες, αληθινά σχόλια και μια γερή βάση για να μεγαλώσεις.",
+            "de": "Ihr MVP geht online: echte Nutzer, konkretes Feedback und eine solide Grundlage für das weitere Wachstum."
           }
         }
       ],
       "cta": {
         "text": {
           "en": "Got an idea? Send me the brief.",
-          "el": "Έχεις ιδέα; Στείλε μου το brief.",
-          "de": "Eine Idee? Schicken Sie mir das Briefing."
+          "el": "Έχεις μια ιδέα; Γράψε μου.",
+          "de": "Haben Sie eine Idee? Senden Sie mir Ihr Briefing."
         },
         "note": {
           "en": "[TODO: payment terms for apps — confirm or remove]",
@@ -202,8 +202,8 @@
       "id": "story-ecommerce",
       "title": {
         "en": "Zero to hero",
-        "el": "Από το μηδέν στην κορυφή",
-        "de": "Vom Zero zum Hero"
+        "el": "Από το μηδέν ως την κορυφή",
+        "de": "Von den Anfängen zum erfolgreichen Shop"
       },
       "scenes": [
         {
@@ -215,47 +215,47 @@
           "art": "shopfront",
           "text": {
             "en": "From zero to hero — step by step, I'll guide you.",
-            "el": "Από το μηδέν στην κορυφή: βήμα βήμα, σε καθοδηγώ εγώ.",
-            "de": "Ich führe Sie Schritt für Schritt vom Zero zum Hero."
+            "el": "Από το μηδέν ως την κορυφή, βήμα βήμα, θα είμαι δίπλα σου.",
+            "de": "Ich begleite Sie Schritt für Schritt, von den Anfängen bis zum erfolgreichen Verkauf."
           }
         },
         {
           "title": {
             "en": "Your store",
             "el": "Το e-shop σου",
-            "de": "Ihr Shop"
+            "de": "Ihr Online-Shop"
           },
           "art": "store",
           "text": {
             "en": "I design and build your e-shop: custom, modern, made to sell.",
-            "el": "Σχεδιάζω και φτιάχνω το e-shop σου: custom, μοντέρνο, φτιαγμένο για να πουλάει.",
-            "de": "Ich entwerfe und baue Ihren Online-Shop: massgeschneidert, modern, gemacht zum Verkaufen."
+            "el": "Σχεδιάζω και φτιάχνω το ηλεκτρονικό σου κατάστημα, ειδικά για σένα, σύγχρονο και φτιαγμένο για να πουλάει.",
+            "de": "Ich gestalte und entwickle Ihren Online-Shop: massgeschneidert, modern und auf Verkauf ausgerichtet."
           }
         },
         {
           "title": {
             "en": "Your products, loaded",
-            "el": "Τα προϊόντα σου, περασμένα",
+            "el": "Τα προϊόντα σου στη θέση τους",
             "de": "Ihre Produkte im Shop"
           },
           "art": "catalogue",
           "text": {
             "en": "Send me your product data — spreadsheets, supplier feeds, whatever you have. I bring the whole catalogue into your shop, clean and structured.",
-            "el": "Στείλε μου τα δεδομένα των προϊόντων σου: Excel, feeds προμηθευτών, ό,τι έχεις. Περνάω όλο τον κατάλογο στο e-shop σου, καθαρό και δομημένο.",
-            "de": "Schicken Sie mir Ihre Produktdaten: Tabellen, Lieferanten-Feeds, was immer Sie haben. Ich bringe den ganzen Katalog in Ihren Shop, sauber und strukturiert."
+            "el": "Στείλε μου τα στοιχεία των προϊόντων σου, σε Excel, σε feeds προμηθευτών, ό,τι έχεις. Περνάω όλο τον κατάλογο στο κατάστημά σου, καθαρό και τακτοποιημένο.",
+            "de": "Senden Sie mir Ihre Produktdaten, ob als Tabellen, Lieferanten-Feeds oder in anderer Form. Ich übernehme den gesamten Katalog bereinigt und strukturiert in Ihren Shop."
           }
         },
         {
           "title": {
             "en": "Sell on the big marketplaces",
-            "el": "Πούλα στα μεγάλα marketplaces",
-            "de": "Verkaufen auf den grossen Marketplaces"
+            "el": "Πωλήσεις στα μεγάλα marketplaces",
+            "de": "Verkauf auf grossen Marktplätzen"
           },
           "art": "marketplaces",
           "text": {
             "en": "Then I connect you to the major marketplaces in Europe and Greece, so you sell there automatically — stock, prices and orders in sync.",
-            "el": "Μετά σε συνδέω με τα μεγάλα marketplaces σε Ευρώπη και Ελλάδα, για να πουλάς εκεί αυτόματα, με απόθεμα, τιμές και παραγγελίες συγχρονισμένα.",
-            "de": "Dann verbinde ich Sie mit den grossen Marketplaces in Europa und Griechenland, damit Sie dort automatisch verkaufen: Lagerbestand, Preise und Bestellungen immer abgeglichen."
+            "el": "Έπειτα σε συνδέω με τα μεγάλα marketplaces της Ελλάδας και της Ευρώπης, για να πουλάς και εκεί αυτόματα, με το απόθεμα, τις τιμές και τις παραγγελίες πάντα ενημερωμένα.",
+            "de": "Danach binde ich Ihren Shop an die grossen Marktplätze in Europa und Griechenland an, damit Sie dort automatisiert verkaufen: Lagerbestand, Preise und Bestellungen bleiben abgeglichen."
           }
         },
         {
@@ -267,28 +267,28 @@
           "art": "globe",
           "text": {
             "en": "Your products are translated automatically into up to 20 languages, so you can sell in 5 countries — or more — if you want to.",
-            "el": "Τα προϊόντα σου μεταφράζονται αυτόματα σε έως 20 γλώσσες, για να μπορείς να πουλάς σε 5 χώρες, ή και περισσότερες, αν θέλεις.",
-            "de": "Ihre Produkte werden automatisch in bis zu 20 Sprachen übersetzt, damit Sie in 5 Ländern oder mehr verkaufen können, wenn Sie wollen."
+            "el": "Τα προϊόντα σου μεταφράζονται αυτόματα σε έως και 20 γλώσσες, ώστε να μπορείς να πουλάς σε 5 χώρες, ή και σε περισσότερες αν το θελήσεις.",
+            "de": "Ihre Produkte werden automatisch in bis zu 20 Sprachen übersetzt. So können Sie in 5 oder mehr Ländern verkaufen."
           }
         },
         {
           "title": {
             "en": "Scale",
-            "el": "Μεγάλωσε",
-            "de": "Skalieren"
+            "el": "Μεγαλώνεις",
+            "de": "Skalierung"
           },
           "art": "scale",
           "text": {
             "en": "The bigger you are, the easier it gets. I've done this at marketplace scale — 800K+ products a day — so your catalogue is in safe hands.",
-            "el": "Όσο πιο μεγάλος είσαι, τόσο πιο εύκολο γίνεται. Το έχω κάνει σε κλίμακα marketplace, 800K+ προϊόντα την ημέρα, οπότε ο κατάλογός σου είναι σε ασφαλή χέρια.",
-            "de": "Je grösser Sie sind, desto einfacher wird es. Ich habe das in Marketplace-Grösse gemacht, mit 800K+ Produkten pro Tag, Ihr Katalog ist also in sicheren Händen."
+            "el": "Όσο μεγαλώνεις, τόσο πιο εύκολο γίνεται. Το έχω κάνει για ολόκληρο marketplace, με πάνω από 800.000 προϊόντα την ημέρα, οπότε ο κατάλογός σου είναι σε καλά χέρια.",
+            "de": "Mit zunehmender Grösse wird es einfacher. Ich habe dies für einen Marktplatz mit über 800’000 Produkten pro Tag umgesetzt. Ihr Katalog ist bei mir in guten Händen."
           }
         }
       ],
       "cta": {
         "text": {
           "en": "Let's get your products selling.",
-          "el": "Ας βάλουμε τα προϊόντα σου να πουλάνε.",
+          "el": "Πάμε να πουλήσουμε τα προϊόντα σου.",
           "de": "Bringen wir Ihre Produkte in den Verkauf."
         }
       }
@@ -299,7 +299,7 @@
       "title": {
         "en": "Be found in the AI era",
         "el": "Να σε βρίσκουν στην εποχή του AI",
-        "de": "Gefunden werden im KI-Zeitalter"
+        "de": "Auffindbar im KI-Zeitalter"
       },
       "scenes": [
         {
@@ -311,34 +311,34 @@
           "art": "shift",
           "text": {
             "en": "People are moving from scrolling search results to asking AI. ChatGPT, Claude and Gemini now recommend businesses — the question is whether they recommend yours.",
-            "el": "Ο κόσμος περνάει από το scroll στα αποτελέσματα αναζήτησης στο να ρωτάει το AI. ChatGPT, Claude και Gemini προτείνουν πλέον επιχειρήσεις: το ερώτημα είναι αν προτείνουν τη δική σου.",
-            "de": "Immer mehr Menschen fragen die KI, statt durch Suchergebnisse zu scrollen. ChatGPT, Claude und Gemini empfehlen heute Unternehmen. Die Frage ist, ob sie Ihres empfehlen."
+            "el": "Ο κόσμος ψάχνει πια αλλιώς. Αντί να κοιτάζει αποτελέσματα αναζήτησης, ρωτάει το AI. Το ChatGPT, το Claude και το Gemini προτείνουν ήδη επιχειρήσεις, και το ερώτημα είναι αν προτείνουν τη δική σου.",
+            "de": "Immer mehr Menschen fragen KI-Assistenten, statt Suchergebnisse durchzugehen. ChatGPT, Claude und Gemini empfehlen heute Unternehmen. Entscheidend ist, ob sie auch Ihres empfehlen."
           }
         },
         {
           "title": {
             "en": "AI-ready",
-            "el": "Έτοιμο για AI",
+            "el": "Έτοιμη για το AI",
             "de": "KI-bereit"
           },
           "art": "ai-ready",
           "text": {
             "en": "I make your site readable and trustworthy for large language models: structured data, clean content, llms.txt, consistent business information across the web.",
-            "el": "Κάνω το site σου ευανάγνωστο και αξιόπιστο για τα μεγάλα γλωσσικά μοντέλα: structured data, καθαρό περιεχόμενο, llms.txt, συνεπείς πληροφορίες για την επιχείρηση σε όλο το web.",
-            "de": "Ich mache Ihre Website für grosse Sprachmodelle lesbar und vertrauenswürdig: strukturierte Daten, saubere Inhalte, llms.txt, einheitliche Firmendaten im ganzen Web."
+            "el": "Φροντίζω ώστε τα μεγάλα μοντέλα AI να διαβάζουν σωστά την ιστοσελίδα σου και να την εμπιστεύονται, με structured data, καθαρό περιεχόμενο, llms.txt και τα ίδια στοιχεία για την επιχείρησή σου σε όλο το διαδίκτυο.",
+            "de": "Ich mache Ihre Website für grosse Sprachmodelle lesbar und vertrauenswürdig: strukturierte Daten, saubere Inhalte, llms.txt und einheitliche Unternehmensangaben im gesamten Web."
           }
         },
         {
           "title": {
             "en": "Speed",
             "el": "Ταχύτητα",
-            "de": "Tempo"
+            "de": "Performance"
           },
           "art": "speed",
           "text": {
             "en": "Performance tuned to the top: Core Web Vitals in the green and Lighthouse scores aiming for 100 across the board.",
-            "el": "Απόδοση ρυθμισμένη στο τέρμα: Core Web Vitals στο πράσινο και σκορ στο Lighthouse με στόχο το 100 παντού.",
-            "de": "Performance auf Spitzenwerte getrimmt: Core Web Vitals im grünen Bereich und Lighthouse-Werte, die überall auf 100 zielen."
+            "el": "Ρυθμίζω την απόδοση ως την τελευταία λεπτομέρεια, με τα Core Web Vitals στο πράσινο και στόχο το 100 σε όλες τις βαθμολογίες του Lighthouse.",
+            "de": "Optimierte Performance: Core Web Vitals im grünen Bereich und Lighthouse-Werte mit dem Ziel 100 in allen Kategorien."
           }
         },
         {
@@ -350,29 +350,29 @@
           "art": "seo",
           "text": {
             "en": "Solid technical and content SEO, so you rank in classic search too.",
-            "el": "Γερό τεχνικό SEO και SEO περιεχομένου, για να βγαίνεις ψηλά και στην κλασική αναζήτηση.",
-            "de": "Solides technisches und inhaltliches SEO, damit Sie auch in der klassischen Suche ranken."
+            "el": "Γερό τεχνικό SEO και σωστά κείμενα, για να βγαίνεις ψηλά και στην κλασική αναζήτηση.",
+            "de": "Fundiertes technisches und inhaltliches SEO, damit Sie auch in der klassischen Suche gut platziert sind."
           }
         },
         {
           "title": {
             "en": "Ads with AI",
-            "el": "Ads με AI",
-            "de": "Ads mit KI"
+            "el": "Διαφήμιση με AI",
+            "de": "Werbung mit KI"
           },
           "art": "ads",
           "text": {
             "en": "Google Ads campaigns built with AI automation, with precise tracking and AI agents I've built and tuned to optimise for conversions.",
-            "el": "Καμπάνιες Google Ads με AI αυτοματισμούς, με ακριβές tracking και AI agents που έχω φτιάξει και ρυθμίσει για να βελτιστοποιούν τις μετατροπές.",
-            "de": "Kampagnen in Google Ads, aufgebaut mit KI-Automatisierung, mit präzisem Tracking und KI-Agenten, die ich gebaut und auf Conversions abgestimmt habe."
+            "el": "Καμπάνιες Google Ads με αυτοματισμούς AI, ακριβείς μετρήσεις και AI agents που έχω φτιάξει και ρυθμίσει εγώ, ώστε κάθε καμπάνια να φέρνει περισσότερες πωλήσεις.",
+            "de": "Google-Ads-Kampagnen mit KI-Automatisierung, präzisem Tracking und selbst entwickelten KI-Agenten, die auf Conversions optimiert sind."
           }
         }
       ],
       "cta": {
         "text": {
           "en": "Want to know how visible you are to AI? Ask for an audit.",
-          "el": "Θέλεις να μάθεις πόσο ορατός είσαι στο AI; Ζήτα ένα audit.",
-          "de": "Wie sichtbar sind Sie für KI? Fragen Sie nach einem Audit."
+          "el": "Θέλεις να μάθεις πόσο σε βλέπει το AI; Ζήτα μου έναν έλεγχο.",
+          "de": "Wie sichtbar ist Ihr Unternehmen für KI? Fordern Sie ein Audit an."
         }
       }
     }
