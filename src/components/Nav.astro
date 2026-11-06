@@ -34,7 +34,8 @@ const dark = here === '/' || here === '/contact';
 <style>
   /* the language switch: beside the menu on a wide screen, alone on the right on a phone (the menu floats below) */
   .topbar :global(.top-lang) { margin-left: auto; color: var(--logo-ink); transition: color 0.3s ease; }
-  .topbar { inset: 0 0 auto 0; z-index: 50; pointer-events: none;
+  .topbar {
+    position: fixed; inset: 0 0 auto 0; z-index: 50; pointer-events: none;
     display: flex; align-items: center; justify-content: space-between; gap: 24px;
     min-height: var(--topbar-h);
     padding: calc(16px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) 16px max(20px, env(safe-area-inset-left, 0px));
