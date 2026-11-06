@@ -1,0 +1,26 @@
+---
+// The admin panel: a page of its own, outside the site's layout, that works on the repository through GitHub's API
+// (src/scripts/admin). It exists once, at /admin, in Greek; no search engine reads it and nothing on the site links to it.
+import '@fontsource/space-grotesk/400.css';
+import '@fontsource/space-grotesk/500.css';
+import '@fontsource/space-grotesk/700.css';
+import '../../styles/admin.css';
+import LogoDefs from '../../components/LogoDefs.astro';
+---
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Διαχείριση · onehub</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <LogoDefs />
+    <div id="admin"></div>
+    <noscript><p class="a-login">Το panel χρειάζεται JavaScript.</p></noscript>
+    <script>import '../../scripts/admin/main';</script>
+  </body>
+</html>
