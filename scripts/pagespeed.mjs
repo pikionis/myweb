@@ -62,7 +62,7 @@ function field(exp) {
 }
 
 // Google's machines differ from run to run (one page's Speed Index came out 0.8 s and 3.9 s within minutes: now and
-// then a run sees the first paint two seconds late, and Speed Index follows what the run saw), so a result is the
+// then a machine keeps its screen blank after the page has loaded, and Speed Index follows what it saw), so a result is the
 // median of five runs (Lighthouse's own advice), by performance score, one real run with its own numbers. PageSpeed
 // answers a repeat from its cache for a while: hence the pause, and a run it repeats counts once (`at`, the run's own
 // time), so it asks again, a few times at most, until it has five.
@@ -87,7 +87,7 @@ async function psi(url, strategy) {
   // what /projects would hide the project for (its numbers show only while all of these are green)
   const low = [
     ...Object.entries(median.scores).filter(([, n]) => n < 90).map(([k, n]) => `${k} ${n}`),
-    ...Object.entries(median.lab).filter(([, m]) => !(m.s >= 0.9)).map(([k, m]) => `${k} ${m.v} (${m.s})`),
+    ...Object.entries(median.lab).filter(([k, m]) => k !== 'si' && !(m.s >= 0.9)).map(([k, m]) => `${k} ${m.v} (${m.s})`),
     ...Object.entries(median.field ?? {}).filter(([, m]) => typeof m === 'object' && m.category !== 'FAST').map(([k, m]) => `field ${k} ${m.category}`),
   ];
   console.log(`pagespeed: ${url} ${strategy}: ${sorted.map((r) => r.scores.performance).join(' ')}${low.length ? ` | not green: ${low.join(', ')}` : ''}`);

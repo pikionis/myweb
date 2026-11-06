@@ -40,7 +40,9 @@ const day = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'n
 const report = (url: string, run: 'mobile' | 'desktop') =>
   `https://pagespeed.web.dev/report?url=${encodeURIComponent(url)}&form_factor=${run}`;
 const RUNS = [['mobile', t.phone], ['desktop', t.desktop]] as const;
-const LAB: Metric[] = ['lcp', 'fcp', 'tbt', 'cls', 'si'];
+// no Speed Index: it is read from the frames a run saw, and now and then Google's machine keeps its screen blank for a
+// second and a half after the page has loaded (the same page: 1.7 s, then 4.8 s). It is saved, and still inside the score.
+const LAB: Metric[] = ['lcp', 'fcp', 'tbt', 'cls'];
 // a site's results show only while they are all green, on a phone and on a desktop: every score 90 or more, every
 // vital (and real visitors' data, where Google has it) good. Below that the site is being worked on and shows none,
 // never a number other than the one measured.
