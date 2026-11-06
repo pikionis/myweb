@@ -25,10 +25,17 @@ function write(kind: Kind, id: string, lang: Lang, change: { field?: [string, Va
 const uid = () => `e${Math.random().toString(36).slice(2, 9)}`;
 function line(label: string, value: string, onInput: (v: string) => void, opts: { type?: string; hint?: string; area?: boolean; lang?: string } = {}) {
   const id = uid();
+  // an address that isn't one would stop the site from building: it is taken once it is whole
+  const bad = h('p', { class: 'a-bad a-hint', role: 'alert', hidden: true }, 'Γράψε ολόκληρη τη διεύθυνση, με https:// μπροστά. Μέχρι τότε δεν αποθηκεύεται.');
+  const typed = (v: string) => {
+    const wrong = opts.type === 'url' && v !== '' && !/^https?:\/\/[^\s.]+\.\S+$/.test(v);
+    bad.hidden = !wrong;
+    if (!wrong) onInput(v);
+  };
   const input = opts.area
-    ? h('textarea', { id, class: 'a-input', rows: 2, lang: opts.lang, value, oninput: (e: Event) => { const t = e.target as HTMLTextAreaElement; autosize(t); onInput(t.value); } })
-    : h('input', { id, class: 'a-input', type: opts.type ?? 'text', lang: opts.lang, value, oninput: (e: Event) => onInput((e.target as HTMLInputElement).value) });
-  return h('div', { class: 'a-field' }, h('label', { class: 'a-label', for: id }, label), input, opts.hint && h('p', { class: 'a-hint' }, opts.hint));
+    ? h('textarea', { id, class: 'a-input', rows: 2, lang: opts.lang, value, oninput: (e: Event) => { const t = e.target as HTMLTextAreaElement; autosize(t); typed(t.value); } })
+    : h('input', { id, class: 'a-input', type: opts.type ?? 'text', lang: opts.lang, value, oninput: (e: Event) => typed((e.target as HTMLInputElement).value) });
+  return h('div', { class: 'a-field' }, h('label', { class: 'a-label', for: id }, label), input, bad, opts.hint && h('p', { class: 'a-hint' }, opts.hint));
 }
 const toList = (s: string) => s.split(',').map((x) => x.trim()).filter(Boolean);
 function check(label: string, on: boolean, onInput: (v: boolean) => void) {

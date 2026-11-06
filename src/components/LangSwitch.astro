@@ -4,11 +4,12 @@
 import { LANGS, inLang, lang, unlocalized } from '../data/lang';
 import { words } from '../data/site';
 
-const { class: cls } = Astro.props;
+// `where` tells the two apart for a screen reader
+const { class: cls, where } = Astro.props;
 const path = unlocalized(Astro.url.pathname);
 const here = path.endsWith('/') ? path : `${path}/`;
 ---
-<nav class:list={['lang-switch', cls]} aria-label={words.nav.language}>
+<nav class:list={['lang-switch', cls]} aria-label={where ? `${words.nav.language}: ${where}` : words.nav.language}>
   {LANGS.map((l) => (
     <a href={inLang(l.code, here)} hreflang={l.code} lang={l.code} data-lang-to={l.code} aria-current={l.code === lang ? 'true' : undefined}>{l.name}</a>
   ))}
@@ -18,9 +19,10 @@ const here = path.endsWith('/') ? path : `${path}/`;
   .lang-switch { display: inline-flex; gap: 2px; pointer-events: auto; font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.02em; }
   .lang-switch a {
     display: inline-flex; align-items: center; justify-content: center; min-width: 32px; min-height: 32px; padding: 0 6px;
-    border-radius: 8px; color: inherit; opacity: 0.72; text-decoration: none; transition: opacity 0.16s ease, background-color 0.16s ease;
+    border-radius: 8px; color: inherit; text-decoration: none; transition: background-color 0.16s ease;
   }
-  .lang-switch a[aria-current] { opacity: 1; font-weight: 700; }
-  @media (hover: hover) { .lang-switch a:hover { opacity: 1; background: color-mix(in srgb, currentColor 10%, transparent); } }
-  .lang-switch a:focus-visible { opacity: 1; outline: 2px solid currentColor; outline-offset: 1px; }
+  /* the language you're in: heavier and underlined, so colour isn't all that says it */
+  .lang-switch a[aria-current] { font-weight: 700; text-decoration: underline; text-underline-offset: 0.3em; text-decoration-thickness: 1.5px; }
+  @media (hover: hover) { .lang-switch a:hover { background: color-mix(in srgb, currentColor 12%, transparent); } }
+  .lang-switch a:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
 </style>

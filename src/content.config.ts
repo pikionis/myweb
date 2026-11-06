@@ -10,8 +10,9 @@ const service = z.enum(['web', 'apps', 'commerce', 'search']);
 const projects = defineCollection({
   loader: glob({ pattern: '[^_]*.md', base: './src/content/projects' }),
   schema: z.object({
-    title: z.string(),
-    summary: z.string(),
+    // the panel can leave a field empty and a save must never break the build: what is required has a default
+    title: z.string().default(''),
+    summary: z.string().default(''),
     services: z.array(service).default([]),
     tags: z.array(z.string()).default([]),
     // what it is built with, shown on /projects
@@ -56,9 +57,9 @@ const projectText = defineCollection({
 const blog = defineCollection({
   loader: glob({ pattern: '[^_]*.md', base: './src/content/blog' }),
   schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    date: z.coerce.date(),
+    title: z.string().default(''),
+    description: z.string().default(''),
+    date: z.coerce.date().default(() => new Date()),
     draft: z.boolean().default(false),
   }),
 });
