@@ -1,5 +1,6 @@
 ---
 import { stories } from '../data/stories';
+import { to } from '../data/lang';
 import { services, ui } from '../data/site';
 import StoryArt from './StoryArt.astro';
 import StoryDefs from './StoryDefs.astro';
@@ -66,7 +67,7 @@ const icon = (d: string) =>
         </div>
         <footer class="story-cta">
           <p class="cta-line">{st.cta.text}</p>
-          <a class="cta-btn" href={`/contact?type=project&service=${st.service}`}>{t.start}</a>
+          <a class="cta-btn" href={to(`/contact?type=project&service=${st.service}`)}>{t.start}</a>
           {/* a note still to be confirmed ([TODO]) stays out of the page */}
           {st.cta.note && !st.cta.note.trimStart().startsWith('[TODO') && <p class="cta-note">{st.cta.note}</p>}
           <button type="button" class="again" data-again>

@@ -1,5 +1,5 @@
 import { createIsland } from './island';
-import { services, bots } from '../data/site';
+import { fill } from '../data/lang';
 import { previewAssistant, type Answer, type BriefAssistant, type BriefSection, type Question } from './assistant';
 
 /*
@@ -14,6 +14,7 @@ import { previewAssistant, type Answer, type BriefAssistant, type BriefSection, 
 
 /** Sends a form's data to where the form points (its action), with upload progress for files. Rejects with
  *  what went wrong, in words a visitor can read. */
+const said = (form: HTMLFormElement) => JSON.parse(form.dataset.words || '{}') as Record<string, string>;
 export function post(form: HTMLFormElement, data: FormData, onProgress?: (share: number) => void) {
   return new Promise<void>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -25,10 +26,10 @@ export function post(form: HTMLFormElement, data: FormData, onProgress?: (share:
       try { reply = JSON.parse(xhr.responseText); } catch { /* not JSON */ }
       const ok = xhr.status >= 200 && xhr.status < 300 && String(reply.success) !== 'false';
       if (ok) resolve();
-      else reject(new Error(reply.message || `the server answered ${xhr.status}`));
+      else reject(new Error(reply.message || fill(said(form).server || `${xhr.status}`, { status: xhr.status })));
     });
-    xhr.addEventListener('error', () => reject(new Error('check your connection')));
-    xhr.addEventListener('timeout', () => reject(new Error('it took too long')));
+    xhr.addEventListener('error', () => reject(new Error(said(form).connection)));
+    xhr.addEventListener('timeout', () => reject(new Error(said(form).tooLong)));
     xhr.timeout = 120000;
     xhr.send(data);
   });
@@ -43,7 +44,7 @@ const MIN_WORDS = 8;
 const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
 const EASE_IN_OUT = 'cubic-bezier(0.77, 0, 0.175, 1)';
 const size = (n: number) => (n < 1e6 ? `${Math.max(1, Math.round(n / 1e3))} KB` : `${(n / 1e6).toFixed(1)} MB`);
-const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
+const plural = (n: number, one: string, many = `${one}s`) => (n === 1 ? fill(one, { n }) : fill(many, { n }));
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const autosize = (t: HTMLTextAreaElement) => { t.style.height = 'auto'; t.style.height = `${t.scrollHeight}px`; };
 
@@ -59,6 +60,8 @@ export function briefForm(form: HTMLFormElement) {
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const island = createIsland(mount);
+  // the words the script says, in the page's language (BriefForm.astro)
+  const say = JSON.parse(form.dataset.words || '{}') as Record<string, string>;
   const maxBytes = Number(form.dataset.maxBytes) || 10 * 1024 * 1024;
   let files: File[] = [];
   let seq = 0;
@@ -76,7 +79,7 @@ export function briefForm(form: HTMLFormElement) {
       meta.textContent = size(f.size);
       const remove = document.createElement('button');
       remove.type = 'button';
-      remove.setAttribute('aria-label', `Remove ${f.name}`);
+      remove.setAttribute('aria-label', fill(say.remove, { name: f.name }));
       remove.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
       remove.addEventListener('click', () => { files = files.filter((x) => x !== f); renderFiles(); });
       li.append(name, meta, remove);
@@ -88,20 +91,20 @@ export function briefForm(form: HTMLFormElement) {
     for (const f of incoming) {
       const id = `file-${++seq}`;
       if (!ACCEPT.test(f.type) && !ACCEPT.test(f.name)) {
-        island.set({ id, status: 'error', label: `Can't attach ${f.name}`, detail: 'Use images, PDF, Word, slides or sheets', action: { label: 'OK', onClick: () => island.remove(id) } });
+        island.set({ id, status: 'error', label: fill(say.cantAttach, { name: f.name }), detail: say.useTypes, action: { label: say.ok, onClick: () => island.remove(id) } });
         continue;
       }
       if (total() + f.size > maxBytes) {
-        island.set({ id, status: 'error', label: `${f.name} doesn't fit`, detail: `files must stay under ${size(maxBytes)} in total`, action: { label: 'OK', onClick: () => island.remove(id) } });
+        island.set({ id, status: 'error', label: fill(say.tooBig, { name: f.name }), detail: fill(say.underTotal, { size: size(maxBytes) }), action: { label: say.ok, onClick: () => island.remove(id) } });
         continue;
       }
       files.push(f);
       island.set({
-        id, status: 'done', label: f.name, detail: `${size(f.size)} added`,
-        action: { label: 'Undo', onClick: () => {
+        id, status: 'done', label: f.name, detail: fill(say.added, { size: size(f.size) }),
+        action: { label: say.undo, onClick: () => {
           files = files.filter((x) => x !== f);
           renderFiles();
-          island.update(id, { detail: 'removed', action: undefined });
+          island.update(id, { detail: say.removed, action: undefined });
         } },
       });
     }
@@ -142,8 +145,8 @@ export function briefForm(form: HTMLFormElement) {
 
   const need = () => form.querySelector<HTMLInputElement>('input[name="need"]:checked')?.value ?? 'Not sure yet';
   // a service's "Start a project" names it (/contact?type=project&service=web): its need starts selected
-  const wanted = [...services, bots].find((s) => s.key === new URLSearchParams(location.search).get('service'))?.need;
-  const preset = wanted && form.querySelector<HTMLInputElement>(`input[name="need"][value="${CSS.escape(wanted)}"]`);
+  const wanted = new URLSearchParams(location.search).get('service');
+  const preset = wanted && form.querySelector<HTMLInputElement>(`input[name="need"][data-services~="${CSS.escape(wanted)}"]`);
   if (preset) preset.checked = true;
   const words = () => idea.value.trim().split(/\s+/).filter(Boolean).length;
   const rise = (node: Element, delay = 0) => !reduce && node.animate(
@@ -164,7 +167,7 @@ export function briefForm(form: HTMLFormElement) {
   const who = () => {
     const company = $<HTMLInputElement>('input[name="company"]')?.value.trim();
     const name = $<HTMLInputElement>('input[name="name"]')?.value.trim();
-    if (forEl) forEl.textContent = company || name || 'Your project';
+    if (forEl) forEl.textContent = company || name || say.yourProject;
   };
   form.querySelectorAll('input[name="company"], input[name="name"]').forEach((i) => i.addEventListener('input', who));
   sectionEls.forEach((t) => t.addEventListener('input', () => autosize(t)));
@@ -229,7 +232,7 @@ export function briefForm(form: HTMLFormElement) {
       }
       island.update('assist', { status: 'done', label: `${plural(n, 'question')} for you`, detail: 'answer what you can' });
       if (draftBtn) { draftBtn.hidden = false; rise(draftBtn); }
-      if (analyseLabel) analyseLabel.textContent = 'Ask again';
+      if (analyseLabel) analyseLabel.textContent = say.askAgain;
     } catch {
       island.update('assist', { status: 'error', label: "Couldn't read your idea", detail: 'try again in a moment', action: { label: 'Retry', onClick: askQuestions } });
     } finally {
@@ -246,7 +249,7 @@ export function briefForm(form: HTMLFormElement) {
     ready = on;
     const first = button.getBoundingClientRect();
     actions.classList.toggle('ready', on);
-    label.textContent = on ? 'Submit your brief' : 'Send my idea';
+    label.textContent = on ? say.submit : say.send;
     if (reduce) return;
     const last = button.getBoundingClientRect();
     button.animate(
@@ -267,7 +270,7 @@ export function briefForm(form: HTMLFormElement) {
     if (dateEl) {
       const now = new Date();
       dateEl.dateTime = now.toISOString().slice(0, 10);
-      dateEl.textContent = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      dateEl.textContent = now.toLocaleDateString(say.locale, { day: 'numeric', month: 'long', year: 'numeric' });
     }
     sectionEls.forEach((t) => { t.value = ''; autosize(t); });
     setReady(false);
@@ -297,7 +300,7 @@ export function briefForm(form: HTMLFormElement) {
         status: 'done', label: 'Brief ready', detail: 'review it, then submit', progress: undefined,
         action: { label: 'Review', onClick: () => final.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }) },
       });
-      if (draftBtn) draftBtn.textContent = 'Redraft my brief';
+      if (draftBtn) draftBtn.textContent = say.redraft;
       setReady(true);
     } catch {
       island.update('assist', { status: 'error', label: "Couldn't write the brief", detail: 'try again in a moment', progress: undefined, action: { label: 'Retry', onClick: draftBrief } });
@@ -321,9 +324,9 @@ export function briefForm(form: HTMLFormElement) {
     if (questionsBox) questionsBox.hidden = true;
     if (final) final.hidden = true;
     sectionEls.forEach((t) => { t.value = ''; });
-    if (analyseLabel) analyseLabel.textContent = 'Analyse my idea';
+    if (analyseLabel) analyseLabel.textContent = say.analyse;
     if (analyse) analyse.disabled = true;
-    if (draftBtn) draftBtn.textContent = 'Draft my brief';
+    if (draftBtn) draftBtn.textContent = say.draft;
     setReady(false);
     who();
   };
@@ -337,8 +340,8 @@ export function briefForm(form: HTMLFormElement) {
     const withFiles = files.length > 0;
     const what = ready ? 'brief' : 'idea';
     island.set({
-      id, status: 'running', label: ready ? 'Submitting your brief' : 'Sending your idea',
-      detail: withFiles ? plural(files.length, 'file') : undefined,
+      id, status: 'running', label: ready ? say.submitting : say.sending,
+      detail: withFiles ? plural(files.length, say.file, say.files) : undefined,
       progress: withFiles ? 0 : undefined,
     });
     button.disabled = true;
@@ -349,10 +352,10 @@ export function briefForm(form: HTMLFormElement) {
       files = [];
       renderFiles();
       resetAssistant();
-      island.update(id, { status: 'done', label: what === 'brief' ? 'Brief submitted' : 'Idea sent', detail: "I'll reply by email", progress: undefined, action: undefined });
+      island.update(id, { status: 'done', label: what === 'brief' ? say.submitted : say.sent, detail: say.reply, progress: undefined, action: undefined });
     }, (err: Error) => {
       button.disabled = false;
-      island.update(id, { status: 'error', label: "Couldn't send", detail: err.message, progress: undefined, action: { label: 'Retry', onClick: send } });
+      island.update(id, { status: 'error', label: say.cantSend, detail: err.message, progress: undefined, action: { label: say.retry, onClick: send } });
     });
   };
 

@@ -110,15 +110,26 @@ function lightZone() {
   window.addEventListener('scroll', check, { passive: true });
 }
 
+/* ---------- the language switch ---------- */
+// a project picked in place has changed the address since the page opened: a click follows the address as it is now
+function languageLinks() {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  document.querySelectorAll<HTMLAnchorElement>('[data-lang-to]').forEach((a) => a.addEventListener('click', () => {
+    const path = location.pathname.startsWith(base) ? location.pathname.slice(base.length) : location.pathname;
+    const code = a.dataset.langTo;
+    a.href = (code === 'en' ? '' : `/${code}`) + (path.endsWith('/') ? path : `${path}/`) + location.search + location.hash;
+  }));
+}
+
 /* ---------- copy e-mail ---------- */
 function copyEmail() {
   const btn = document.getElementById('emailBtn'); const hint = document.getElementById('copyHint');
   if (!btn || !hint) return;
   btn.addEventListener('click', async () => {
     const mail = btn.dataset.mail || '';
-    try { await navigator.clipboard.writeText(mail); hint.textContent = 'Copied to your clipboard'; }
+    try { await navigator.clipboard.writeText(mail); hint.textContent = hint.dataset.copied ?? ''; }
     catch { window.location.href = `mailto:${mail}`; return; }
-    setTimeout(() => (hint.textContent = 'Click to copy'), 1800);
+    setTimeout(() => (hint.textContent = hint.dataset.copy ?? ''), 1800);
   });
 }
 
@@ -132,7 +143,7 @@ function splitWords(): HTMLSpanElement[] {
     words.forEach((w, i) => {
       const s = document.createElement('span');
       s.className = 'w';
-      if (keys.includes(w.toLowerCase().replace(/[^a-z-]/g, ''))) s.classList.add('key');
+      if (keys.includes(w.toLowerCase().replace(/[^\p{L}-]/gu, ''))) s.classList.add('key');
       s.textContent = w; el.append(s);
       if (i < words.length - 1) el.append(' ');
       out.push(s);
@@ -181,6 +192,7 @@ export function init() {
     () => heroBubbles(intro.handoff),
     lightZone,
     copyEmail,
+    languageLinks,
     all('[data-split]', splitNav),
     // the services on the home page: the stack of sheets, four screens down (and the stories that open from them)
     all('[data-stack]', (el: HTMLElement) => whenNear(el, intro.handoff, () => workStack(el))),

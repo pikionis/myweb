@@ -1,24 +1,28 @@
 ---
-import { person } from '../data/site';
+import { person, words } from '../data/site';
+import { LANGS, lang, fill } from '../data/lang';
 import github from '../data/github.json';
 
 const total = github.counts.reduce((s, n) => s + n, 0);
+const w = words.terrain;
+const locale = LANGS.find((l) => l.code === lang)!.locale;
+const n = total.toLocaleString(locale);
 ---
 <!-- A year of GitHub contributions, drawn as terrain (src/scripts/terrain.ts) -->
 <div class="terrain" data-terrain>
   <div class="t-top">
-    <p class="t-readout" data-readout aria-live="polite">{total.toLocaleString('en-US')} contributions in the last year</p>
-    <div class="t-views" role="group" aria-label="View">
-      <button type="button" data-view="flat" aria-pressed="false">Flat</button>
-      <button type="button" data-view="terrain" aria-pressed="true">Terrain</button>
+    <p class="t-readout" data-readout aria-live="polite">{fill(w.year, { n })}</p>
+    <div class="t-views" role="group" aria-label={w.view}>
+      <button type="button" data-view="flat" aria-pressed="false">{w.flat}</button>
+      <button type="button" data-view="terrain" aria-pressed="true">{w.terrain}</button>
     </div>
   </div>
-  <canvas tabindex="0" role="img" aria-label={`GitHub activity: ${total} contributions in the last year`}></canvas>
+  <canvas tabindex="0" role="img" aria-label={fill(w.label, { n })}></canvas>
   <div class="t-foot">
     <a href={person.github} target="_blank" rel="noopener">github.com/{github.user}</a>
-    <span class="legend" aria-hidden="true">Less {[0, 1, 2, 3, 4].map((l) => <i style={`background: var(--terrain-${l})`}></i>)} More</span>
+    <span class="legend" aria-hidden="true">{w.less} {[0, 1, 2, 3, 4].map((l) => <i style={`background: var(--terrain-${l})`}></i>)} {w.more}</span>
   </div>
-  <script type="application/json" set:html={JSON.stringify({ endDate: github.endDate, counts: github.counts })} />
+  <script type="application/json" set:html={JSON.stringify({ endDate: github.endDate, counts: github.counts, locale, words: { year: w.year, weeks: w.weeks, one: w.one, day: w.day, labelWeeks: w.labelWeeks } })} />
 </div>
 
 <style>

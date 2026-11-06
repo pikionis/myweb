@@ -1,28 +1,28 @@
 ---
 import Site from '../../layouts/Site.astro';
-import { getCollection } from 'astro:content';
+import { getPosts } from '../../data/posts';
+import { words } from '../../data/site';
+import { day, to } from '../../data/lang';
 
-// drafts show while developing, never on the live site
-const posts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const day = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+const posts = await getPosts();
+const w = words.blog;
 ---
-<Site title="Blog — Petros Pikionis" description="Notes by Petros Pikionis on building websites, web applications and AI products." light>
+<Site title={w.metaTitle} description={w.metaDescription} light>
   <main class="page theme-light">
     <header class="wrap page-head" data-rise>
-      <h1>Blog</h1>
-      <p>Notes on building websites, web applications and AI products.</p>
+      <h1>{w.title}</h1>
+      <p>{w.intro}</p>
     </header>
 
     <div class="wrap">
       {posts.length === 0 ? (
-        <p class="empty">No posts yet.</p>
+        <p class="empty">{w.empty}</p>
       ) : (
         <ul class="posts" data-rise>
           {posts.map((p) => (
             <li>
-              <time datetime={p.data.date.toISOString()}>{day(p.data.date)}{p.data.draft && ' · draft'}</time>
-              <a href={`/blog/${p.id}`}>{p.data.title}</a>
+              <time datetime={p.data.date.toISOString()}>{day(p.data.date)}{p.data.draft && ` · ${w.draft}`}</time>
+              <a href={to(`/blog/${p.id}`)}>{p.data.title}</a>
               <p>{p.data.description}</p>
             </li>
           ))}

@@ -9,6 +9,7 @@ import KalimeraChapter from './KalimeraChapter.astro';
 import KoanChapter from './KoanChapter.astro';
 import DeinDealChapter from './DeinDealChapter.astro';
 import { scenes, art as A, t, aboutIntro } from '../data/mystory';
+import { to } from '../data/lang';
 import { person } from '../data/site';
 
 interface Props { cv?: string }
@@ -77,7 +78,7 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
               <div class="ms-end" data-t>
                 <p class="ms-cta">{t(A.cta)}</p>
                 <div class="ms-actions">
-                  <a class="ms-btn" href="/contact">{t(A.contact)}<Fragment set:html={arrow} /></a>
+                  <a class="ms-btn" href={to('/contact')}>{t(A.contact)}<Fragment set:html={arrow} /></a>
                   {cv && <a class="ms-btn ghost" href={cv} download>{t(aboutIntro.cv)}<Fragment set:html={down} /></a>}
                 </div>
               </div>

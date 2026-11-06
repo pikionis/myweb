@@ -1,5 +1,6 @@
 ---
-import { hero, person } from '../data/site';
+import { hero, person, words } from '../data/site';
+import { fill, to } from '../data/lang';
 
 const next = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>';
 ---
@@ -24,7 +25,7 @@ const next = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke
           <div class="hero-photo">
             {person.photo ? (
               // behind the curtain until the page is scrolled: it waits for what the first screen shows
-              <img src={person.photo} alt={`Portrait of ${person.name}`} width="480" height="640" fetchpriority="low" />
+              <img src={person.photo} alt={fill(words.home.portrait, { name: person.name })} width="480" height="640" fetchpriority="low" />
             ) : (
               <div class="ph" aria-hidden="true">
                 <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
@@ -35,7 +36,7 @@ const next = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke
           <figcaption>
             <span class="cap-name">{person.name}</span>
             <span class="cap-role">{person.role}</span>
-            <a class="cap-bio" href="/about">{hero.bio}<Fragment set:html={next} /></a>
+            <a class="cap-bio" href={to('/about')}>{hero.bio}<Fragment set:html={next} /></a>
           </figcaption>
         </figure>
       </div>
@@ -47,7 +48,7 @@ const next = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke
       <canvas id="ink" aria-hidden="true"></canvas>
       <div class="center">
         <h1>{hero.curtain[0]}<br />{hero.curtain[1]} <span class="a">{hero.curtainAccent}</span></h1>
-        <div class="cue"><span class="bar"></span> Scroll to explore</div>
+        <div class="cue"><span class="bar"></span> {words.home.cue}</div>
       </div>
     </div>
   </div>

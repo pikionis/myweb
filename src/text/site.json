@@ -1,0 +1,1707 @@
+{
+  "person": {
+    "name": {
+      "en": "Petros Pikionis",
+      "el": "Πέτρος Πικιώνης",
+      "de": "Petros Pikionis"
+    },
+    "role": {
+      "en": "AI Software Engineer",
+      "el": "AI Software Engineer",
+      "de": "AI Software Engineer"
+    },
+    "email": "petrospikionis@gmail.com",
+    "phone": "+30 694 803 4055",
+    "phoneHref": "tel:+306948034055",
+    "linkedin": "https://www.linkedin.com/in/petros-platon-pikionis-4045a782/",
+    "github": "https://github.com/pikionis",
+    "location": {
+      "en": "Kos · Greece",
+      "el": "Κως · Ελλάδα",
+      "de": "Kos · Griechenland"
+    },
+    "photo": "/petros.webp",
+    "cv": "/petros-pikionis-cv.pdf",
+    "logo": ""
+  },
+  "meta": {
+    "description": {
+      "en": "Custom websites, web applications, e-commerce, AI search, marketing and ads — designed, built and run end to end by Petros Pikionis.",
+      "el": "Sites κατά παραγγελία, web εφαρμογές, e-commerce, AI αναζήτηση, marketing και διαφημίσεις: σχεδιασμός, υλοποίηση και λειτουργία από την αρχή ως το τέλος, από τον Πέτρο Πικιώνη.",
+      "de": "Massgeschneiderte Websites, Webanwendungen, E-Commerce, KI-Suche, Marketing und Werbung: entworfen, gebaut und betrieben aus einer Hand, von Petros Pikionis."
+    },
+    "image": "/og.png",
+    "imageAlt": {
+      "en": "The onehub logo: three loops that meet in one point. Design. Build. Automate. Scale fast.",
+      "el": "Το logo του onehub: τρεις βρόχοι που συναντιούνται σε ένα σημείο. Design. Build. Automate. Scale fast.",
+      "de": "Das onehub-Logo: drei Schleifen, die sich in einem Punkt treffen. Design. Build. Automate. Scale fast."
+    }
+  },
+  "brand": {
+    "name": "onehub",
+    "homeLabel": {
+      "en": "onehub, home",
+      "el": "onehub, αρχική",
+      "de": "onehub, Startseite"
+    },
+    "motto": {
+      "en": "Design. Build. Automate. Scale fast.",
+      "el": "Design. Build. Automate. Scale fast.",
+      "de": "Design. Build. Automate. Scale fast."
+    }
+  },
+  "intro": {
+    "words": [
+      {
+        "en": "Design",
+        "el": "Design",
+        "de": "Design"
+      },
+      {
+        "en": "Build",
+        "el": "Build",
+        "de": "Build"
+      },
+      {
+        "en": "Automate",
+        "el": "Automate",
+        "de": "Automate"
+      }
+    ],
+    "tail": {
+      "en": "— All in one.",
+      "el": "— All in one.",
+      "de": "— All in one."
+    },
+    "skip": {
+      "en": "Skip intro",
+      "el": "Παράλειψη εισαγωγής",
+      "de": "Intro überspringen"
+    }
+  },
+  "pages": [
+    {
+      "href": "/",
+      "name": {
+        "en": "Home",
+        "el": "Αρχική",
+        "de": "Start"
+      }
+    },
+    {
+      "href": "/services",
+      "name": {
+        "en": "Services",
+        "el": "Υπηρεσίες",
+        "de": "Leistungen"
+      }
+    },
+    {
+      "href": "/projects",
+      "name": {
+        "en": "Projects",
+        "el": "Έργα",
+        "de": "Projekte"
+      }
+    },
+    {
+      "href": "/about",
+      "name": {
+        "en": "About me",
+        "el": "Ποιος είμαι",
+        "de": "Über mich"
+      },
+      "short": {
+        "en": "About",
+        "el": "Σχετικά",
+        "de": "Über"
+      }
+    },
+    {
+      "href": "/contact",
+      "name": {
+        "en": "Contact",
+        "el": "Επικοινωνία",
+        "de": "Kontakt"
+      }
+    },
+    {
+      "href": "/blog",
+      "name": {
+        "en": "Blog",
+        "el": "Blog",
+        "de": "Blog"
+      }
+    }
+  ],
+  "brief": {
+    "formsubmit": "petrospikionis@gmail.com",
+    "maxBytes": 10485760,
+    "needs": [
+      {
+        "key": "automation",
+        "label": {
+          "en": "AI automation",
+          "el": "AI αυτοματισμοί",
+          "de": "KI-Automatisierung"
+        }
+      },
+      {
+        "key": "ai",
+        "label": {
+          "en": "AI product or bot",
+          "el": "AI προϊόν ή bot",
+          "de": "KI-Produkt oder Bot"
+        }
+      },
+      {
+        "key": "website",
+        "label": {
+          "en": "Website",
+          "el": "Site",
+          "de": "Website"
+        }
+      },
+      {
+        "key": "booking",
+        "label": {
+          "en": "Booking system",
+          "el": "Σύστημα κρατήσεων",
+          "de": "Buchungssystem"
+        }
+      },
+      {
+        "key": "commerce",
+        "label": {
+          "en": "E-commerce & feeds",
+          "el": "E-commerce & feeds",
+          "de": "E-Commerce & Feeds"
+        }
+      },
+      {
+        "key": "search",
+        "label": {
+          "en": "AI search & marketing",
+          "el": "AI αναζήτηση & marketing",
+          "de": "KI-Suche & Marketing"
+        }
+      },
+      {
+        "key": "unsure",
+        "label": {
+          "en": "Not sure yet",
+          "el": "Δεν ξέρω ακόμα",
+          "de": "Noch nicht sicher"
+        }
+      }
+    ]
+  },
+  "hero": {
+    "curtain": [
+      {
+        "en": "Web services in",
+        "el": "Υπηρεσίες web",
+        "de": "Webdienste im"
+      },
+      {
+        "en": "the era of",
+        "el": "στην εποχή του",
+        "de": "Zeitalter der"
+      }
+    ],
+    "curtainAccent": {
+      "en": "AI",
+      "el": "AI",
+      "de": "KI"
+    },
+    "headline": {
+      "en": "I turn ideas into working software.",
+      "el": "Μετατρέπω ιδέες σε λογισμικό που δουλεύει.",
+      "de": "Aus Ideen mache ich Software, die läuft."
+    },
+    "palette": {
+      "en": "Custom websites, web applications, e-commerce, and AI search — designed, built, and shipped end to end.",
+      "el": "Sites κατά παραγγελία, web εφαρμογές, e-commerce και AI αναζήτηση: σχεδιασμένα, χτισμένα και παραδομένα από την αρχή ως το τέλος.",
+      "de": "Massgeschneiderte Websites, Webanwendungen, E-Commerce und KI-Suche: entworfen, gebaut und ausgeliefert, alles aus einer Hand."
+    },
+    "paletteKeywords": [
+      {
+        "en": "websites",
+        "el": "sites",
+        "de": "websites"
+      },
+      {
+        "en": "applications",
+        "el": "εφαρμογές",
+        "de": "webanwendungen"
+      },
+      {
+        "en": "e-commerce",
+        "el": "e-commerce",
+        "de": "e-commerce"
+      },
+      {
+        "en": "ai",
+        "el": "ai",
+        "de": "ki-suche"
+      },
+      {
+        "en": "search",
+        "el": "αναζήτηση",
+        "de": "ki-suche"
+      }
+    ],
+    "intro": {
+      "en": "For over nine years I've designed and shipped software across startups, agencies, and a Swiss marketplace. I work end to end, so one person owns the whole thing — from the first sketch to production.",
+      "el": "Πάνω από εννέα χρόνια σχεδιάζω και παραδίδω λογισμικό, σε startups, agencies και ένα ελβετικό marketplace. Δουλεύω από την αρχή ως το τέλος, οπότε ένας άνθρωπος έχει την ευθύνη για όλο το έργο: από το πρώτο σκίτσο μέχρι το production.",
+      "de": "Seit über neun Jahren entwerfe und liefere ich Software, in Startups, in Agenturen und bei einem Schweizer Marketplace. Ich arbeite von A bis Z: Eine Person verantwortet das Ganze, von der ersten Skizze bis zum Livegang."
+    },
+    "corners": [
+      {
+        "pos": "tl",
+        "top": {
+          "en": "AI Software",
+          "el": "AI Software",
+          "de": "AI Software"
+        },
+        "bold": {
+          "en": "Engineering",
+          "el": "Engineering",
+          "de": "Engineering"
+        }
+      },
+      {
+        "pos": "tr",
+        "top": {
+          "en": "Startup",
+          "el": "Startup",
+          "de": "Startup"
+        },
+        "bold": {
+          "en": "Enthusiast",
+          "el": "Enthusiast",
+          "de": "Enthusiast"
+        }
+      },
+      {
+        "pos": "bl",
+        "top": {
+          "en": "E-commerce",
+          "el": "E-commerce",
+          "de": "E-commerce"
+        },
+        "bold": {
+          "en": "Specialist",
+          "el": "Specialist",
+          "de": "Specialist"
+        }
+      },
+      {
+        "pos": "br",
+        "top": {
+          "en": "Go-to",
+          "el": "Go-to",
+          "de": "Go-to"
+        },
+        "bold": {
+          "en": "Market",
+          "el": "Market",
+          "de": "Market"
+        }
+      }
+    ],
+    "bio": {
+      "en": "My bio",
+      "el": "Ποιος είμαι",
+      "de": "Mein Werdegang"
+    },
+    "areas": [
+      {
+        "en": "AI Software Engineering",
+        "el": "AI Software Engineering",
+        "de": "AI Software Engineering"
+      },
+      {
+        "en": "Cloud & Infrastructure",
+        "el": "Cloud & Infrastructure",
+        "de": "Cloud & Infrastructure"
+      },
+      {
+        "en": "Data Pipelines",
+        "el": "Data Pipelines",
+        "de": "Data Pipelines"
+      },
+      {
+        "en": "Go-to Market",
+        "el": "Go-to Market",
+        "de": "Go-to Market"
+      }
+    ]
+  },
+  "marquee": [
+    {
+      "en": "Web design",
+      "el": "Web design",
+      "de": "Webdesign"
+    },
+    {
+      "en": "AI SaaS",
+      "el": "AI SaaS",
+      "de": "KI-SaaS"
+    },
+    {
+      "en": "Web applications",
+      "el": "Web εφαρμογές",
+      "de": "Web-Apps"
+    },
+    {
+      "en": "E-commerce",
+      "el": "E-commerce",
+      "de": "E-Commerce"
+    },
+    {
+      "en": "Marketplaces",
+      "el": "Marketplaces",
+      "de": "Marketplaces"
+    },
+    {
+      "en": "AI search",
+      "el": "AI αναζήτηση",
+      "de": "KI-Suche"
+    },
+    {
+      "en": "Marketing & ads",
+      "el": "Marketing & ads",
+      "de": "Marketing & Ads"
+    }
+  ],
+  "services": [
+    {
+      "key": "web",
+      "title": {
+        "en": "Custom web & design",
+        "el": "Ιστοσελίδες κατά παραγγελία",
+        "de": "Web & Design nach Mass"
+      },
+      "lead": {
+        "en": "Brand-led websites and interfaces, designed and built end to end — from wireframe to production, with AI-assisted workflows.",
+        "el": "Sites και interfaces χτισμένα πάνω στο brand, σχεδιασμένα και υλοποιημένα από την αρχή ως το τέλος: από το wireframe μέχρι το production, με ροές εργασίας που υποστηρίζει το AI.",
+        "de": "Websites und Interfaces, die von Ihrer Marke ausgehen, aus einer Hand entworfen und gebaut: vom Wireframe bis zum Livegang, mit KI-gestützten Abläufen."
+      },
+      "body": [
+        {
+          "en": "Visit any of them. No templates, no recycled layouts — every site starts from the business itself: its people, its place, its pace. Each one is a different concept, down to the typography, the motion and the last hover state. Nothing looks the same, because no two businesses are.",
+          "el": "Μπες σε όποιο θέλεις. Χωρίς templates, χωρίς ανακυκλωμένα layouts: κάθε site ξεκινά από την ίδια την επιχείρηση, τους ανθρώπους της, τον τόπο της, τον ρυθμό της. Το καθένα είναι διαφορετική ιδέα, μέχρι την τυπογραφία, την κίνηση και το τελευταίο hover. Τίποτα δεν μοιάζει με κάτι άλλο, γιατί δεν υπάρχουν δύο ίδιες επιχειρήσεις.",
+          "de": "Schauen Sie sich jede davon an. Keine Templates, keine recycelten Layouts: Jede Website beginnt beim Unternehmen selbst, bei seinen Menschen, seinem Ort, seinem Tempo. Jede ist ein eigenes Konzept, bis hin zur Typografie, zu den Animationen und zum letzten Hover-Effekt. Nichts sieht gleich aus, weil auch keine zwei Unternehmen gleich sind."
+        }
+      ],
+      "chips": [],
+      "claim": {
+        "en": "No templates, no recycled layouts.",
+        "el": "Χωρίς templates, χωρίς ανακυκλωμένα layouts.",
+        "de": "Keine Templates, keine recycelten Layouts."
+      },
+      "short": {
+        "en": "Web & design",
+        "el": "Web & design",
+        "de": "Web & Design"
+      },
+      "background": {
+        "tone": "light",
+        "fill": "paper"
+      },
+      "need": "website",
+      "includes": [
+        {
+          "en": "Every site is ready for AI from day one: structured data, llms.txt, clean semantic content",
+          "el": "Κάθε site είναι έτοιμο για το AI από την πρώτη μέρα: structured data, llms.txt, καθαρό σημασιολογικό περιεχόμενο",
+          "de": "Jede Website ist vom ersten Tag an bereit für KI: strukturierte Daten, llms.txt, saubere semantische Inhalte"
+        },
+        {
+          "en": "Built-in AI chat assistant available as an add-on",
+          "el": "Ενσωματωμένος AI βοηθός chat, διαθέσιμος ως πρόσθετο",
+          "de": "Integrierter KI-Chat-Assistent als Zusatzoption"
+        },
+        {
+          "en": "Fast, accessible, multilingual",
+          "el": "Γρήγορο, προσβάσιμο, πολυγλωσσικό",
+          "de": "Schnell, barrierefrei, mehrsprachig"
+        }
+      ]
+    },
+    {
+      "key": "apps",
+      "title": {
+        "en": "AI SaaS & web applications",
+        "el": "AI SaaS & web εφαρμογές",
+        "de": "KI-SaaS & Web-Apps"
+      },
+      "lead": {
+        "en": "When a website isn't enough.",
+        "el": "Όταν ένα site δεν αρκεί.",
+        "de": "Wenn eine Website nicht reicht."
+      },
+      "body": [
+        {
+          "en": "Some businesses need software that runs part of the business — taking bookings, managing properties and teams, tracking partners, answering customers at 3 a.m. I design and build these web applications end to end: data model, backend, AI features and the interface people actually use every day.",
+          "el": "Κάποιες επιχειρήσεις χρειάζονται λογισμικό που τρέχει ένα κομμάτι της δουλειάς: παίρνει κρατήσεις, διαχειρίζεται ακίνητα και ομάδες, παρακολουθεί συνεργάτες, απαντά σε πελάτες στις 3 το πρωί. Αυτές τις web εφαρμογές τις σχεδιάζω και τις φτιάχνω από την αρχή ως το τέλος: data model, backend, AI λειτουργίες και το interface που χρησιμοποιούν πραγματικά οι άνθρωποι κάθε μέρα.",
+          "de": "Manche Unternehmen brauchen Software, die einen Teil des Geschäfts übernimmt: Buchungen entgegennehmen, Objekte und Teams verwalten, Partner nachverfolgen, Kunden um 3 Uhr morgens antworten. Solche Webanwendungen entwerfe und baue ich von A bis Z: Datenmodell, Backend, KI-Funktionen und die Oberfläche, mit der die Leute tatsächlich jeden Tag arbeiten."
+        }
+      ],
+      "chips": [
+        {
+          "en": "Booking & reservations",
+          "el": "Κρατήσεις",
+          "de": "Buchungen & Reservationen"
+        },
+        {
+          "en": "Property & channel management",
+          "el": "Διαχείριση ακινήτων & καναλιών",
+          "de": "Objekte & Channel-Management"
+        },
+        {
+          "en": "Project & task management",
+          "el": "Διαχείριση έργων & εργασιών",
+          "de": "Projekte & Aufgaben"
+        },
+        {
+          "en": "Affiliate & referral tracking",
+          "el": "Tracking affiliates & referrals",
+          "de": "Affiliate- & Referral-Tracking"
+        },
+        {
+          "en": "AI chat assistants & bots",
+          "el": "AI βοηθοί chat & bots",
+          "de": "KI-Chat-Assistenten & Bots"
+        },
+        {
+          "en": "AI content & translation pipelines",
+          "el": "AI pipelines περιεχομένου & μετάφρασης",
+          "de": "KI-Pipelines für Inhalte & Übersetzung"
+        },
+        {
+          "en": "Payments & invoicing",
+          "el": "Πληρωμές & τιμολόγηση",
+          "de": "Zahlungen & Rechnungen"
+        },
+        {
+          "en": "Dashboards & reporting",
+          "el": "Dashboards & αναφορές",
+          "de": "Dashboards & Reporting"
+        },
+        {
+          "en": "Client portals & user roles",
+          "el": "Portals πελατών & ρόλοι χρηστών",
+          "de": "Kundenportale & Benutzerrollen"
+        }
+      ],
+      "summary": {
+        "en": "Some businesses need software that runs part of the business — taking bookings, managing properties and teams, tracking partners, answering customers at 3 a.m.",
+        "el": "Κάποιες επιχειρήσεις χρειάζονται λογισμικό που τρέχει ένα κομμάτι της δουλειάς: παίρνει κρατήσεις, διαχειρίζεται ακίνητα και ομάδες, παρακολουθεί συνεργάτες, απαντά σε πελάτες στις 3 το πρωί.",
+        "de": "Manche Unternehmen brauchen Software, die einen Teil des Geschäfts übernimmt: Buchungen entgegennehmen, Objekte und Teams verwalten, Partner nachverfolgen, Kunden um 3 Uhr morgens antworten."
+      },
+      "short": {
+        "en": "AI SaaS & apps",
+        "el": "AI SaaS & apps",
+        "de": "KI-SaaS & Apps"
+      },
+      "background": {
+        "tone": "dark",
+        "fill": "ink"
+      },
+      "need": "ai",
+      "includes": [
+        {
+          "en": "Booking & reservation platforms connected to your chat bot, CRM and payments",
+          "el": "Πλατφόρμες κρατήσεων συνδεδεμένες με το chat bot, το CRM και τις πληρωμές σου",
+          "de": "Buchungs- und Reservationsplattformen, verbunden mit Ihrem Chatbot, CRM und Zahlungssystem"
+        },
+        {
+          "en": "One system instead of five tools: bot, bookings, CRM, accounting and marketing share the same data",
+          "el": "Ένα σύστημα αντί για πέντε εργαλεία: bot, κρατήσεις, CRM, λογιστήριο και marketing μοιράζονται τα ίδια δεδομένα",
+          "de": "Ein System statt fünf Tools: Bot, Buchungen, CRM, Buchhaltung und Marketing teilen dieselben Daten"
+        },
+        {
+          "en": "Ask your data in plain language: “How did August compare to last year?”",
+          "el": "Ρώτα τα δεδομένα σου σε απλά λόγια: «Πώς πήγε ο Αύγουστος σε σχέση με πέρσι;»",
+          "de": "Fragen Sie Ihre Daten in einfachen Worten: «Wie schneidet der August im Vergleich zum Vorjahr ab?»"
+        },
+        {
+          "en": "Demand forecasting and smart pricing suggestions",
+          "el": "Πρόβλεψη ζήτησης και έξυπνες προτάσεις τιμών",
+          "de": "Nachfrageprognosen und clevere Preisvorschläge"
+        },
+        {
+          "en": "Admin dashboards to run it all",
+          "el": "Admin dashboards για να τα διαχειρίζεσαι όλα",
+          "de": "Admin-Dashboards, mit denen Sie alles steuern"
+        }
+      ]
+    },
+    {
+      "key": "commerce",
+      "title": {
+        "en": "E-commerce & marketplaces",
+        "el": "E-commerce & marketplaces",
+        "de": "E-Commerce & Marketplaces"
+      },
+      "lead": {
+        "en": "Shops that sell — and the plumbing behind them.",
+        "el": "E-shops που πουλάνε, και όλος ο μηχανισμός πίσω τους.",
+        "de": "Shops, die verkaufen. Und das Leitungssystem dahinter."
+      },
+      "body": [
+        {
+          "en": "I build custom e-commerce with a modern, fast, conversion-focused UI/UX. But I don't stop at the storefront. As an engineer for DeinDeal, a large Swiss online marketplace, I connected small suppliers to major European marketplaces — product feeds, category mapping, pricing, orders and stock sync, at 800K+ products a day. So I know marketplaces from the inside and the outside. If you need to sell on the big ones — Amazon, Google Shopping, Skroutz or Galaxus, the Swiss marketplace — send me a message. I know this job inside out. Trust me, I'm an engineer. Hold my beer: this is my territory.",
+          "el": "Φτιάχνω custom e-commerce με μοντέρνο, γρήγορο UI/UX που στοχεύει στις μετατροπές. Όμως δεν σταματάω στη βιτρίνα. Ως μηχανικός για το DeinDeal, ένα μεγάλο ελβετικό online marketplace, σύνδεσα μικρούς προμηθευτές με μεγάλα ευρωπαϊκά marketplaces: product feeds, αντιστοίχιση κατηγοριών, τιμές, παραγγελίες και συγχρονισμό αποθέματος, σε 800K+ προϊόντα την ημέρα. Άρα ξέρω τα marketplaces και από μέσα και από έξω. Αν θέλεις να πουλήσεις στα μεγάλα (Amazon, Google Shopping, Skroutz ή Galaxus, το ελβετικό marketplace), στείλε μου μήνυμα. Αυτή τη δουλειά την ξέρω απέξω κι ανακατωτά. Πίστεψέ με, είμαι μηχανικός. Κράτα μου την μπύρα: εδώ παίζω στην έδρα μου.",
+          "de": "Ich baue massgeschneiderten E-Commerce mit moderner, schneller, auf Conversion ausgerichteter UI/UX. Aber beim Schaufenster höre ich nicht auf. Als Ingenieur für DeinDeal, einen grossen Schweizer Online-Marketplace, habe ich kleine Lieferanten an grosse europäische Marketplaces angebunden: Produkt-Feeds, Kategorie-Mapping, Preise, Bestellungen und Lagerabgleich, bei 800K+ Produkten pro Tag. Ich kenne Marketplaces also von innen und von aussen. Wenn Sie auf den grossen verkaufen wollen, auf Amazon, Google Shopping, Skroutz oder Galaxus, dem Schweizer Marketplace: Schreiben Sie mir. Dieses Geschäft kenne ich in- und auswendig. Vertrauen Sie mir, ich bin Ingenieur. Halten Sie mal mein Bier: Das ist mein Revier."
+        }
+      ],
+      "chips": [],
+      "summary": {
+        "en": "I build custom e-commerce with a modern, fast, conversion-focused UI/UX. But I don't stop at the storefront.",
+        "el": "Φτιάχνω custom e-commerce με μοντέρνο, γρήγορο UI/UX που στοχεύει στις μετατροπές. Όμως δεν σταματάω στη βιτρίνα.",
+        "de": "Ich baue massgeschneiderten E-Commerce mit moderner, schneller, auf Conversion ausgerichteter UI/UX. Aber beim Schaufenster höre ich nicht auf."
+      },
+      "short": {
+        "en": "E-commerce",
+        "el": "E-commerce",
+        "de": "E-Commerce"
+      },
+      "background": {
+        "tone": "light",
+        "fill": "paper"
+      },
+      "need": "commerce",
+      "includes": [
+        {
+          "en": "AI product descriptions and automatic translation into 20 languages",
+          "el": "AI περιγραφές προϊόντων και αυτόματη μετάφραση σε 20 γλώσσες",
+          "de": "KI-Produktbeschreibungen und automatische Übersetzung in 20 Sprachen"
+        },
+        {
+          "en": "Personalised emails and offers based on what each customer bought or viewed",
+          "el": "Προσωποποιημένα emails και προσφορές με βάση το τι αγόρασε ή είδε ο κάθε πελάτης",
+          "de": "Personalisierte E-Mails und Angebote, je nachdem, was jemand gekauft oder angesehen hat"
+        },
+        {
+          "en": "Automated stock, price and order sync with marketplaces across Europe and Greece",
+          "el": "Αυτόματος συγχρονισμός αποθέματος, τιμών και παραγγελιών με marketplaces σε Ευρώπη και Ελλάδα",
+          "de": "Automatischer Abgleich von Lagerbestand, Preisen und Bestellungen mit Marketplaces in ganz Europa und Griechenland"
+        }
+      ]
+    },
+    {
+      "key": "search",
+      "title": {
+        "en": "AI search, marketing & ads",
+        "el": "AI αναζήτηση, marketing & ads",
+        "de": "KI-Suche, Marketing & Ads"
+      },
+      "lead": {
+        "en": "Be the answer, not just a result.",
+        "el": "Γίνε η απάντηση, όχι απλώς ένα αποτέλεσμα.",
+        "de": "Seien Sie die Antwort, nicht nur ein Treffer."
+      },
+      "body": [
+        {
+          "en": "Search is moving from ten blue links to one answer. More and more people ask ChatGPT, Claude, Gemini or Perplexity what to buy, where to stay and who to hire — and get back a short list of recommendations. The sites those answers draw from are the ones built for it: clean semantic content, structured data, fast pages, consistent business information across the web. Every site I build is ready for the AI era from day one, and I can audit yours so your business shows up when someone asks.",
+          "el": "Η αναζήτηση περνάει από τα δέκα μπλε links σε μία απάντηση. Όλο και περισσότεροι ρωτάνε το ChatGPT, το Claude, το Gemini ή το Perplexity τι να αγοράσουν, πού να μείνουν και ποιον να προσλάβουν, και παίρνουν πίσω μια σύντομη λίστα με προτάσεις. Τα sites από τα οποία αντλούν αυτές οι απαντήσεις είναι αυτά που έχουν φτιαχτεί γι' αυτό: καθαρό σημασιολογικό περιεχόμενο, structured data, γρήγορες σελίδες, συνεπείς πληροφορίες για την επιχείρηση σε όλο το web. Κάθε site που φτιάχνω είναι έτοιμο για την εποχή του AI από την πρώτη μέρα, και μπορώ να κάνω audit και στο δικό σου, ώστε η επιχείρησή σου να εμφανίζεται όταν κάποιος ρωτάει.",
+          "de": "Die Suche wandert von zehn blauen Links zu einer einzigen Antwort. Immer mehr Menschen fragen ChatGPT, Claude, Gemini oder Perplexity, was sie kaufen, wo sie übernachten und wen sie beauftragen sollen, und erhalten eine kurze Liste mit Empfehlungen. Diese Antworten stützen sich auf Websites, die dafür gebaut sind: saubere semantische Inhalte, strukturierte Daten, schnelle Seiten, einheitliche Firmendaten im ganzen Web. Jede Website, die ich baue, ist vom ersten Tag an bereit für das KI-Zeitalter, und ich kann Ihre prüfen, damit Ihr Unternehmen auftaucht, wenn jemand fragt."
+        },
+        {
+          "en": "Search is only half of it. I also run the marketing that brings people in: SEO and content that answer what your customers actually ask, Google Ads and Shopping campaigns fed straight from your product catalogue, and analytics and conversion tracking set up properly, so you can see what every campaign brings in.",
+          "el": "Η αναζήτηση είναι μόνο το μισό. Τρέχω και το marketing που φέρνει κόσμο: SEO και περιεχόμενο που απαντούν σε ό,τι ρωτούν πραγματικά οι πελάτες σου, καμπάνιες Google Ads και Shopping που τροφοδοτούνται κατευθείαν από τον κατάλογο προϊόντων σου, και analytics και tracking μετατροπών στημένα σωστά, για να βλέπεις τι φέρνει η κάθε καμπάνια.",
+          "de": "Die Suche ist nur die halbe Miete. Ich betreue auch das Marketing, das die Leute zu Ihnen bringt: SEO und Inhalte, die beantworten, was Ihre Kunden wirklich fragen, Kampagnen in Google Ads und Shopping, direkt aus Ihrem Produktkatalog gespeist, und sauber eingerichtetes Analytics und Conversion-Tracking, damit Sie sehen, was jede Kampagne bringt."
+        }
+      ],
+      "chips": [
+        {
+          "en": "Structured data (Schema.org)",
+          "el": "Structured data (Schema.org)",
+          "de": "Strukturierte Daten (Schema.org)"
+        },
+        {
+          "en": "llms.txt",
+          "el": "llms.txt",
+          "de": "llms.txt"
+        },
+        {
+          "en": "Semantic content & FAQs",
+          "el": "Σημασιολογικό περιεχόμενο & FAQs",
+          "de": "Semantische Inhalte & FAQs"
+        },
+        {
+          "en": "Performance & Core Web Vitals",
+          "el": "Απόδοση & Core Web Vitals",
+          "de": "Performance & Core Web Vitals"
+        },
+        {
+          "en": "Entity consistency (Google Business, directories)",
+          "el": "Συνέπεια στοιχείων (Google Business, κατάλογοι)",
+          "de": "Einheitliche Firmendaten (Google Business, Verzeichnisse)"
+        },
+        {
+          "en": "AI visibility audits",
+          "el": "Audits ορατότητας σε AI",
+          "de": "KI-Sichtbarkeits-Audits"
+        },
+        {
+          "en": "SEO & content",
+          "el": "SEO & περιεχόμενο",
+          "de": "SEO & Inhalte"
+        },
+        {
+          "en": "Google Ads & Shopping",
+          "el": "Google Ads & Shopping",
+          "de": "Google Ads & Shopping"
+        },
+        {
+          "en": "Analytics & tracking",
+          "el": "Analytics & tracking",
+          "de": "Analytics & Tracking"
+        }
+      ],
+      "summary": {
+        "en": "Every site I build is ready for the AI era from day one. Around it, I run the SEO, Google Ads and tracking that bring people in.",
+        "el": "Κάθε site που φτιάχνω είναι έτοιμο για την εποχή του AI από την πρώτη μέρα. Γύρω του τρέχω το SEO, τα Google Ads και το tracking που φέρνουν κόσμο.",
+        "de": "Jede Website, die ich baue, ist vom ersten Tag an bereit für das KI-Zeitalter. Darum herum betreue ich SEO, Google Ads und Tracking, die Ihnen Besucher bringen."
+      },
+      "proof": {
+        "label": {
+          "en": "This site",
+          "el": "Αυτό το site",
+          "de": "Diese Website"
+        },
+        "name": "onehublabs.com",
+        "items": [
+          {
+            "en": "Structured data: Person, ProfessionalService, WebSite",
+            "el": "Structured data: Person, ProfessionalService, WebSite",
+            "de": "Strukturierte Daten: Person, ProfessionalService, WebSite"
+          },
+          {
+            "en": "An llms.txt with every service and project",
+            "el": "Ένα llms.txt με κάθε υπηρεσία και έργο",
+            "de": "Eine llms.txt mit jeder Leistung und jedem Projekt"
+          },
+          {
+            "en": "A sitemap, and clean meta and Open Graph data on every page",
+            "el": "Ένα sitemap, και καθαρά meta και Open Graph δεδομένα σε κάθε σελίδα",
+            "de": "Eine Sitemap sowie saubere Meta- und Open-Graph-Daten auf jeder Seite"
+          }
+        ],
+        "link": {
+          "href": "/llms.txt",
+          "text": {
+            "en": "Read its llms.txt",
+            "el": "Διάβασε το llms.txt του",
+            "de": "Die llms.txt lesen"
+          }
+        }
+      },
+      "short": {
+        "en": "AI search & ads",
+        "el": "AI αναζήτηση & ads",
+        "de": "KI-Suche & Ads"
+      },
+      "background": {
+        "tone": "dark",
+        "fill": "ink"
+      },
+      "need": "search",
+      "includes": [
+        {
+          "en": "Visibility in ChatGPT, Claude and Gemini when customers ask for recommendations",
+          "el": "Ορατότητα σε ChatGPT, Claude και Gemini όταν οι πελάτες ζητούν προτάσεις",
+          "de": "Sichtbarkeit in ChatGPT, Claude und Gemini, wenn Kunden nach Empfehlungen fragen"
+        },
+        {
+          "en": "Consistent business information everywhere (Google Business, directories)",
+          "el": "Συνεπείς πληροφορίες για την επιχείρηση παντού (Google Business, κατάλογοι)",
+          "de": "Einheitliche Firmendaten überall (Google Business, Verzeichnisse)"
+        },
+        {
+          "en": "AI-written posts, newsletters and ad copy in your brand’s voice, approved by you",
+          "el": "Posts, newsletters και διαφημιστικά κείμενα γραμμένα από AI στη φωνή του brand σου, με δική σου έγκριση",
+          "de": "Von KI geschriebene Posts, Newsletter und Werbetexte im Ton Ihrer Marke, von Ihnen freigegeben"
+        },
+        {
+          "en": "Google Ads with automated A/B testing, server-side tracking and AI that shifts budget to what sells",
+          "el": "Google Ads με αυτόματο A/B testing, server-side tracking και AI που μεταφέρει το budget σε ό,τι πουλάει",
+          "de": "Google Ads mit automatischen A/B-Tests, serverseitigem Tracking und KI, die das Budget dorthin verschiebt, wo verkauft wird"
+        },
+        {
+          "en": "AI replies to reviews, and spots recurring complaints (“5 guests mentioned slow Wi-Fi”)",
+          "el": "Το AI απαντά σε κριτικές και εντοπίζει παράπονα που επαναλαμβάνονται («5 επισκέπτες ανέφεραν αργό Wi-Fi»)",
+          "de": "KI antwortet auf Bewertungen und erkennt wiederkehrende Beschwerden («5 Gäste erwähnten langsames WLAN»)"
+        },
+        {
+          "en": "Core Web Vitals in the green, solid SEO",
+          "el": "Core Web Vitals στο πράσινο, γερό SEO",
+          "de": "Core Web Vitals im grünen Bereich, solides SEO"
+        }
+      ]
+    }
+  ],
+  "bots": {
+    "key": "bots",
+    "title": {
+      "en": "AI services & bots",
+      "el": "AI υπηρεσίες & bots",
+      "de": "KI-Dienste & Bots"
+    },
+    "claim": {
+      "en": "Answers in seconds, at any hour, in any language.",
+      "el": "Απαντήσεις σε δευτερόλεπτα, όποια ώρα, σε όποια γλώσσα.",
+      "de": "Antworten in Sekunden, zu jeder Stunde, in jeder Sprache."
+    },
+    "summary": {
+      "en": "AI chat that answers the questions you hear every day, takes bookings and orders, and hands over to a person when it should. And the back-office work nobody wants to do.",
+      "el": "AI chat που απαντά στις ερωτήσεις που ακούς κάθε μέρα, παίρνει κρατήσεις και παραγγελίες, και περνάει τη συζήτηση σε άνθρωπο όταν πρέπει. Και η δουλειά γραφείου που κανείς δεν θέλει να κάνει.",
+      "de": "KI-Chat, der die Fragen beantwortet, die Sie jeden Tag hören, Buchungen und Bestellungen aufnimmt und an einen Menschen übergibt, wenn es angebracht ist. Dazu die Büroarbeit, die niemand machen will."
+    },
+    "need": "ai",
+    "includes": [
+      {
+        "en": "24/7 AI chat that answers the repeat questions (hours, prices, availability, order status, cancellations) instantly, in any language",
+        "el": "AI chat 24/7 που απαντά αμέσως στις ερωτήσεις που επαναλαμβάνονται (ωράρια, τιμές, διαθεσιμότητα, κατάσταση παραγγελίας, ακυρώσεις), σε όποια γλώσσα",
+        "de": "24/7-KI-Chat, der die immer gleichen Fragen (Öffnungszeiten, Preise, Verfügbarkeit, Bestellstatus, Stornierungen) sofort beantwortet, in jeder Sprache"
+      },
+      {
+        "en": "Works on your site, WhatsApp, Messenger, Instagram and Airbnb/Booking messages",
+        "el": "Δουλεύει στο site σου, στο WhatsApp, στο Messenger, στο Instagram και στα μηνύματα Airbnb/Booking",
+        "de": "Funktioniert auf Ihrer Website, in WhatsApp, Messenger, Instagram und in Nachrichten auf Airbnb/Booking"
+      },
+      {
+        "en": "Takes action, not just answers: books appointments, checks availability, creates orders, captures leads",
+        "el": "Κάνει δουλειά, δεν απαντά μόνο: κλείνει ραντεβού, ελέγχει διαθεσιμότητα, δημιουργεί παραγγελίες, μαζεύει leads",
+        "de": "Handelt, statt nur zu antworten: bucht Termine, prüft Verfügbarkeit, erstellt Bestellungen, erfasst Leads"
+      },
+      {
+        "en": "Answers only from your own documents (FAQs, price lists, terms), so it never makes things up",
+        "el": "Απαντά μόνο από τα δικά σου έγγραφα (FAQs, τιμοκατάλογοι, όροι), οπότε δεν επινοεί ποτέ τίποτα",
+        "de": "Antwortet nur aus Ihren eigenen Dokumenten (FAQs, Preislisten, AGB), erfindet also nie etwas"
+      },
+      {
+        "en": "Hands over to a human, with the full conversation, when it’s unsure or the customer is upset",
+        "el": "Περνάει σε άνθρωπο, με όλη τη συζήτηση, όταν δεν είναι σίγουρο ή όταν ο πελάτης είναι αναστατωμένος",
+        "de": "Übergibt samt vollständigem Gesprächsverlauf an einen Menschen, wenn er unsicher oder der Kunde verärgert ist"
+      },
+      {
+        "en": "Admin panel: review conversations, correct answers, see what customers ask most",
+        "el": "Admin panel: ελέγχεις συζητήσεις, διορθώνεις απαντήσεις, βλέπεις τι ρωτούν περισσότερο οι πελάτες",
+        "de": "Admin-Panel: Gespräche prüfen, Antworten korrigieren, sehen, was Kunden am häufigsten fragen"
+      },
+      {
+        "en": "Automates back-office work: reads invoices, sorts emails and drafts replies, with a human approving before anything is sent",
+        "el": "Αυτοματοποιεί τη δουλειά γραφείου: διαβάζει τιμολόγια, ταξινομεί emails και ετοιμάζει απαντήσεις, και ένας άνθρωπος εγκρίνει πριν σταλεί οτιδήποτε",
+        "de": "Automatisiert die Büroarbeit: liest Rechnungen, sortiert E-Mails und entwirft Antworten, wobei ein Mensch alles freigibt, bevor es verschickt wird"
+      }
+    ]
+  },
+  "ui": {
+    "work": {
+      "title": {
+        "en": "What I build",
+        "el": "Τι φτιάχνω",
+        "de": "Was ich baue"
+      },
+      "intro": {
+        "en": "Each service, and the real projects behind it.",
+        "el": "Κάθε υπηρεσία, και τα πραγματικά έργα πίσω της.",
+        "de": "Jede Leistung und die echten Projekte dahinter."
+      },
+      "allServices": {
+        "en": "All services",
+        "el": "Όλες οι υπηρεσίες",
+        "de": "Alle Leistungen"
+      },
+      "allProjects": {
+        "en": "All projects",
+        "el": "Όλα τα έργα",
+        "de": "Alle Projekte"
+      },
+      "again": {
+        "en": "See again",
+        "el": "Δες ξανά",
+        "de": "Nochmals ansehen"
+      }
+    },
+    "visitSite": {
+      "en": "Visit site",
+      "el": "Δες το site",
+      "de": "Website besuchen"
+    },
+    "launching": {
+      "en": "Launching soon",
+      "el": "Έρχεται σύντομα",
+      "de": "Geht bald live"
+    },
+    "live": {
+      "site": {
+        "en": "website",
+        "el": "site",
+        "de": "Website"
+      },
+      "preview": {
+        "en": "Preview",
+        "el": "Προεπισκόπηση",
+        "de": "Vorschau"
+      },
+      "close": {
+        "en": "Close preview",
+        "el": "Κλείσε την προεπισκόπηση",
+        "de": "Vorschau schliessen"
+      }
+    },
+    "readStory": {
+      "en": "Read the full story",
+      "el": "Διάβασε όλη την ιστορία",
+      "de": "Die ganze Geschichte lesen"
+    },
+    "stories": {
+      "readMore": {
+        "en": "Read more",
+        "el": "Διάβασε περισσότερα",
+        "de": "Mehr lesen"
+      },
+      "readMoreRest": {
+        "en": " — how I work for you",
+        "el": " — πώς δουλεύω για σένα",
+        "de": " — wie ich für Sie arbeite"
+      },
+      "close": {
+        "en": "Close",
+        "el": "Κλείσιμο",
+        "de": "Schliessen"
+      },
+      "start": {
+        "en": "Start a project",
+        "el": "Ξεκίνα ένα έργο",
+        "de": "Projekt starten"
+      },
+      "scenes": {
+        "en": "Scenes",
+        "el": "Σκηνές",
+        "de": "Szenen"
+      },
+      "scene": {
+        "en": "Scene",
+        "el": "Σκηνή",
+        "de": "Szene"
+      },
+      "of": {
+        "en": "of",
+        "el": "από",
+        "de": "von"
+      },
+      "previous": {
+        "en": "Previous scene",
+        "el": "Προηγούμενη σκηνή",
+        "de": "Vorherige Szene"
+      },
+      "next": {
+        "en": "Next scene",
+        "el": "Επόμενη σκηνή",
+        "de": "Nächste Szene"
+      },
+      "pause": {
+        "en": "Pause",
+        "el": "Παύση",
+        "de": "Pause"
+      },
+      "play": {
+        "en": "Play",
+        "el": "Αναπαραγωγή",
+        "de": "Abspielen"
+      },
+      "again": {
+        "en": "Play again",
+        "el": "Παίξε ξανά",
+        "de": "Nochmals abspielen"
+      }
+    },
+    "footerLine": {
+      "en": "Custom websites, web applications, e-commerce, AI search, marketing and ads, designed, built and run end to end.",
+      "el": "Sites κατά παραγγελία, web εφαρμογές, e-commerce, AI αναζήτηση, marketing και διαφημίσεις, με σχεδιασμό, υλοποίηση και λειτουργία από την αρχή ως το τέλος.",
+      "de": "Massgeschneiderte Websites, Webanwendungen, E-Commerce, KI-Suche, Marketing und Werbung: entworfen, gebaut und betrieben aus einer Hand."
+    },
+    "moreWork": {
+      "en": "More work",
+      "el": "Περισσότερα έργα",
+      "de": "Weitere Arbeiten"
+    },
+    "projectsPage": {
+      "title": {
+        "en": "Projects",
+        "el": "Έργα",
+        "de": "Projekte"
+      },
+      "lede": {
+        "en": "projects. Pick one for its PageSpeed results, its stack, its story and, where it is live, the site itself.",
+        "el": "έργα. Διάλεξε ένα για να δεις τα αποτελέσματά του στο PageSpeed, το stack του, την ιστορία του και, όπου είναι live, το ίδιο το site.",
+        "de": "Projekte. Wählen Sie eines und sehen Sie seine PageSpeed-Ergebnisse, seinen Stack, seine Geschichte und, wo es live ist, die Website selbst."
+      },
+      "previous": {
+        "en": "Previous projects",
+        "el": "Προηγούμενα έργα",
+        "de": "Vorherige Projekte"
+      },
+      "more": {
+        "en": "More projects",
+        "el": "Περισσότερα έργα",
+        "de": "Weitere Projekte"
+      },
+      "viewAs": {
+        "en": "View as",
+        "el": "Προβολή ως",
+        "de": "Ansicht"
+      },
+      "phone": {
+        "en": "Phone",
+        "el": "Κινητό",
+        "de": "Smartphone"
+      },
+      "desktop": {
+        "en": "Desktop",
+        "el": "Desktop",
+        "de": "Desktop"
+      },
+      "speed": {
+        "en": "PageSpeed",
+        "el": "PageSpeed",
+        "de": "PageSpeed"
+      },
+      "scores": {
+        "performance": {
+          "en": "Performance",
+          "el": "Απόδοση",
+          "de": "Leistung"
+        },
+        "accessibility": {
+          "en": "Accessibility",
+          "el": "Προσβασιμότητα",
+          "de": "Barrierefreiheit"
+        },
+        "best-practices": {
+          "en": "Best practices",
+          "el": "Βέλτιστες πρακτικές",
+          "de": "Best Practices"
+        },
+        "seo": {
+          "en": "SEO",
+          "el": "SEO",
+          "de": "SEO"
+        }
+      },
+      "vitals": {
+        "en": "Web Vitals",
+        "el": "Web Vitals",
+        "de": "Web Vitals"
+      },
+      "metrics": {
+        "lcp": [
+          {
+            "en": "LCP",
+            "el": "LCP",
+            "de": "LCP"
+          },
+          {
+            "en": "Largest Contentful Paint",
+            "el": "Largest Contentful Paint",
+            "de": "Largest Contentful Paint"
+          }
+        ],
+        "fcp": [
+          {
+            "en": "FCP",
+            "el": "FCP",
+            "de": "FCP"
+          },
+          {
+            "en": "First Contentful Paint",
+            "el": "First Contentful Paint",
+            "de": "First Contentful Paint"
+          }
+        ],
+        "tbt": [
+          {
+            "en": "TBT",
+            "el": "TBT",
+            "de": "TBT"
+          },
+          {
+            "en": "Total Blocking Time",
+            "el": "Total Blocking Time",
+            "de": "Total Blocking Time"
+          }
+        ],
+        "cls": [
+          {
+            "en": "CLS",
+            "el": "CLS",
+            "de": "CLS"
+          },
+          {
+            "en": "Cumulative Layout Shift",
+            "el": "Cumulative Layout Shift",
+            "de": "Cumulative Layout Shift"
+          }
+        ],
+        "si": [
+          {
+            "en": "SI",
+            "el": "SI",
+            "de": "SI"
+          },
+          {
+            "en": "Speed Index",
+            "el": "Speed Index",
+            "de": "Speed Index"
+          }
+        ],
+        "inp": [
+          {
+            "en": "INP",
+            "el": "INP",
+            "de": "INP"
+          },
+          {
+            "en": "Interaction to Next Paint",
+            "el": "Interaction to Next Paint",
+            "de": "Interaction to Next Paint"
+          }
+        ],
+        "ttfb": [
+          {
+            "en": "TTFB",
+            "el": "TTFB",
+            "de": "TTFB"
+          },
+          {
+            "en": "Time to First Byte",
+            "el": "Time to First Byte",
+            "de": "Time to First Byte"
+          }
+        ]
+      },
+      "verdict": {
+        "good": {
+          "en": "Good",
+          "el": "Καλό",
+          "de": "Gut"
+        },
+        "average": {
+          "en": "Needs work",
+          "el": "Θέλει δουλειά",
+          "de": "Ausbaufähig"
+        },
+        "poor": {
+          "en": "Poor",
+          "el": "Χαμηλό",
+          "de": "Schwach"
+        }
+      },
+      "field": {
+        "en": "Real visitors, last 28 days",
+        "el": "Πραγματικοί επισκέπτες, τελευταίες 28 ημέρες",
+        "de": "Echte Besucher, letzte 28 Tage"
+      },
+      "source": {
+        "pagespeed": {
+          "en": "PageSpeed Insights",
+          "el": "PageSpeed Insights",
+          "de": "PageSpeed Insights"
+        },
+        "lighthouse": {
+          "en": "Lighthouse",
+          "el": "Lighthouse",
+          "de": "Lighthouse"
+        }
+      },
+      "measured": {
+        "en": "measured",
+        "el": "μετρήθηκε στις",
+        "de": "gemessen am"
+      },
+      "report": {
+        "en": "Measure it again on PageSpeed Insights",
+        "el": "Μέτρησέ το ξανά στο PageSpeed Insights",
+        "de": "Auf PageSpeed Insights erneut messen"
+      },
+      "stack": {
+        "en": "Built with",
+        "el": "Χτισμένο με",
+        "de": "Gebaut mit"
+      },
+      "story": {
+        "en": "The story",
+        "el": "Η ιστορία",
+        "de": "Die Geschichte"
+      },
+      "site": {
+        "en": "The site",
+        "el": "Το site",
+        "de": "Die Website"
+      },
+      "open": {
+        "en": "Open in a new tab",
+        "el": "Άνοιξέ το σε νέα καρτέλα",
+        "de": "In neuem Tab öffnen"
+      },
+      "browse": {
+        "en": "Browse the site",
+        "el": "Περιηγήσου στο site",
+        "de": "Website erkunden"
+      },
+      "soon": {
+        "en": "Not live yet, so there is no site to measure or browse.",
+        "el": "Δεν είναι ακόμα live, οπότε δεν υπάρχει site για μέτρηση ή περιήγηση.",
+        "de": "Noch nicht live, es gibt also noch keine Website zum Messen oder Erkunden."
+      },
+      "next": {
+        "en": "Next",
+        "el": "Επόμενο",
+        "de": "Weiter"
+      }
+    }
+  },
+  "stats": [
+    {
+      "value": 800,
+      "suffix": "K+",
+      "label": {
+        "en": "Products processed daily with AI",
+        "el": "Προϊόντα με επεξεργασία AI κάθε μέρα",
+        "de": "Produkte täglich mit KI verarbeitet"
+      }
+    },
+    {
+      "value": 6,
+      "suffix": "",
+      "label": {
+        "en": "Agile team members led",
+        "el": "Μέλη agile ομάδας που καθοδήγησα",
+        "de": "Mitglieder agiler Teams geführt"
+      }
+    },
+    {
+      "value": 9,
+      "suffix": "+",
+      "label": {
+        "en": "Years designing & shipping",
+        "el": "Χρόνια που σχεδιάζω & παραδίδω",
+        "de": "Jahre Design & Auslieferung"
+      }
+    },
+    {
+      "value": 80,
+      "suffix": "+",
+      "label": {
+        "en": "Business profiles on a product I built",
+        "el": "Προφίλ επιχειρήσεων σε προϊόν που έφτιαξα",
+        "de": "Firmenprofile auf einem von mir gebauten Produkt"
+      }
+    }
+  ],
+  "words": {
+    "home": {
+      "cue": {
+        "en": "Scroll to explore",
+        "el": "Κάνε scroll για να δεις",
+        "de": "Scrollen und entdecken"
+      },
+      "portrait": {
+        "en": "Portrait of {name}",
+        "el": "Πορτρέτο: {name}",
+        "de": "Porträt von {name}"
+      }
+    },
+    "nav": {
+      "main": {
+        "en": "Main",
+        "el": "Κύριο μενού",
+        "de": "Hauptnavigation"
+      },
+      "footer": {
+        "en": "Footer",
+        "el": "Υποσέλιδο",
+        "de": "Fusszeile"
+      },
+      "language": {
+        "en": "Language",
+        "el": "Γλώσσα",
+        "de": "Sprache"
+      }
+    },
+    "footer": {
+      "heading": [
+        {
+          "en": "Let's build",
+          "el": "Ας χτίσουμε",
+          "de": "Bauen wir"
+        },
+        {
+          "en": "together.",
+          "el": "μαζί.",
+          "de": "zusammen."
+        }
+      ],
+      "pitch": {
+        "en": "Pitch me your idea. A website, or AI that takes repetitive work off your team — tell me the business problem and send whatever helps: a brief, photos, screenshots.",
+        "el": "Κάνε μου pitch την ιδέα σου. Ένα site, ή AI που παίρνει την επαναλαμβανόμενη δουλειά από την ομάδα σου: πες μου το πρόβλημα της επιχείρησης και στείλε ό,τι βοηθάει, ένα brief, φωτογραφίες, screenshots.",
+        "de": "Pitchen Sie mir Ihre Idee. Eine Website oder KI, die Ihrem Team repetitive Arbeit abnimmt? Schildern Sie mir das geschäftliche Problem und schicken Sie alles, was hilft: ein Briefing, Fotos, Screenshots."
+      },
+      "copy": {
+        "en": "Click to copy",
+        "el": "Πάτα για αντιγραφή",
+        "de": "Zum Kopieren klicken"
+      },
+      "copied": {
+        "en": "Copied to your clipboard",
+        "el": "Αντιγράφηκε στο πρόχειρο",
+        "de": "In die Zwischenablage kopiert"
+      },
+      "toBrief": {
+        "en": "Pitch an idea or send a brief",
+        "el": "Κάνε pitch μια ιδέα ή στείλε ένα brief",
+        "de": "Idee pitchen oder Briefing senden"
+      },
+      "home": {
+        "en": "{name}, home",
+        "el": "{name}, αρχική",
+        "de": "{name}, Startseite"
+      },
+      "pages": {
+        "en": "Pages",
+        "el": "Σελίδες",
+        "de": "Seiten"
+      },
+      "contact": {
+        "en": "Contact",
+        "el": "Επικοινωνία",
+        "de": "Kontakt"
+      },
+      "follow": {
+        "en": "Follow",
+        "el": "Ακολούθησέ με",
+        "de": "Folgen"
+      },
+      "top": {
+        "en": "Back to top",
+        "el": "Πίσω στην κορυφή",
+        "de": "Nach oben"
+      }
+    },
+    "about": {
+      "metaTitle": {
+        "en": "About me — Petros Pikionis",
+        "el": "Ποιος είμαι: Πέτρος Πικιώνης",
+        "de": "Über mich: Petros Pikionis"
+      },
+      "metaDescription": {
+        "en": "{name}, {role} based in {location}.",
+        "el": "{name}, {role}. Έδρα: {location}.",
+        "de": "{name}, {role} mit Sitz in {location}."
+      },
+      "title": {
+        "en": "About me",
+        "el": "Ποιος είμαι",
+        "de": "Über mich"
+      },
+      "work": {
+        "en": "What I work on",
+        "el": "Με τι ασχολούμαι",
+        "de": "Woran ich arbeite"
+      },
+      "codeTitle": {
+        "en": "A year of code",
+        "el": "Ένας χρόνος κώδικα",
+        "de": "Ein Jahr Code"
+      },
+      "codeIntro": {
+        "en": "Every column is a day I pushed code to GitHub.",
+        "el": "Κάθε στήλη είναι μια μέρα που έκανα push κώδικα στο GitHub.",
+        "de": "Jede Säule ist ein Tag, an dem ich Code auf GitHub gepusht habe."
+      }
+    },
+    "terrain": {
+      "year": {
+        "en": "{n} contributions in the last year",
+        "el": "{n} συνεισφορές τον τελευταίο χρόνο",
+        "de": "{n} Beiträge im letzten Jahr"
+      },
+      "weeks": {
+        "en": "{n} contributions in the last {weeks} weeks",
+        "el": "{n} συνεισφορές τις τελευταίες {weeks} εβδομάδες",
+        "de": "{n} Beiträge in den letzten {weeks} Wochen"
+      },
+      "one": {
+        "en": "1 contribution on {day}",
+        "el": "1 συνεισφορά, {day}",
+        "de": "1 Beitrag am {day}"
+      },
+      "day": {
+        "en": "{n} contributions on {day}",
+        "el": "{n} συνεισφορές, {day}",
+        "de": "{n} Beiträge am {day}"
+      },
+      "label": {
+        "en": "GitHub activity: {n} contributions in the last year",
+        "el": "Δραστηριότητα στο GitHub: {n} συνεισφορές τον τελευταίο χρόνο",
+        "de": "GitHub-Aktivität: {n} Beiträge im letzten Jahr"
+      },
+      "labelWeeks": {
+        "en": "GitHub activity: {n} contributions over {weeks} weeks. Use the arrow keys to read each day.",
+        "el": "Δραστηριότητα στο GitHub: {n} συνεισφορές σε {weeks} εβδομάδες. Με τα βελάκια διαβάζεις κάθε μέρα.",
+        "de": "GitHub-Aktivität: {n} Beiträge in {weeks} Wochen. Mit den Pfeiltasten lesen Sie jeden Tag einzeln."
+      },
+      "view": {
+        "en": "View",
+        "el": "Προβολή",
+        "de": "Ansicht"
+      },
+      "flat": {
+        "en": "Flat",
+        "el": "Επίπεδο",
+        "de": "Flach"
+      },
+      "terrain": {
+        "en": "Terrain",
+        "el": "Ανάγλυφο",
+        "de": "Gelände"
+      },
+      "less": {
+        "en": "Less",
+        "el": "Λιγότερες",
+        "de": "Weniger"
+      },
+      "more": {
+        "en": "More",
+        "el": "Περισσότερες",
+        "de": "Mehr"
+      }
+    },
+    "contact": {
+      "metaTitle": {
+        "en": "Contact — Petros Pikionis",
+        "el": "Επικοινωνία: Πέτρος Πικιώνης",
+        "de": "Kontakt: Petros Pikionis"
+      },
+      "metaDescription": {
+        "en": "Email, phone and LinkedIn for {name}.",
+        "el": "{name}: email, τηλέφωνο και LinkedIn.",
+        "de": "E-Mail, Telefon und LinkedIn von {name}."
+      }
+    },
+    "projects": {
+      "metaTitle": {
+        "en": "Projects — Petros Pikionis",
+        "el": "Έργα: Πέτρος Πικιώνης",
+        "de": "Projekte: Petros Pikionis"
+      },
+      "metaDescription": {
+        "en": "Websites, AI SaaS and web applications, e-commerce and marketplace engineering by Petros Pikionis: each live site with its PageSpeed results, its stack and its story.",
+        "el": "Sites, AI SaaS και web εφαρμογές, e-commerce και engineering για marketplaces από τον Πέτρο Πικιώνη: κάθε live site με τα αποτελέσματά του στο PageSpeed, το stack του και την ιστορία του.",
+        "de": "Websites, KI-SaaS und Webanwendungen, E-Commerce und Marketplace-Engineering von Petros Pikionis: jede Live-Website mit ihren PageSpeed-Ergebnissen, ihrem Stack und ihrer Geschichte."
+      }
+    },
+    "blog": {
+      "metaTitle": {
+        "en": "Blog — Petros Pikionis",
+        "el": "Blog: Πέτρος Πικιώνης",
+        "de": "Blog: Petros Pikionis"
+      },
+      "metaDescription": {
+        "en": "Notes by Petros Pikionis on building websites, web applications and AI products.",
+        "el": "Σημειώσεις του Πέτρου Πικιώνη για το πώς φτιάχνονται sites, web εφαρμογές και AI προϊόντα.",
+        "de": "Notizen von Petros Pikionis zum Bauen von Websites, Webanwendungen und KI-Produkten."
+      },
+      "title": {
+        "en": "Blog",
+        "el": "Blog",
+        "de": "Blog"
+      },
+      "intro": {
+        "en": "Notes on building websites, web applications and AI products.",
+        "el": "Σημειώσεις για το πώς φτιάχνονται sites, web εφαρμογές και AI προϊόντα.",
+        "de": "Notizen zum Bauen von Websites, Webanwendungen und KI-Produkten."
+      },
+      "empty": {
+        "en": "No posts yet.",
+        "el": "Δεν υπάρχουν άρθρα ακόμα.",
+        "de": "Noch keine Beiträge."
+      },
+      "draft": {
+        "en": "draft",
+        "el": "πρόχειρο",
+        "de": "Entwurf"
+      },
+      "all": {
+        "en": "All posts",
+        "el": "Όλα τα άρθρα",
+        "de": "Alle Beiträge"
+      }
+    },
+    "form": {
+      "subject": {
+        "en": "New idea from onehublabs.com",
+        "el": "New idea from onehublabs.com",
+        "de": "New idea from onehublabs.com"
+      },
+      "need": {
+        "en": "What do you need?",
+        "el": "Τι χρειάζεσαι;",
+        "de": "Was brauchen Sie?"
+      },
+      "idea": {
+        "en": "Your idea, or the business problem",
+        "el": "Η ιδέα σου ή το πρόβλημα της επιχείρησης",
+        "de": "Ihre Idee oder das geschäftliche Problem"
+      },
+      "ideaHint": {
+        "en": "What slows your team down? What would you like to automate or build?",
+        "el": "Τι καθυστερεί την ομάδα σου; Τι θα ήθελες να αυτοματοποιήσεις ή να φτιάξεις;",
+        "de": "Was bremst Ihr Team aus? Was möchten Sie automatisieren oder bauen?"
+      },
+      "analyse": {
+        "en": "Analyse my idea",
+        "el": "Ανάλυσε την ιδέα μου",
+        "de": "Meine Idee analysieren"
+      },
+      "askAgain": {
+        "en": "Ask again",
+        "el": "Ρώτα ξανά",
+        "de": "Nochmals fragen"
+      },
+      "assistHint": {
+        "en": "Write a few sentences, and I'll ask two or three sharper questions.",
+        "el": "Γράψε λίγες προτάσεις και θα σου κάνω δύο ή τρεις πιο στοχευμένες ερωτήσεις.",
+        "de": "Schreiben Sie ein paar Sätze, dann stelle ich zwei oder drei gezieltere Fragen."
+      },
+      "draft": {
+        "en": "Draft my brief",
+        "el": "Γράψε το brief μου",
+        "de": "Mein Briefing entwerfen"
+      },
+      "redraft": {
+        "en": "Redraft my brief",
+        "el": "Ξαναγράψε το brief μου",
+        "de": "Mein Briefing neu entwerfen"
+      },
+      "answer": {
+        "en": "Your answer",
+        "el": "Η απάντησή σου",
+        "de": "Ihre Antwort"
+      },
+      "finalTitle": {
+        "en": "Final brief",
+        "el": "Τελικό brief",
+        "de": "Fertiges Briefing"
+      },
+      "yourProject": {
+        "en": "Your project",
+        "el": "Το έργο σου",
+        "de": "Ihr Projekt"
+      },
+      "draftedOn": {
+        "en": "Drafted together on",
+        "el": "Γράφτηκε μαζί στις",
+        "de": "Gemeinsam entworfen am"
+      },
+      "sections": {
+        "problem": {
+          "en": "The problem",
+          "el": "Το πρόβλημα",
+          "de": "Das Problem"
+        },
+        "users": {
+          "en": "Who it's for",
+          "el": "Για ποιους είναι",
+          "de": "Für wen es ist"
+        },
+        "competition": {
+          "en": "Competition & alternatives",
+          "el": "Ανταγωνισμός & εναλλακτικές",
+          "de": "Wettbewerb & Alternativen"
+        },
+        "directions": {
+          "en": "Possible directions",
+          "el": "Πιθανές κατευθύνσεις",
+          "de": "Mögliche Richtungen"
+        },
+        "technical": {
+          "en": "Systems, data & integrations",
+          "el": "Συστήματα, δεδομένα & συνδέσεις",
+          "de": "Systeme, Daten & Integrationen"
+        },
+        "open": {
+          "en": "Open questions",
+          "el": "Ανοιχτά ερωτήματα",
+          "de": "Offene Fragen"
+        }
+      },
+      "editAnything": {
+        "en": "Edit anything. It's your brief.",
+        "el": "Άλλαξε ό,τι θέλεις. Είναι το δικό σου brief.",
+        "de": "Ändern Sie, was Sie wollen. Es ist Ihr Briefing."
+      },
+      "dropTitle": {
+        "en": "Add your brief, photos or screenshots",
+        "el": "Πρόσθεσε το brief, φωτογραφίες ή screenshots",
+        "de": "Briefing, Fotos oder Screenshots hinzufügen"
+      },
+      "dropText": {
+        "en": "Drop files here or choose them. Images, PDF, Word, slides or sheets, up to 10 MB in total.",
+        "el": "Άφησε εδώ τα αρχεία ή διάλεξέ τα. Εικόνες, PDF, Word, παρουσιάσεις ή υπολογιστικά φύλλα, έως 10 MB συνολικά.",
+        "de": "Dateien hierher ziehen oder auswählen. Bilder, PDF, Word, Präsentationen oder Tabellen, insgesamt bis zu 10 MB."
+      },
+      "attached": {
+        "en": "Attached files",
+        "el": "Συνημμένα αρχεία",
+        "de": "Angehängte Dateien"
+      },
+      "name": {
+        "en": "Name",
+        "el": "Όνομα",
+        "de": "Name"
+      },
+      "email": {
+        "en": "Email",
+        "el": "Email",
+        "de": "E-Mail"
+      },
+      "company": {
+        "en": "Company",
+        "el": "Εταιρεία",
+        "de": "Firma"
+      },
+      "optional": {
+        "en": "(optional)",
+        "el": "(προαιρετικό)",
+        "de": "(optional)"
+      },
+      "readyNote": {
+        "en": "Your brief is ready. Change anything, add your files, then submit it.",
+        "el": "Το brief σου είναι έτοιμο. Άλλαξε ό,τι θέλεις, πρόσθεσε τα αρχεία σου και στείλ' το.",
+        "de": "Ihr Briefing ist bereit. Ändern Sie, was Sie möchten, fügen Sie Ihre Dateien hinzu und senden Sie es ab."
+      },
+      "send": {
+        "en": "Send my idea",
+        "el": "Στείλε την ιδέα μου",
+        "de": "Meine Idee senden"
+      },
+      "submit": {
+        "en": "Submit your brief",
+        "el": "Στείλε το brief σου",
+        "de": "Briefing absenden"
+      },
+      "remove": {
+        "en": "Remove {name}",
+        "el": "Αφαίρεσε το {name}",
+        "de": "{name} entfernen"
+      },
+      "cantAttach": {
+        "en": "Can't attach {name}",
+        "el": "Δεν επισυνάπτεται το {name}",
+        "de": "{name} lässt sich nicht anhängen"
+      },
+      "useTypes": {
+        "en": "Use images, PDF, Word, slides or sheets",
+        "el": "Χρησιμοποίησε εικόνες, PDF, Word, παρουσιάσεις ή υπολογιστικά φύλλα",
+        "de": "Bitte Bilder, PDF, Word, Präsentationen oder Tabellen verwenden"
+      },
+      "tooBig": {
+        "en": "{name} doesn't fit",
+        "el": "Το {name} δεν χωράει",
+        "de": "{name} passt nicht"
+      },
+      "underTotal": {
+        "en": "files must stay under {size} in total",
+        "el": "τα αρχεία πρέπει να μένουν κάτω από {size} συνολικά",
+        "de": "Dateien müssen insgesamt unter {size} bleiben"
+      },
+      "added": {
+        "en": "{size} added",
+        "el": "Προστέθηκαν {size}",
+        "de": "{size} hinzugefügt"
+      },
+      "removed": {
+        "en": "removed",
+        "el": "αφαιρέθηκε",
+        "de": "entfernt"
+      },
+      "undo": {
+        "en": "Undo",
+        "el": "Αναίρεση",
+        "de": "Rückgängig"
+      },
+      "ok": {
+        "en": "OK",
+        "el": "OK",
+        "de": "OK"
+      },
+      "sending": {
+        "en": "Sending your idea",
+        "el": "Στέλνω την ιδέα σου",
+        "de": "Ihre Idee wird gesendet"
+      },
+      "submitting": {
+        "en": "Submitting your brief",
+        "el": "Στέλνω το brief σου",
+        "de": "Ihr Briefing wird gesendet"
+      },
+      "file": {
+        "en": "{n} file",
+        "el": "{n} αρχείο",
+        "de": "{n} Datei"
+      },
+      "files": {
+        "en": "{n} files",
+        "el": "{n} αρχεία",
+        "de": "{n} Dateien"
+      },
+      "sent": {
+        "en": "Idea sent",
+        "el": "Η ιδέα στάλθηκε",
+        "de": "Idee gesendet"
+      },
+      "submitted": {
+        "en": "Brief submitted",
+        "el": "Το brief στάλθηκε",
+        "de": "Briefing gesendet"
+      },
+      "reply": {
+        "en": "I'll reply by email",
+        "el": "Θα σου απαντήσω με email",
+        "de": "Ich antworte per E-Mail"
+      },
+      "cantSend": {
+        "en": "Couldn't send",
+        "el": "Δεν στάλθηκε",
+        "de": "Senden fehlgeschlagen"
+      },
+      "retry": {
+        "en": "Retry",
+        "el": "Δοκίμασε ξανά",
+        "de": "Nochmals versuchen"
+      },
+      "connection": {
+        "en": "check your connection",
+        "el": "έλεγξε τη σύνδεσή σου",
+        "de": "prüfen Sie Ihre Verbindung"
+      },
+      "tooLong": {
+        "en": "it took too long",
+        "el": "πήρε πολύ ώρα",
+        "de": "es hat zu lange gedauert"
+      },
+      "server": {
+        "en": "the server answered {status}",
+        "el": "ο server απάντησε {status}",
+        "de": "der Server antwortete mit {status}"
+      }
+    }
+  }
+}

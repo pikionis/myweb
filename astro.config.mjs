@@ -3,6 +3,32 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// The build's language: English at /, the others under /el/ and /de/ (scripts/build.mjs builds them all, src/data/lang.ts
+// explains why one build per language).
+const LANG = process.env.PUBLIC_LANG || 'en';
+const BASE = LANG === 'en' ? '' : `/${LANG}`;
+
+// The words are in src/text/*.json as { en, el, de }: each build keeps only its own language of each, so no page or
+// script carries the others' words. English stands in for a translation that isn't written yet.
+function localize() {
+  const isCopy = (v) => v && typeof v === 'object' && !Array.isArray(v) && typeof v.en === 'string' && Object.keys(v).every((k) => ['en', 'el', 'de'].includes(k));
+  const pick = (v) => {
+    // scripts/check-words.mjs marks every word that comes from here
+    if (isCopy(v)) return process.env.TEXT_PSEUDO ? `⟦${v.en}⟧` : v[LANG] || v.en;
+    if (Array.isArray(v)) return v.map(pick);
+    if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, pick(x)]));
+    return v;
+  };
+  return {
+    name: 'localize-text',
+    enforce: 'pre',
+    transform(code, id) {
+      if (!/\/src\/text\/[^/]+\.json$/.test(id.split('?')[0])) return null;
+      return { code: JSON.stringify(pick(JSON.parse(code))), map: null };
+    },
+  };
+}
+
 // A page's module script sits at the end of its body, and the chunks it imports (GSAP, ScrollTrigger) are found only
 // once it has arrived: on a phone that is a round trip or two before anything moves. After the build, the first
 // script names everything the page's scripts import (`modulepreload`), so it is all fetched together. The links stand
@@ -19,7 +45,7 @@ function modulePreload() {
           if (seen.has(src)) return seen;
           seen.add(src);
           if (!imported.has(src)) {
-            const code = fs.readFileSync(path.join(out, src), 'utf8');
+            const code = fs.readFileSync(path.join(out, src.slice(BASE.length)), 'utf8');
             const found = [...code.matchAll(/import\s*(?:[\w$*{}\s,]+from\s*)?["'](\.\/[^"']+\.js)["']/g)]
               .map((m) => path.posix.join(path.posix.dirname(src), m[1]));
             imported.set(src, found);
@@ -52,5 +78,8 @@ export default defineConfig({
   site: 'https://onehublabs.com',
   // the dev toolbar sits bottom-centre, right where the status island lives on /contact
   devToolbar: { enabled: false },
+  // the other languages' pages sit under their own folder, and the files in public/ exist once, at the root
+  ...(BASE ? { base: BASE, outDir: `./dist/${LANG}`, publicDir: './.no-public-in-this-language' } : {}),
+  vite: { plugins: [localize()] },
   integrations: [modulePreload()],
 });

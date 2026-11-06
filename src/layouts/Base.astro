@@ -11,7 +11,7 @@ import '../styles/global.css';
 import { person, meta, brand, services } from '../data/site';
 // the site's language, which the page declares: Greek capitals lose their accents when uppercased only on a page
 // that says it is Greek
-import { lang } from '../data/lang';
+import { lang, LANGS, inLang, to, unlocalized } from '../data/lang';
 
 // `light`: the page opens on the warm light ground (every page but the home page, whose dark hero comes first)
 interface Props { title?: string; description?: string; light?: boolean }
@@ -24,7 +24,11 @@ const {
 // every page names its one address (folders end in a slash, as GitHub Pages serves them) and its share picture
 const origin = (Astro.site ?? new URL('https://onehublabs.com')).origin;
 const path = Astro.url.pathname;
-const canonical = origin + (path.endsWith('/') || /\.\w+$/.test(path) ? path : `${path}/`);
+// the same page in each language, for search engines; the Greek page also says which face its Greek letters are in
+const slashed = (p: string) => (p.endsWith('/') || /\.\w+$/.test(p) ? p : `${p}/`);
+const here = slashed(unlocalized(path));
+const greek = '/fonts/manrope-greek.woff2';
+const canonical = origin + slashed(path);
 const image = origin + meta.image;
 
 // Structured data, the same on every page: who builds, the business, and the site itself
@@ -64,6 +68,8 @@ const ld = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {LANGS.map((l) => <link rel="alternate" hreflang={l.code} href={origin + inLang(l.code, here)} />)}
+    <link rel="alternate" hreflang="x-default" href={origin + here} />
     <meta name="theme-color" content={light ? '#f4f3ef' : '#0a0b0a'} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={person.name} />
@@ -84,19 +90,20 @@ const ld = {
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <link rel="preload" href={font700} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={font400} as="font" type="font/woff2" crossorigin />
-    {path === '/' && <link rel="preload" href={font500} as="font" type="font/woff2" crossorigin />}
+    {here === '/' && <link rel="preload" href={font500} as="font" type="font/woff2" crossorigin />}
+    {lang === 'el' && <link rel="preload" href={greek} as="font" type="font/woff2" crossorigin />}
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
     <!-- Picks the opening intro before the first paint (src/scripts/intro.ts): the full intro once per session on
          the home page (a still logo with reduced motion), otherwise only the header logo fading in, so a visitor who
          arrives on another page gets that page at once. If the intro's script never arrives, the failsafe takes the
          overlay away so the page is never left covered. -->
-    <script is:inline>
+    <script is:inline define:vars={{ home: to('/') }}>
       (function () {
         var html = document.documentElement, mode = 'quick';
         // script is running: things that only open with script (the service stories) can start closed
         html.classList.add('js');
         try {
-          if (location.pathname === '/' && !sessionStorage.getItem('ohl-intro')) {
+          if (location.pathname === home && !sessionStorage.getItem('ohl-intro')) {
             mode = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'still' : 'full';
           }
         } catch (e) { /* no storage: no intro */ }

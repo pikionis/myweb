@@ -1,3 +1,5 @@
+import { fill } from '../data/lang';
+
 /**
  * Activity terrain: a year of GitHub contributions as columns you can tilt and turn.
  *
@@ -36,7 +38,9 @@ const WAVE = 0.7;
 // room for the day labels that sit left of the board in the flat view
 const PADDING = 44;
 const REST_EPSILON = 0.0005;
-const LABELS = ['Mon', '', 'Wed', '', 'Fri', '', ''];
+// the rows that name their day (Monday first); 1 January 2024 was a Monday
+const LABELS = [0, -1, 2, -1, 4, -1, -1];
+const weekday = (i: number) => new Date(Date.UTC(2024, 0, 1 + i)).toLocaleDateString(locale, { weekday: 'short', timeZone: 'UTC' });
 // Below this width the board shows half a year.
 const NARROW = 640;
 
@@ -148,9 +152,10 @@ function polygon(ctx: CanvasRenderingContext2D, points: number[][]) {
   ctx.closePath();
 }
 
+let locale = 'en-GB';
 const formatDay = (date: Date) =>
-  date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
-const formatMonth = (date: Date) => date.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' });
+  date.toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+const formatMonth = (date: Date) => date.toLocaleDateString(locale, { month: 'short', timeZone: 'UTC' });
 
 /**
  * Wires one terrain. Expects inside `root`: a <canvas>, a [data-readout] line,
@@ -163,7 +168,10 @@ export function activityTerrain(root: HTMLElement) {
   if (!canvas || !readoutEl || !dataEl) return;
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
-  const all: { endDate: string; counts: number[] } = JSON.parse(dataEl.textContent || '{}');
+  const all: { endDate: string; counts: number[]; locale: string; words: Record<'year' | 'weeks' | 'one' | 'day' | 'labelWeeks', string> } = JSON.parse(dataEl.textContent || '{}');
+  locale = all.locale;
+  const w = all.words;
+  const count = (n: number) => n.toLocaleString(locale);
   const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-view]')];
 
   let data: number[] = [], cells: Cell[] = [], weeks = 1, total = 0;
@@ -191,14 +199,14 @@ export function activityTerrain(root: HTMLElement) {
     s.bumps = new Float64Array(cells.length);
     s.bumpSpeeds = new Float64Array(cells.length);
     s.hovered = -1; active = null;
-    canvas.setAttribute('aria-label', `GitHub activity: ${total} contributions over ${weeks} weeks. Use the arrow keys to read each day.`);
+    canvas.setAttribute('aria-label', fill(w.labelWeeks, { n: count(total), weeks }));
     readout();
   };
 
   const readout = () => {
     readoutEl.textContent = active
-      ? `${active.count} ${active.count === 1 ? 'contribution' : 'contributions'} on ${formatDay(active.date)}`
-      : `${total.toLocaleString('en-US')} contributions in the last ${data === all.counts ? 'year' : `${weeks} weeks`}`;
+      ? fill(active.count === 1 ? w.one : w.day, { n: count(active.count), day: formatDay(active.date) })
+      : fill(data === all.counts ? w.year : w.weeks, { n: count(total), weeks });
   };
 
   // How tall each column stands right now: the rise travels as a wave out from the origin,
@@ -260,9 +268,9 @@ export function activityTerrain(root: HTMLElement) {
     }
     ctx.textAlign = 'right';
     for (let row = 0; row < DAYS; row++) {
-      if (!LABELS[row]) continue;
+      if (LABELS[row] < 0) continue;
       const [x, y] = project(p, -0.35 - weeks / 2, 0, row + 0.4 - DAYS / 2);
-      ctx.fillText(LABELS[row], x, y);
+      ctx.fillText(weekday(LABELS[row]), x, y);
     }
     ctx.globalAlpha = 1;
   };

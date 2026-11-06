@@ -7,6 +7,7 @@ import { render } from 'astro:content';
 import LivePreview from './LivePreview.astro';
 import { projectsInOrder, projectHref, visitUrl, badgeOf, hasStory, type ProjectEntry } from '../data/projects';
 import { services, serviceColors, ui, person } from '../data/site';
+import { day, lang } from '../data/lang';
 import pagespeed from '../data/pagespeed.json';
 
 interface Props { selected?: string }
@@ -36,7 +37,7 @@ const byScore = (n: number) => (n >= 90 ? 'good' : n >= 50 ? 'average' : 'poor')
 const byCrux = (c: string) => (c === 'FAST' ? 'good' : c === 'AVERAGE' ? 'average' : 'poor');
 const shown = (k: string, v: number) =>
   k === 'cls' ? String(Number(v.toFixed(3))) : v >= 1000 ? `${(v / 1000).toFixed(1)} s` : `${Math.round(v)} ms`;
-const day = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
 const report = (url: string, run: 'mobile' | 'desktop') =>
   `https://pagespeed.web.dev/report?url=${encodeURIComponent(url)}&form_factor=${run}`;
 const RUNS = [['mobile', t.phone], ['desktop', t.desktop]] as const;
@@ -171,7 +172,7 @@ const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stro
                     </div>
                   )}
                   <p class="s-source">
-                    {t.source[r.source]}, {device.toLowerCase()}, {t.measured} {day(r.at)}.
+                    {t.source[r.source]}, {lang === 'de' ? device : device.toLowerCase()}, {t.measured} {day(r.at)}.
                     <a href={report(run.url, key)} target="_blank" rel="noopener">{t.report}<Fragment set:html={arrow} /></a>
                   </p>
                 </div>

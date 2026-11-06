@@ -6,11 +6,11 @@
 import ServiceArt from './ServiceArt.astro';
 import { servicesPage } from '../data/servicespage';
 import { brief } from '../data/site';
-import { t, lang } from '../data/lang';
+import { t, lang, to } from '../data/lang';
 
 const s = servicesPage.start;
 const action = `https://formsubmit.co/${brief.formsubmit}`;
-const site = Astro.site ? new URL('/services/', Astro.site).href : '/services/';
+const site = Astro.site ? new URL(to('/services/'), Astro.site).href : to('/services/');
 const needs = [...servicesPage.sections.map((x) => ({ key: x.key as string, label: t(x.short) })), { key: 'unsure', label: t(s.unsure) }];
 ---
 <section id="start" class="start" aria-labelledby="start-title" data-start>

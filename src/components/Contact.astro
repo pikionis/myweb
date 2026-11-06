@@ -1,33 +1,37 @@
 ---
-import { person, pages, ui } from '../data/site';
+import { person, pages, ui, words } from '../data/site';
+import { fill, to } from '../data/lang';
+import LangSwitch from './LangSwitch.astro';
 import BriefForm from './BriefForm.astro';
 // `page`: this block is the whole /contact page (a section with the page's h1 and the brief form), not the footer
 interface Props { page?: boolean }
 const { page = false } = Astro.props;
 const Root = page ? 'section' : 'footer';
 const Heading = page ? 'h1' : 'h2';
-const surname = person.name.split(' ').at(-1);
+const w = words.footer;
+// the surname stays in Latin letters in every language: the dots are drawn from Space Grotesk
+const surname = 'Pikionis';
 const location = person.location.replace(' · ', ', ');
 ---
 <!-- Contact and footer in one dark field: the invitation, the footer proper, then the surname as a dither field -->
 <Root id="contact" class:list={['close', 'theme-dark', { page }]}>
   <div class="wrap top">
     <div class="invite">
-      <Heading>Let's build<br />together.</Heading>
+      <Heading>{w.heading[0]}<br />{w.heading[1]}</Heading>
       {page ? (
-        <p class="pitch">Pitch me your idea. A website, or AI that takes repetitive work off your team — tell me the business problem and send whatever helps: a brief, photos, screenshots.</p>
+        <p class="pitch">{w.pitch}</p>
       ) : (
         <>
           <button class="mail" id="emailBtn" type="button" data-mail={person.email}>{person.email}</button>
-          <span class="hint" id="copyHint" aria-live="polite">Click to copy</span>
-          <a class="to-brief" href="/contact">Pitch an idea or send a brief</a>
+          <span class="hint" id="copyHint" aria-live="polite" data-copy={w.copy} data-copied={w.copied}>{w.copy}</span>
+          <a class="to-brief" href={to('/contact')}>{w.toBrief}</a>
         </>
       )}
     </div>
     {page && (
       <div class="direct">
         <button class="mail" id="emailBtn" type="button" data-mail={person.email}>{person.email}</button>
-        <span class="hint" id="copyHint" aria-live="polite">Click to copy</span>
+        <span class="hint" id="copyHint" aria-live="polite" data-copy={w.copy} data-copied={w.copied}>{w.copy}</span>
       </div>
     )}
   </div>
@@ -36,17 +40,17 @@ const location = person.location.replace(' · ', ', ');
   <!-- the footer proper: who, where to go, how to reach me -->
   <div class="wrap foot">
     <div class="brand">
-      <a class="logo" href="/" aria-label={`${person.name}, home`}>
+      <a class="logo" href={to('/')} aria-label={fill(w.home, { name: person.name })}>
         {person.logo ? <img src={person.logo} alt="" height="40" /> : <span>{person.name}</span>}
       </a>
       <p>{person.role}. {ui.footerLine}</p>
     </div>
-    <nav class="col" aria-label="Footer">
-      <p class="ctitle">Pages</p>
-      <ul>{pages.map(({ href, name }) => <li><a href={href}>{name}</a></li>)}</ul>
+    <nav class="col" aria-label={words.nav.footer}>
+      <p class="ctitle">{w.pages}</p>
+      <ul>{pages.map(({ href, name }) => <li><a href={to(href)}>{name}</a></li>)}</ul>
     </nav>
     <div class="col reach">
-      <p class="ctitle">Contact</p>
+      <p class="ctitle">{w.contact}</p>
       <ul>
         <li><a href={`mailto:${person.email}`}>{person.email}</a></li>
         <li><a href={person.phoneHref}>{person.phone}</a></li>
@@ -54,7 +58,7 @@ const location = person.location.replace(' · ', ', ');
       </ul>
     </div>
     <div class="col">
-      <p class="ctitle">Follow</p>
+      <p class="ctitle">{w.follow}</p>
       <ul>
         <li><a href={person.linkedin} target="_blank" rel="noopener">LinkedIn</a></li>
         <li><a href={person.github} target="_blank" rel="noopener">GitHub</a></li>
@@ -63,7 +67,8 @@ const location = person.location.replace(' · ', ', ');
   </div>
   <div class="wrap legal">
     <span>© {new Date().getFullYear()} {person.name}</span>
-    <a href="#" class="totop">Back to top
+    <LangSwitch />
+    <a href="#" class="totop">{w.top}
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" /></svg>
     </a>
   </div>

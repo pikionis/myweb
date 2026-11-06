@@ -1,17 +1,20 @@
 ---
 import Site from '../../layouts/Site.astro';
-import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import { getPosts, type Post } from '../../data/posts';
+import { person, words } from '../../data/site';
+import { day as dated, to } from '../../data/lang';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft);
+  const posts = await getPosts();
   return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
 }
 
-const { post } = Astro.props as { post: CollectionEntry<'blog'> };
+const { post } = Astro.props as { post: Post };
 const { Content } = await render(post);
-const day = post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+const day = dated(post.data.date);
 ---
-<Site title={`${post.data.title} — Petros Pikionis`} description={post.data.description} light>
+<Site title={`${post.data.title} — ${person.name}`} description={post.data.description} light>
   <main class="page theme-light">
     <article class="wrap">
       <header class="head" data-rise>
@@ -20,7 +23,7 @@ const day = post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 
         <p>{post.data.description}</p>
       </header>
       <div class="prose"><Content /></div>
-      <p class="back"><a href="/blog">All posts</a></p>
+      <p class="back"><a href={to('/blog')}>{words.blog.all}</a></p>
     </article>
   </main>
 </Site>

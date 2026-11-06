@@ -11,7 +11,7 @@ import StartForm from '../components/StartForm.astro';
 import StoryArt from '../components/StoryArt.astro';
 import StoryDefs from '../components/StoryDefs.astro';
 import { servicesPage as P } from '../data/servicespage';
-import { t } from '../data/lang';
+import { t, to } from '../data/lang';
 
 const { hero: h, picker: pk, sections, how: hw, prices: pr } = P;
 const arrow = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
@@ -67,7 +67,7 @@ const title = (key: string) => t(sections.find((s) => s.key === key)!.title);
           ))}
         </ol>
       </div>
-      <a class="how-story" href={hw.storyHref}>{t(hw.story)} <Fragment set:html={arrow} /></a>
+      <a class="how-story" href={to(hw.storyHref)}>{t(hw.story)} <Fragment set:html={arrow} /></a>
     </section>
 
     <section id="prices" class="prices" aria-labelledby="prices-title">
@@ -166,7 +166,7 @@ const title = (key: string) => t(sections.find((s) => s.key === key)!.title);
   .pick-art :global(.sv) { --sw: 4; }
   .pick-text { grid-area: text; font-size: clamp(1.2rem, 5vw, 2.1rem); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; text-wrap: balance; }
   .pick-to { grid-area: to; display: inline-flex; align-items: center; gap: 6px; font-size: 0.9375rem; font-weight: 500; color: var(--accent-ink); }
-  .pick-to :global(svg) { transition: transform 0.2s var(--ease-out); }
+  .pick-to :global(svg) { flex: none; transition: transform 0.2s var(--ease-out); }
   @media (hover: hover) and (pointer: fine) {
     .pick:hover { background: var(--surface); }
     .pick:hover .pick-to :global(svg) { transform: translateX(4px); }

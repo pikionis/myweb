@@ -167,7 +167,7 @@ export function projectsHub(root: HTMLElement) {
     pick(link.dataset.pick!);
   });
   const fromAddress = () => {
-    const m = /^\/projects\/([^/]+)\/?$/.exec(location.pathname);
+    const m = /\/projects\/([^/]+)\/?$/.exec(location.pathname);
     return m ? decodeURIComponent(m[1]) : first;
   };
   window.addEventListener('popstate', () => pick(fromAddress(), { push: false, scroll: false }));

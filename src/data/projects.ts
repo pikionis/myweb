@@ -1,13 +1,24 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { services, ui } from './site';
+import { lang, to } from './lang';
 
 export type ProjectEntry = CollectionEntry<'projects'>;
 
 // drafts show while developing, never on the live site
 const published = ({ data }: { data: { draft: boolean } }) => import.meta.env.DEV || !data.draft;
 
+// A project's translations are files of their own (src/content/projects/el/<id>.md, .../de/<id>.md) holding only what
+// is written in words; what they leave out stays as in the English file.
+const translations = async () => new Map((await getCollection('projectText')).map((e) => [e.id, e]));
+const inThisLanguage = (all: Awaited<ReturnType<typeof translations>>) => (p: ProjectEntry): ProjectEntry => {
+  const tr = lang === 'en' ? undefined : all.get(`${lang}/${p.id}`);
+  if (!tr) return p;
+  const words = Object.fromEntries(Object.entries(tr.data).filter(([, v]) => v !== undefined));
+  return { ...p, data: { ...p.data, ...words }, ...(tr.body?.trim() ? { body: tr.body, rendered: tr.rendered } : {}) };
+};
+
 export async function getProjects() {
-  const all = await getCollection('projects', published);
+  const all = (await getCollection('projects', published)).map(inThisLanguage(await translations()));
   return all.sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
 }
 
@@ -32,7 +43,7 @@ export async function projectsInOrder() {
 export const hasStory = (p: ProjectEntry) => !!p.body?.replace(/<!--[\s\S]*?-->/g, '').trim();
 
 /** Its page on /projects. */
-export const projectHref = (p: ProjectEntry) => `/projects/${p.id}`;
+export const projectHref = (p: ProjectEntry) => to(`/projects/${p.id}`);
 
 /** The live site to visit: none while it is still launching. */
 export const visitUrl = (p: ProjectEntry) => (p.data.launching ? undefined : p.data.url);

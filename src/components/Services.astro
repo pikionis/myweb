@@ -1,4 +1,5 @@
 ---
+import { to } from '../data/lang';
 import { servicesWithProjects, hasStory, projectHref, visitUrl, badgeOf } from '../data/projects';
 import { serviceColors, ui } from '../data/site';
 import { stories } from '../data/stories';
@@ -23,7 +24,7 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
 <section id="services" class="work">
   <header class="wrap sec-head">
     <h2>{ui.work.title}</h2>
-    <p>{ui.work.intro} <a href="/services">{ui.work.allServices}</a> · <a href="/projects">{ui.work.allProjects}</a></p>
+    <p>{ui.work.intro} <a href={to('/services')}>{ui.work.allServices}</a> · <a href={to('/projects')}>{ui.work.allProjects}</a></p>
   </header>
 
   <!-- Services stack as sheets; inside each sheet its projects stack the same way (src/scripts/workstack.ts) -->
@@ -301,7 +302,7 @@ const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" strok
   .stack.on .pstack { display: block; position: relative; height: 100%; margin-top: 0; }
   .stack.on .pcard { position: absolute; left: 0; right: 0; top: calc(var(--j) * var(--pband)); bottom: 0; }
   .stack.on .pmedia { aspect-ratio: auto; }
-  .stack.on .pline { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stack.on .pline { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
   .stack.on .copy { margin-top: 0; }
   /* the texts that are not showing step aside too, so their links never catch a click meant for the one that is */
   .stack.on .blurb { grid-area: 1 / 1; margin: 0; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s; }

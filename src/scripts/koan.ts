@@ -1,3 +1,4 @@
+import { upper } from '../data/lang';
 import { gsap } from 'gsap';
 import { type Tl, part, parts, strokes, draw, drawIn, show, pop, loop } from './storydraw';
 import { chapter } from './chapter';
@@ -128,7 +129,7 @@ function departures(el: HTMLElement, still: boolean) {
   const POOL = 'ABCDEFGHIJKLMNOPRSTUVWXYZ0123456789';
   const rand = () => POOL[Math.floor(Math.random() * POOL.length)];
   const blank = ' ';
-  const letters = (text: string, n: number) => text.toUpperCase().padEnd(n).slice(0, n).split('').map((c) => (c === ' ' ? blank : c));
+  const letters = (text: string, n: number) => upper(text).padEnd(n).slice(0, n).split('').map((c) => (c === ' ' ? blank : c));
   type Flip = { el: HTMLElement; to: string; start: number; end: number; step: number };
   let run: gsap.core.Tween | null = null, later: gsap.core.Tween | null = null;
   const set = (k: number, shown: number) => {

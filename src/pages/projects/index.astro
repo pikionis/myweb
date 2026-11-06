@@ -2,7 +2,8 @@
 // /projects: the panel of every project, opening on the first (src/components/ProjectsHub.astro)
 import Site from '../../layouts/Site.astro';
 import ProjectsHub from '../../components/ProjectsHub.astro';
+import { words } from '../../data/site';
 ---
-<Site title="Projects — Petros Pikionis" description="Websites, AI SaaS and web applications, e-commerce and marketplace engineering by Petros Pikionis: each live site with its PageSpeed results, its stack and its story." light>
+<Site title={words.projects.metaTitle} description={words.projects.metaDescription} light>
   <ProjectsHub />
 </Site>

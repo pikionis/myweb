@@ -8,7 +8,7 @@ import { glob } from 'astro/loaders';
 const service = z.enum(['web', 'apps', 'commerce', 'search']);
 
 const projects = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.md', base: './src/content/projects' }),
+  loader: glob({ pattern: '[^_]*.md', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
     summary: z.string(),
@@ -40,8 +40,21 @@ const projects = defineCollection({
   }),
 });
 
+// A project in another language: only its words (src/content/projects/el/<id>.md), the body being its story.
+const projectText = defineCollection({
+  loader: glob({ pattern: '{el,de}/[^_]*.md', base: './src/content/projects' }),
+  schema: z.object({
+    summary: z.string().optional(),
+    blurb: z.string().optional(),
+    badge: z.string().optional(),
+    tags: z.array(z.string()).optional(),
+    metric: z.object({ value: z.string(), label: z.string() }).optional(),
+    scope: z.array(z.string()).optional(),
+  }),
+});
+
 const blog = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.md', base: './src/content/blog' }),
+  loader: glob({ pattern: '[^_]*.md', base: './src/content/blog' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -50,4 +63,10 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { projects, blog };
+// A post in another language (src/content/blog/el/<id>.md); what it leaves out stays as in the English file.
+const postText = defineCollection({
+  loader: glob({ pattern: '{el,de}/[^_]*.md', base: './src/content/blog' }),
+  schema: z.object({ title: z.string().optional(), description: z.string().optional() }),
+});
+
+export const collections = { projects, projectText, blog, postText };

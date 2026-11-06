@@ -8,7 +8,7 @@
     "github": "node scripts/github.mjs",
     "pagespeed": "node --env-file-if-exists=.env scripts/pagespeed.mjs",
     "prebuild": "node scripts/github.mjs",
-    "build": "astro build",
+    "build": "node scripts/build.mjs",
     "preview": "astro preview",
     "thumbs": "node scripts/thumbs.mjs"
   },

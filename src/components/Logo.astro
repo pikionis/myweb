@@ -1,12 +1,13 @@
 ---
 import { brand } from '../data/site';
+import { to } from '../data/lang';
 import { symbolBox, wordBox, letters } from '../data/logo';
 ---
 <!-- The header lockup, top left: the symbol, the wordmark beside it and the motto under the wordmark. Ink on
      light, ivory on dark; the arc stays cobalt. The intro lands its own logo and motto exactly on these
      boxes (src/scripts/intro.ts). The link is the logo; the motto beside it is plain text. -->
 <div class="brand-wrap" data-brand>
-  <a class="brand" href="/" aria-label={brand.homeLabel}>
+  <a class="brand" href={to('/')} aria-label={brand.homeLabel}>
     <svg class="brand-sym" viewBox={`0 0 ${symbolBox.w} ${symbolBox.h}`} aria-hidden="true" focusable="false">
       <use href="#ohl-top" /><use href="#ohl-left" /><use href="#ohl-right" /><use class="arc" href="#ohl-arc" />
     </svg>

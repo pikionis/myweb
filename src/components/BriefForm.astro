@@ -3,49 +3,55 @@
 // and drafts a final brief, files ride along, and sending shows live progress in the status island.
 // Without script (or on the live site until the assistant's backend exists) it is a plain form.
 import '../styles/island.css';
-import { brief } from '../data/site';
+import { brief, bots, services, words } from '../data/site';
+import { LANGS, lang, to } from '../data/lang';
 
 const action = `https://formsubmit.co/${brief.formsubmit}`;
 const accept = 'image/*,.pdf,.doc,.docx,.ppt,.pptx,.key,.xls,.xlsx,.csv,.txt,.md,.rtf';
-const site = Astro.site ? new URL('/contact', Astro.site).href : '/contact';
+const site = Astro.site ? new URL(to('/contact'), Astro.site).href : to('/contact');
+const w = words.form;
+// a service's "Start a project" (/contact?service=web) starts on its need: which services each need answers
+const servicesOf = (need: string) => [...services, bots].filter((s) => s.need === need).map((s) => s.key).join(' ');
+// what the script says while the form works (src/scripts/brief.ts)
+const said = { ...w, locale: LANGS.find((l) => l.code === lang)!.locale };
 // the final brief, section by section; names are what arrives in the email
 const sections: [string, string][] = [
-  ['problem', 'The problem'],
-  ['users', "Who it's for"],
-  ['competition', 'Competition & alternatives'],
-  ['directions', 'Possible directions'],
-  ['technical', 'Systems, data & integrations'],
-  ['open', 'Open questions'],
+  ['problem', w.sections.problem],
+  ['users', w.sections.users],
+  ['competition', w.sections.competition],
+  ['directions', w.sections.directions],
+  ['technical', w.sections.technical],
+  ['open', w.sections.open],
 ];
 ---
-<form class="brief" data-brief action={action} method="POST" enctype="multipart/form-data" data-max-bytes={brief.maxBytes}>
+<form class="brief" data-brief action={action} method="POST" enctype="multipart/form-data" data-max-bytes={brief.maxBytes} data-words={JSON.stringify(said)}>
   <!-- FormSubmit settings -->
-  <input type="hidden" name="_subject" value="New idea from onehublabs.com" />
+  <input type="hidden" name="_subject" value={w.subject} />
   <input type="hidden" name="_template" value="table" />
   <input type="hidden" name="_next" value={site} />
   <input type="text" name="_honey" class="honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
   <fieldset class="needs">
-    <legend>What do you need?</legend>
+    <legend>{w.need}</legend>
     <div class="chips">
       {brief.needs.map((n) => (
-        <label class="chip"><input type="radio" name="need" value={n} /><span>{n}</span></label>
+        <label class="chip"><input type="radio" name="need" value={n.label} data-services={servicesOf(n.key)} /><span>{n.label}</span></label>
       ))}
     </div>
   </fieldset>
 
   <div class="idea">
-    <label class="field" for="brief-idea"><span class="lab">Your idea, or the business problem</span></label>
+    <label class="field" for="brief-idea"><span class="lab">{w.idea}</span></label>
     <div class="idea-box" data-idea-box>
-      <textarea id="brief-idea" name="message" rows="6" required placeholder="What slows your team down? What would you like to automate or build?"></textarea>
+      <textarea id="brief-idea" name="message" rows="6" required placeholder={w.ideaHint}></textarea>
       <span class="scan" aria-hidden="true"></span>
     </div>
     <div class="assist" data-assist hidden>
       <button type="button" class="ghost" data-analyse disabled>
         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2.5c.5 4.6 2.4 6.9 7.5 7.5-5.1.6-7 2.9-7.5 7.5-.5-4.6-2.4-6.9-7.5-7.5 5.1-.6 7-2.9 7.5-7.5Z" /></svg>
-        <span data-analyse-label>Analyse my idea</span>
+        <span data-analyse-label>{w.analyse}</span>
       </button>
-      <span class="assist-hint">Write a few sentences, and I'll ask two or three sharper questions.</span>
+      <span class="assist-hint">{w.assistHint}</span>
     </div>
   </div>
 
@@ -54,7 +60,7 @@ const sections: [string, string][] = [
       <p class="preview-note" data-preview-note hidden><b>Preview.</b> Sample questions on your machine only, until the real assistant is connected.</p>
     )}
     <ol class="qs" data-qs aria-live="polite"></ol>
-    <button type="button" class="ghost" data-draft hidden>Draft my brief</button>
+    <button type="button" class="ghost" data-draft hidden>{w.draft}</button>
   </div>
 
   <template data-q-template>
@@ -63,15 +69,15 @@ const sections: [string, string][] = [
       <p class="qtext"></p>
       <div class="replies"></div>
       <input type="hidden" class="qfield" />
-      <textarea class="qanswer" rows="1" placeholder="Your answer"></textarea>
+      <textarea class="qanswer" rows="1" placeholder={w.answer}></textarea>
     </li>
   </template>
 
   <!-- the brief, as a document the visitor can still edit -->
   <section class="final" data-final hidden aria-labelledby="final-title">
     <header class="final-head">
-      <h2 id="final-title">Final brief</h2>
-      <p class="final-meta"><span data-for>Your project</span> · Drafted together on <time data-date></time></p>
+      <h2 id="final-title">{w.finalTitle}</h2>
+      <p class="final-meta"><span data-for>{w.yourProject}</span> · {w.draftedOn} <time data-date></time></p>
     </header>
     {sections.map(([key, label]) => (
       <div class="sec" data-sec={key}>
@@ -81,7 +87,7 @@ const sections: [string, string][] = [
     ))}
     <p class="final-foot">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4ZM13.5 6.5l4 4" /></svg>
-      Edit anything. It's your brief.
+      {w.editAnything}
     </p>
   </section>
 
@@ -89,30 +95,30 @@ const sections: [string, string][] = [
     <input id="brief-files" type="file" name="attachment" multiple accept={accept} />
     <label for="brief-files" class="drop-label">
       <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" /></svg>
-      <b>Add your brief, photos or screenshots</b>
-      <span>Drop files here or choose them. Images, PDF, Word, slides or sheets, up to 10 MB in total.</span>
+      <b>{w.dropTitle}</b>
+      <span>{w.dropText}</span>
     </label>
-    <ul class="files" data-files aria-label="Attached files"></ul>
+    <ul class="files" data-files aria-label={w.attached}></ul>
   </div>
 
   <div class="who">
     <label class="field">
-      <span class="lab">Name</span>
+      <span class="lab">{w.name}</span>
       <input name="name" required autocomplete="name" />
     </label>
     <label class="field">
-      <span class="lab">Email</span>
+      <span class="lab">{w.email}</span>
       <input type="email" name="email" required autocomplete="email" />
     </label>
     <label class="field">
-      <span class="lab">Company <i>(optional)</i></span>
+      <span class="lab">{w.company} <i>{w.optional}</i></span>
       <input name="company" autocomplete="organization" />
     </label>
   </div>
 
   <div class="actions" data-actions>
-    <p class="ready-note">Your brief is ready. Change anything, add your files, then submit it.</p>
-    <button class="send" type="submit"><span class="lbl">Send my idea</span></button>
+    <p class="ready-note">{w.readyNote}</p>
+    <button class="send" type="submit"><span class="lbl">{w.send}</span></button>
   </div>
   <div class="island-mount" data-island></div>
 </form>

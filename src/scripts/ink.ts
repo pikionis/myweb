@@ -1,3 +1,5 @@
+import { upper } from '../data/lang';
+
 /**
  * Ink headline: the curtain title is written in ink that bleeds when stirred and gathers again.
  *
@@ -474,7 +476,7 @@ function drawMask(canvas: HTMLCanvasElement, h1: HTMLElement, words: Word[], wid
   // A little blur gives the letters a wet, feathered edge to bleed from.
   ctx.filter = `blur(${Math.max(1, size * 0.012)}px)`;
   for (const w of words) {
-    const text = cs.textTransform === 'uppercase' ? w.text.toUpperCase() : w.text;
+    const text = cs.textTransform === 'uppercase' ? upper(w.text) : w.text;
     const m = ctx.measureText(text);
     // the range box is the font's content area, so its top plus the ascent is the baseline
     const ascent = m.fontBoundingBoxAscent ?? size * 0.8;

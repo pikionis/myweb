@@ -127,6 +127,16 @@ async function fromFile(dir, id, strategy) {
   return { source: 'lighthouse', ...lab(JSON.parse(await readFile(`${dir}/${id}-${strategy}.json`, 'utf8'))) };
 }
 
+if (process.env.GITHUB_EVENT_NAME === 'push') {
+  try {
+    const res = await fetch('https://onehublabs.com/pagespeed.json', { signal: AbortSignal.timeout(20000) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    await writeFile(OUT, await res.text());
+    console.log('pagespeed: a push keeps the live results; the daily deploy, or one started by hand, measures');
+    process.exit(0);
+  } catch (e) { console.log(`pagespeed: no live results to keep (${e.message}), measuring`); }
+}
+
 const lhrDir = process.argv.includes('--lhr') ? process.argv[process.argv.indexOf('--lhr') + 1] : null;
 let saved = {};
 try { saved = JSON.parse(await readFile(OUT, 'utf8')); } catch {}

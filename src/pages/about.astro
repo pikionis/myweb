@@ -4,21 +4,23 @@ import { join } from 'node:path';
 import Site from '../layouts/Site.astro';
 import Terrain from '../components/Terrain.astro';
 import MyStory from '../components/MyStory.astro';
-import { person, hero, stats } from '../data/site';
+import { person, hero, stats, words } from '../data/site';
+import { fill } from '../data/lang';
 import { aboutIntro, t } from '../data/mystory';
 
 const location = person.location.replace(' · ', ', ');
+const w = words.about;
 // "Download CV" shows once the PDF is in public/ (while developing it always shows, so it can be seen)
 const cv = person.cv && (import.meta.env.DEV || existsSync(join(process.cwd(), 'public', person.cv))) ? person.cv : undefined;
 const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" /></svg>';
 ---
-<Site title="About me — Petros Pikionis" description={`${person.name}, ${person.role} based in ${location}.`} light>
+<Site title={w.metaTitle} description={fill(w.metaDescription, { name: person.name, role: person.role, location })} light>
   <main class="page theme-light about">
     <!-- who this is, first: the portrait, what I do, the CV; then the story, what I work on, and a year of code -->
     <section class="wrap me">
       <figure class="portrait">
         {person.photo ? (
-          <img src={person.photo} alt={`Portrait of ${person.name}`} width="480" height="640" fetchpriority="high" />
+          <img src={person.photo} alt={fill(words.home.portrait, { name: person.name })} width="480" height="640" fetchpriority="high" />
         ) : (
           <div class="ph" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
@@ -31,7 +33,7 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
         </figcaption>
       </figure>
       <div class="me-text" data-rise>
-        <h1>About me</h1>
+        <h1>{w.title}</h1>
         <p class="lead">{hero.intro}</p>
         <p class="palette">{hero.palette}</p>
         {cv && <a class="cv" href={cv} download>{t(aboutIntro.cv)}<Fragment set:html={down} /></a>}
@@ -41,7 +43,7 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
     <div class="wrap"><MyStory cv={cv} /></div>
 
     <section class="wrap bio" data-rise>
-      <h2>What I work on</h2>
+      <h2>{w.work}</h2>
       <ul class="areas">
         {hero.areas.map((a) => <li>{a}</li>)}
       </ul>
@@ -53,8 +55,8 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
     <!-- last, the work itself: a year of commits -->
     <section class="wrap code" aria-labelledby="code-title">
       <header class="code-head" data-rise>
-        <h2 id="code-title">A year of code</h2>
-        <p>Every column is a day I pushed code to GitHub.</p>
+        <h2 id="code-title">{w.codeTitle}</h2>
+        <p>{w.codeIntro}</p>
       </header>
       <Terrain />
     </section>

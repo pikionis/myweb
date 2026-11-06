@@ -1,0 +1,1460 @@
+{
+  "aboutIntro": {
+    "cv": {
+      "en": "Download CV",
+      "el": "Κατέβασε το βιογραφικό",
+      "de": "CV herunterladen"
+    },
+    "story": {
+      "en": "My story",
+      "el": "Η διαδρομή μου",
+      "de": "Meine Geschichte"
+    }
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "rail": {
+        "en": "Start",
+        "el": "Αρχή",
+        "de": "Start"
+      },
+      "label": {
+        "en": "",
+        "el": ""
+      },
+      "text": {
+        "en": "I'm not just a software engineer. I build software, organise teams and solve problems along the way.",
+        "el": "Δεν είμαι μόνο software engineer. Χτίζω λογισμικό, οργανώνω ομάδες και λύνω προβλήματα στη διαδρομή.",
+        "de": "Ich bin nicht nur Software Engineer. Ich baue Software, organisiere Teams und löse unterwegs Probleme."
+      }
+    },
+    {
+      "id": "chania",
+      "rail": {
+        "en": "2009",
+        "el": "2009",
+        "de": "2009"
+      },
+      "label": {
+        "en": "2009",
+        "el": "2009",
+        "de": "2009"
+      },
+      "title": {
+        "en": "Technical University of Crete, Chania",
+        "el": "Πολυτεχνείο Κρήτης, Χανιά",
+        "de": "Technische Universität Kreta, Chania"
+      },
+      "text": {
+        "en": "Chania, by the sea. I started Electrical & Computer Engineering at the Technical University of Crete.",
+        "el": "Χανιά, δίπλα στη θάλασσα. Ξεκίνησα Ηλεκτρολόγος Μηχανικός & Μηχανικός Υπολογιστών στο Πολυτεχνείο Κρήτης.",
+        "de": "Chania, am Meer. An der Technischen Universität Kreta habe ich mit Elektrotechnik und Computertechnik angefangen."
+      }
+    },
+    {
+      "id": "studies",
+      "rail": {
+        "en": "2009–16",
+        "el": "2009–16",
+        "de": "2009–16"
+      },
+      "label": {
+        "en": "2009–2016",
+        "el": "2009–2016",
+        "de": "2009–2016"
+      },
+      "title": {
+        "en": "My first languages, and 49 courses",
+        "el": "Οι πρώτες μου γλώσσες, και 49 μαθήματα",
+        "de": "Meine ersten Sprachen und 49 Kurse"
+      },
+      "text": {
+        "en": "C++ and Java, my first programming languages. Then SQL and PostgreSQL, algorithms, mathematics: 49 courses over seven years.",
+        "el": "C++ και Java, οι πρώτες μου γλώσσες προγραμματισμού. Μετά SQL και PostgreSQL, αλγόριθμοι, μαθηματικά: 49 μαθήματα σε επτά χρόνια.",
+        "de": "C++ und Java, meine ersten Programmiersprachen. Dann SQL und PostgreSQL, Algorithmen, Mathematik: 49 Kurse in sieben Jahren."
+      }
+    },
+    {
+      "id": "graduation",
+      "rail": {
+        "en": "MEng",
+        "el": "Δίπλωμα",
+        "de": "MEng"
+      },
+      "label": {
+        "en": "2016",
+        "el": "2016",
+        "de": "2016"
+      },
+      "title": {
+        "en": "Diploma thesis · MEng",
+        "el": "Διπλωματική · Δίπλωμα Μηχανικού",
+        "de": "Diplomarbeit · MEng"
+      },
+      "text": {
+        "en": "Smart Questionnaire Generator: a SaaS application for businesses such as restaurants, building smart questionnaires for their customers (Vue.js, Laravel). 2016 — MEng.",
+        "el": "Smart Questionnaire Generator: μια SaaS εφαρμογή για επιχειρήσεις όπως τα εστιατόρια, που φτιάχνει έξυπνα ερωτηματολόγια για τους πελάτες τους (Vue.js, Laravel). 2016 — Δίπλωμα Μηχανικού.",
+        "de": "Smart Questionnaire Generator: eine SaaS-Anwendung für Betriebe wie Restaurants, mit der sie smarte Fragebogen für ihre Kundschaft erstellen (Vue.js, Laravel). 2016: MEng."
+      }
+    },
+    {
+      "id": "reach",
+      "side": true,
+      "rail": {
+        "en": "2017",
+        "el": "2017",
+        "de": "2017"
+      },
+      "label": {
+        "en": "2017–2021",
+        "el": "2017–2021",
+        "de": "2017–2021"
+      },
+      "title": {
+        "en": "My first job: Reach Web Agency",
+        "el": "Η πρώτη μου δουλειά: Reach Web Agency",
+        "de": "Mein erster Job: Reach Web Agency"
+      },
+      "text": {
+        "en": "My first job! At Reach I learned the trade and took my first steps in freelancing: first clients, first websites, first e-commerce stores connected to marketplaces.",
+        "el": "Η πρώτη μου δουλειά! Στη Reach έμαθα τη δουλειά και έκανα τα πρώτα μου βήματα στο freelancing: πρώτοι πελάτες, πρώτα sites, πρώτα e-shops συνδεδεμένα με marketplaces.",
+        "de": "Mein erster Job! Bei Reach habe ich das Handwerk gelernt und meine ersten Schritte als Freelancer gemacht: erste Kunden, erste Websites, erste Onlineshops, an Marktplätze angebunden."
+      }
+    },
+    {
+      "id": "kalimera",
+      "side": true,
+      "rail": {
+        "en": "2021",
+        "el": "2021",
+        "de": "2021"
+      },
+      "label": {
+        "en": "2021–2024",
+        "el": "2021–2024",
+        "de": "2021–2024"
+      },
+      "title": {
+        "en": "Kalimera",
+        "el": "Kalimera",
+        "de": "Kalimera"
+      },
+      "text": {
+        "en": "How I learned the startup ecosystem from the inside.",
+        "el": "Πώς γνώρισα το startup οικοσύστημα από μέσα.",
+        "de": "Wie ich das Startup-Ökosystem von innen kennengelernt habe."
+      }
+    },
+    {
+      "id": "koan",
+      "side": true,
+      "rail": {
+        "en": "2024",
+        "el": "2024",
+        "de": "2024"
+      },
+      "label": {
+        "en": "05/2024–06/2025",
+        "el": "05/2024–06/2025",
+        "de": "05/2024–06/2025"
+      },
+      "title": {
+        "en": "KOAN S.A.",
+        "el": "ΚΩΑΝ Α.Ε.",
+        "de": "KOAN S.A."
+      },
+      "text": {
+        "en": "Director of Sustainable Tourism Development.",
+        "el": "Διευθυντής Βιώσιμης Τουριστικής Ανάπτυξης.",
+        "de": "Direktor für nachhaltige Tourismusentwicklung."
+      }
+    },
+    {
+      "id": "ai",
+      "side": true,
+      "rail": {
+        "en": "2025",
+        "el": "2025",
+        "de": "2025"
+      },
+      "label": {
+        "en": "07/2025–12/2025",
+        "el": "07/2025–12/2025",
+        "de": "07/2025–12/2025"
+      },
+      "title": {
+        "en": "Deep dive into AI engineering",
+        "el": "Βουτιά στο AI engineering",
+        "de": "Tief eingetaucht ins KI-Engineering"
+      },
+      "text": {
+        "en": "A planned pause to study AI engineering in depth.",
+        "el": "Μια συνειδητή παύση για να μάθω AI engineering σε βάθος.",
+        "de": "Eine geplante Pause, um KI-Engineering gründlich zu lernen."
+      }
+    },
+    {
+      "id": "deindeal",
+      "side": true,
+      "rail": {
+        "en": "2026",
+        "el": "2026",
+        "de": "2026"
+      },
+      "label": {
+        "en": "01/2026–09/2026",
+        "el": "01/2026–09/2026",
+        "de": "01/2026–09/2026"
+      },
+      "title": {
+        "en": "DeinDeal.ch",
+        "el": "DeinDeal.ch",
+        "de": "DeinDeal.ch"
+      },
+      "text": {
+        "en": "Swiss e-commerce marketplace. AI Software Engineer.",
+        "el": "Ελβετικό e-commerce marketplace. AI Software Engineer.",
+        "de": "Schweizer E-Commerce-Marktplatz. AI Software Engineer."
+      }
+    },
+    {
+      "id": "today",
+      "rail": {
+        "en": "Today",
+        "el": "Σήμερα",
+        "de": "Heute"
+      },
+      "label": {
+        "en": "Today",
+        "el": "Σήμερα",
+        "de": "Heute"
+      },
+      "text": {
+        "en": "Engineer. Manager. Problem solver.",
+        "el": "Engineer. Manager. Problem solver.",
+        "de": "Engineer. Manager. Problem solver."
+      }
+    }
+  ],
+  "art": {
+    "chania": {
+      "city": {
+        "en": "Chania",
+        "el": "Χανιά",
+        "de": "Chania"
+      },
+      "campus": {
+        "en": "Technical University of Crete",
+        "el": "Πολυτεχνείο Κρήτης",
+        "de": "Technische Universität Kreta"
+      }
+    },
+    "cargo": {
+      "first": [
+        "C++",
+        "Java",
+        "Maths"
+      ],
+      "stops": [
+        "Algorithms",
+        "Databases",
+        "OOP",
+        "Python",
+        "AI",
+        "Cloud",
+        "Mobile"
+      ]
+    },
+    "courses": [
+      {
+        "en": "Linear Algebra",
+        "el": "Γραμμική Άλγεβρα",
+        "de": "Lineare Algebra"
+      },
+      {
+        "en": "Introduction to Programming",
+        "el": "Εισαγωγή στον Προγραμματισμό",
+        "de": "Einführung ins Programmieren"
+      },
+      {
+        "en": "Logic Design",
+        "el": "Λογική Σχεδίαση",
+        "de": "Digitaltechnik"
+      },
+      {
+        "en": "Discrete Mathematics",
+        "el": "Διακριτά Μαθηματικά",
+        "de": "Diskrete Mathematik"
+      },
+      {
+        "en": "Object-Oriented Programming",
+        "el": "Αντικειμενοστρεφής Προγραμματισμός",
+        "de": "Objektorientierte Programmierung"
+      },
+      {
+        "en": "Probability Theory",
+        "el": "Θεωρία Πιθανοτήτων",
+        "de": "Wahrscheinlichkeitstheorie"
+      },
+      {
+        "en": "Signals and Systems",
+        "el": "Σήματα και Συστήματα",
+        "de": "Signale und Systeme"
+      },
+      {
+        "en": "Digital Computer Systems",
+        "el": "Ψηφιακά Υπολογιστικά Συστήματα",
+        "de": "Digitale Rechnersysteme"
+      },
+      {
+        "en": "Software Development Tools and Systems Programming",
+        "el": "Εργαλεία Ανάπτυξης Λογισμικού και Προγραμματισμός Συστημάτων",
+        "de": "Entwicklungswerkzeuge und Systemprogrammierung"
+      },
+      {
+        "en": "Electric Circuit Analysis",
+        "el": "Ανάλυση Ηλεκτρικών Κυκλωμάτων",
+        "de": "Schaltungsanalyse"
+      },
+      {
+        "en": "Data Structures and Algorithms",
+        "el": "Δομές Δεδομένων και Αλγόριθμοι",
+        "de": "Datenstrukturen und Algorithmen"
+      },
+      {
+        "en": "Differential Equations",
+        "el": "Διαφορικές Εξισώσεις",
+        "de": "Differentialgleichungen"
+      },
+      {
+        "en": "Operating Systems",
+        "el": "Λειτουργικά Συστήματα",
+        "de": "Betriebssysteme"
+      },
+      {
+        "en": "Information Systems Design and Development",
+        "el": "Σχεδίαση και Ανάπτυξη Πληροφοριακών Συστημάτων",
+        "de": "Informationssysteme: Entwurf & Entwicklung"
+      },
+      {
+        "en": "Databases",
+        "el": "Βάσεις Δεδομένων",
+        "de": "Datenbanken"
+      },
+      {
+        "en": "Computer Organisation",
+        "el": "Οργάνωση Υπολογιστών",
+        "de": "Rechnerorganisation"
+      },
+      {
+        "en": "Telecommunication Systems I",
+        "el": "Τηλεπικοινωνιακά Συστήματα 1",
+        "de": "Telekommunikationssysteme I"
+      },
+      {
+        "en": "Quantum Information Algorithms",
+        "el": "Αλγόριθμοι Κβαντικής Πληροφορίας",
+        "de": "Algorithmen der Quanteninformation"
+      },
+      {
+        "en": "Applied Mathematics",
+        "el": "Εφαρμοσμένα Μαθηματικά",
+        "de": "Angewandte Mathematik"
+      },
+      {
+        "en": "Artificial Intelligence",
+        "el": "Τεχνητή Νοημοσύνη",
+        "de": "Künstliche Intelligenz"
+      },
+      {
+        "en": "Algorithms and Complexity",
+        "el": "Αλγόριθμοι και Πολυπλοκότητα",
+        "de": "Algorithmen und Komplexität"
+      },
+      {
+        "en": "Modern Mobile Systems, Applications and Services",
+        "el": "Μοντέρνα Κινητά Συστήματα, Εφαρμογές και Υπηρεσίες",
+        "de": "Moderne Mobilsysteme, Anwendungen und Dienste"
+      },
+      {
+        "en": "Cloud and Fog Computing Services",
+        "el": "Υπηρεσίες στο Υπολογιστικό Νέφος και την Ομίχλη",
+        "de": "Cloud- und Fog-Computing-Dienste"
+      }
+    ],
+    "peak": 19,
+    "total": 49,
+    "years": [
+      2009,
+      2016
+    ],
+    "course": {
+      "en": "course",
+      "el": "μάθημα",
+      "de": "Kurs"
+    },
+    "ride": {
+      "back": {
+        "en": "Back up the train",
+        "el": "Όπισθεν το τρένο",
+        "de": "Zug zurücksetzen"
+      },
+      "again": {
+        "en": "All aboard again",
+        "el": "Ξανά επιβίβαση",
+        "de": "Alle einsteigen"
+      },
+      "drag": {
+        "en": "Or drag the train sideways",
+        "el": "Ή σύρε το τρένο δεξιά-αριστερά",
+        "de": "Oder Zug seitwärts ziehen"
+      }
+    },
+    "lines": [
+      {
+        "at": 0,
+        "text": {
+          "en": "From the first year: serious mathematics, and hardcore programming in C++ and Java. My first real contact with programming at a high level.",
+          "el": "Από τον πρώτο χρόνο: σοβαρά μαθηματικά και hardcore προγραμματισμός σε C++ και Java. Η πρώτη μου πραγματική επαφή με τον προγραμματισμό σε υψηλό επίπεδο.",
+          "de": "Ab dem ersten Jahr: ernsthafte Mathematik und Hardcore-Programmierung in C++ und Java. Mein erster echter Kontakt mit Programmieren auf hohem Niveau."
+        }
+      },
+      {
+        "at": 0.1,
+        "text": {
+          "en": "My first management system: Java software for hospitals. Software for real people.",
+          "el": "Το πρώτο μου διαχειριστικό: σύστημα σε Java για νοσοκομεία. Λογισμικό για πραγματικούς ανθρώπους.",
+          "de": "Mein erstes Verwaltungssystem: Java-Software für Spitäler. Software für echte Menschen."
+        }
+      },
+      {
+        "at": 0.22,
+        "text": {
+          "en": "A special mention: six months of school for one course, PostgreSQL. Let's just say we struggled. That's where I learned that data has architecture.",
+          "el": "Ειδική μνεία: έξι μήνες σχολής για ένα μάθημα, την PostgreSQL. Ας πούμε ότι ζοριστήκαμε. Εκεί κατάλαβα ότι τα δεδομένα έχουν αρχιτεκτονική.",
+          "de": "Besonders erwähnenswert: sechs Monate Studium für einen Kurs, PostgreSQL. Sagen wir einfach, wir haben gekämpft. Dort habe ich gelernt, dass Daten eine Architektur haben."
+        }
+      },
+      {
+        "at": 0.9,
+        "text": {
+          "en": "And at the end of the line, the diploma thesis.",
+          "el": "Και στο τέλος της γραμμής, η διπλωματική.",
+          "de": "Und am Ende der Strecke: die Diplomarbeit."
+        }
+      }
+    ],
+    "moments": [
+      {
+        "label": {
+          "en": "lectures",
+          "el": "διαλέξεις",
+          "de": "Vorlesungen"
+        }
+      },
+      {
+        "label": {
+          "en": "study nights at friends’ houses",
+          "el": "διάβασμα και μαζώξεις σε σπίτια",
+          "de": "Lernnächte bei Freunden"
+        }
+      },
+      {
+        "label": {
+          "en": "experiments in the lab",
+          "el": "πειράματα στο εργαστήριο",
+          "de": "Versuche im Labor"
+        }
+      },
+      {
+        "label": {
+          "en": "six months of PostgreSQL",
+          "el": "έξι μήνες PostgreSQL",
+          "de": "sechs Monate PostgreSQL"
+        },
+        "note": {
+          "en": "one course. We struggled.",
+          "el": "ένα μάθημα. Ζοριστήκαμε.",
+          "de": "ein Kurs. Wir kämpften."
+        }
+      },
+      {
+        "label": {
+          "en": "big group projects",
+          "el": "μεγάλα ομαδικά projects",
+          "de": "grosse Gruppenprojekte"
+        }
+      },
+      {
+        "label": {
+          "en": "Python",
+          "el": "Python",
+          "de": "Python"
+        }
+      },
+      {
+        "label": {
+          "en": "exams",
+          "el": "εξετάσεις",
+          "de": "Prüfungen"
+        }
+      },
+      {
+        "label": {
+          "en": "our first application",
+          "el": "η πρώτη μας εφαρμογή",
+          "de": "unsere erste Anwendung"
+        }
+      }
+    ],
+    "graduation": {
+      "app": "Smart Questionnaire Generator",
+      "question": {
+        "en": "How was your meal?",
+        "el": "Πώς ήταν το γεύμα σας;",
+        "de": "Wie war Ihr Essen?"
+      },
+      "send": {
+        "en": "Send",
+        "el": "Αποστολή",
+        "de": "Senden"
+      },
+      "graduated": {
+        "en": "Graduated",
+        "el": "Αποφοίτησα",
+        "de": "Abschluss"
+      },
+      "degree": {
+        "en": "MEng · Electrical & Computer Engineering",
+        "el": "Δίπλωμα Μηχανικού · Ηλεκτρολόγων Μηχανικών & Μηχανικών Υπολογιστών",
+        "de": "MEng · Elektrotechnik & Computertechnik"
+      }
+    },
+    "station": {
+      "en": "Diploma Thesis",
+      "el": "Διπλωματική",
+      "de": "Diplomarbeit"
+    },
+    "reach": {
+      "markets": [
+        "Skroutz",
+        "Amazon",
+        "Google"
+      ],
+      "feed": "XML"
+    },
+    "kalimera": {
+      "clock": [
+        "05:30",
+        "06:00",
+        "07:00",
+        "08:00",
+        "09:00",
+        "10:00",
+        "11:00",
+        "12:00"
+      ],
+      "beats": [
+        {
+          "en": "I led the product design and shaped the business model.",
+          "el": "Καθοδήγησα το design του προϊόντος και διαμόρφωσα το business model.",
+          "de": "Ich habe das Produktdesign geleitet und das Geschäftsmodell geformt."
+        },
+        {
+          "en": "We launched the MVP in a local market: 80 sales in the first year.",
+          "el": "Βγάλαμε το MVP σε τοπική αγορά: 80 πωλήσεις τον πρώτο χρόνο.",
+          "de": "Wir haben das MVP in einem lokalen Markt lanciert: 80 Verkäufe im ersten Jahr."
+        },
+        {
+          "en": "Real customers, real feedback. We tested the product and learned what worked and what didn't.",
+          "el": "Πραγματικοί πελάτες, πραγματικό feedback. Δοκιμάσαμε το προϊόν και μάθαμε τι δουλεύει και τι όχι.",
+          "de": "Echte Kunden, echtes Feedback. Wir haben das Produkt getestet und gelernt, was funktioniert und was nicht."
+        },
+        {
+          "en": "We took part in Idea Platform, the contest in which CapsuleT, Greece's incubator for technology and tourism, filters business ideas. We pivoted and proposed a new business model to its judges: the president of the hoteliers' association, the director of Athens Eleftherios Venizelos International Airport (ATH), the head of the Onassis Foundation and the head of startup seed at the National Bank of Greece.",
+          "el": "Πήραμε μέρος στο Idea Platform, τον διαγωνισμό με τον οποίο το CapsuleT, το incubator της Ελλάδας για τεχνολογία και τουρισμό, φιλτράρει επιχειρηματικές ιδέες. Κάναμε pivot και προτείναμε νέο business model στους κριτές του: τον πρόεδρο της ένωσης ξενοδόχων, τη διευθύντρια του Διεθνούς Αερολιμένα Αθηνών «Ελευθέριος Βενιζέλος» (ATH), τον head του Ιδρύματος Ωνάση και τον επικεφαλής startup seed της Εθνικής Τράπεζας της Ελλάδος.",
+          "de": "Wir haben bei Idea Platform mitgemacht, dem Wettbewerb, mit dem CapsuleT, Griechenlands Inkubator für Technologie und Tourismus, Geschäftsideen filtert. Wir haben einen Pivot gemacht und seiner Jury ein neues Geschäftsmodell vorgeschlagen: dem Präsidenten des Hotelierverbands, der Direktorin des internationalen Flughafens Athen Eleftherios Venizelos (ATH), dem Leiter der Onassis-Stiftung und dem Verantwortlichen für Startup-Seed bei der National Bank of Greece."
+        },
+        {
+          "en": "In 2022 our pivot took 2nd place at Idea Platform. In 2023, as a team of six, we took part in the main CapsuleT competition, at its accelerator in Athens, and came away with a lot of experience.",
+          "el": "Το 2022 το pivot μας πήρε τη 2η θέση στο Idea Platform. Το 2023, ομάδα έξι ατόμων, πήραμε μέρος στον κεντρικό διαγωνισμό του CapsuleT, στο accelerator του στην Αθήνα, και φύγαμε με πολλές εμπειρίες.",
+          "de": "2022 hat unser Pivot bei Idea Platform den 2. Platz geholt. 2023 haben wir als Sechserteam am Hauptwettbewerb von CapsuleT teilgenommen, in seinem Accelerator in Athen, und viel Erfahrung mitgenommen."
+        },
+        {
+          "en": "We learned to write a business plan, trained in pitching with Linda Plano for two weeks, joined Google's digital marketing workshops, and were guided by three mentors for six months.",
+          "el": "Μάθαμε να φτιάχνουμε business plan, κάναμε δύο εβδομάδες pitching με τη Linda Plano, workshops ψηφιακού μάρκετινγκ με τη Google και είχαμε τρεις μέντορες για έξι μήνες.",
+          "de": "Wir haben gelernt, einen Businessplan zu schreiben, zwei Wochen lang mit Linda Plano das Pitchen trainiert und an den Workshops von Google zu digitalem Marketing teilgenommen. Sechs Monate lang haben uns drei Mentoren begleitet."
+        },
+        {
+          "en": "That's how I learned how the startup ecosystem really works, and how to build software as a business.",
+          "el": "Έτσι γνώρισα πώς λειτουργεί πραγματικά το startup οικοσύστημα και πώς χτίζεται το λογισμικό ως επιχείρηση.",
+          "de": "So habe ich gelernt, wie das Startup-Ökosystem wirklich funktioniert und wie man Software als Geschäft aufbaut."
+        }
+      ],
+      "app": "Kalimera",
+      "canvas": {
+        "en": "Business Model Canvas",
+        "el": "Business Model Canvas",
+        "de": "Business Model Canvas"
+      },
+      "blocks": {
+        "value": {
+          "en": "Value proposition",
+          "el": "Πρόταση αξίας",
+          "de": "Wertangebot"
+        },
+        "channels": {
+          "en": "Channels",
+          "el": "Κανάλια",
+          "de": "Kanäle"
+        },
+        "segments": {
+          "en": "Customer segments",
+          "el": "Τμήματα πελατών",
+          "de": "Customer segments"
+        },
+        "revenue": {
+          "en": "Revenue streams",
+          "el": "Ροές εσόδων",
+          "de": "Einnahmequellen"
+        }
+      },
+      "kos": {
+        "en": "Kos",
+        "el": "Κως",
+        "de": "Kos"
+      },
+      "mvp": "MVP",
+      "sales": 80,
+      "salesLabel": {
+        "en": "sales in the first year",
+        "el": "πωλήσεις τον πρώτο χρόνο",
+        "de": "Verkäufe im ersten Jahr"
+      },
+      "idea": "Idea Platform · CapsuleT",
+      "prize": {
+        "en": "2nd place",
+        "el": "2η θέση",
+        "de": "2. Platz"
+      },
+      "contest": "Idea Platform · 2022",
+      "accelerator": "CapsuleT Accelerator",
+      "athens": {
+        "en": "Athens · 2023",
+        "el": "Αθήνα · 2023",
+        "de": "Athen · 2023"
+      },
+      "cards": [
+        {
+          "title": {
+            "en": "Business plan",
+            "el": "Business plan",
+            "de": "Business plan"
+          },
+          "note": {
+            "en": "growth and financials",
+            "el": "ανάπτυξη και οικονομικά",
+            "de": "Wachstum und Finanzen"
+          }
+        },
+        {
+          "title": {
+            "en": "Pitch training",
+            "el": "Pitch training",
+            "de": "Pitch training"
+          },
+          "note": {
+            "en": "Linda Plano · 2 weeks",
+            "el": "Linda Plano · 2 εβδομάδες",
+            "de": "Linda Plano · 2 Wochen"
+          }
+        },
+        {
+          "title": {
+            "en": "Digital marketing",
+            "el": "Ψηφιακό μάρκετινγκ",
+            "de": "Digitalmarketing"
+          },
+          "note": {
+            "en": "workshops with Google",
+            "el": "workshops με τη Google",
+            "de": "Workshops mit Google"
+          }
+        },
+        {
+          "title": {
+            "en": "3 mentors",
+            "el": "3 μέντορες",
+            "de": "3 Mentoren"
+          },
+          "note": {
+            "en": "6 months",
+            "el": "6 μήνες",
+            "de": "6 Monate"
+          }
+        }
+      ],
+      "nodes": {
+        "founders": {
+          "en": "founders",
+          "el": "ιδρυτές",
+          "de": "Gründer"
+        },
+        "mentors": {
+          "en": "mentors",
+          "el": "μέντορες",
+          "de": "Mentoren"
+        },
+        "investors": {
+          "en": "investors",
+          "el": "επενδυτές",
+          "de": "Investoren"
+        },
+        "customers": {
+          "en": "customers",
+          "el": "πελάτες",
+          "de": "Kunden"
+        },
+        "partners": {
+          "en": "partners",
+          "el": "συνεργάτες",
+          "de": "Partner"
+        },
+        "accelerator": {
+          "en": "accelerator",
+          "el": "accelerator",
+          "de": "Accelerator"
+        }
+      },
+      "flows": {
+        "funding": {
+          "en": "funding",
+          "el": "χρηματοδότηση",
+          "de": "Kapital"
+        },
+        "product": {
+          "en": "product",
+          "el": "προϊόν",
+          "de": "Produkt"
+        },
+        "market": {
+          "en": "market",
+          "el": "αγορά",
+          "de": "Markt"
+        }
+      },
+      "words": [
+        {
+          "en": "funding",
+          "el": "χρηματοδότηση",
+          "de": "Finanzierung"
+        },
+        {
+          "en": "pitching",
+          "el": "pitching",
+          "de": "Pitching"
+        },
+        {
+          "en": "scalability",
+          "el": "κλιμάκωση",
+          "de": "Skalierung"
+        },
+        {
+          "en": "roadmap",
+          "el": "roadmap",
+          "de": "Roadmap"
+        },
+        {
+          "en": "go-to-market",
+          "el": "go-to-market",
+          "de": "Go-to-Market"
+        },
+        {
+          "en": "sales",
+          "el": "πωλήσεις",
+          "de": "Vertrieb"
+        },
+        {
+          "en": "team leadership · 6-member team",
+          "el": "ηγεσία ομάδας · ομάδα 6 ατόμων",
+          "de": "Teamführung · 6-köpfiges Team"
+        }
+      ]
+    },
+    "koan": {
+      "beats": [
+        {
+          "en": "Appointed by the mayors of Kos, Astypalea and Nisyros with one goal: the digital transformation and international outreach of three islands. Budget: €500,000.",
+          "el": "Η θέση μού ανατέθηκε από τους δημάρχους Κω, Αστυπάλαιας και Νισύρου με έναν στόχο: την ψηφιακή μετάβαση και την εξωστρέφεια τριών νησιών. Budget: €500.000.",
+          "de": "Die Bürgermeister von Kos, Astypalea und Nisyros haben mich eingesetzt, mit einem Ziel: die digitale Transformation und der internationale Auftritt von drei Inseln. Budget: € 500’000."
+        },
+        {
+          "en": "We represented the islands with our own pavilions at Europe's largest tourism fairs: WTM London and ITB Berlin.",
+          "el": "Εκπροσωπήσαμε τα νησιά με δικά μας περίπτερα στις μεγαλύτερες εκθέσεις τουρισμού της Ευρώπης: WTM London και ITB Berlin.",
+          "de": "Wir haben die Inseln mit eigenen Pavillons an Europas grössten Tourismusmessen vertreten: WTM London und ITB Berlin."
+        },
+        {
+          "en": "The UK was our largest market, so I built a portfolio of actions around it: an airline partnership with Jet2, content with National Geographic, a Disney+ campaign and targeted social media, plus a few smaller ones.",
+          "el": "Η Βρετανία ήταν η μεγαλύτερη αγορά μας, οπότε έστησα γύρω της ένα portfolio δράσεων: συνεργασία με τη Jet2, περιεχόμενο με το National Geographic, καμπάνια στο Disney+ και στοχευμένα social media, και μερικές ακόμα μικρότερης κλίμακας.",
+          "de": "Grossbritannien war unser grösster Markt, also habe ich darum herum ein Portfolio von Massnahmen aufgebaut: eine Airline-Partnerschaft mit Jet2, Inhalte mit National Geographic, eine Disney+-Kampagne und gezieltes Social Media, dazu ein paar kleinere."
+        },
+        {
+          "en": "The aim was to show it, as a portfolio of actions, to the airlines of the countries we would target, to open the routes we wanted.",
+          "el": "Σκοπός ήταν να το δείξουμε ως portfolio δράσεων στις αεροπορικές των χωρών που θα στοχεύαμε, για να ανοίξουμε τα δρομολόγια που μας ενδιέφεραν.",
+          "de": "Das Ziel war, es als Massnahmenportfolio den Airlines der Länder zu zeigen, die wir ins Visier nehmen wollten, um die gewünschten Strecken zu eröffnen."
+        },
+        {
+          "en": "We would choose those countries strategically with Fraport Greece's marketing team, to bring in new airlines and, through them, new markets. Somewhere along the way, political disagreements stopped the strategy halfway.",
+          "el": "Τις χώρες αυτές θα τις στοχεύαμε στρατηγικά μαζί με το marketing της Fraport Greece, για να φέρουμε νέες αεροπορικές και, μέσα από αυτές, νέες αγορές. Κάπου εκεί, λόγω πολιτικών διαφωνιών, η στρατηγική σταμάτησε στη μέση.",
+          "de": "Diese Länder wollten wir strategisch mit dem Marketingteam von Fraport Greece auswählen, um neue Airlines und über sie neue Märkte zu gewinnen. Irgendwo unterwegs haben politische Meinungsverschiedenheiten die Strategie auf halbem Weg gestoppt."
+        },
+        {
+          "en": "Behind it: a multidisciplinary team run with Agile and Jira, and an 8-member consortium that secured EU funding (ESPA 2021–2027) for digital technologies and data management.",
+          "el": "Από πίσω: μια διεπιστημονική ομάδα με Agile και Jira, και μια κοινοπραξία 8 φορέων που εξασφάλισε ευρωπαϊκή χρηματοδότηση (ΕΣΠΑ 2021–2027) για ψηφιακές τεχνολογίες και διαχείριση δεδομένων.",
+          "de": "Dahinter: ein multidisziplinäres Team, geführt mit Agile und Jira, und ein Konsortium mit 8 Mitgliedern, das EU-Fördergelder (ESPA 2021–2027) für digitale Technologien und Datenmanagement gesichert hat."
+        },
+        {
+          "en": "What I took with me: strategy, negotiation with big partners, and leading people toward one goal.",
+          "el": "Τι κράτησα: στρατηγική, διαπραγμάτευση με μεγάλους συνεργάτες και καθοδήγηση ανθρώπων προς έναν στόχο.",
+          "de": "Was ich mitgenommen habe: Strategie, Verhandlungen mit grossen Partnern und wie man Menschen auf ein Ziel hin führt."
+        }
+      ],
+      "islands": [
+        {
+          "en": "Kos",
+          "el": "Κως",
+          "de": "Kos"
+        },
+        {
+          "en": "Astypalea",
+          "el": "Αστυπάλαια",
+          "de": "Astypalea"
+        },
+        {
+          "en": "Nisyros",
+          "el": "Νίσυρος",
+          "de": "Nisyros"
+        }
+      ],
+      "me": {
+        "en": "Petros",
+        "el": "Πέτρος",
+        "de": "Petros"
+      },
+      "budget": "€500K",
+      "board": {
+        "name": {
+          "en": "Departures",
+          "el": "Αναχωρήσεις",
+          "de": "Abflüge"
+        },
+        "dest": {
+          "en": "Destination",
+          "el": "Προορισμός",
+          "de": "Ziel"
+        },
+        "status": {
+          "en": "Status",
+          "el": "Κατάσταση",
+          "de": "Status"
+        }
+      },
+      "rows": [
+        {
+          "at": 1,
+          "dest": {
+            "en": "3 ISLANDS",
+            "el": "3 ΝΗΣΙΑ",
+            "de": "3 INSELN"
+          },
+          "act": {
+            "en": "DIGITAL TRANSFORMATION · OUTREACH",
+            "el": "ΨΗΦΙΑΚΗ ΜΕΤΑΒΑΣΗ · ΕΞΩΣΤΡΕΦΕΙΑ",
+            "de": "DIGITALISIERUNG · AUSSENAUFTRITT"
+          },
+          "status": [
+            [
+              1,
+              {
+                "en": "CHECK-IN",
+                "el": "CHECK-IN",
+                "de": "CHECK-IN"
+              }
+            ]
+          ]
+        },
+        {
+          "at": 2,
+          "dest": {
+            "en": "LONDON",
+            "el": "ΛΟΝΔΙΝΟ",
+            "de": "LONDON"
+          },
+          "act": {
+            "en": "WTM",
+            "el": "WTM",
+            "de": "WTM"
+          },
+          "status": [
+            [
+              2,
+              {
+                "en": "OWN PAVILION",
+                "el": "ΔΙΚΟ ΠΕΡΙΠΤ.",
+                "de": "EIGENER PAV."
+              }
+            ]
+          ]
+        },
+        {
+          "at": 2,
+          "dest": {
+            "en": "BERLIN",
+            "el": "ΒΕΡΟΛΙΝΟ",
+            "de": "BERLIN"
+          },
+          "act": {
+            "en": "ITB",
+            "el": "ITB",
+            "de": "ITB"
+          },
+          "status": [
+            [
+              2,
+              {
+                "en": "OWN PAVILION",
+                "el": "ΔΙΚΟ ΠΕΡΙΠΤ.",
+                "de": "EIGENER PAV."
+              }
+            ]
+          ]
+        },
+        {
+          "at": 3,
+          "dest": {
+            "en": "UK",
+            "el": "ΗΒ",
+            "de": "UK"
+          },
+          "act": {
+            "en": "AIRLINE PARTNERSHIP · JET2",
+            "el": "ΣΥΝΕΡΓΑΣΙΑ ΜΕ ΑΕΡΟΠΟΡΙΚΗ · JET2",
+            "de": "PARTNER-AIRLINE · JET2"
+          },
+          "status": [
+            [
+              3,
+              {
+                "en": "SCHEDULED",
+                "el": "ΠΡΟΓΡΑΜΜ.",
+                "de": "GEPLANT"
+              }
+            ],
+            [
+              4,
+              {
+                "en": "ON TIME",
+                "el": "ΣΤΗΝ ΩΡΑ",
+                "de": "IM PLAN"
+              }
+            ]
+          ]
+        },
+        {
+          "at": 3,
+          "dest": {
+            "en": "UK",
+            "el": "ΗΒ",
+            "de": "UK"
+          },
+          "act": {
+            "en": "DOCUMENTARY & TRAVEL CONTENT · NATIONAL GEOGRAPHIC",
+            "el": "ΝΤΟΚΙΜΑΝΤΕΡ & ΤΑΞΙΔΙΩΤΙΚΟ ΠΕΡΙΕΧΟΜΕΝΟ · NATIONAL GEOGRAPHIC",
+            "de": "DOKUMENTATION & REISEINHALTE · NATIONAL GEOGRAPHIC"
+          },
+          "status": [
+            [
+              3,
+              {
+                "en": "SCHEDULED",
+                "el": "ΠΡΟΓΡΑΜΜ.",
+                "de": "GEPLANT"
+              }
+            ],
+            [
+              4,
+              {
+                "en": "ON TIME",
+                "el": "ΣΤΗΝ ΩΡΑ",
+                "de": "IM PLAN"
+              }
+            ]
+          ]
+        },
+        {
+          "at": 3,
+          "dest": {
+            "en": "UK",
+            "el": "ΗΒ",
+            "de": "UK"
+          },
+          "act": {
+            "en": "STREAMING CAMPAIGN · DISNEY+",
+            "el": "ΚΑΜΠΑΝΙΑ STREAMING · DISNEY+",
+            "de": "STREAMING-KAMPAGNE · DISNEY+"
+          },
+          "status": [
+            [
+              3,
+              {
+                "en": "SCHEDULED",
+                "el": "ΠΡΟΓΡΑΜΜ.",
+                "de": "GEPLANT"
+              }
+            ],
+            [
+              4,
+              {
+                "en": "ON TIME",
+                "el": "ΣΤΗΝ ΩΡΑ",
+                "de": "IM PLAN"
+              }
+            ]
+          ]
+        },
+        {
+          "at": 3,
+          "dest": {
+            "en": "UK",
+            "el": "ΗΒ",
+            "de": "UK"
+          },
+          "act": {
+            "en": "SOCIAL MEDIA CAMPAIGNS · UK AUDIENCE",
+            "el": "ΚΑΜΠΑΝΙΕΣ SOCIAL MEDIA · ΚΟΙΝΟ ΗΒ",
+            "de": "SOCIAL-MEDIA-KAMPAGNEN · UK-PUBLIKUM"
+          },
+          "status": [
+            [
+              3,
+              {
+                "en": "SCHEDULED",
+                "el": "ΠΡΟΓΡΑΜΜ.",
+                "de": "GEPLANT"
+              }
+            ],
+            [
+              4,
+              {
+                "en": "ON TIME",
+                "el": "ΣΤΗΝ ΩΡΑ",
+                "de": "IM PLAN"
+              }
+            ]
+          ]
+        },
+        {
+          "at": 5,
+          "dest": {
+            "en": "NEW MARKETS",
+            "el": "ΝΕΕΣ ΑΓΟΡΕΣ",
+            "de": "NEUE MÄRKTE"
+          },
+          "act": {
+            "en": "NEW AIRLINES · WITH FRAPORT GREECE",
+            "el": "ΝΕΕΣ ΑΕΡΟΠΟΡΙΚΕΣ · ΜΕ ΤΗ FRAPORT GREECE",
+            "de": "NEUE AIRLINES · MIT FRAPORT GREECE"
+          },
+          "status": [
+            [
+              5,
+              {
+                "en": "BOARDING",
+                "el": "ΕΠΙΒΙΒΑΣΗ",
+                "de": "BOARDING"
+              }
+            ],
+            [
+              5.5,
+              {
+                "en": "HALTED",
+                "el": "ΔΙΑΚΟΠΗΚΕ",
+                "de": "STOPP"
+              }
+            ]
+          ]
+        },
+        {
+          "at": 7,
+          "dest": {
+            "en": "AI ENGINEERING",
+            "el": "AI ENGINEERING",
+            "de": "AI ENGINEERING"
+          },
+          "act": {
+            "en": "NEXT DESTINATION",
+            "el": "ΕΠΟΜΕΝΟΣ ΠΡΟΟΡΙΣΜΟΣ",
+            "de": "NÄCHSTES ZIEL"
+          },
+          "status": [
+            [
+              7,
+              {
+                "en": "BOARDING",
+                "el": "ΕΠΙΒΙΒΑΣΗ",
+                "de": "BOARDING"
+              }
+            ]
+          ]
+        }
+      ],
+      "fairs": [
+        {
+          "city": {
+            "en": "London",
+            "el": "Λονδίνο",
+            "de": "London"
+          },
+          "fair": "WTM"
+        },
+        {
+          "city": {
+            "en": "Berlin",
+            "el": "Βερολίνο",
+            "de": "Berlin"
+          },
+          "fair": "ITB"
+        }
+      ],
+      "uk": {
+        "en": "UK",
+        "el": "ΗΒ",
+        "de": "UK"
+      },
+      "actions": [
+        {
+          "what": {
+            "en": "Airline partnership",
+            "el": "Συνεργασία με αεροπορική",
+            "de": "Partner-Airline"
+          },
+          "with": {
+            "en": "Jet2",
+            "el": "Jet2",
+            "de": "Jet2"
+          }
+        },
+        {
+          "what": {
+            "en": "Documentary & travel content",
+            "el": "Ντοκιμαντέρ & ταξιδιωτικό περιεχόμενο",
+            "de": "Dokumentation & Reiseinhalte"
+          },
+          "with": {
+            "en": "National Geographic",
+            "el": "National Geographic",
+            "de": "National Geographic"
+          }
+        },
+        {
+          "what": {
+            "en": "Streaming campaign",
+            "el": "Καμπάνια streaming",
+            "de": "Streaming-Kampagne"
+          },
+          "with": {
+            "en": "Disney+",
+            "el": "Disney+",
+            "de": "Disney+"
+          }
+        },
+        {
+          "what": {
+            "en": "Social media campaigns",
+            "el": "Καμπάνιες social media",
+            "de": "Social-Media-Kampagnen"
+          },
+          "with": {
+            "en": "UK audience",
+            "el": "κοινό ΗΒ",
+            "de": "UK-Publikum"
+          }
+        }
+      ],
+      "more": {
+        "en": "+ a few smaller actions",
+        "el": "+ μερικές μικρότερες δράσεις",
+        "de": "+ kleinere Massnahmen"
+      },
+      "portfolio": {
+        "en": "Portfolio of actions",
+        "el": "Portfolio δράσεων",
+        "de": "Massnahmenportfolio"
+      },
+      "airlines": {
+        "en": "airlines",
+        "el": "αεροπορικές",
+        "de": "Airlines"
+      },
+      "airport": {
+        "en": "Kos airport",
+        "el": "Αεροδρόμιο Κω",
+        "de": "Flughafen Kos"
+      },
+      "fraport": {
+        "en": "Fraport Greece marketing",
+        "el": "Marketing Fraport Greece",
+        "de": "Marketing Fraport Greece"
+      },
+      "kanban": [
+        {
+          "en": "To do",
+          "el": "Προς υλοποίηση",
+          "de": "Offen"
+        },
+        {
+          "en": "In progress",
+          "el": "Σε εξέλιξη",
+          "de": "In Arbeit"
+        },
+        {
+          "en": "Done",
+          "el": "Ολοκληρώθηκε",
+          "de": "Fertig"
+        }
+      ],
+      "roles": [
+        {
+          "en": "developers",
+          "el": "developers",
+          "de": "Developers"
+        },
+        {
+          "en": "content",
+          "el": "περιεχόμενο",
+          "de": "Inhalte"
+        },
+        {
+          "en": "advertising",
+          "el": "διαφήμιση",
+          "de": "Werbung"
+        }
+      ],
+      "espa": {
+        "en": "ESPA 2021–2027",
+        "el": "ΕΣΠΑ 2021–2027",
+        "de": "ESPA 2021–2027"
+      }
+    },
+    "ai": [
+      "LLMs",
+      "RAG",
+      "Agents",
+      "MCP"
+    ],
+    "deindeal": {
+      "city": {
+        "en": "Zurich",
+        "el": "Ζυρίχη",
+        "de": "Zürich"
+      },
+      "beats": [
+        {
+          "en": "For years I helped small e-shops get their products onto big marketplaces. At DeinDeal I switched sides: I became the one onboarding them.",
+          "el": "Για χρόνια βοηθούσα μικρά e-shops να περάσουν τα προϊόντα τους σε μεγάλα marketplaces. Στη DeinDeal άλλαξα πλευρά: έγινα αυτός που τα κάνει onboard.",
+          "de": "Jahrelang habe ich kleinen Onlineshops geholfen, ihre Produkte auf grosse Marktplätze zu bringen. Bei DeinDeal habe ich die Seite gewechselt: Jetzt war ich es, der sie an Bord holte."
+        },
+        {
+          "en": "I built the integrations: every partner, every format, every feed, connected end to end.",
+          "el": "Έστησα τα integrations: κάθε συνεργάτης, κάθε format, κάθε feed, συνδεδεμένο από άκρη σε άκρη.",
+          "de": "Ich habe die Integrationen gebaut: jeder Partner, jedes Format, jeder Feed, durchgängig angebunden."
+        },
+        {
+          "en": "I was responsible for managing more than 800,000 unique product codes.",
+          "el": "Ήμουν υπεύθυνος για τη διαχείριση περισσότερων από 800.000 μοναδικών κωδικών προϊόντων.",
+          "de": "Ich war für die Verwaltung von mehr als 800’000 eindeutigen Produktcodes verantwortlich."
+        },
+        {
+          "en": "My job was to make it manageable: filter it, fix it and translate it into four languages, with an AI application I built from scratch.",
+          "el": "Ο στόχος μου ήταν να γίνουν διαχειρίσιμα: να φιλτραριστούν, να διορθωθούν και να μεταφραστούν σε τέσσερις γλώσσες, με μια AI εφαρμογή που έχτισα από το μηδέν.",
+          "de": "Meine Aufgabe war, das handhabbar zu machen: filtern, korrigieren und in vier Sprachen übersetzen, mit einer KI-Anwendung, die ich von Grund auf gebaut habe."
+        },
+        {
+          "en": "The result: 800,000+ products refreshed daily, ready for the marketplace, no spreadsheets.",
+          "el": "Το αποτέλεσμα: 800.000+ προϊόντα με καθημερινή ανανέωση, έτοιμα για το marketplace, χωρίς spreadsheets.",
+          "de": "Das Resultat: 800’000+ Produkte, täglich aktualisiert, bereit für den Marktplatz, ohne Spreadsheets."
+        },
+        {
+          "en": "Somewhere in there my first AI SaaS was born: FeedGenix. Upload a large dataset, pick the fields you want translated and the languages you need.",
+          "el": "Κάπου εκεί γεννήθηκε το πρώτο μου AI SaaS: το FeedGenix. Ανεβάζεις ένα μεγάλο dataset, διαλέγεις ποια fields θέλεις να μεταφραστούν και σε ποιες γλώσσες.",
+          "de": "Irgendwo dazwischen ist mein erstes KI-SaaS entstanden: FeedGenix. Sie laden einen grossen Datensatz hoch, wählen die Felder, die übersetzt werden sollen, und die Sprachen, die Sie brauchen."
+        },
+        {
+          "en": "From solving one company's problem to building a product for many.",
+          "el": "Από τη λύση ενός προβλήματος για μία εταιρεία, σε ένα προϊόν για πολλές.",
+          "de": "Vom gelösten Problem einer Firma zum Produkt für viele."
+        }
+      ],
+      "then": "2017–2021",
+      "now": "2026",
+      "marketplace": {
+        "en": "marketplace",
+        "el": "marketplace",
+        "de": "Marketplace"
+      },
+      "hub": "DeinDeal",
+      "formats": [
+        "XML",
+        "CSV",
+        "JSON",
+        "FTP",
+        "SFTP",
+        "API"
+      ],
+      "count": 800000,
+      "codes": {
+        "en": "unique product codes",
+        "el": "μοναδικοί κωδικοί προϊόντων",
+        "de": "eindeutige Produktcodes"
+      },
+      "gears": [
+        {
+          "en": "Filter",
+          "el": "Φιλτράρισμα",
+          "de": "Filtern"
+        },
+        {
+          "en": "Fix",
+          "el": "Διόρθωση",
+          "de": "Fixen"
+        },
+        {
+          "en": "Translate",
+          "el": "Μετάφραση",
+          "de": "Übersetzen"
+        },
+        {
+          "en": "Validate",
+          "el": "Έλεγχος",
+          "de": "Prüfen"
+        }
+      ],
+      "langs": [
+        [
+          "DE",
+          "Ledersofa"
+        ],
+        [
+          "FR",
+          "Canapé en cuir"
+        ],
+        [
+          "IT",
+          "Divano in pelle"
+        ],
+        [
+          "EN",
+          "Leather sofa"
+        ]
+      ],
+      "tags": [
+        {
+          "en": "structured JSON outputs",
+          "el": "δομημένα JSON outputs",
+          "de": "strukturiertes JSON"
+        },
+        {
+          "en": "multi-model routing",
+          "el": "multi-model routing",
+          "de": "multi-model routing"
+        },
+        {
+          "en": "content-hash caching",
+          "el": "content-hash caching",
+          "de": "content-hash caching"
+        },
+        {
+          "en": "daily refresh",
+          "el": "καθημερινή ανανέωση",
+          "de": "täglich neu"
+        }
+      ],
+      "refresh": {
+        "en": "daily refresh",
+        "el": "καθημερινή ανανέωση",
+        "de": "täglich neu"
+      },
+      "feedgenix": {
+        "name": "FeedGenix",
+        "site": "feedgenix.com",
+        "url": "https://feedgenix.com",
+        "visit": {
+          "en": "Visit feedgenix.com",
+          "el": "Δες το feedgenix.com",
+          "de": "Zu feedgenix.com"
+        },
+        "dataset": "dataset.csv",
+        "fields": [
+          {
+            "en": "title",
+            "el": "τίτλος",
+            "de": "Titel"
+          },
+          {
+            "en": "description",
+            "el": "περιγραφή",
+            "de": "Beschreibung"
+          },
+          {
+            "en": "attributes",
+            "el": "χαρακτηριστικά",
+            "de": "Attribute"
+          }
+        ],
+        "fieldsLabel": {
+          "en": "Fields",
+          "el": "Πεδία",
+          "de": "Felder"
+        },
+        "langsLabel": {
+          "en": "Languages",
+          "el": "Γλώσσες",
+          "de": "Sprachen"
+        },
+        "go": {
+          "en": "Translate",
+          "el": "Μετάφραση",
+          "de": "Übersetzen"
+        }
+      }
+    },
+    "roles": [
+      {
+        "en": "Engineer",
+        "el": "Engineer",
+        "de": "Engineer"
+      },
+      {
+        "en": "Manager",
+        "el": "Manager",
+        "de": "Manager"
+      },
+      {
+        "en": "Problem solver",
+        "el": "Problem solver",
+        "de": "Problem solver"
+      }
+    ],
+    "cta": {
+      "en": "Let's build something together.",
+      "el": "Ας χτίσουμε κάτι μαζί.",
+      "de": "Bauen wir etwas zusammen."
+    },
+    "contact": {
+      "en": "Contact",
+      "el": "Επικοινωνία",
+      "de": "Kontakt"
+    }
+  }
+}

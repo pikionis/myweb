@@ -1,9 +1,11 @@
 ---
-import { pages } from '../data/site';
+import { pages, words } from '../data/site';
+import { to, unlocalized } from '../data/lang';
+import LangSwitch from './LangSwitch.astro';
 import Logo from './Logo.astro';
 
 // the split sits on the page you are on (src/scripts/splitnav.ts)
-const here = Astro.url.pathname.replace(/\/$/, '') || '/';
+const here = unlocalized(Astro.url.pathname).replace(/\/$/, '') || '/';
 // the longest matching path wins, so /projects/arangia lights "Projects"
 const current = pages.findIndex(({ href }) => href === here || (href !== '/' && here.startsWith(`${href}/`)));
 // pages that open on a dark field (the home hero, the contact page) start with the dark bar, before any script runs
@@ -11,11 +13,11 @@ const dark = here === '/' || here === '/contact';
 ---
 <header class:list={['topbar', { 'on-dark': dark }]}>
   <Logo />
-  <nav aria-label="Main" class="split" data-split>
+  <nav aria-label={words.nav.main} class="split" data-split>
     <div class="row">
       {pages.map(({ href, name, short }, i) => (
         <div class:list={['seg', { on: i === current, pinned: i === current, 'home-seg': href === '/' }]}>
-          <a class="link" href={href} draggable="false" aria-current={i === current ? 'page' : undefined} aria-label={short ? name : undefined}>
+          <a class="link" href={to(href)} draggable="false" aria-current={i === current ? 'page' : undefined} aria-label={short ? name : undefined}>
             {i > 0 && <span class="cap l" aria-hidden="true"></span>}
             {i < pages.length - 1 && <span class="cap r" aria-hidden="true"></span>}
             <!-- a phone shows the short name, drawn in CSS, so the page's text holds each name once -->
@@ -26,11 +28,13 @@ const dark = here === '/' || here === '/contact';
       ))}
     </div>
   </nav>
+  <LangSwitch class="top-lang" />
 </header>
 
 <style>
-  .topbar {
-    position: fixed; inset: 0 0 auto 0; z-index: 50; pointer-events: none;
+  /* the language switch: beside the menu on a wide screen, alone on the right on a phone (the menu floats below) */
+  .topbar :global(.top-lang) { margin-left: auto; color: var(--logo-ink); transition: color 0.3s ease; }
+  .topbar { inset: 0 0 auto 0; z-index: 50; pointer-events: none;
     display: flex; align-items: center; justify-content: space-between; gap: 24px;
     min-height: var(--topbar-h);
     padding: calc(16px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) 16px max(20px, env(safe-area-inset-left, 0px));

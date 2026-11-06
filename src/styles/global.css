@@ -40,6 +40,12 @@
 /* the sheet covers the viewport from here on; this only colours overscroll */
 body.light { background-color: var(--paper); }
 
+/* Space Grotesk has no Greek letters: Manrope's stand beside it on the Greek pages (fetched only by a page that has any) */
+@font-face {
+  font-family: 'Manrope Greek'; font-weight: 400 700; font-display: swap; src: url('/fonts/manrope-greek.woff2') format('woff2');
+  unicode-range: U+0370-03FF, U+1F00-1FFF;
+}
+
 /* Arial sized to Space Grotesk, so the page keeps its lines while the font loads and nothing moves when it arrives:
    text by the width of lowercase, the bold by the width of capitals (the uppercase headings) */
 @font-face {
@@ -57,7 +63,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: 'Space Grotesk', 'Space Grotesk Fallback', 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Space Grotesk', 'Manrope Greek', 'Space Grotesk Fallback', 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
