@@ -1,7 +1,7 @@
 ---
 title: "Arangia"
 summary: "Property brand site and the booking operation behind it, across Airbnb and Booking.com."
-blurb: "Arangia doesn't look like a rental site. It reads like a travel magazine, or a small boutique hotel: slow, quiet, with a nostalgia for the Mediterranean. It doesn't sell; it invites. And all of it grows from a single bitter orange tree."
+blurb: "Arangia doesn't look like a rental site. It reads like a travel magazine, or a small boutique hotel: slow, quiet, with a nostalgia for the Mediterranean. It doesn't sell; it invites. And all of it grows from the bitter orange trees of the area around it."
 services: [web]
 tags: ["Web design", "Booking", "Ops"]
 url: "https://arangia.gr"
@@ -21,7 +21,7 @@ It does not look like a rental site. It reads like a travel magazine, or the sit
 
 ## One tree
 
-The whole identity rests on a single symbol: the bitter orange tree. The name comes from it, *nerantzi* in Greek, *arancia amara* in Italian, and everything returns to it: the texts, the calendar, the rhythm of the pages.
+The whole identity rests on a single symbol: the bitter orange tree. The name comes from the area, full of these trees: *neratzi* in Greek, *arancia amara* in Italian. And everything returns to it: the texts, the calendar, the rhythm of the pages.
 
 ## Slow living, no rush
 

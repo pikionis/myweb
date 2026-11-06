@@ -1,6 +1,6 @@
 ---
 summary: "Markenwebsite für eine Unterkunft sowie das Buchungsmanagement über Airbnb und Booking.com."
-blurb: "Arangia wirkt nicht wie eine Vermietungswebsite, sondern wie ein Reisemagazin oder ein kleines Boutique-Hotel: ruhig, unaufgeregt und geprägt von mediterraner Nostalgie. Die Website verkauft nicht, sie lädt ein. Das gesamte Konzept geht von einem einzigen Bitterorangenbaum aus."
+blurb: "Arangia wirkt nicht wie eine Vermietungswebsite, sondern wie ein Reisemagazin oder ein kleines Boutique-Hotel: ruhig, unaufgeregt und geprägt von mediterraner Nostalgie. Die Website verkauft nicht, sie lädt ein. Das gesamte Konzept geht von den Bitterorangenbäumen der Umgebung aus."
 tags: ["Webdesign", "Buchungen", "Betrieb"]
 ---
 
@@ -12,7 +12,7 @@ Sie wirkt nicht wie eine Vermietungswebsite, sondern wie ein Reisemagazin oder d
 
 ## Ein Baum
 
-Die gesamte Identität beruht auf einem einzigen Symbol: dem Bitterorangenbaum. Von ihm leitet sich der Name ab, *nerantzi* auf Griechisch, *arancia amara* auf Italienisch, und auf ihn beziehen sich die Texte, der Kalender und der Rhythmus der Seiten.
+Die gesamte Identität beruht auf einem einzigen Symbol: dem Bitterorangenbaum. Der Name stammt aus der Umgebung, in der diese Bäume zahlreich wachsen: *neratzi* auf Griechisch, *arancia amara* auf Italienisch. Auf ihn beziehen sich die Texte, der Kalender und der Rhythmus der Seiten.
 
 ## Slow Living
 
