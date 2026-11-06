@@ -1,3 +1,5 @@
+import { upper } from '../data/lang';
+
 /**
  * Letter cascade: on hover each letter tips back and out while its echo flips up from below, in a
  * wave from the first letter to the last.
@@ -39,7 +41,10 @@ let spring: ReturnType<typeof springEasing> | null = null;
 export function letterCascade(el: HTMLElement, trigger: HTMLElement = el) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   spring ??= springEasing();
-  const text = (el.textContent || '').trim();
+  // each letter stands alone in its own cell, where CSS would give a Greek ή its accent as a word of its own: capitals
+  // are made here, the way the language writes them
+  const raw = (el.textContent || '').trim();
+  const text = getComputedStyle(el).textTransform === 'uppercase' ? upper(raw) : raw;
   // Browsers name an element from its contents with a space between boxed letters ("C u s t o m"), so
   // whatever is named here (the heading itself, or the link or button around the title) is named with
   // its whole text, taken before the split
