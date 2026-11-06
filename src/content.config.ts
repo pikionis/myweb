@@ -45,6 +45,7 @@ const projects = defineCollection({
 const projectText = defineCollection({
   loader: glob({ pattern: '{el,de}/[^_]*.md', base: './src/content/projects' }),
   schema: z.object({
+    title: z.string().optional(),
     summary: z.string().optional(),
     blurb: z.string().optional(),
     badge: z.string().optional(),

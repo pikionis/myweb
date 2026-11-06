@@ -150,7 +150,9 @@ function projectForm(main: HTMLElement, id: string) {
           const r = read(pathOf('projects', id, lang)).fields;
           const say = (field: string) => (v: Value) => write('projects', id, lang, { field: [field, v] });
           const rows: HTMLElement[] = [];
-          if (lang === 'en') rows.push(line('Όνομα', String(r.title ?? ''), say('title') as (v: string) => void));
+          rows.push(lang === 'en'
+            ? line('Όνομα', String(r.title ?? ''), say('title') as (v: string) => void)
+            : line('Όνομα σε αυτή τη γλώσσα', String(r.title ?? ''), say('title') as (v: string) => void, { lang, hint: 'Μόνο αν γράφεται αλλιώς, π.χ. με ελληνικά γράμματα. Αν μείνει κενό, φαίνεται όπως στα αγγλικά.' }));
           rows.push(
             line('Περίληψη', String(r.summary ?? ''), say('summary') as (v: string) => void, { area: true, lang, hint: 'Στην κάρτα του και στις αναζητήσεις.' }),
             line('Κείμενο στην αρχική', String(r.blurb ?? ''), say('blurb') as (v: string) => void, { area: true, lang, hint: 'Δίπλα στο έργο, στο φύλλο της υπηρεσίας του. Κενό: φαίνεται η περίληψη.' }),

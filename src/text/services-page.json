@@ -222,7 +222,11 @@
           },
           {
             "project": "arogi-kos",
-            "name": "Arogi Kos",
+            "name": {
+              "en": "Arogi Kos",
+              "el": "Αρωγή Κως",
+              "de": "Arogi Kos"
+            },
             "line": {
               "en": "Brand-led website",
               "el": "Ιστοσελίδα που γεννήθηκε από ένα λογότυπο",

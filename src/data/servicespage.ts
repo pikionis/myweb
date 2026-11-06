@@ -8,7 +8,8 @@ import type { ServiceKey } from './site';
 export type Proof = {
   /** a project in src/content/projects: its capture (public/projects/thumbs/<id>.webp) becomes the picture */
   project?: string;
-  name: string;
+  /** a plain string where the name is the same in every language */
+  name: Copy | string;
   line: Copy;
   /** where the card leads: the project's page, or a site; null hides the link */
   url: string | null;
