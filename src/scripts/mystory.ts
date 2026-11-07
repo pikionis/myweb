@@ -5,8 +5,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
  * "My story" on /about (src/components/MyStory.astro). Every scene is a screen: one scroll brings the next one
  * (the page settles on it), and it plays by itself, its picture drawing itself (MyStoryArt.astro, authored as it
  * ends) while its words arrive; some keep a small motion of their own while on screen (the sea, the light, the
- * fireworks). The timeline on the left (on a phone, the strip at the top) follows: the career line fills, the
- * cobalt line of client work beside it, the current scene lit; the client-work scene brings that line forward.
+ * fireworks). Between some scenes a comic interlude (src/scripts/interludes.ts) plays the same way. The story tells
+ * itself (`tell`): at each stop it waits for the picture and the words, then goes on by itself; a scroll only gets
+ * there sooner, and the timeline's button pauses it. The timeline on the left (on a phone, the strip at the top)
+ * follows: the career line fills, the cobalt line of client work beside it, the current scene lit.
  * With reduced motion every scene is shown as it ends, one after another, and simply fades in as it arrives.
  */
 
@@ -14,9 +16,11 @@ import { type Tl, type El, part, parts, strokes, all, draw, faces, show, pop, ty
 import { kalimeraChapter } from './kalimera';
 import { koanChapter } from './koan';
 import { deindealChapter } from './deindeal';
+import { INTERLUDES } from './interludes';
+import { readTime } from './chapter';
 
 /** the scenes told as chapters of their own, in beats */
-const CHAPTERS: Record<string, (step: HTMLElement, still: boolean) => { points: () => number[]; kill: () => void } | null> = {
+const CHAPTERS: Record<string, (step: HTMLElement, still: boolean) => { points: () => number[]; hold: (k: number) => number; kill: () => void } | null> = {
   kalimera: kalimeraChapter,
   koan: koanChapter,
   deindeal: deindealChapter,
@@ -375,6 +379,77 @@ function splitWords(el: HTMLElement | null): HTMLSpanElement[] {
   });
 }
 
+/** The story tells itself. At each stop (a scene, an interlude, a chapter's beat) it waits until the picture has
+ *  played and its words have been read (`holds`), then goes on to the next stop by itself; a scroll only takes it
+ *  there sooner, and it goes on from wherever the reader settles. It starts at the first scene and ends at the
+ *  last; it waits while the tab is hidden; the button in the timeline pauses it and plays it on. */
+function tell(root: HTMLElement, snap: ScrollTrigger, points: number[], holds: (() => number)[]) {
+  const button = root.querySelector<HTMLButtonElement>('[data-auto]');
+  const word = button?.querySelector('[data-auto-word]');
+  let paused = false;
+  let wait: gsap.core.Tween | null = null, going: gsap.core.Tween | null = null;
+  const stopAt = (j: number) => snap.start + points[j] * (snap.end - snap.start);
+  // the stop the page has settled on, if it has
+  const settled = () => {
+    let best = -1, gap = Infinity;
+    points.forEach((_, j) => { const d = Math.abs(stopAt(j) - window.scrollY); if (d < gap) { gap = d; best = j; } });
+    return gap <= 6 ? best : -1;
+  };
+  const cancel = () => { wait?.kill(); wait = null; going?.kill(); going = null; };
+  const arm = () => {
+    cancel();
+    if (paused || document.hidden) return;
+    const j = settled();
+    // (not before the first scene, nor on from the last)
+    if (j < 1 || j >= points.length - 2) return;
+    wait = gsap.delayedCall(holds[j](), () => {
+      wait = null;
+      const o = { y: window.scrollY }, to = stopAt(j + 1);
+      going = gsap.to(o, {
+        y: to, duration: gsap.utils.clamp(0.9, 1.8, 0.7 + Math.abs(to - o.y) / 1400), ease: 'power2.inOut',
+        onUpdate: () => window.scrollTo(0, o.y), onComplete: () => { going = null; },
+      });
+    });
+  };
+  // the reader takes over: whatever was waiting or going stops, and it starts again where the page settles
+  const reader = () => { if (wait || going) cancel(); };
+  const keys = new Set(['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Home', 'End']);
+  const key = (e: KeyboardEvent) => { if (keys.has(e.key)) reader(); };
+  // (a tap, or the train taken by hand, scrolls nothing: the story goes on once it is let go)
+  const letGo = () => { if (!wait && !going) gsap.delayedCall(0.6, () => { if (!wait && !going) arm(); }); };
+  const seen = () => (document.hidden ? cancel() : arm());
+  const toggle = () => {
+    paused = !paused;
+    if (button) {
+      button.toggleAttribute('data-paused', paused);
+      const label = (paused ? button.dataset.play : button.dataset.pause) ?? '';
+      button.setAttribute('aria-label', label);
+      if (word) word.textContent = label;
+    }
+    if (paused) cancel(); else arm();
+  };
+  ScrollTrigger.addEventListener('scrollEnd', arm);
+  window.addEventListener('wheel', reader, { passive: true });
+  window.addEventListener('touchstart', reader, { passive: true });
+  window.addEventListener('keydown', key);
+  window.addEventListener('pointerdown', reader);
+  window.addEventListener('pointerup', letGo);
+  document.addEventListener('visibilitychange', seen);
+  button?.addEventListener('click', toggle);
+  arm();
+  return () => {
+    cancel();
+    ScrollTrigger.removeEventListener('scrollEnd', arm);
+    window.removeEventListener('wheel', reader);
+    window.removeEventListener('touchstart', reader);
+    window.removeEventListener('keydown', key);
+    window.removeEventListener('pointerdown', reader);
+    window.removeEventListener('pointerup', letGo);
+    document.removeEventListener('visibilitychange', seen);
+    button?.removeEventListener('click', toggle);
+  };
+}
+
 export function myStory(root: HTMLElement) {
   // registered when the story is set up, not as the script loads: loading it then measured every page before
   // its first picture
@@ -390,7 +465,8 @@ export function myStory(root: HTMLElement) {
     items.forEach((li, k) => { li.classList.toggle('past', k < i); li.classList.toggle('now', k === i); });
     if (now) now.textContent = items[i]?.querySelector('.ms-year')?.textContent ?? '';
   };
-  steps.forEach((step, i) => ScrollTrigger.create({ trigger: step, start: 'top 50%', end: 'bottom 50%', onToggle: (s) => s.isActive && active(i) }));
+  // (an interlude lights the scene it belongs to)
+  steps.forEach((step, i) => ScrollTrigger.create({ trigger: step, start: 'top 50%', end: 'bottom 50%', onToggle: (s) => s.isActive && active(Number(step.dataset.railAt ?? i)) }));
   ScrollTrigger.create({
     trigger: root.querySelector('.ms-steps'), start: 'top 50%', end: 'bottom 50%',
     onUpdate: (s) => fills.forEach((f) => f.style.setProperty('--fill', s.progress.toFixed(4))),
@@ -416,6 +492,7 @@ export function myStory(root: HTMLElement) {
     const plays: ({ tl: Tl; idle: gsap.core.Animation[] } | null)[] = [];
     const triggers: ScrollTrigger[] = [];
     let snap: ScrollTrigger | null = null;
+    let untell: (() => void) | null = null;
     const handBack = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
     (async () => {
       // the chapters: told in beats, with a stop for each (src/scripts/chapter.ts)
@@ -427,7 +504,7 @@ export function myStory(root: HTMLElement) {
       for (const step of steps) {
         // the picture on show (the journey is drawn twice, wide and narrow)
         const svg = [...step.querySelectorAll<SVGSVGElement>('.ms-art svg')].find((v) => v.getClientRects().length) ?? null;
-        const scene = SCENES[step.dataset.scene ?? ''];
+        const scene = SCENES[step.dataset.scene ?? ''] ?? INTERLUDES[step.dataset.scene ?? ''];
         if (!svg || !scene) { plays.push(null); continue; }
         const tl = gsap.timeline({ paused: true });
         const idle: gsap.core.Animation[] = [];
@@ -445,6 +522,12 @@ export function myStory(root: HTMLElement) {
       // one scroll, one scene: within the story the page settles on the next scene in the direction it moved
       const track = root.querySelector<HTMLElement>('.ms-steps')!;
       const points: number[] = [];
+      // how long the story waits at each stop when it tells itself (see `tell` below): the scene played, its words read
+      const holds: (() => number)[] = [];
+      // (an interlude is a joke: a moment longer, to land)
+      const sceneHold = (k: number) => Math.max((plays[k]?.tl.duration() ?? 1) + 0.6,
+        readTime([...steps[k].querySelectorAll('[data-t]:not(.ms-course-list), [data-words], [data-say]')].map((e) => e.textContent).join(' ')))
+        + (steps[k].classList.contains('ms-inter') ? 1.5 : 0);
       // each scene is as tall as it needs, so they sit close together: the page settles with the scene in the middle
       // of what is free of the bar (and, on a phone, of the timeline strip and the floating menu). It takes hold as
       // the story comes up the screen, so the first scene is the first stop; the start and the end are stops too,
@@ -457,16 +540,26 @@ export function myStory(root: HTMLElement) {
           const top = bar + (phone.matches ? (rail?.offsetHeight ?? 0) : 0);
           const bottom = window.innerHeight - (phone.matches ? 90 : 0);
           points.length = 0;
+          holds.length = 0;
           points.push(0);
-          steps.forEach((s) => {
-            const ch = chapters[steps.indexOf(s)];
-            if (ch) { ch.points().forEach((y) => points.push(gsap.utils.clamp(0, 1, (y - self.start) / Math.max(1, self.end - self.start)))); return; }
+          holds.push(() => 0);
+          steps.forEach((s, k) => {
+            const ch = chapters[k];
+            if (ch) {
+              ch.points().forEach((y, b) => {
+                points.push(gsap.utils.clamp(0, 1, (y - self.start) / Math.max(1, self.end - self.start)));
+                holds.push(() => ch.hold(b));
+              });
+              return;
+            }
             const y = s.getBoundingClientRect().top + window.scrollY, h = s.offsetHeight;
             // in the middle of the free space; a scene taller than it starts at its top
             const at = h > bottom - top ? y - top : y + h / 2 - (top + bottom) / 2;
             points.push(gsap.utils.clamp(0, 1, (at - self.start) / Math.max(1, self.end - self.start)));
+            holds.push(() => sceneHold(k));
           });
           points.push(1);
+          holds.push(() => 0);
         },
         snap: {
           snapTo: (value: number, self?: ScrollTrigger) => ScrollTrigger.snapDirectional(points)(value, self?.direction),
@@ -474,10 +567,12 @@ export function myStory(root: HTMLElement) {
         },
       });
       ScrollTrigger.refresh();
+      if (!stopped) untell = tell(root, snap, points, holds);
     })();
     return () => {
       stopped = true;
       root.classList.remove('on');
+      untell?.();
       snap?.kill(); triggers.forEach((t) => t.kill()); plays.forEach((p) => p?.tl.kill()); chapters.forEach((c) => c?.kill());
     };
   });

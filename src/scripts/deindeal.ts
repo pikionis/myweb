@@ -1,7 +1,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { type Tl, part, parts, strokes, draw, drawIn, show, pop, write, loop } from './storydraw';
-import { chapter, ready, type Beat as ChapterBeat } from './chapter';
+import { chapter, ready, phoneCamera, underWords, atLeast, type Beat as ChapterBeat } from './chapter';
 
 /*
  * The DeinDeal chapter of "My story" (DeinDealChapter.astro; the drawing is src/components/deindeal.ts): "Swiss
@@ -9,15 +9,16 @@ import { chapter, ready, type Beat as ChapterBeat } from './chapter';
  * flight from KOAN lands; the other side of the counter; the integrations; the flood of 800,000+ products; the
  * movement whose gears filter, fix, translate and validate (turning faster the further the page goes, driven by
  * the AI at the centre); clean cards on the marketplace's shelves; the Translate gear leaving to become Feedgenix;
- * Feedgenix rolling onto the line of client work. On a phone the drawing comes in close on each beat.
+ * Feedgenix rolling onto the line of client work. On a phone the drawing fills the screen behind the words and the
+ * camera comes in on each beat's picture, close enough for its words to read (phoneCamera in chapter.ts).
  * With reduced motion every picture is shown as it ends and the gears stand still.
  */
 
 /** the scroll from one beat to the next, in heights of what is free on screen: the movement holds longer */
 const STEPS = [0.75, 0.75, 0.8, 0.85, 1.3, 0.8, 0.85];
 const clamp01 = gsap.utils.clamp(0, 1);
-/** on a phone, where the drawing comes in close for each beat: the point for the middle (480, 270), and how close */
-const FOCUS: Record<number, [number, number, number]> = { 1: [470, 310, 1.2], 2: [380, 290, 1.25], 3: [700, 300, 1.3], 4: [480, 252, 1.45], 5: [600, 262, 1.3], 6: [762, 300, 1.35] };
+/** on a phone, where each beat happens: the camera keeps its picture within reach of this point */
+const FOCUS: Record<number, [number, number]> = { 1: [470, 310], 2: [380, 290], 3: [700, 300], 4: [480, 252], 5: [600, 262], 6: [762, 300] };
 /** the Translate gear: at home in the movement, as Feedgenix's mark on its dashboard, and rolled onto the line */
 const HOME = { x: 550, y: 250, s: 1 }, MARK = { x: 640, y: 152, s: 0.42 }, LINE = { x: 760, y: 524, s: 0.1 };
 
@@ -210,6 +211,27 @@ export function deindealChapter(step: HTMLElement, still: boolean) {
   });
   gsap.set(move, { opacity: 0 });
 
+  // the camera: a wide screen holds the whole drawing; a phone comes in on each beat's picture, under its words
+  // (phoneCamera), where FOCUS says it happens (each beat's picture as authored, measured before any is built)
+  const W = svg.viewBox.baseVal.width, H = svg.viewBox.baseVal.height;
+  const shots = beats.map((b, k) => {
+    const [fx, fy] = FOCUS[k] ?? [W / 2, H / 2];
+    const g = (b.group as SVGGraphicsElement).getBBox();
+    const box = { l: Math.max(0, g.x), t: Math.max(0, g.y), r: Math.min(W, g.x + g.width), b: Math.min(H, g.y + g.height) };
+    // (a beat's group can hold what lies far from where it happens: kept within reach of its focus)
+    return atLeast({ l: Math.max(box.l, fx - 360), r: Math.min(box.r, fx + 360), t: Math.max(box.t, fy - 230), b: Math.min(box.b, fy + 230) }, 300, 200);
+  });
+  let beatNow = 0;
+  // (the movement is followed gear by gear as it draws: filter, fix, translate, validate)
+  const pcam = phoneCamera({ cam, view, look, beats, still, box: (k) => shots[k], room: (k) => underWords(root, k) });
+  const frame = (k: number, jump: boolean) => {
+    if (phone.matches) { pcam.aim(k, jump); return; }
+    pcam.stop();
+    const at = { x: 0, y: 0, z: 1 };
+    if (jump) { Object.assign(view, at); look(); }
+    else gsap.to(view, { ...at, duration: 1.1, ease: 'power2.inOut', overwrite: true, onUpdate: look });
+  };
+
   const ch = chapter(root, {
     still, steps: STEPS, beats,
     render: (p) => { d = p; },
@@ -233,13 +255,13 @@ export function deindealChapter(step: HTMLElement, still: boolean) {
         gsap.set([part(svg, 'dd-tglow'), part(svg, 'dd-tlit')], { opacity: 1 });
         if (k === 7) gsap.set(tpos, { opacity: 0 });
       }
-      // a phone comes in close
-      const [fx, fy, z] = (phone.matches && FOCUS[k]) || [480, 270, 1];
-      const at = { x: 480 - fx * z, y: 270 - fy * z, z };
-      if (jump) { Object.assign(view, at); look(); }
-      else gsap.to(view, { ...at, duration: 1.1, ease: 'power2.inOut', overwrite: true, onUpdate: look });
+      beatNow = k;
+      frame(k, jump);
     },
+    // (a phone follows the beat on screen again from its start)
+    onEnter: () => { if (!still && phone.matches) pcam.aim(beatNow, true); },
   });
+  phone.addEventListener('change', () => frame(beatNow, true));
   turn();
-  return { points: ch.points, kill: () => { ch.kill(); watch.kill(); gsap.ticker.remove(tick); } };
+  return { points: ch.points, hold: ch.hold, kill: () => { ch.kill(); watch.kill(); gsap.ticker.remove(tick); pcam.stop(); } };
 }

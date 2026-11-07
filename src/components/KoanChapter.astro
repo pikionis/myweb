@@ -78,13 +78,13 @@ const plane = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" strok
     font-size: max(9px, 2.1cqi); color: var(--muted); letter-spacing: 0.02em;
   }
 
-  /* a phone: the board over the map, three rows at a time */
+  /* a phone: the board over the map, two rows at a time (the map under it takes the rest of the screen) */
   @media (max-width: 860px) {
     .ko-body { grid-template-columns: minmax(0, 1fr); gap: 12px; }
     :global(.ch.ch-on:not(.ch-measure)) .ko-body { grid-template-rows: auto minmax(0, 1fr); }
     .fl { padding: 10px 12px 6px; }
     .fl-head { font-size: 0.75rem; margin-bottom: 4px; padding-bottom: 6px; }
-    .fl-row:nth-child(n + 4) { display: none; }
-    .fl-row:nth-child(3) { border-bottom: 0; }
+    .fl-row:nth-child(n + 3) { display: none; }
+    .fl-row:nth-child(2) { border-bottom: 0; }
   }
 </style>

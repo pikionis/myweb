@@ -6,7 +6,8 @@
 // the line never breaks. Parts the script moves are named by data-p; strokes draw on as in the stories.
 import { r1, C, R, P as pen, D, cls } from './lineart';
 import { type N, P, G, F, X, width, written, pill, person, doc, poly, block, walker, cheer, cloud, burst } from './storypen';
-import { art as A, t } from '../data/mystory';
+import { art as A, t, interludes } from '../data/mystory';
+import { interludeArt } from './interludes';
 import { kalimeraArt, VIEW as KC, SUN } from './kalimera';
 import { koanArt, VIEW as KO } from './koan';
 import { deindealArt, VIEW as DD } from './deindeal';
@@ -322,7 +323,9 @@ const SCENES: Record<string, () => { view?: string; inner: string }> = {
 const scene: { view?: string; inner: string } = name === 'journey-wide' ? journey(false) : name === 'journey-narrow' ? journey(true)
   : name === 'kalimera' ? { view: `0 0 ${KC.w} ${KC.h}`, inner: kalimeraArt() }
   : name === 'koan' ? { view: `0 0 ${KO.w} ${KO.h}`, inner: koanArt() }
-  : name === 'deindeal' ? { view: `0 0 ${DD.w} ${DD.h}`, inner: deindealArt() } : SCENES[name]();
+  : name === 'deindeal' ? { view: `0 0 ${DD.w} ${DD.h}`, inner: deindealArt() }
+  // (the comic interludes between the scenes: src/components/interludes.ts)
+  : name.startsWith('il-') ? interludeArt(interludes.find((i) => `il-${i.id}` === name)!) : SCENES[name]();
 const view = scene.view ?? '0 0 800 500';
 ---
 <svg class:list={['ms-svg', `art-${name}`]} data-art={name} data-world={name.startsWith('journey') ? WORLD : undefined} viewBox={view} aria-hidden="true" focusable="false"
@@ -413,6 +416,8 @@ const view = scene.view ?? '0 0 800 500';
   .ms-svg :global(.dd-drop) { stroke-dasharray: 6 5; }
   .ms-svg :global(.dd-glow) { fill: color-mix(in srgb, var(--cobalt) 22%, transparent); stroke: none; }
   :global(.ch.phone) .art-deindeal :global(.dd-more) { display: none; }
+  /* the AI lab's interlude: the light running from the orchestrator to each agent */
+  .ms-svg :global(.il-pulse) { fill: none; stroke: var(--cobalt); stroke-width: calc(6px * var(--sw, 1)); stroke-linecap: round; stroke-dasharray: 0.05 1; stroke-dashoffset: 1; opacity: 0; }
   /* a wide screen sets the accelerator's cards side by side, a phone one under another */
   .art-kalimera :global([data-p='kc-narrow']) { display: none; }
   :global(.ch.phone) .art-kalimera :global([data-p='kc-narrow']) { display: inline; }

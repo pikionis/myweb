@@ -1,7 +1,7 @@
 import { upper } from '../data/lang';
 import { gsap } from 'gsap';
 import { type Tl, part, parts, strokes, draw, drawIn, show, pop, loop } from './storydraw';
-import { chapter } from './chapter';
+import { chapter, phoneCamera, atLeast } from './chapter';
 
 /*
  * The KOAN chapter of "My story" (KoanChapter.astro; the map is src/components/koan.ts): "Opening the skies", run
@@ -201,10 +201,35 @@ export function koanChapter(step: HTMLElement, still: boolean) {
     return { group, make: (tl: Tl, idle: gsap.core.Animation[]) => BEATS[k](tl, group, svg, idle) };
   });
 
+  // the camera: a wide screen comes in close where FOCUS says; a phone on each beat's picture (as authored, measured
+  // before any is built), in the map's box, close enough for its words to read (phoneCamera)
+  const mapBox = root.querySelector<HTMLElement>('.ko-map');
+  const shots = beats.map((b) => {
+    const g = (b.group as SVGGraphicsElement).getBBox();
+    return atLeast({ l: g.x, t: g.y, r: g.x + g.width, b: g.y + g.height }, 260, 180);
+  });
+  let beatNow = 0;
+  const pcam = phoneCamera({
+    cam, view, look, beats, still, box: (k) => shots[k],
+    room: () => { const r = mapBox?.getBoundingClientRect(); return r ? { l: r.left, t: r.top + 4, r: r.right, b: r.bottom - 4 } : null; },
+  });
+  const frame = (k: number, jump: boolean) => {
+    if (phone.matches) { pcam.aim(k, jump); return; }
+    pcam.stop();
+    const [fx, fy, z] = FOCUS[k] ?? [320, 260, 1];
+    const at = { x: 320 - fx * z, y: 260 - fy * z, z };
+    if (jump) { Object.assign(view, at); look(); }
+    else gsap.to(view, { ...at, duration: 1.2, ease: 'power2.inOut', overwrite: true, onUpdate: look });
+  };
+  phone.addEventListener('change', () => frame(beatNow, true));
+
   const ch = chapter(root, {
     still, steps: STEPS, beats,
+    // (a phone follows the beat on screen again from its start)
+    onEnter: () => { if (!still && phone.matches) pcam.aim(beatNow, true); },
     onBeat: (k, was) => {
-      setBoard(k, phone.matches ? 3 : 6);
+      // (a phone shows the board's last two rows, so the map under it has room)
+      setBoard(k, phone.matches ? 2 : 6);
       // the map: from the mandate on; the route from the UK from the strongest market on; both step back behind the
       // machine of beat 6
       const jump = still || was < 0;
@@ -212,14 +237,9 @@ export function koanChapter(step: HTMLElement, still: boolean) {
       to(base, { opacity: k === 0 ? 0 : k === 6 ? 0.15 : 1 });
       to(uk, { opacity: k < 3 ? 0 : k === 6 ? 0.15 : 1 });
       to(pulse, { opacity: k === 3 ? 1 : 0 });
-      // close in where the beat happens
-      // (a phone shows the map small, under the board: at the fairs it comes in half as close again, the one beat
-      // whose picture has the room)
-      const [fx, fy, z0] = FOCUS[k] ?? [320, 260, 1];
-      const z = k === 2 && phone.matches ? z0 * 1.5 : z0;
-      const at = { x: 320 - fx * z, y: 260 - fy * z, z };
-      if (jump) { Object.assign(view, at); look(); }
-      else gsap.to(view, { ...at, duration: 1.2, ease: 'power2.inOut', overwrite: true, onUpdate: look });
+      // close in where the beat happens (a phone: on the beat's picture, in the map's box under the board)
+      beatNow = k;
+      frame(k, jump);
       // what an earlier beat drew stays drawn, however quickly the page went past it
       if (k !== 1) {
         gsap.set(strokes(isles), { strokeDashoffset: 0, fillOpacity: 1 });
@@ -231,5 +251,5 @@ export function koanChapter(step: HTMLElement, still: boolean) {
       }
     },
   });
-  return ch;
+  return { ...ch, kill: () => { ch.kill(); pcam.stop(); } };
 }

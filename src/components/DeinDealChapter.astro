@@ -14,7 +14,7 @@ const K = art.deindeal;
 // the link waits, like the project's own, while feedgenix.com is not live yet
 const live = !(await getEntry('projects', 'feedgenix'))?.data.launching;
 ---
-<Chapter scene={scene} says={[scene.text, ...K.beats]} sky="--wash: 0.2" links={live ? { 6: { href: K.feedgenix.url, label: K.feedgenix.visit } } : {}}>
+<Chapter scene={scene} says={[scene.text, ...K.beats]} sky="--wash: 0.2" overlay links={live ? { 6: { href: K.feedgenix.url, label: K.feedgenix.visit } } : {}}>
   <div class="dd-world"><MyStoryArt name="deindeal" /></div>
 </Chapter>
 

@@ -13,11 +13,14 @@ interface Props {
   sky?: string;
   /** a link after a beat's words, by beat (it opens in a new tab) */
   links?: Record<number, { href: string; label: Copy }>;
+  /** on a phone the drawing fills the whole screen behind the words (its camera puts each beat's picture under
+   *  them); otherwise the body sits under the words */
+  overlay?: boolean;
 }
-const { scene, says, sky = '--wash: 1', links = {} } = Astro.props;
+const { scene, says, sky = '--wash: 1', links = {}, overlay = false } = Astro.props;
 const arrow = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>';
 ---
-<div class="ch" data-chapter={scene.id}>
+<div class="ch" data-chapter={scene.id} data-overlay={overlay ? '' : undefined}>
   <div class="ch-stage">
     <div class="ch-sky" style={sky} aria-hidden="true"></div>
     <header class="ch-head">
@@ -92,5 +95,14 @@ const arrow = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" strok
     .ch-corner { grid-column: 2; grid-row: 1; }
     .ch-label { font-size: 1.6rem; }
     .ch-name h3 { font-size: 1.125rem; }
+    /* each beat's words as tall as they are (the camera puts the picture right under them) */
+    .ch.ch-on.phone .ch-say li { align-self: start; }
+    .ch.ch-on.phone .ch-say { height: var(--say-h, auto); }
+    .ch.ch-on.phone[data-overlay] .ch-head { position: relative; z-index: 1; }
+    .ch.ch-on.phone[data-overlay] .ch-body {
+      position: absolute; inset: 0;
+      -webkit-mask-image: linear-gradient(to bottom, transparent var(--room-top, 0px), #000 calc(var(--room-top, 0px) + 28px));
+      mask-image: linear-gradient(to bottom, transparent var(--room-top, 0px), #000 calc(var(--room-top, 0px) + 28px));
+    }
   }
 </style>

@@ -1,7 +1,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { type Tl, part, parts, strokes, draw, drawIn, show, pop, count, loop, sampled } from './storydraw';
-import { chapter } from './chapter';
+import { chapter, phoneCamera, underWords, atLeast, type Box } from './chapter';
 
 /*
  * The Kalimera chapter of "My story" (KalimeraChapter.astro; the drawing is src/components/kalimera.ts): one
@@ -200,12 +200,11 @@ export function kalimeraChapter(step: HTMLElement, still: boolean) {
   const open = gsap.timeline({ paused: true });
   draw(open, [horizon], 0, 1.2);
 
-  // ---- the camera: a wide screen holds the whole morning (pulling back a little at the end). A phone gives the
-  // drawing only its width, with sky to spare above, so the camera comes in on each beat's picture (as authored,
-  // measured before any beat is built) as close as the width allows, the horizon kept at the foot
-  const W = svg.viewBox.baseVal.width, H = svg.viewBox.baseVal.height, HZ = horizon.getBBox().y, FOOT = H - 20;
-  type Shot = { l: number; t: number; r: number; b: number };
-  let shots: (Shot | null)[] = [];
+  // ---- the camera: a wide screen holds the whole morning (pulling back a little at the end). On a phone the
+  // drawing fills the screen behind the words and the camera comes in on each beat's picture (as authored, measured
+  // before any beat is built), under the beat's words, close enough for its words to read (phoneCamera)
+  const W = svg.viewBox.baseVal.width, H = svg.viewBox.baseVal.height, HZ = horizon.getBBox().y;
+  let shots: (Box | null)[] = [];
   const measure = () => {
     root.classList.toggle('phone', phone.matches);
     shots = [0, 1, 2, 3, 4, 5, 6, 7].map((k) => {
@@ -218,19 +217,23 @@ export function kalimeraChapter(step: HTMLElement, still: boolean) {
   measure();
   const view = { x: 0, y: 0, z: 1 };
   const look = () => cam.setAttribute('transform', `translate(${view.x.toFixed(1)} ${view.y.toFixed(1)}) scale(${view.z.toFixed(4)})`);
-  const aim = (k: number) => {
-    if (!phone.matches) return k === 7 ? { x: 450 * 0.06, y: 480 * 0.06, z: 0.94 } : { x: 0, y: 0, z: 1 };
-    const s = shots[k] ?? { l: 0, r: W, t: HZ - 160, b: H };
-    const box = svg.getBoundingClientRect();
-    // the height on show, in the drawing's units (it sits at the foot of its box)
-    const tall = box.width ? box.height / Math.min(box.width / W, box.height / H) : H;
-    const l = s.l - 24, r = s.r + 24, top = Math.min(s.t, HZ - 120) - 24;
-    const z = Math.max(1, Math.min(1.8, W / (r - l), tall / (FOOT - top)));
-    const half = W / 2 / z, cx = Math.min(W - half, Math.max(half, (l + r) / 2));
-    return { x: W / 2 - cx * z, y: FOOT * (1 - z), z };
-  };
+  const aim = (k: number) => (k === 7 ? { x: 450 * 0.06, y: 480 * 0.06, z: 0.94 } : { x: 0, y: 0, z: 1 });
   let beatNow = 0;
-  phone.addEventListener('change', () => { measure(); Object.assign(view, aim(beatNow)); look(); });
+  const pcam = phoneCamera({
+    cam, view, look, beats, still,
+    // (the accelerator's cards are read from their left; the ecosystem map from its middle)
+    hold: { 6: 'left', 7: 'centre' },
+    // (the opening: the horizon, and the sky over it)
+    box: (k) => atLeast(shots[k] ?? { l: 0, r: W, t: HZ - 160, b: H }, 320, 220),
+    room: (k) => underWords(root, k),
+  });
+  const frame = (k: number, jump: boolean) => {
+    if (phone.matches) { pcam.aim(k, jump); return; }
+    pcam.stop();
+    if (jump) { Object.assign(view, aim(k)); look(); }
+    else gsap.to(view, { ...aim(k), duration: 1.4, ease: 'power2.inOut', overwrite: true, onUpdate: look });
+  };
+  phone.addEventListener('change', () => { measure(); frame(beatNow, true); });
 
   const ch = chapter(root, {
     still, steps: STEPS, beats,
@@ -247,14 +250,16 @@ export function kalimeraChapter(step: HTMLElement, still: boolean) {
       if (jump) morph.progress(k >= 4 ? 1 : 0);
       else if (k >= 4) morph.play(); else morph.reverse();
       beatNow = k;
-      const at = aim(k);
-      if (jump) { Object.assign(view, at); look(); gsap.set(land, { opacity: k === 7 ? 0.45 : 1 }); }
-      else {
-        gsap.to(view, { ...at, duration: 1.4, ease: 'power2.inOut', overwrite: true, onUpdate: look });
-        gsap.to(land, { opacity: k === 7 ? 0.45 : 1, duration: 0.8, overwrite: true });
-      }
+      frame(k, jump);
+      if (jump) gsap.set(land, { opacity: k === 7 ? 0.45 : 1 });
+      else gsap.to(land, { opacity: k === 7 ? 0.45 : 1, duration: 0.8, overwrite: true });
     },
-    onEnter: () => (still ? open.progress(1) : open.restart()),
+    onEnter: () => {
+      if (still) { open.progress(1); return; }
+      open.restart();
+      // (a phone follows the beat on screen again from its start)
+      if (phone.matches) pcam.aim(beatNow, true);
+    },
     // the day: d runs from 0 (05:30) to 7 (noon)
     render: (d) => {
       // the sun along its way, the way it has come behind it
@@ -276,5 +281,5 @@ export function kalimeraChapter(step: HTMLElement, still: boolean) {
       sails.forEach((s) => s.setAttribute('transform', `rotate(${(d * 140).toFixed(1)} ${s.dataset.cx} ${s.dataset.cy})`));
     },
   });
-  return { points: ch.points, kill: () => { ch.kill(); morph.kill(); open.kill(); } };
+  return { points: ch.points, hold: ch.hold, kill: () => { ch.kill(); morph.kill(); open.kill(); pcam.stop(); } };
 }

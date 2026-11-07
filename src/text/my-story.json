@@ -237,7 +237,187 @@
       }
     }
   ],
+  "interludes": [
+    {
+      "id": "cocky",
+      "before": "reach",
+      "rail": "graduation",
+      "says": [
+        {
+          "en": "Oh yes. I’m kind of a big deal.",
+          "el": "Ω ναι. Είμαι φοβερός και τρομερός.",
+          "de": "Diplom in der Hand. Bereit für alles."
+        }
+      ]
+    },
+    {
+      "id": "wtf",
+      "before": "reach",
+      "rail": "reach",
+      "says": [
+        {
+          "en": "WTF is all this?",
+          "el": "Τι είναι όλα αυτά;",
+          "de": "Was ist das alles?"
+        },
+        {
+          "en": "Holy f*ck. So much to learn…",
+          "el": "Θεέ μου, πόσα έχω να μάθω…",
+          "de": "So viel Neues zu lernen."
+        },
+        {
+          "en": "…but in time, I learned.",
+          "el": "…αλλά με τον καιρό τα έμαθα.",
+          "de": "Mit der Zeit habe ich es gelernt."
+        }
+      ],
+      "terms": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "PHP",
+        "SQL",
+        "SEO",
+        "XML",
+        "DNS",
+        "SSL",
+        "API"
+      ]
+    },
+    {
+      "id": "startup",
+      "before": "kalimera",
+      "rail": "kalimera",
+      "says": [
+        {
+          "en": "Startup life: a bit of everything.",
+          "el": "Ζωή σε startup: λίγο απ’ όλα.",
+          "de": "Start-up-Alltag: von allem etwas."
+        }
+      ],
+      "panels": [
+        {
+          "en": "Meetings",
+          "el": "Συναντήσεις",
+          "de": "Meetings"
+        },
+        {
+          "en": "Sales",
+          "el": "Πωλήσεις",
+          "de": "Verkauf"
+        },
+        {
+          "en": "Writing code",
+          "el": "Κώδικας",
+          "de": "Programmierung"
+        },
+        {
+          "en": "Presentations",
+          "el": "Παρουσιάσεις",
+          "de": "Präsentationen"
+        }
+      ]
+    },
+    {
+      "id": "league",
+      "before": "koan",
+      "rail": "koan",
+      "says": [
+        {
+          "en": "The big league. Paperwork included.",
+          "el": "Μεγάλα σαλόνια, με όλη τους τη γραφειοκρατία.",
+          "de": "Eine neue Grössenordnung."
+        }
+      ],
+      "panels": [
+        {
+          "en": "Big contracts",
+          "el": "Μεγάλα συμβόλαια",
+          "de": "Grosse Verträge"
+        },
+        {
+          "en": "Big organisations",
+          "el": "Μεγάλοι οργανισμοί",
+          "de": "Grosse Organisationen"
+        },
+        {
+          "en": "Destination management",
+          "el": "Διαχείριση προορισμού",
+          "de": "Destinationsmanagement"
+        },
+        {
+          "en": "State bureaucracy",
+          "el": "Κρατική γραφειοκρατία",
+          "de": "Staatliche Verwaltung"
+        }
+      ]
+    },
+    {
+      "id": "lab",
+      "before": "deindeal",
+      "rail": "ai",
+      "says": [
+        {
+          "en": "Code, prompts, agents. Now we’re talking.",
+          "el": "Κώδικας, prompts, agents. Αυτό είναι!",
+          "de": "Code, Prompts, Agenten: das neue Handwerkszeug."
+        }
+      ],
+      "chips": [
+        "Claude Code",
+        "Prompting",
+        "Agentic systems",
+        "LLMs",
+        "RAG",
+        "MCP"
+      ],
+      "prompt": {
+        "en": "Refactor this, and add tests.",
+        "el": "Κάνε refactor και γράψε tests.",
+        "de": "Refaktorisieren und Tests ergänzen."
+      },
+      "orchestrator": {
+        "en": "Orchestrator",
+        "el": "Συντονιστής",
+        "de": "Orchestrator"
+      },
+      "agents": [
+        {
+          "en": "Research",
+          "el": "Έρευνα",
+          "de": "Recherche"
+        },
+        {
+          "en": "Code",
+          "el": "Κώδικας",
+          "de": "Code"
+        },
+        {
+          "en": "Tests",
+          "el": "Έλεγχοι",
+          "de": "Tests"
+        },
+        {
+          "en": "Review",
+          "el": "Αναθεώρηση",
+          "de": "Review"
+        }
+      ]
+    }
+  ],
   "art": {
+    "auto": {
+      "pause": {
+        "en": "Pause the story",
+        "el": "Παύση της ιστορίας",
+        "de": "Geschichte anhalten"
+      },
+      "play": {
+        "en": "Play the story",
+        "el": "Συνέχεια της ιστορίας",
+        "de": "Geschichte fortsetzen"
+      }
+    },
     "chania": {
       "city": {
         "en": "Chania",
