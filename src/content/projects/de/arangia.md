@@ -1,18 +1,18 @@
 ---
 summary: "Markenwebsite für eine Unterkunft sowie das Buchungsmanagement über Airbnb und Booking.com."
-blurb: "Arangia wirkt nicht wie eine Vermietungswebsite, sondern wie ein Reisemagazin oder ein kleines Boutique-Hotel: ruhig, unaufgeregt und geprägt von mediterraner Nostalgie. Die Website verkauft nicht, sie lädt ein. Das gesamte Konzept geht von den Bitterorangenbäumen der Umgebung aus."
+blurb: "Arangia ist eine kleine Anlage mit drei Wohnungen in Kos-Stadt, in schlichter, moderner Architektur. Die Gäste wohnen inmitten der Einheimischen, fünf Gehminuten vom Zentrum entfernt und dennoch in der vollkommenen Ruhe der ländlichen Umgebung. Die Website übernimmt diese ruhigen Töne: unaufgeregt und geprägt von mediterraner Nostalgie. Sie verkauft nicht, sie lädt ein."
 tags: ["Webdesign", "Buchungen", "Betrieb"]
 ---
 
-## Drei Wohnungen, ein kleines Reiseziel
+## Inmitten der Einheimischen, fünf Minuten vom Zentrum
 
-Arangia umfasst drei Wohnungen. Die Website präsentiert sie als kleines Boutique-Reiseziel.
+Arangia ist eine kleine Wohnanlage mit drei Wohnungen, in schlichter, moderner Architektur. Sie liegt in einem Wohnquartier von Kos-Stadt, in dem Einheimische leben: Das Zentrum ist in fünf Gehminuten erreichbar, und dennoch herrscht ringsum die vollkommene Ruhe der ländlichen Umgebung.
 
-Sie wirkt nicht wie eine Vermietungswebsite, sondern wie ein Reisemagazin oder der Auftritt eines kleinen Boutique-Hotels: redaktionell, minimalistisch und warm, mit mediterranem Charakter.
+Die Website folgt derselben Linie: ruhige Farbtöne, viel Raum und Fotografien der Wohnungen selbst.
 
-## Ein Baum
+## Der Name
 
-Die gesamte Identität beruht auf einem einzigen Symbol: dem Bitterorangenbaum. Der Name stammt aus der Umgebung, in der diese Bäume zahlreich wachsen: *neratzi* auf Griechisch, *arancia amara* auf Italienisch. Auf ihn beziehen sich die Texte, der Kalender und der Rhythmus der Seiten.
+Der Name stammt aus der Umgebung, in der zahlreiche Bitterorangenbäume wachsen: *neratzi* auf Griechisch, *arancia amara* auf Italienisch.
 
 ## Slow Living
 

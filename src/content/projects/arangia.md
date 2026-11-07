@@ -1,7 +1,7 @@
 ---
 title: "Arangia"
 summary: "Property brand site and the booking operation behind it, across Airbnb and Booking.com."
-blurb: "Arangia doesn't look like a rental site. It reads like a travel magazine, or a small boutique hotel: slow, quiet, with a nostalgia for the Mediterranean. It doesn't sell; it invites. And all of it grows from the bitter orange trees of the area around it."
+blurb: "Arangia is a small complex of three apartments in Kos Town, with simple, modern architecture. You live among locals, five minutes' walk from the centre, yet in the absolute calm of the countryside. The site keeps the same calm tones: slow, quiet, with a nostalgia for the Mediterranean. It doesn't sell; it invites."
 services: [web]
 tags: ["Web design", "Booking", "Ops"]
 url: "https://arangia.gr"
@@ -13,15 +13,15 @@ cover: "/projects/arangia.webp"
 order: 2
 ---
 
-## Three apartments, one small destination
+## Among locals, five minutes from the centre
 
-Arangia is three apartments. Its site makes them feel like a small boutique destination.
+Arangia is a small complex of three apartments, with simple, modern architecture. It stands in a part of Kos Town where locals live: the centre is a five-minute walk away, and yet all around is the absolute calm of the countryside.
 
-It does not look like a rental site. It reads like a travel magazine, or the site of a small boutique hotel: editorial, minimal and warm, with a Mediterranean soul.
+The site follows the same line: calm tones, plenty of space, and photographs of the apartments themselves.
 
-## One tree
+## The name
 
-The whole identity rests on a single symbol: the bitter orange tree. The name comes from the area, full of these trees: *neratzi* in Greek, *arancia amara* in Italian. And everything returns to it: the texts, the calendar, the rhythm of the pages.
+The name comes from the area, full of bitter orange trees: *neratzi* in Greek, *arancia amara* in Italian.
 
 ## Slow living, no rush
 
