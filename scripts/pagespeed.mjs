@@ -1,6 +1,6 @@
 // Measures every live project (`live_url`, not `launching`) with Google PageSpeed Insights, on a phone and on a
-// desktop, into src/data/pagespeed.json for /projects: the four Lighthouse scores, the lab metrics and, where
-// Google has enough visitors to report them, the field data of real users (CrUX).
+// desktop, into src/data/pagespeed.json for /projects: the four Lighthouse scores, the lab metrics, the Agentic
+// Browsing checks and, where Google has enough visitors to report them, the field data of real users (CrUX).
 // Needs PSI_KEY, a Google API key with the PageSpeed Insights API enabled: in .env locally, a repository secret in
 // the deploy workflow. Without a key Google's shared quota is usually spent; whatever can't be measured keeps its
 // saved results. `npm run pagespeed -- --lhr <dir>` reads Lighthouse reports instead (<id>-mobile.json, <id>-desktop.json).
@@ -37,15 +37,33 @@ async function projects() {
 
 const round = (n, d = 0) => (typeof n === 'number' ? Math.round(n * 10 ** d) / 10 ** d : null);
 
+// Agentic Browsing (Lighthouse 13.3 on): whether an AI agent can read and use the site. It is not a score but a
+// fraction of checks passed, counted as PageSpeed's report counts it (ReportUtils.calculateCategoryFraction): a check
+// that does not apply (no llms.txt and a 404 for it, no ARD manifest, no WebMCP) is left out, an errored one fails.
+const AGENT = 'agentic-browsing';
+function agent(lhr) {
+  const c = lhr.categories[AGENT];
+  if (!c) return undefined;
+  const checks = {};
+  for (const ref of c.auditRefs) {
+    const a = lhr.audits[ref.id];
+    if (!a || ref.group === 'hidden' || ['manual', 'notApplicable', 'informative'].includes(a.scoreDisplayMode)) continue;
+    checks[ref.id] = a.scoreDisplayMode !== 'error' && Number(a.score) >= 0.9;
+  }
+  return { pass: Object.values(checks).filter(Boolean).length, of: Object.keys(checks).length, checks };
+}
+
 /** What /projects shows of a Lighthouse report. */
 function lab(lhr) {
   if (lhr.runtimeError) throw new Error(lhr.runtimeError.code);
+  const ag = agent(lhr);
   return {
     scores: Object.fromEntries(CATEGORIES.map((c) => [c, round((lhr.categories[c]?.score ?? 0) * 100)])),
     // each metric's value and Lighthouse's score for it (0–1: how PageSpeed colours it)
     lab: Object.fromEntries(Object.entries(LAB).map(([k, a]) => [k, {
       v: round(lhr.audits[a]?.numericValue, k === 'cls' ? 3 : 0), s: round(lhr.audits[a]?.score, 2),
     }])),
+    ...(ag && { agent: ag }),
     at: lhr.fetchTime,
   };
 }
@@ -89,6 +107,7 @@ async function psi(url, strategy) {
     ...Object.entries(median.scores).filter(([, n]) => n < 90).map(([k, n]) => `${k} ${n}`),
     ...Object.entries(median.lab).filter(([k, m]) => k !== 'si' && !(m.s >= 0.9)).map(([k, m]) => `${k} ${m.v} (${m.s})`),
     ...Object.entries(median.field ?? {}).filter(([, m]) => typeof m === 'object' && m.category !== 'FAST').map(([k, m]) => `field ${k} ${m.category}`),
+    ...Object.entries(median.agent?.checks ?? {}).filter(([, ok]) => !ok).map(([k]) => `agent ${k}`),
   ];
   console.log(`pagespeed: ${url} ${strategy}: ${sorted.map((r) => r.scores.performance).join(' ')}${low.length ? ` | not green: ${low.join(', ')}` : ''}`);
   for (const r of sorted) console.log(`pagespeed:   ${url} ${strategy} ${r.scores.performance}: ${SEEN.get(r)}`);
@@ -112,7 +131,7 @@ function seen(lhr) {
 
 async function psiRun(url, strategy) {
   const q = new URLSearchParams({ url, strategy });
-  for (const c of CATEGORIES) q.append('category', c.toUpperCase().replace('-', '_'));
+  for (const c of [...CATEGORIES, AGENT]) q.append('category', c.toUpperCase().replaceAll('-', '_'));
   if (KEY) q.set('key', KEY);
   const res = await fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${q}`, { signal: AbortSignal.timeout(150000) });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);

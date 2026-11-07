@@ -18,6 +18,8 @@ type Run = {
   scores: Record<keyof typeof ui.projectsPage.scores, number>;
   lab: Record<Metric, { v: number; s: number }>;
   field?: Partial<Record<'lcp' | 'inp' | 'cls' | 'fcp' | 'ttfb', { p75: number; category: string }>>;
+  // Agentic Browsing: the checks that applied, each passed or not (scripts/pagespeed.mjs)
+  agent?: { pass: number; of: number; checks: Record<string, boolean> };
 };
 const speed = pagespeed as Record<string, { url: string; mobile?: Run; desktop?: Run }>;
 
@@ -45,12 +47,14 @@ const RUNS = [['mobile', t.phone], ['desktop', t.desktop]] as const;
 // second and a half after the page has loaded (the same page: 1.7 s, then 4.8 s). It is saved, and still inside the score.
 const LAB: Metric[] = ['lcp', 'fcp', 'tbt', 'cls'];
 // a site's results show only while they are all green, on a phone and on a desktop: every score 90 or more, every
-// vital (and real visitors' data, where Google has it) good. Below that the site is being worked on and shows none,
-// never a number other than the one measured.
+// vital (and real visitors' data, where Google has it) good, every agent check that applied passed. Below that the
+// site is being worked on and shows none, never a number other than the one measured.
 const green = (r?: Run) => !!r
   && Object.values(r.scores).every((n) => n >= 90)
   && LAB.every((k) => r.lab[k].s >= 0.9)
-  && Object.values(r.field ?? {}).every((m) => typeof m !== 'object' || byCrux(m.category) === 'good');
+  && Object.values(r.field ?? {}).every((m) => typeof m !== 'object' || byCrux(m.category) === 'good')
+  && (!r.agent || r.agent.pass === r.agent.of);
+const checkName = (id: string) => (t.agent.checks as Record<string, string>)[id] ?? id;
 const publish = (id: string) => green(speed[id]?.mobile) && green(speed[id]?.desktop);
 
 const arrow = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>';
@@ -158,6 +162,20 @@ const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stro
                       })}
                     </dl>
                   </div>
+                  {r.agent && r.agent.of > 0 && (
+                    <div class="s-vitals s-agent">
+                      <h4>{t.agent.title} <span class="a-frac" data-v={r.agent.pass === r.agent.of ? 'good' : 'poor'}>{r.agent.pass}/{r.agent.of}</span></h4>
+                      <p class="a-lede">{t.agent.lede}</p>
+                      <dl>
+                        {Object.entries(r.agent.checks).map(([id, ok]) => (
+                          <div class="vital" data-v={ok ? 'good' : 'poor'}>
+                            <dt><span class="v-name">{checkName(id)}</span></dt>
+                            <dd><span class="v-verdict">{ok ? t.agent.passed : t.agent.failed}</span></dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+                  )}
                   {r.field && (
                     <div class="s-vitals s-field">
                       <h4>{t.field}</h4>
@@ -403,6 +421,15 @@ const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stro
   .vital dd b { justify-self: end; font-size: clamp(1.35rem, 1.8vw, 1.7rem); letter-spacing: -0.03em; color: var(--fg); font-variant-numeric: tabular-nums; }
   .v-verdict { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9375rem; font-weight: 600; }
   .v-verdict::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  /* Agentic Browsing: a fraction of checks, not a score; each check a row, passed or not */
+  .s-scores { grid-row: 1 / span 2; }
+  .s-agent h4 { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .a-frac { font-variant-numeric: tabular-nums; }
+  .a-frac[data-v='good'] { color: var(--good); }
+  .a-frac[data-v='poor'] { color: var(--poor); }
+  .a-lede { margin: 0 0 14px; max-width: 52ch; font-size: 0.9375rem; line-height: 1.45; color: var(--muted); }
+  .s-agent .v-name { font-size: 1rem; color: var(--fg); }
+  .s-agent .vital dd { grid-template-columns: auto; }
   .s-source { grid-column: 1 / -1; margin: 0; font-size: 0.9375rem; color: var(--muted); }
   .s-source a { margin-left: 4px; color: var(--accent-ink); text-underline-offset: 0.2em; }
   .s-source a :global(svg) { display: inline; margin-left: 4px; vertical-align: -0.15em; }
@@ -467,7 +494,7 @@ const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stro
   @media (hover: hover) and (pointer: fine) { .p-next:hover :global(svg) { translate: 0.15em 0; } }
 
   @media (max-width: 1100px) {
-    .s-scores { grid-column: 1 / -1; grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 640px; }
+    .s-scores { grid-column: 1 / -1; grid-row: auto; grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 640px; }
     .s-vitals { grid-column: 1 / -1; }
   }
 

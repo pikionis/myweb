@@ -1130,6 +1130,65 @@
         "el": "Μέτρησέ το ξανά στο PageSpeed Insights",
         "de": "Auf PageSpeed Insights erneut messen"
       },
+      "agent": {
+        "title": {
+          "en": "Agentic browsing",
+          "el": "Περιήγηση από AI agents",
+          "de": "Agentic Browsing"
+        },
+        "lede": {
+          "en": "Whether an AI agent can read and use the site: PageSpeed's newest checks.",
+          "el": "Αν ένας AI agent μπορεί να διαβάσει και να χρησιμοποιήσει την ιστοσελίδα: οι νεότεροι έλεγχοι του PageSpeed.",
+          "de": "Ob ein KI-Agent die Website lesen und nutzen kann: die neuesten Prüfungen von PageSpeed."
+        },
+        "passed": {
+          "en": "Passed",
+          "el": "Πέρασε",
+          "de": "Bestanden"
+        },
+        "failed": {
+          "en": "Failed",
+          "el": "Δεν πέρασε",
+          "de": "Nicht bestanden"
+        },
+        "checks": {
+          "agent-accessibility-tree": {
+            "en": "A page structure an agent can read",
+            "el": "Δομή σελίδας που διαβάζει ένας agent",
+            "de": "Seitenstruktur, die ein Agent lesen kann"
+          },
+          "cumulative-layout-shift": {
+            "en": "Nothing moves while it loads",
+            "el": "Τίποτα δεν μετακινείται όσο φορτώνει",
+            "de": "Keine Verschiebungen beim Laden"
+          },
+          "llms-txt": {
+            "en": "llms.txt, a guide to the site for AI",
+            "el": "llms.txt, ένας οδηγός της ιστοσελίδας για την AI",
+            "de": "llms.txt, ein Leitfaden zur Website für KI"
+          },
+          "ard-schema": {
+            "en": "An ARD manifest of its AI resources",
+            "el": "Κατάλογος ARD με τους πόρους της για την AI",
+            "de": "ARD-Manifest der KI-Ressourcen"
+          },
+          "webmcp-form-coverage": {
+            "en": "Forms described for agents (WebMCP)",
+            "el": "Φόρμες περιγραμμένες για agents (WebMCP)",
+            "de": "Für Agenten beschriebene Formulare (WebMCP)"
+          },
+          "webmcp-registered-tools": {
+            "en": "Tools offered to agents (WebMCP)",
+            "el": "Εργαλεία για agents (WebMCP)",
+            "de": "Für Agenten bereitgestellte Werkzeuge (WebMCP)"
+          },
+          "webmcp-schema-validity": {
+            "en": "Valid tool descriptions (WebMCP)",
+            "el": "Έγκυρες περιγραφές εργαλείων (WebMCP)",
+            "de": "Gültige Werkzeugbeschreibungen (WebMCP)"
+          }
+        }
+      },
       "stack": {
         "en": "Built with",
         "el": "Φτιαγμένο με",
