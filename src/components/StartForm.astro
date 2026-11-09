@@ -19,7 +19,7 @@ const needs = [...servicesPage.sections.map((x) => ({ key: x.key as string, labe
     <h2 id="start-title">{t(s.title)}</h2>
     <p class="start-sub">{t(s.sub)}</p>
 
-    <form class="sf" action={action} method="POST" data-start-form>
+    <form class="sf" action={action} method="POST" data-start-form data-lead="start">
       <input type="hidden" name="_subject" value={s.subject} />
       <input type="hidden" name="_template" value="table" />
       <input type="hidden" name="_next" value={site} />

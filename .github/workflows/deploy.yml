@@ -33,8 +33,17 @@ jobs:
       - run: npm run pagespeed
         env:
           PSI_KEY: ${{ secrets.PSI_KEY }}
-      # prebuild pulls the GitHub calendar first
+      # prebuild pulls the GitHub calendar first. The measuring and ad tags come from repository variables (Settings →
+      # Secrets and variables → Actions → Variables); any left empty is simply not on the site (src/data/tracking.ts)
       - run: npm run build
+        env:
+          GA4_MEASUREMENT_ID: ${{ vars.GA4_MEASUREMENT_ID }}
+          GOOGLE_ADS_ID: ${{ vars.GOOGLE_ADS_ID }}
+          GOOGLE_ADS_LEAD_LABEL: ${{ vars.GOOGLE_ADS_LEAD_LABEL }}
+          META_PIXEL_ID: ${{ vars.META_PIXEL_ID }}
+          TIKTOK_PIXEL_ID: ${{ vars.TIKTOK_PIXEL_ID }}
+          LINKEDIN_PARTNER_ID: ${{ vars.LINKEDIN_PARTNER_ID }}
+          LINKEDIN_LEAD_CONVERSION_ID: ${{ vars.LINKEDIN_LEAD_CONVERSION_ID }}
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist

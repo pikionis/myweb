@@ -3,6 +3,7 @@ import { person, pages, ui, words } from '../data/site';
 import { fill, to } from '../data/lang';
 import LangSwitch from './LangSwitch.astro';
 import BriefForm from './BriefForm.astro';
+import { tracking } from '../data/tracking';
 // `page`: this block is the whole /contact page (a section with the page's h1 and the brief form), not the footer
 interface Props { page?: boolean }
 const { page = false } = Astro.props;
@@ -24,7 +25,7 @@ const location = person.location.replace(' · ', ', ');
         <>
           <button class="mail" id="emailBtn" type="button" data-mail={person.email}>{person.email}</button>
           <span class="hint" id="copyHint" aria-live="polite" data-copy={w.copy} data-copied={w.copied}>{w.copy}</span>
-          <a class="to-brief" href={to('/contact')}>{w.toBrief}</a>
+          <a class="to-brief" href={to('/contact')} data-cta="send_brief">{w.toBrief}</a>
         </>
       )}
     </div>
@@ -66,7 +67,11 @@ const location = person.location.replace(' · ', ', ');
     </div>
   </div>
   <div class="wrap legal">
-    <span>© {new Date().getFullYear()} {person.name}</span>
+    <span class="legal-left">
+      <span>© {new Date().getFullYear()} {person.name}</span>
+      <a href={to('/privacy')} class="lnk">{w.privacy}</a>
+      {tracking && <button type="button" class="lnk" data-consent-open>{w.cookies}</button>}
+    </span>
     <LangSwitch where={words.nav.footer} class="foot-lang" />
     <a href="#" class="totop">{w.top}
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" /></svg>
@@ -113,6 +118,13 @@ const location = person.location.replace(' · ', ', ');
   .col span { color: var(--muted); }
 
   .legal { margin-top: auto; padding-top: clamp(48px, 8vh, 80px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 24px; width: 100%; font-size: 0.9375rem; color: var(--muted); position: relative; z-index: 1; }
+  .legal-left { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; }
+  .lnk {
+    padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer;
+    text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 0.3em;
+  }
+  @media (hover: hover) and (pointer: fine) { .lnk:hover { color: var(--fg); } }
+  .lnk:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
   .totop { display: inline-flex; align-items: center; gap: 6px; color: var(--fg); }
 
   /* ---- the surname, cut by the bottom edge; drawn as a dither field once the script runs ---- */

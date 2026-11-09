@@ -12,6 +12,7 @@ import { person, meta, brand, services } from '../data/site';
 // the site's language, which the page declares: Greek capitals lose their accents when uppercased only on a page
 // that says it is Greek
 import { lang, LANGS, inLang, to, unlocalized } from '../data/lang';
+import { tags, tracking } from '../data/tracking';
 
 // `light`: the page opens on the warm light ground (every page but the home page, whose dark hero comes first)
 interface Props { title?: string; description?: string; light?: boolean }
@@ -117,6 +118,16 @@ const ld = {
         }, 3000);
       })();
     </script>
+    <!-- Google Consent Mode v2: every signal denied until the visitor chooses (src/scripts/consent.ts). No tag is
+         loaded here: they load only after consent, so a visitor who says no sends nothing to anyone. -->
+    {tracking && (
+      <script is:inline define:vars={{ tags }}>
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        window.gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied', wait_for_update: 500 });
+        window.__ohlTags = tags;
+      </script>
+    )}
   </head>
   <body class:list={{ light }}>
     <slot />

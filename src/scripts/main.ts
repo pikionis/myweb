@@ -4,6 +4,7 @@ import { inkHeadline } from './ink';
 import { activityTerrain } from './terrain';
 import { splitNav } from './splitnav';
 import { briefForm } from './brief';
+import { track } from './consent';
 import { workStack } from './workstack';
 import { liveSite, livePreview } from './livesites';
 import { myStory } from './mystory';
@@ -127,7 +128,7 @@ function copyEmail() {
   if (!btn || !hint) return;
   btn.addEventListener('click', async () => {
     const mail = btn.dataset.mail || '';
-    try { await navigator.clipboard.writeText(mail); hint.textContent = hint.dataset.copied ?? ''; }
+    try { await navigator.clipboard.writeText(mail); hint.textContent = hint.dataset.copied ?? ''; track('email_copy'); }
     catch { window.location.href = `mailto:${mail}`; return; }
     setTimeout(() => (hint.textContent = hint.dataset.copy ?? ''), 1800);
   });

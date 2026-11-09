@@ -67,7 +67,7 @@ const icon = (d: string) =>
         </div>
         <footer class="story-cta">
           <p class="cta-line">{st.cta.text}</p>
-          <a class="cta-btn" href={to(`/contact?type=project&service=${st.service}`)}>{t.start}</a>
+          <a class="cta-btn" href={to(`/contact?type=project&service=${st.service}`)} data-cta={st.service === 'search' ? 'ask_audit' : st.service === 'apps' ? 'send_brief' : 'start_project'} data-service={st.service}>{t.start}</a>
           {/* a note still to be confirmed ([TODO]) stays out of the page */}
           {st.cta.note && !st.cta.note.trimStart().startsWith('[TODO') && <p class="cta-note">{st.cta.note}</p>}
           <button type="button" class="again" data-again>

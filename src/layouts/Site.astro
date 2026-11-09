@@ -5,6 +5,8 @@ import Nav from '../components/Nav.astro';
 import Contact from '../components/Contact.astro';
 import LogoDefs from '../components/LogoDefs.astro';
 import LogoIntro from '../components/LogoIntro.astro';
+import ConsentBanner from '../components/ConsentBanner.astro';
+import { tracking } from '../data/tracking';
 
 interface Props { title?: string; description?: string; light?: boolean; footer?: boolean }
 const { footer = true, ...base } = Astro.props;
@@ -15,6 +17,7 @@ const { footer = true, ...base } = Astro.props;
   <slot />
   {footer && <Contact />}
   <LogoIntro />
+  {tracking && <ConsentBanner />}
 </Base>
 
 <script>

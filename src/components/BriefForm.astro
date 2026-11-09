@@ -24,7 +24,7 @@ const sections: [string, string][] = [
   ['open', w.sections.open],
 ];
 ---
-<form class="brief" data-brief action={action} method="POST" enctype="multipart/form-data" data-max-bytes={brief.maxBytes} data-words={JSON.stringify(said)}>
+<form class="brief" data-brief data-lead="brief" action={action} method="POST" enctype="multipart/form-data" data-max-bytes={brief.maxBytes} data-words={JSON.stringify(said)}>
   <!-- FormSubmit settings -->
   <input type="hidden" name="_subject" value={w.subject} />
   <input type="hidden" name="_template" value="table" />
@@ -35,7 +35,7 @@ const sections: [string, string][] = [
     <legend>{w.need}</legend>
     <div class="chips">
       {brief.needs.map((n) => (
-        <label class="chip"><input type="radio" name="need" value={n.label} data-services={servicesOf(n.key)} /><span>{n.label}</span></label>
+        <label class="chip"><input type="radio" name="need" value={n.label} data-key={n.key} data-services={servicesOf(n.key)} /><span>{n.label}</span></label>
       ))}
     </div>
   </fieldset>

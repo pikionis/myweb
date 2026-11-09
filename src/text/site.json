@@ -1351,6 +1351,16 @@
         "en": "Back to top",
         "el": "Πίσω στην αρχή",
         "de": "Nach oben"
+      },
+      "privacy": {
+        "en": "Privacy",
+        "el": "Απόρρητο",
+        "de": "Datenschutz"
+      },
+      "cookies": {
+        "en": "Cookie settings",
+        "el": "Ρυθμίσεις cookies",
+        "de": "Cookie-Einstellungen"
       }
     },
     "about": {
@@ -1783,6 +1793,205 @@
         "el": "Πίσω στην αρχική σελίδα",
         "de": "Zur Startseite"
       }
+    },
+    "consent": {
+      "label": {
+        "en": "Cookie consent",
+        "el": "Συγκατάθεση για cookies",
+        "de": "Einwilligung zu Cookies"
+      },
+      "title": {
+        "en": "Cookies, only if you say so",
+        "el": "Cookies, μόνο αν το θέλεις",
+        "de": "Cookies nur mit Ihrer Einwilligung"
+      },
+      "text": {
+        "en": "I’d like to measure which pages and ads bring people here. Nothing loads until you choose.",
+        "el": "Θα ήθελα να μετρώ ποιες σελίδες και ποιες διαφημίσεις φέρνουν κόσμο εδώ. Τίποτα δεν φορτώνει πριν διαλέξεις.",
+        "de": "Ich möchte messen, welche Seiten und Anzeigen Besucher auf diese Website führen. Vor Ihrer Wahl wird nichts geladen."
+      },
+      "accept": {
+        "en": "Accept all",
+        "el": "Αποδοχή όλων",
+        "de": "Alle akzeptieren"
+      },
+      "reject": {
+        "en": "Reject all",
+        "el": "Απόρριψη όλων",
+        "de": "Alle ablehnen"
+      },
+      "prefs": {
+        "en": "Preferences",
+        "el": "Επιλογές",
+        "de": "Einstellungen"
+      },
+      "save": {
+        "en": "Save my choices",
+        "el": "Αποθήκευση επιλογών",
+        "de": "Auswahl speichern"
+      },
+      "necessary": {
+        "en": "Necessary",
+        "el": "Απαραίτητα",
+        "de": "Notwendig"
+      },
+      "necessaryText": {
+        "en": "Your choice itself, kept in your browser. Always on.",
+        "el": "Η ίδια η επιλογή σου, που μένει στον browser σου. Πάντα ενεργά.",
+        "de": "Ihre Auswahl selbst, gespeichert in Ihrem Browser. Immer aktiv."
+      },
+      "analytics": {
+        "en": "Analytics",
+        "el": "Στατιστικά",
+        "de": "Analyse"
+      },
+      "analyticsText": {
+        "en": "Google Analytics: which pages are read and which buttons are used.",
+        "el": "Google Analytics: ποιες σελίδες διαβάζονται και ποια κουμπιά πατιούνται.",
+        "de": "Google Analytics: welche Seiten gelesen und welche Schaltflächen genutzt werden."
+      },
+      "marketing": {
+        "en": "Marketing",
+        "el": "Διαφήμιση",
+        "de": "Marketing"
+      },
+      "marketingText": {
+        "en": "Google Ads, Meta, TikTok and LinkedIn: which ads bring people here.",
+        "el": "Google Ads, Meta, TikTok και LinkedIn: ποιες διαφημίσεις φέρνουν κόσμο εδώ.",
+        "de": "Google Ads, Meta, TikTok und LinkedIn: welche Anzeigen Besucher auf diese Website führen."
+      },
+      "policy": {
+        "en": "Privacy policy",
+        "el": "Πολιτική απορρήτου",
+        "de": "Datenschutzerklärung"
+      }
+    },
+    "privacy": {
+      "metaTitle": {
+        "en": "Privacy policy — Petros Pikionis",
+        "el": "Πολιτική απορρήτου — Πέτρος Πικιώνης",
+        "de": "Datenschutzerklärung – Petros Pikionis"
+      },
+      "metaDescription": {
+        "en": "What this site collects, the tools it uses only with your consent, and your rights.",
+        "el": "Τι συλλέγει αυτή η ιστοσελίδα, ποια εργαλεία χρησιμοποιεί μόνο με τη συγκατάθεσή σου και ποια είναι τα δικαιώματά σου.",
+        "de": "Welche Daten diese Website erhebt, welche Dienste nur mit Ihrer Einwilligung geladen werden und welche Rechte Sie haben."
+      },
+      "title": {
+        "en": "Privacy",
+        "el": "Απόρρητο",
+        "de": "Datenschutz"
+      },
+      "updated": {
+        "en": "Last updated",
+        "el": "Τελευταία ενημέρωση",
+        "de": "Stand"
+      },
+      "sections": [
+        {
+          "h": {
+            "en": "Who is responsible",
+            "el": "Ποιος είναι υπεύθυνος",
+            "de": "Verantwortlich"
+          },
+          "p": [
+            {
+              "en": "This site is run by {name}, {location}. For anything about your data, write to {email}.",
+              "el": "Την ιστοσελίδα τη διαχειρίζεται ο {name}, {location}. Για οτιδήποτε αφορά τα δεδομένα σου, γράψε μου στο {email}.",
+              "de": "Verantwortlich für diese Website ist {name}, {location}. Bei Fragen zu Ihren Daten schreiben Sie bitte an {email}."
+            }
+          ]
+        },
+        {
+          "h": {
+            "en": "Without your consent",
+            "el": "Χωρίς τη συγκατάθεσή σου",
+            "de": "Ohne Ihre Einwilligung"
+          },
+          "p": [
+            {
+              "en": "Nothing that tracks you loads until you choose. The site is static and hosted on GitHub Pages: GitHub receives your IP address to deliver the pages and keep them secure. Its fonts come from this site itself.",
+              "el": "Τίποτα που σε παρακολουθεί δεν φορτώνει πριν διαλέξεις. Η ιστοσελίδα είναι στατική και φιλοξενείται στο GitHub Pages: το GitHub λαμβάνει τη διεύθυνση IP σου για να σου στείλει τις σελίδες και να τις κρατά ασφαλείς. Οι γραμματοσειρές της φορτώνουν από την ίδια την ιστοσελίδα.",
+              "de": "Bevor Sie eine Wahl getroffen haben, wird nichts geladen, das Sie verfolgt. Die Website ist statisch und wird über GitHub Pages bereitgestellt: GitHub erhält Ihre IP-Adresse, um die Seiten auszuliefern und abzusichern. Die Schriften werden von dieser Website selbst geladen."
+            },
+            {
+              "en": "Your browser keeps two small notes for the site: your cookie choice (localStorage) and whether the opening animation has already played in this visit (sessionStorage).",
+              "el": "Ο browser σου κρατά μόνο δύο μικρές σημειώσεις για την ιστοσελίδα: την επιλογή σου για τα cookies (localStorage) και αν έχει ήδη παίξει η εισαγωγική κίνηση σε αυτή την επίσκεψη (sessionStorage).",
+              "de": "Ihr Browser speichert für die Website lediglich zwei kleine Einträge: Ihre Cookie-Einstellung (localStorage) und ob die Eröffnungsanimation bei diesem Besuch bereits abgespielt wurde (sessionStorage)."
+            }
+          ]
+        },
+        {
+          "h": {
+            "en": "When you write to me",
+            "el": "Όταν μου γράφεις",
+            "de": "Wenn Sie mir schreiben"
+          },
+          "p": [
+            {
+              "en": "The forms send what you type (your name, your email, your phone if you give it, your message and your files) to my inbox through FormSubmit (formsubmit.co). If you have accepted cookies, the form also says where your visit came from: the campaign of the link you followed (utm_source, utm_medium, utm_campaign, utm_content) and the click id of an ad (gclid, fbclid, ttclid). I use all of it only to answer you and to work with you.",
+              "el": "Οι φόρμες στέλνουν ό,τι γράψεις (το όνομά σου, το email σου, το τηλέφωνό σου αν το δώσεις, το μήνυμά σου και τα αρχεία σου) στο email μου μέσω του FormSubmit (formsubmit.co). Αν έχεις αποδεχτεί τα cookies, η φόρμα λέει και από πού ήρθες: την καμπάνια του συνδέσμου που ακολούθησες (utm_source, utm_medium, utm_campaign, utm_content) και τον κωδικό του κλικ σε μια διαφήμιση (gclid, fbclid, ttclid). Τα χρησιμοποιώ μόνο για να σου απαντήσω και για να δουλέψουμε μαζί.",
+              "de": "Die Formulare übermitteln Ihre Angaben (Name, E-Mail-Adresse, gegebenenfalls Telefonnummer, Nachricht und Dateien) über FormSubmit (formsubmit.co) an mein Postfach. Haben Sie Cookies akzeptiert, enthält das Formular zusätzlich die Herkunft Ihres Besuchs: die Kampagne des aufgerufenen Links (utm_source, utm_medium, utm_campaign, utm_content) und die Klick-ID einer Anzeige (gclid, fbclid, ttclid). Diese Angaben verwende ich ausschliesslich, um Ihre Anfrage zu beantworten und unsere Zusammenarbeit abzuwickeln."
+            }
+          ]
+        },
+        {
+          "h": {
+            "en": "Analytics, with your consent",
+            "el": "Στατιστικά, με τη συγκατάθεσή σου",
+            "de": "Analyse, mit Ihrer Einwilligung"
+          },
+          "p": [
+            {
+              "en": "Google Analytics 4 (Google Ireland Ltd.) measures how the site is used: the pages seen, the buttons used, a form sent, the device and the rough location. It sets its own cookies (_ga, _ga_*).",
+              "el": "Το Google Analytics 4 (Google Ireland Ltd.) μετρά πώς χρησιμοποιείται η ιστοσελίδα: ποιες σελίδες βλέπεις, ποια κουμπιά πατάς, αν στέλνεις μια φόρμα, τη συσκευή σου και την κατά προσέγγιση τοποθεσία σου. Βάζει τα δικά του cookies (_ga, _ga_*).",
+              "de": "Google Analytics 4 (Google Ireland Ltd.) erfasst die Nutzung der Website: aufgerufene Seiten, genutzte Schaltflächen, abgesendete Formulare, das verwendete Gerät und den ungefähren Standort. Dabei werden eigene Cookies gesetzt (_ga, _ga_*)."
+            }
+          ]
+        },
+        {
+          "h": {
+            "en": "Marketing, with your consent",
+            "el": "Διαφήμιση, με τη συγκατάθεσή σου",
+            "de": "Marketing, mit Ihrer Einwilligung"
+          },
+          "p": [
+            {
+              "en": "To know which ads bring people here, and to show them to people who may need my work: Google Ads (Google Ireland Ltd.), Meta Pixel (Meta Platforms Ireland Ltd.), TikTok Pixel (TikTok Technology Ltd.) and the LinkedIn Insight Tag (LinkedIn Ireland Unlimited Company). Each sets its own cookies and may transfer data to the United States, under the EU–US Data Privacy Framework or standard contractual clauses.",
+              "el": "Για να ξέρω ποιες διαφημίσεις φέρνουν κόσμο εδώ και να τις δείχνω σε όσους μπορεί να χρειάζονται τη δουλειά μου, χρησιμοποιώ το Google Ads (Google Ireland Ltd.), το Meta Pixel (Meta Platforms Ireland Ltd.), το TikTok Pixel (TikTok Technology Ltd.) και το LinkedIn Insight Tag (LinkedIn Ireland Unlimited Company). Καθένα βάζει τα δικά του cookies και μπορεί να μεταφέρει δεδομένα στις Ηνωμένες Πολιτείες, με βάση το EU–US Data Privacy Framework ή τις τυποποιημένες συμβατικές ρήτρες.",
+              "de": "Um nachzuvollziehen, welche Anzeigen Besucher auf diese Website führen, und um Anzeigen an Personen auszuspielen, für die mein Angebot relevant sein könnte, verwende ich Google Ads (Google Ireland Ltd.), das Meta Pixel (Meta Platforms Ireland Ltd.), das TikTok Pixel (TikTok Technology Ltd.) und das LinkedIn Insight Tag (LinkedIn Ireland Unlimited Company). Jeder dieser Dienste setzt eigene Cookies und kann Daten in die USA übermitteln, gestützt auf das EU-US Data Privacy Framework oder auf Standardvertragsklauseln."
+            }
+          ]
+        },
+        {
+          "h": {
+            "en": "Your choice",
+            "el": "Η επιλογή σου",
+            "de": "Ihre Wahl"
+          },
+          "p": [
+            {
+              "en": "You can change or withdraw your consent at any time with “Cookie settings” at the foot of every page.",
+              "el": "Μπορείς να αλλάξεις ή να ανακαλέσεις τη συγκατάθεσή σου όποτε θέλεις, από τις «Ρυθμίσεις cookies» στο κάτω μέρος κάθε σελίδας.",
+              "de": "Sie können Ihre Einwilligung jederzeit über «Cookie-Einstellungen» am Ende jeder Seite ändern oder widerrufen."
+            }
+          ]
+        },
+        {
+          "h": {
+            "en": "Your rights",
+            "el": "Τα δικαιώματά σου",
+            "de": "Ihre Rechte"
+          },
+          "p": [
+            {
+              "en": "You can ask to see, correct or delete your data, object to its use, or take it with you: write to {email}. You can also complain to the Hellenic Data Protection Authority (dpa.gr).",
+              "el": "Μπορείς να ζητήσεις να δεις, να διορθώσεις ή να διαγράψεις τα δεδομένα σου, να αντιταχθείς στη χρήση τους ή να τα πάρεις μαζί σου: γράψε μου στο {email}. Μπορείς επίσης να υποβάλεις καταγγελία στην Αρχή Προστασίας Δεδομένων Προσωπικού Χαρακτήρα (dpa.gr).",
+              "de": "Sie haben das Recht auf Auskunft, Berichtigung und Löschung Ihrer Daten, auf Widerspruch gegen deren Verarbeitung sowie auf Datenübertragbarkeit. Wenden Sie sich dazu an {email}. Zudem können Sie Beschwerde bei der griechischen Datenschutzbehörde einreichen (dpa.gr)."
+            }
+          ]
+        }
+      ]
     }
   }
 }

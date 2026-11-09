@@ -1,0 +1,102 @@
+---
+// The cookie banner (src/scripts/consent.ts keeps the choice and loads what it allows). It asks once, after the
+// opening intro, and "Cookie settings" in the footer opens it again on its preferences. Reject is as easy as
+// accept: the same button, beside it. Rendered only when the build has a tag to ask about (src/data/tracking.ts).
+import { words } from '../data/site';
+import { to } from '../data/lang';
+const w = words.consent;
+---
+<section class="cb theme-light" data-consent role="dialog" aria-modal="false" aria-labelledby="cb-title" aria-describedby="cb-text" hidden>
+  <h2 id="cb-title" class="cb-title">{w.title}</h2>
+  <p id="cb-text" class="cb-text">{w.text} <a href={to('/privacy')}>{w.policy}</a></p>
+  <fieldset class="cb-prefs" data-prefs hidden>
+    <legend class="sr-only">{w.label}</legend>
+    <label class="cb-opt"><input type="checkbox" checked disabled /><span><b>{w.necessary}</b>{w.necessaryText}</span></label>
+    <label class="cb-opt"><input type="checkbox" name="analytics" /><span><b>{w.analytics}</b>{w.analyticsText}</span></label>
+    <label class="cb-opt"><input type="checkbox" name="marketing" /><span><b>{w.marketing}</b>{w.marketingText}</span></label>
+  </fieldset>
+  <div class="cb-actions">
+    <button type="button" class="cb-btn" data-c="reject">{w.reject}</button>
+    <button type="button" class="cb-btn ghost" data-c="prefs" data-save={w.save}>{w.prefs}</button>
+    <button type="button" class="cb-btn" data-c="accept">{w.accept}</button>
+  </div>
+</section>
+
+<script>
+  import { consent, choose, stored } from '../scripts/consent';
+
+  consent();
+  const box = document.querySelector<HTMLElement>('[data-consent]');
+  const prefs = box?.querySelector<HTMLFieldSetElement>('[data-prefs]');
+  const more = box?.querySelector<HTMLButtonElement>('[data-c="prefs"]');
+  const label = more?.textContent ?? '';
+  const box$ = (n: string) => box?.querySelector<HTMLInputElement>(`input[name="${n}"]`);
+
+  const close = () => { if (box) box.hidden = true; };
+  const open = (withPrefs: boolean) => {
+    if (!box || !prefs || !more) return;
+    const c = stored();
+    box$('analytics')!.checked = !!c?.analytics;
+    box$('marketing')!.checked = !!c?.marketing;
+    prefs.hidden = !withPrefs;
+    more.textContent = withPrefs ? more.dataset.save ?? label : label;
+    box.hidden = false;
+  };
+
+  box?.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('[data-c]');
+    if (!b) return;
+    const what = b.dataset.c;
+    if (what === 'accept') { choose({ analytics: true, marketing: true }); close(); }
+    else if (what === 'reject') { choose({ analytics: false, marketing: false }); close(); }
+    else if (prefs?.hidden) { open(true); box$('analytics')?.focus(); }
+    else { choose({ analytics: !!box$('analytics')?.checked, marketing: !!box$('marketing')?.checked }); close(); }
+  });
+  document.querySelectorAll('[data-consent-open]').forEach((b) => b.addEventListener('click', () => { open(true); box$('analytics')?.focus(); }));
+
+  // asked once: once the page has loaded and the home page's opening intro has finished
+  if (!stored()) {
+    const html = document.documentElement;
+    const ready = () => html.dataset.intro !== 'full' && html.dataset.intro !== 'still';
+    const ask = () => setTimeout(() => { if (!stored()) open(false); }, 600);
+    const whenLoaded = () => (document.readyState === 'complete' ? ask() : addEventListener('load', ask, { once: true }));
+    if (ready()) whenLoaded();
+    else new MutationObserver((_, o) => { if (ready()) { o.disconnect(); whenLoaded(); } }).observe(html, { attributes: true, attributeFilter: ['data-intro'] });
+  }
+</script>
+
+<style>
+  .cb {
+    position: fixed; z-index: 90; left: 20px; bottom: 20px; width: min(440px, calc(100vw - 40px));
+    display: grid; gap: 12px; padding: 20px 20px 18px; border-radius: 18px;
+    background: var(--bg); color: var(--fg); box-shadow: inset 0 0 0 2px var(--fg), 6px 7px 0 rgb(20 20 20 / 0.12);
+    font-size: 0.9375rem; line-height: 1.45;
+  }
+  .cb[hidden] { display: none; }
+  .cb-title { margin: 0; font-size: 1.125rem; font-weight: 700; letter-spacing: -0.01em; text-transform: none; }
+  .cb-text { margin: 0; }
+  .cb-text a { color: var(--accent-ink); text-underline-offset: 0.2em; }
+  .cb-prefs { margin: 0; padding: 0; border: 0; display: grid; gap: 10px; }
+  .cb-prefs[hidden] { display: none; }
+  .cb-opt { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; cursor: pointer; }
+  .cb-opt input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--fg); }
+  .cb-opt b { display: block; font-weight: 700; }
+  .cb-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+  .cb-btn {
+    flex: 1 1 auto; min-height: 44px; padding: 0 16px; border: 0; border-radius: 100px; cursor: pointer;
+    background: var(--fg); color: var(--bg); font: inherit; font-weight: 600;
+    transition: opacity 0.2s ease, scale 0.16s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .cb-btn.ghost { background: transparent; color: var(--fg); box-shadow: inset 0 0 0 1.5px var(--fg); }
+  @media (hover: hover) and (pointer: fine) { .cb-btn:hover { opacity: 0.86; } }
+  .cb-btn:active { scale: 0.97; }
+  .cb-btn:focus-visible, .cb-opt input:focus-visible, .cb-text a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  /* a phone: across the screen, above the floating menu */
+  @media (max-width: 820px) {
+    .cb { left: 12px; right: 12px; width: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + 92px); padding: 16px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cb:not([hidden]) { animation: cb-in 0.35s cubic-bezier(0.23, 1, 0.32, 1); }
+    @keyframes cb-in { from { opacity: 0; translate: 0 12px; } }
+  }
+</style>

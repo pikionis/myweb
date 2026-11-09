@@ -1,6 +1,7 @@
 import { createIsland } from './island';
 import { fill } from '../data/lang';
 import { previewAssistant, type Answer, type BriefAssistant, type BriefSection, type Question } from './assistant';
+import { attribution, track } from './consent';
 
 /*
  * The brief form on /contact.
@@ -10,12 +11,16 @@ import { previewAssistant, type Answer, type BriefAssistant, type BriefSection, 
  *
  * Every form on the site sends through `post()` only (this one, and the closing form on /services). It posts to
  * FormSubmit's AJAX endpoint for now; when the site gets its own backend, point the request there and keep the rest.
+ * With consent it also sends where the visit came from (utm_*, gclid, fbclid, ttclid: src/scripts/consent.ts), and a
+ * form that arrives is the lead (generate_lead, with the service and the kind of request).
  */
 
 /** Sends a form's data to where the form points (its action), with upload progress for files. Rejects with
  *  what went wrong, in words a visitor can read. */
 const said = (form: HTMLFormElement) => JSON.parse(form.dataset.words || '{}') as Record<string, string>;
 export function post(form: HTMLFormElement, data: FormData, onProgress?: (share: number) => void) {
+  const from = attribution();
+  Object.entries(from).forEach(([k, v]) => data.set(k, v));
   return new Promise<void>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'));
@@ -25,7 +30,11 @@ export function post(form: HTMLFormElement, data: FormData, onProgress?: (share:
       let reply: { success?: string | boolean; message?: string } = {};
       try { reply = JSON.parse(xhr.responseText); } catch { /* not JSON */ }
       const ok = xhr.status >= 200 && xhr.status < 300 && String(reply.success) !== 'false';
-      if (ok) resolve();
+      if (ok) {
+        const need = form.querySelector<HTMLInputElement>('input[name="need"]:checked');
+        track('generate_lead', { service: need?.dataset.key ?? need?.value, type: new URLSearchParams(location.search).get('type') ?? form.dataset.lead, ...from });
+        resolve();
+      }
       else reject(new Error(reply.message || fill(said(form).server || `${xhr.status}`, { status: xhr.status })));
     });
     xhr.addEventListener('error', () => reject(new Error(said(form).connection)));

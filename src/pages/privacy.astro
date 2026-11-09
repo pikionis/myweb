@@ -1,0 +1,37 @@
+---
+// The privacy policy: who is responsible, what the site keeps without consent, what the forms send, the tools that
+// load only with consent (src/scripts/consent.ts), the visitor's choice and rights. Words in site.json
+// (`words.privacy`), with the person's name, place and email filled in.
+import Site from '../layouts/Site.astro';
+import { person, words } from '../data/site';
+import { day, fill } from '../data/lang';
+
+const w = words.privacy;
+// the day this text last changed
+const UPDATED = new Date('2026-11-10');
+const values = { name: person.name, location: person.location.replace(' · ', ', '), email: person.email };
+---
+<Site title={w.metaTitle} description={w.metaDescription} light>
+  <main class="page theme-light">
+    <header class="wrap page-head">
+      <h1>{w.title}</h1>
+      <p>{w.updated}: <time datetime={UPDATED.toISOString().slice(0, 10)}>{day(UPDATED)}</time></p>
+    </header>
+    <div class="wrap">
+      <div class="prose policy">
+        {w.sections.map((s) => (
+          <div class="part">
+            <h2>{s.h}</h2>
+            {s.p.map((p) => <p>{fill(p, values)}</p>)}
+          </div>
+        ))}
+      </div>
+    </div>
+  </main>
+</Site>
+
+<style>
+  .policy { max-width: 68ch; padding-bottom: clamp(64px, 10vh, 120px); }
+  .policy h2 { font-size: clamp(1.25rem, 2vw, 1.6rem); text-transform: none; letter-spacing: -0.01em; margin: 1.8em 0 0.5em; }
+  .policy .part:first-child h2 { margin-top: 0; }
+</style>
