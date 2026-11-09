@@ -1,5 +1,6 @@
 ---
 import Site from '../../layouts/Site.astro';
+import BgMotif from '../../components/BgMotif.astro';
 import { getPosts } from '../../data/posts';
 import { words } from '../../data/site';
 import { day, to } from '../../data/lang';
@@ -15,6 +16,8 @@ const w = words.blog;
     </header>
 
     <div class="wrap">
+      <BgMotif variant="line" side="left" x="6vw" y="60px" w="300px" py="50px" pw="230px" px="6vw" />
+      <BgMotif variant="blueprint" side="right" x="8vw" y="70px" w="300px" />
       {posts.length === 0 ? (
         <p class="empty">{w.empty}</p>
       ) : (

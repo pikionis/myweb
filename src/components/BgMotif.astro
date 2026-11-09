@@ -1,0 +1,26 @@
+---
+// One island of the living background (src/scripts/brandbg.ts draws it; BrandBackground.astro sets the layer up):
+// put it where a section has empty paper, in a block (not grid or flex) flow. It takes no room: a zero-height mark,
+// with the island hung from it behind everything on the page (`y` from the mark, `x` from the `side`). It shows on
+// a phone only where it is given a phone place (`py`, and optionally `pw`, `px`, `pside`).
+//   line: the ink line (near the hero, the services, the process) · current: the brand's three loops (near the
+//   logo, About, Contact) · blueprint: the dot grid and its wireframes (beside technical content)
+interface Props {
+  variant: 'line' | 'current' | 'blueprint';
+  side?: 'left' | 'right';
+  x?: string;
+  y?: string;
+  w?: string;
+  py?: string;
+  pw?: string;
+  px?: string;
+  pside?: 'left' | 'right';
+}
+const { variant, side = 'right', x = '4vw', y = '0px', w = '360px', py, pw = '62vw', px = '4vw', pside = side } = Astro.props;
+const style = [`--x: ${x}`, `--y: ${y}`, `--w: ${w}`, py && `--py: ${py}`, py && `--pw: ${pw}`, py && `--px: ${px}`].filter(Boolean).join('; ');
+---
+<div class="bgm-at" aria-hidden="true">
+  <div class:list={['bgm', `bgm-${variant}`, side, py && `p-${pside}`]} data-bgm={variant} data-phone={py ? '' : undefined} style={style}>
+    <canvas></canvas>
+  </div>
+</div>

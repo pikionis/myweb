@@ -16,6 +16,8 @@
   --ink: #1f2020;
   --cobalt: #2d49ad;
   --ivory: #f8f4e6;
+  /* the living background's strength (src/scripts/brandbg.ts): 1 = ink at 11% of the text colour, accent at 25% */
+  --bg-motif-opacity: 1;
   /* a service sheet's ground (background.fill in src/data/site.ts); every one keeps its words at 4.5:1 or more */
   --sheet-paper: #e8e6df;
   --sheet-ink: #141414;

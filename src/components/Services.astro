@@ -4,6 +4,7 @@ import { servicesWithProjects, hasStory, projectHref, visitUrl, badgeOf } from '
 import { serviceColors, ui } from '../data/site';
 import { stories } from '../data/stories';
 import LivePreview from './LivePreview.astro';
+import BgMotif from './BgMotif.astro';
 
 const services = await servicesWithProjects();
 // a service's cards: its projects, then (AI search) the card about this very site
@@ -22,6 +23,7 @@ const next = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke
 const check = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>';
 ---
 <section id="services" class="work">
+  <BgMotif variant="line" side="left" x="37vw" y="10px" w="230px" />
   <header class="wrap sec-head">
     <h2>{ui.work.title}</h2>
     <p>{ui.work.intro} <a href={to('/services')}>{ui.work.allServices}</a> · <a href={to('/projects')}>{ui.work.allProjects}</a></p>

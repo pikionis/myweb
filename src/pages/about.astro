@@ -2,6 +2,7 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import Site from '../layouts/Site.astro';
+import BgMotif from '../components/BgMotif.astro';
 import Terrain from '../components/Terrain.astro';
 import MyStory from '../components/MyStory.astro';
 import { person, hero, stats, words } from '../data/site';
@@ -40,6 +41,7 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
       </div>
     </section>
 
+    <BgMotif variant="current" side="right" x="6vw" y="-320px" w="280px" py="-129px" pw="120px" px="10px" />
     <div class="wrap"><MyStory cv={cv} /></div>
 
     <section class="wrap bio" data-rise>
@@ -53,6 +55,7 @@ const down = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
     </section>
 
     <!-- last, the work itself: a year of commits -->
+    <BgMotif variant="blueprint" side="left" x="29vw" y="20px" w="260px" py="609px" pw="180px" px="20px" />
     <section class="wrap code" aria-labelledby="code-title">
       <header class="code-head" data-rise>
         <h2 id="code-title">{w.codeTitle}</h2>

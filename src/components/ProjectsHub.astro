@@ -5,6 +5,7 @@
 // project, and without script the panel's links simply go to each project's page.
 import { render } from 'astro:content';
 import LivePreview from './LivePreview.astro';
+import BgMotif from './BgMotif.astro';
 import { projectsInOrder, projectHref, visitUrl, badgeOf, hasStory, type ProjectEntry } from '../data/projects';
 import { services, serviceColors, ui, person } from '../data/site';
 import { day, lang } from '../data/lang';
@@ -109,6 +110,7 @@ const expand = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stro
     const badge = badgeOf(p);
     return (
       <article class="proj wrap" data-proj={p.id} data-title={p.data.title} data-href={projectHref(p)} hidden={p.id !== selected} aria-labelledby={`pt-${p.id}`}>
+        <BgMotif variant="blueprint" side="right" x="20vw" y="20px" w="300px" />
         <header class="p-head" data-in>
           <h2 class="p-title" id={`pt-${p.id}`}>{p.data.title}</h2>
           <p class="p-summary">{p.data.summary}</p>

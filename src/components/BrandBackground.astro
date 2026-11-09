@@ -1,0 +1,37 @@
+---
+// The living background of the light pages (src/scripts/brandbg.ts): its islands are BgMotif.astro, each placed by
+// hand in a section's empty paper. This sets them up once per page: how an island hangs behind the page (the light
+// page is its own stacking context, so an island at z-index -1 sits over the paper and under everything else, and a
+// section with its own ground covers it), its soft edges, its size on a phone. --bg-motif-opacity (global.css) sets
+// the strength of them all.
+---
+<script>
+  import { brandBackground } from '../scripts/brandbg';
+  brandBackground();
+</script>
+
+<style is:global>
+  main.theme-light, .sheet.theme-light { isolation: isolate; }
+  .bgm-at { position: relative; height: 0; pointer-events: none; }
+  .bgm {
+    position: absolute; z-index: -1; top: var(--y); width: var(--w); aspect-ratio: 4 / 3; pointer-events: none;
+    opacity: 0; transition: opacity 1.6s ease;
+    /* soft edges: no rectangle ever shows */
+    -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent);
+    mask-image: radial-gradient(closest-side, #000 62%, transparent);
+  }
+  .bgm.left { left: var(--x); }
+  .bgm.right { right: var(--x); }
+  .bgm-current { aspect-ratio: 1; }
+  .bgm-blueprint { aspect-ratio: 3 / 2; -webkit-mask-image: radial-gradient(ellipse closest-side, #000 50%, transparent); mask-image: radial-gradient(ellipse closest-side, #000 50%, transparent); }
+  .bgm.on { opacity: 1; }
+  .bgm canvas { display: block; width: 100%; height: 100%; }
+  /* a phone: only where an island has a phone place, smaller */
+  @media (max-width: 767px) {
+    .bgm:not([data-phone]) { display: none; }
+    .bgm[data-phone] { top: var(--py); width: var(--pw); left: auto; right: auto; }
+    .bgm.p-left { left: var(--px); }
+    .bgm.p-right { right: var(--px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .bgm { transition: none; } }
+</style>

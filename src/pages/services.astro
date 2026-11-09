@@ -4,6 +4,7 @@
 // the form. Every word is in src/data/servicespage.ts; the drawings are ServiceArt.astro (and the home page's story
 // pictures for "How we work"); the motion is src/scripts/servicespage.ts.
 import Site from '../layouts/Site.astro';
+import BgMotif from '../components/BgMotif.astro';
 import ServiceArt from '../components/ServiceArt.astro';
 import ServiceSection from '../components/ServiceSection.astro';
 import FaqChat from '../components/FaqChat.astro';
@@ -33,6 +34,9 @@ const title = (key: string) => t(sections.find((s) => s.key === key)!.title);
       <div class="hero-art" data-hero-art><ServiceArt name="hero" /></div>
     </section>
 
+    <!-- the living background: the ink line in the gap under the hero, a blueprint beside the question -->
+    <BgMotif variant="line" side="left" x="0px" y="-220px" w="330px" />
+    <BgMotif variant="blueprint" side="right" x="0px" y="70px" w="300px" />
     <section id="picker" class="picker" aria-labelledby="picker-title">
       <h2 id="picker-title">{t(pk.title)}</h2>
       <ul class="picks" data-picks>
@@ -70,6 +74,8 @@ const title = (key: string) => t(sections.find((s) => s.key === key)!.title);
       <a class="how-story" href={to(hw.storyHref)}>{t(hw.story)} <Fragment set:html={arrow} /></a>
     </section>
 
+    <!-- (after how we work: the ink line again, small, on the other side) -->
+    <BgMotif variant="line" side="left" x="18vw" y="-96px" w="260px" py="-30px" pw="170px" pside="right" px="0px" />
     <section id="prices" class="prices" aria-labelledby="prices-title">
       <h2 id="prices-title">{t(sections.some((s) => s.startingFrom) ? pr.title : pr.titleNoPrices)}</h2>
       <ul class="tl">
@@ -91,6 +97,8 @@ const title = (key: string) => t(sections.find((s) => s.key === key)!.title);
     </section>
 
     <FaqChat />
+    <!-- (beside the envelope of the closing form: the brand's three loops) -->
+    <BgMotif variant="current" side="left" x="2vw" y="520px" w="330px" py="1252px" pw="160px" pside="right" px="0px" />
     <StartForm />
   </main>
 </Site>

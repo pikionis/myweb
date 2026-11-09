@@ -3,6 +3,7 @@
 // load only with consent (src/scripts/consent.ts), the visitor's choice and rights. Words in site.json
 // (`words.privacy`), with the person's name, place and email filled in.
 import Site from '../layouts/Site.astro';
+import BgMotif from '../components/BgMotif.astro';
 import { person, words } from '../data/site';
 import { day, fill } from '../data/lang';
 
@@ -18,6 +19,9 @@ const values = { name: person.name, location: person.location.replace(' · ', ',
       <p>{w.updated}: <time datetime={UPDATED.toISOString().slice(0, 10)}>{day(UPDATED)}</time></p>
     </header>
     <div class="wrap">
+      <BgMotif variant="current" side="right" x="4vw" y="0px" w="340px" />
+      <BgMotif variant="blueprint" side="right" x="6vw" y="600px" w="320px" />
+      <BgMotif variant="line" side="right" x="3vw" y="1080px" w="360px" py="2095px" pw="210px" pside="left" px="4vw" />
       <div class="prose policy">
         {w.sections.map((s) => (
           <div class="part">

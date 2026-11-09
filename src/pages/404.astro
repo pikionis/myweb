@@ -2,6 +2,7 @@
 // An address that isn't here (GitHub Pages serves dist/404.html for every one of them). A project's address that no
 // longer exists goes on to /projects in its language, so a project taken down leaves no dead link behind it.
 import Site from '../layouts/Site.astro';
+import BgMotif from '../components/BgMotif.astro';
 import { words } from '../data/site';
 import { to } from '../data/lang';
 
@@ -20,6 +21,7 @@ const w = words.notFound;
       <p>{w.text}</p>
       <a class="home" href={to('/')}>{w.home}</a>
     </header>
+    <BgMotif variant="current" side="right" x="10vw" y="-20px" w="280px" py="0px" pw="56vw" />
   </main>
 </Site>
 
