@@ -1761,6 +1761,28 @@
         "el": "ο server απάντησε {status}",
         "de": "der Server antwortete mit {status}"
       }
+    },
+    "notFound": {
+      "metaTitle": {
+        "en": "Page not found — Petros Pikionis",
+        "el": "Η σελίδα δεν βρέθηκε — Πέτρος Πικιώνης",
+        "de": "Seite nicht gefunden – Petros Pikionis"
+      },
+      "title": {
+        "en": "This page isn’t here",
+        "el": "Αυτή η σελίδα δεν υπάρχει",
+        "de": "Diese Seite existiert nicht"
+      },
+      "text": {
+        "en": "It may have moved, or the address has a typo.",
+        "el": "Ίσως μετακινήθηκε ή η διεύθυνση έχει κάποιο λάθος.",
+        "de": "Möglicherweise wurde sie verschoben, oder die Adresse enthält einen Tippfehler."
+      },
+      "home": {
+        "en": "Back to the home page",
+        "el": "Πίσω στην αρχική σελίδα",
+        "de": "Zur Startseite"
+      }
     }
   }
 }

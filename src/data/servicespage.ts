@@ -14,7 +14,7 @@ export type Proof = {
   /** where the card leads: the project's page, or a site; null hides the link */
   url: string | null;
   /** the line drawing that stands in for a picture when there is no capture */
-  icon?: 'gear' | 'cards' | 'sail' | 'gauge';
+  icon?: 'gear' | 'cards' | 'gauge';
 };
 
 export type ServiceSection = {

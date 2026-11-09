@@ -285,9 +285,9 @@
             "de": "Branding und UX/UI-Design"
           },
           {
-            "en": "Web app + iOS & Android apps (Flutter, one codebase)",
-            "el": "Web εφαρμογή και εφαρμογές για iOS και Android (Flutter, ένας κώδικας για όλες)",
-            "de": "Web-App sowie iOS- und Android-Apps (Flutter, eine Codebasis)"
+            "en": "Web app + iOS & Android apps",
+            "el": "Web εφαρμογή και εφαρμογές για iOS και Android",
+            "de": "Web-App sowie iOS- und Android-Apps"
           },
           {
             "en": "Admin dashboard to manage users, content and data",
@@ -367,16 +367,6 @@
               "en": "AI SaaS: translates large product datasets. Pick the fields and the languages.",
               "el": "AI SaaS που μεταφράζει μεγάλους καταλόγους προϊόντων. Διαλέγεις τα πεδία και τις γλώσσες.",
               "de": "KI-SaaS zur Übersetzung grosser Produktdatensätze. Felder und Sprachen sind frei wählbar."
-            }
-          },
-          {
-            "name": "Archon Yachting",
-            "icon": "sail",
-            "url": "https://archonyachting.com",
-            "line": {
-              "en": "Charter platform with bookings and payments",
-              "el": "Πλατφόρμα ναύλωσης σκαφών με κρατήσεις και πληρωμές",
-              "de": "Charter-Plattform mit Buchungen und Zahlungen"
             }
           },
           {
