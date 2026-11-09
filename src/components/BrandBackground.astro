@@ -17,13 +17,13 @@
     position: absolute; z-index: -1; top: var(--y); width: var(--w); aspect-ratio: 4 / 3; pointer-events: none;
     opacity: 0; transition: opacity 1.6s ease;
     /* soft edges: no rectangle ever shows */
-    -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent);
-    mask-image: radial-gradient(closest-side, #000 62%, transparent);
+    -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent);
+    mask-image: radial-gradient(closest-side, #000 74%, transparent);
   }
   .bgm.left { left: var(--x); }
   .bgm.right { right: var(--x); }
   .bgm-current { aspect-ratio: 1; }
-  .bgm-blueprint { aspect-ratio: 3 / 2; -webkit-mask-image: radial-gradient(ellipse closest-side, #000 50%, transparent); mask-image: radial-gradient(ellipse closest-side, #000 50%, transparent); }
+  .bgm-blueprint { aspect-ratio: 3 / 2; -webkit-mask-image: radial-gradient(ellipse closest-side, #000 66%, transparent); mask-image: radial-gradient(ellipse closest-side, #000 66%, transparent); }
   .bgm.on { opacity: 1; }
   .bgm canvas { display: block; width: 100%; height: 100%; }
   /* a phone: only where an island has a phone place, smaller */

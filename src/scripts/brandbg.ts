@@ -10,7 +10,7 @@
  * hidden. It starts only once the page is in use (the first scroll, touch, key or pointer move, or six seconds after
  * it has loaded), so the page's first paint and its measurements are never the background's. On a phone (under
  * 768px) only the island most in view shows. With reduced motion each shows once, as a finished frame.
- * Strength: --bg-motif-opacity (global.css) multiplies the ink (11%) and the accent (25%).
+ * Strength: --bg-motif-opacity (global.css) multiplies the ink (22% of the text colour) and the accent (45%).
  */
 
 type Variant = 'line' | 'current' | 'blueprint';
@@ -39,7 +39,7 @@ function inks(el: HTMLElement): Inks {
   const fg = rgb('--fg', '#141414'), ac = rgb('--accent', '#4d7cff');
   probe.remove();
   const a = (v: number) => Math.min(1, v * k).toFixed(3);
-  return { ink: `rgba(${fg}, ${a(0.11)})`, accent: `rgba(${ac}, ${a(0.25)})` };
+  return { ink: `rgba(${fg}, ${a(0.22)})`, accent: `rgba(${ac}, ${a(0.45)})` };
 }
 
 /* ---------- a tiny seeded random, so a cycle can differ from the last ---------- */
@@ -118,7 +118,7 @@ function inkLine(ctx: CanvasRenderingContext2D, c: Inks): Motif {
     ctx.clearRect(0, 0, w, h);
     if (alpha <= 0) return;
     ctx.globalAlpha = alpha;
-    ctx.lineWidth = Math.max(1.2, 1.6 * Math.min(1, s * 1.2));
+    ctx.lineWidth = Math.max(1.6, 2.2 * Math.min(1, s * 1.2));
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     stroke(0, Math.min(upTo, LINE.accentFrom), c.ink);
     stroke(LINE.accentFrom, upTo, c.accent);
@@ -142,7 +142,7 @@ function inkLine(ctx: CanvasRenderingContext2D, c: Inks): Motif {
         paint(k, 1);
         // the pen's tip
         ctx.fillStyle = c.accent;
-        ctx.beginPath(); ctx.arc(path[k][0], path[k][1], 2.6, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(path[k][0], path[k][1], 3.2, 0, Math.PI * 2); ctx.fill();
       } else if (t < DRAW + HOLD) paint(n, 1);
       else if (t < DRAW + HOLD + FADE) paint(n, 1 - (t - DRAW - HOLD) / FADE);
       else paint(0, 0);
@@ -177,7 +177,7 @@ function inkCurrent(ctx: CanvasRenderingContext2D, c: Inks, few: boolean): Motif
       ctx.fillRect(0, 0, w, h);
       ctx.globalCompositeOperation = 'source-over';
       spin += dt * 0.025;
-      ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+      ctx.lineWidth = 2; ctx.lineCap = 'round';
       for (const p of ps) {
         const [x0, y0] = at(p);
         p.a += (p.v * dt) / (R + p.o);
@@ -194,7 +194,7 @@ function inkCurrent(ctx: CanvasRenderingContext2D, c: Inks, few: boolean): Motif
     },
     still() {
       ctx.clearRect(0, 0, w, h);
-      ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+      ctx.lineWidth = 2; ctx.lineCap = 'round';
       for (const p of ps) {
         const [x0, y0] = at(p);
         p.a += 16 / (R + p.o);
@@ -221,7 +221,7 @@ function blueprint(ctx: CanvasRenderingContext2D, c: Inks, few: boolean): Motif 
     const g = grid.getContext('2d')!;
     g.setTransform(ctx.getTransform());
     g.fillStyle = c.ink;
-    for (let y = G / 2; y < h; y += G) for (let x = G / 2; x < w; x += G) { g.beginPath(); g.arc(x, y, 0.9, 0, Math.PI * 2); g.fill(); }
+    for (let y = G / 2; y < h; y += G) for (let x = G / 2; x < w; x += G) { g.beginPath(); g.arc(x, y, 1.1, 0, Math.PI * 2); g.fill(); }
   };
   const place = (): F | null => {
     for (let tries = 0; tries < 8; tries++) {
@@ -239,7 +239,7 @@ function blueprint(ctx: CanvasRenderingContext2D, c: Inks, few: boolean): Motif 
     const alpha = f.t < LIFE - 1.2 ? 1 : Math.max(0, (LIFE - f.t) / 1.2);
     ctx.globalAlpha = alpha;
     ctx.strokeStyle = f.accent ? c.accent : c.ink;
-    ctx.lineWidth = 1.3;
+    ctx.lineWidth = 1.8;
     let left = per * q, x = f.x, y = f.y;
     ctx.beginPath(); ctx.moveTo(x, y);
     for (const [dx, dy, len] of [[1, 0, f.w], [0, 1, f.h], [-1, 0, f.w], [0, -1, f.h]]) {
