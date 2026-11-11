@@ -698,7 +698,8 @@
             "el": "Διάβασε το llms.txt της",
             "de": "llms.txt ansehen"
           }
-        }
+        },
+        "live": "/"
       },
       "short": {
         "en": "AI search & ads",

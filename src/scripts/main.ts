@@ -219,7 +219,8 @@ function hero(handoff: Promise<void>) {
   const curtain = document.querySelector<HTMLElement>('.curtain');
   const inkCanvas = document.getElementById('ink') as HTMLCanvasElement | null;
   const curtainTitle = curtain?.querySelector('h1');
-  if (curtain && inkCanvas && curtainTitle) {
+  // (not in a frame: the home page shows itself live in a card, where the real h1 is enough and WebGL is a cost)
+  if (curtain && inkCanvas && curtainTitle && window.top === window.self) {
     (document.fonts?.ready ?? Promise.resolve()).then(() => later(() => {
       inkHeadline(curtain, inkCanvas, curtainTitle).then((ink) => { if (ink) handoff.then(ink.bloom); });
     }));

@@ -41,7 +41,8 @@ export type Service = {
   /** the sentence under the claim on its /services card (the lead if not set) */
   summary?: string;
   /** a card of evidence in place of projects: what this very site does */
-  proof?: { label: string; name: string; items: string[]; link: { href: string; text: string } };
+  /** a card of its own for a service without projects: `live` is a page of this site, shown live in it */
+  proof?: { label: string; name: string; items: string[]; link: { href: string; text: string }; live?: string };
   /** its name in the story bar, where four have to fit */
   short: string;
   /** the sheet's ground: a fill token (--sheet-paper, --sheet-ink, or the -glow gradients in global.css), or an

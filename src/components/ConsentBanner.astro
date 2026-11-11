@@ -25,7 +25,9 @@ const w = words.consent;
 <script>
   import { consent, choose, stored } from '../scripts/consent';
 
-  consent();
+  // (in a frame, the site showing itself live in a card, nothing is asked and nothing loads)
+  const framed = window.top !== window.self;
+  if (!framed) consent();
   const box = document.querySelector<HTMLElement>('[data-consent]');
   const prefs = box?.querySelector<HTMLFieldSetElement>('[data-prefs]');
   const more = box?.querySelector<HTMLButtonElement>('[data-c="prefs"]');
@@ -55,7 +57,7 @@ const w = words.consent;
   document.querySelectorAll('[data-consent-open]').forEach((b) => b.addEventListener('click', () => { open(true); box$('analytics')?.focus(); }));
 
   // asked once: once the page has loaded and the home page's opening intro has finished
-  if (!stored()) {
+  if (!framed && !stored()) {
     const html = document.documentElement;
     const ready = () => html.dataset.intro !== 'full' && html.dataset.intro !== 'still';
     const ask = () => setTimeout(() => { if (!stored()) open(false); }, 600);
