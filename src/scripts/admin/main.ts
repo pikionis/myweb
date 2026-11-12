@@ -65,7 +65,8 @@ const mark = () => {
   s.setAttribute('class', 'a-mark');
   s.setAttribute('aria-hidden', 'true');
   s.setAttribute('viewBox', `0 0 ${symbolBox.w} ${symbolBox.h}`);
-  for (const part of ['top', 'left', 'right', 'arc']) {
+  // the arc first: its round ends sit under the loops it meets
+  for (const part of ['arc', 'top', 'left', 'right']) {
     const u = document.createElementNS('http://www.w3.org/2000/svg', 'use');
     u.setAttribute('href', `#ohl-${part}`);
     if (part === 'arc') u.setAttribute('class', 'arc');
