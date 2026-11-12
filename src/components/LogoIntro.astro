@@ -5,7 +5,9 @@ import { intro } from '../data/site';
      script in Base.astro decides, before the first paint, whether it plays: in full once per session, as a still
      logo with reduced motion, otherwise not at all. Without script it never shows, so the page underneath is
      always there to read. It plays on the hero's own dark ground, in the colours the header gives the logo there
-     (ivory, the arc cobalt): the logo lands on itself, and the page it opens onto is the same ground. -->
+     (ivory, the arc cobalt): the logo lands on itself, and the page it opens onto is the same ground. Once the
+     symbol is made the ground lifts and the rest plays in the top left corner over a page that is already the
+     reader's, so from then on the overlay takes no clicks. -->
 <div class="ohl" id="ohl">
   <div class="ohl-bg"></div>
   <canvas class="ohl-stage" aria-hidden="true"></canvas>
@@ -14,6 +16,7 @@ import { intro } from '../data/site';
 
 <style>
   .ohl { position: fixed; inset: 0; z-index: 100; display: none; }
+  .ohl.handed { pointer-events: none; }
   :global(html[data-intro='full']) .ohl, :global(html[data-intro='still']) .ohl, .ohl.live { display: block; }
   /* while it plays the page holds still; the gutter keeps the layout from shifting when the scrollbar returns */
   :global(html.ohl-lock) { overflow: hidden; scrollbar-gutter: stable; background: #0a0b0a; }
@@ -31,7 +34,7 @@ import { intro } from '../data/site';
     background: transparent; color: var(--ivory); font-size: 0.875rem; font-weight: 500; cursor: pointer;
     transition: background-color 0.2s ease, opacity 0.2s ease;
   }
-  .ohl-skip.gone { opacity: 0; }
+  .ohl-skip.gone { opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0s linear 0.2s; }
   @media (hover: hover) and (pointer: fine) { .ohl-skip:hover { background: color-mix(in srgb, var(--ivory) 10%, transparent); } }
   .ohl-skip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   /* the still version (reduced motion) is only the logo */
