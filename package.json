@@ -10,7 +10,8 @@
     "prebuild": "node scripts/github.mjs",
     "build": "node scripts/build.mjs",
     "preview": "astro preview",
-    "thumbs": "node scripts/thumbs.mjs"
+    "thumbs": "node scripts/thumbs.mjs",
+    "brand": "node scripts/brand.mjs"
   },
   "dependencies": {
     "@fontsource/space-grotesk": "^5.3.0",
