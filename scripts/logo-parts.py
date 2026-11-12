@@ -1,7 +1,13 @@
-"""Builds src/data/logo.ts, the onehub logo as compact SVG path data, from the brand folder.
+"""Builds the older, traced onehub logo as compact SVG path data, from the brand folder.
 
-    python scripts/logo-parts.py <brand logo folder> src/data/logo.ts
-    (needs numpy, pillow, scipy, scikit-image and shapely: pip install numpy pillow scipy scikit-image shapely)
+    python scripts/logo-parts.py <brand logo folder> <out.ts>
+
+Retired in November 2026: src/data/logo.ts is now the logo redrawn with smooth splines (and
+src/data/logo-curves.ts its two curves as points), and that redraw is the logo. This script is kept for
+the record of how the trace was read; its output has the trace's stair-stepped edges. It refuses to write
+over the redrawn logo.ts unless given --overwrite-redrawn. After any change to logo.ts, run
+`npm run brand` (scripts/brand.mjs) so the favicon, logo.png, og.png and the SVG files follow it.
+(needs numpy, pillow, scipy, scikit-image and shapely: pip install numpy pillow scipy scikit-image shapely)
 
 The brand folder holds onehub-logo.svg (a potrace trace: the whole symbol is one outline) and the
 parts as PNGs on the same canvas (onehub-symbol-1-top-loop.png ... onehub-symbol-4-blue-arc.png).
@@ -9,7 +15,16 @@ Outer edges come from the vector, smoothed so the trace's stair steps melt away;
 the three loops comes from the part PNGs (they partition the symbol); the draw-on centerlines are
 the PNG skeletons. The letters are the vector's own subpaths.
 """
-import json, re, sys
+import json, os, re, sys
+
+_args = [a for a in sys.argv[1:] if a != '--overwrite-redrawn']
+if len(_args) != 2:
+    sys.exit(__doc__)
+if os.path.exists(_args[1]) and '--overwrite-redrawn' not in sys.argv:
+    if 'Redrawn in November 2026' in open(_args[1], encoding='utf-8').read():
+        sys.exit(f'{_args[1]} is the redrawn logo: this script would replace it with the old traced one.\n'
+                 'Write to another file, or pass --overwrite-redrawn if that is really what you want.')
+
 from collections import deque
 import numpy as np
 from PIL import Image
@@ -18,8 +33,7 @@ from shapely.ops import unary_union
 from skimage import measure, morphology
 from scipy import ndimage
 
-SRC = sys.argv[1]
-OUT = sys.argv[2]
+SRC, OUT = _args
 GRID = 20.0          # output unit = 20 canvas units (canvas is 40752 x 33012)
 PNG_SCALE = 40752 / 2000  # canvas units per part-PNG pixel
 
