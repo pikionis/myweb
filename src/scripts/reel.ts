@@ -9,17 +9,22 @@ import { letters, stroke } from '../data/logo';
  *             baseline becomes the teardrop (the top loop and the arc), each turned away in space
  *   1.5–2.0   both spin, faster and faster, and stop dead as the symbol
  *   2.0       lock: the top loop is struck ivory over the cobalt, the symbol swells a little and settles
- *   2.5–4.3   the symbol steps left and o n e h u b rise beside it, a letter every quarter second
- *   4.4+      hand-off: the lockup flies onto the header's logo (intro.ts gives the place)
+ *   2.6       hand-off: the page is given back and the symbol flies to the top left, onto the header's logo
+ *             shown larger (up to REEL.zoom times), anchored at its top left corner (intro.ts gives the place
+ *             and how large it fits beside what else is in the bar)
+ *   3.3–4.7   there, o n e h u b rise beside it, a letter every 0.22 s
+ *   5.3–6.1   the lockup shrinks into the header's logo
  *
  * Everything is drawn in a 1920 × 1080 scene around (960, 540); intro.ts fits that to the screen. No state is
- * kept between frames, so a frame can be drawn at any time (the still version draws the last one).
+ * kept between frames, so a frame can be drawn at any time. The still version (reduced motion) is drawLockup().
  */
 
-export const REEL = { handoff: 4.4, fly: 0.85 };
+/** The moments, in seconds; `zoom` = at most how much larger than the header's logo the corner shows it. */
+export const REEL = { handoff: 2.6, fly: 0.9, letters: 3.3, shrink: 5.3, end: 6.1, zoom: 2.2 };
 
-/** Where the header's logo is, in scene units: each box's top left corner and the size of one of its units. */
-export type Landing = { sym: Box; word: Box | null };
+/** Where the header's logo is, in scene units (each box's top left corner and the size of one of its units), and
+ * how much larger the corner shows it. */
+export type Landing = { sym: Box; word: Box | null; zoom: number };
 type Box = { x: number; y: number; k: number };
 
 const cl = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -65,7 +70,7 @@ const N = bean.length - 1;
 // the chart the symbol is made from: twelve rising values and the line they stand on
 const RISE: Pt[] = resample([1.6, 2, 2.2, 2.6, 3, 3.2, 3.4, 4, 4.4, 4.8, 5.4, 5.8].map((h, i): Pt => [410 + 100 * i, 840 - h * 100]), N);
 const BASE: Pt[] = resample([[360, 840], [1560, 840]], N);
-// the symbol large in the middle (BIG scene units per symbol unit), then in the lockup (SMALL), whose top left is LOCK
+// the symbol large in the middle (BIG scene units per symbol unit); the still lockup (SMALL), whose top left is LOCK
 const BIG = 0.72, SMALL = 1100 / 2698.3, LOCK = { x: 410, y: 347.7 };
 // the wordmark's box in the horizontal lockup, in symbol units
 const WORD = { x: 1087.4, y: 211.5, k: 0.94648 };
@@ -79,10 +84,37 @@ function turned(p: Pt, a: number): Pt {
 
 let glyphs: Path2D[] | null = null;
 
-export function drawReel(c: CanvasRenderingContext2D, t: number, ivory: string, cobalt: string, landing: Landing | null = null) {
+/** The symbol, its top left corner at (b.x, b.y), b.k scene units per symbol unit; `arc` = how far the top loop
+ * is struck over the cobalt. */
+function symbol(c: CanvasRenderingContext2D, b: Box, arc: number, ink: string, cobalt: string) {
+  const at = (p: Pt): Pt => [b.x + p[0] * b.k, b.y + p[1] * b.k];
+  const drop = tear.map(at);
+  line(c, drop, cobalt, stroke * b.k);
+  line(c, partial(drop.slice(archFrom, archTo + 1), arc), ink, stroke * b.k);
+  line(c, bean.map(at), ink, stroke * b.k);
+}
+/** The wordmark in box b, each letter risen by its share in `rise` (0 = under its baseline, 1 = in place). */
+function word(c: CanvasRenderingContext2D, b: Box, rise: (i: number) => number, ink: string) {
+  glyphs ??= letters.map((l) => new Path2D(l.d));
+  c.fillStyle = ink;
+  glyphs.forEach((g, i) => {
+    const r = rise(i);
+    if (r <= 0) return;
+    c.save();
+    c.translate(b.x, b.y); c.scale(b.k, b.k);
+    c.beginPath(); c.rect(letterSpans[i][0] - 6, -6, letterSpans[i][1] - letterSpans[i][0] + 12, 404); c.clip();
+    c.translate(0, (1 - r) * 410);
+    c.fill(g, 'evenodd');
+    c.restore();
+  });
+}
+const lerp = (a: Box, b: Box, q: number): Box => ({ x: mix(a.x, b.x, q), y: mix(a.y, b.y, q), k: mix(a.k, b.k, q) });
+
+/** The frame at time t. `landing` (the header's logo) is null until the hand-off; `ink` is the logo's colour. */
+export function drawReel(c: CanvasRenderingContext2D, t: number, ink: string, cobalt: string, landing: Landing | null = null) {
   if (t < 0.5) {
     line(c, partial(BASE, eo(t / 0.4)), cobalt, 10);
-    line(c, partial(RISE, eo((t - 0.08) / 0.4)), ivory, 8);
+    line(c, partial(RISE, eo((t - 0.08) / 0.4)), ink, 8);
     return;
   }
   if (t < 2) {
@@ -90,34 +122,26 @@ export function drawReel(c: CanvasRenderingContext2D, t: number, ivory: string, 
     // turned away, drifting, then spun through to flat with all the speed at the end
     const a = mix(1 - 0.15 * (t - 0.5), 2 * Math.PI, Math.pow(cl((t - 1.5) / 0.5), 3));
     line(c, BASE.map((p, i) => between(p, turned(tear[i], -a), k2)), cobalt, mix(10, stroke * BIG, k2));
-    line(c, RISE.map((p, i) => between(p, turned(bean[i], a), k1)), ivory, mix(8, stroke * BIG, k1));
+    line(c, RISE.map((p, i) => between(p, turned(bean[i], a), k1)), ink, mix(8, stroke * BIG, k1));
     return;
   }
-  // the symbol: large, then in the lockup, then onto the header's
-  const m = eo((t - 2.5) / 0.4), q = landing ? eio((t - REEL.handoff) / REEL.fly) : 0;
-  let k = mix(BIG, SMALL, m) * (1 + 0.05 * Math.exp(-(t - 2) * 9));
-  let x = mix(960, LOCK.x + CX * SMALL, m) - CX * k, y = mix(540, LOCK.y + CY * SMALL, m) - CY * k;
-  if (landing) { x = mix(x, landing.sym.x, q); y = mix(y, landing.sym.y, q); k = mix(k, landing.sym.k, q); }
-  const at = (p: Pt): Pt => [x + p[0] * k, y + p[1] * k];
-  const drop = tear.map(at);
-  line(c, drop, cobalt, stroke * k);
-  line(c, partial(drop.slice(archFrom, archTo + 1), eo((t - 2) / 0.35)), ivory, stroke * k);
-  line(c, bean.map(at), ivory, stroke * k);
+  // the symbol, large in the middle with a little swell as it locks; after the hand-off it flies to the top left
+  const swell = 1 + 0.05 * Math.exp(-(t - 2) * 9);
+  let sym: Box = { x: 960 - CX * BIG * swell, y: 540 - CY * BIG * swell, k: BIG * swell };
+  let box: Box | null = null;
+  if (landing) {
+    // the corner: the header's logo `zoom` times as large about its top left, shrinking to its own size at the end
+    const z = mix(landing.zoom, 1, eio((t - REEL.shrink) / (REEL.end - REEL.shrink)));
+    const s = landing.sym, w = landing.word;
+    sym = lerp(sym, { x: s.x, y: s.y, k: s.k * z }, eio((t - REEL.handoff) / REEL.fly));
+    if (w) box = { x: s.x + (w.x - s.x) * z, y: s.y + (w.y - s.y) * z, k: w.k * z };
+  }
+  symbol(c, sym, eo((t - 2) / 0.35), ink, cobalt);
+  if (box) word(c, box, (i) => eo((t - REEL.letters - 0.22 * i) / 0.32), ink);
+}
 
-  // the wordmark: each letter rises from under its own baseline
-  let wx = LOCK.x + WORD.x * SMALL, wy = LOCK.y + WORD.y * SMALL, wk = SMALL * WORD.k, sink = 0;
-  if (landing?.word) { wx = mix(wx, landing.word.x, q); wy = mix(wy, landing.word.y, q); wk = mix(wk, landing.word.k, q); }
-  else if (landing) sink = q; // a header that shows only the symbol: the letters go back down
-  glyphs ??= letters.map((l) => new Path2D(l.d));
-  c.fillStyle = ivory;
-  glyphs.forEach((g, i) => {
-    const rise = eo((t - 2.75 - 0.25 * i) / 0.32);
-    if (rise <= 0 || sink >= 1) return;
-    c.save();
-    c.translate(wx, wy); c.scale(wk, wk);
-    c.beginPath(); c.rect(letterSpans[i][0] - 6, -6, letterSpans[i][1] - letterSpans[i][0] + 12, 404); c.clip();
-    c.translate(0, (1 - rise) * 410 + sink * 410);
-    c.fill(g, 'evenodd');
-    c.restore();
-  });
+/** The still version (reduced motion): the lockup in the middle of the scene, whole. */
+export function drawLockup(c: CanvasRenderingContext2D, ink: string, cobalt: string) {
+  symbol(c, { x: LOCK.x, y: LOCK.y, k: SMALL }, 1, ink, cobalt);
+  word(c, { x: LOCK.x + WORD.x * SMALL, y: LOCK.y + WORD.y * SMALL, k: SMALL * WORD.k }, () => 1, ink);
 }

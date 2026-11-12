@@ -41,6 +41,8 @@ import { symbolBox, wordBox, letters } from '../data/logo';
   :global(html[data-intro='full']) .brand-wrap, :global(html[data-intro='still']) .brand-wrap { visibility: hidden; }
   /* later page loads: the logo only fades in */
   :global(html[data-intro='quick']) .brand-wrap { animation: brand-in 0.4s var(--ease-out) both; }
+  /* the intro draws the logo but not the motto: it fades in as the logo lands */
+  :global(html[data-intro='done']) .brand-motto { animation: brand-in 0.5s var(--ease-out) both; }
   @keyframes brand-in { from { opacity: 0; } }
   @media (max-width: 820px) {
     .brand-wrap { --sym: 40px; --gap: 9px; --word: 72px; }
