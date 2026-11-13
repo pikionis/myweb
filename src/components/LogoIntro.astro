@@ -1,14 +1,18 @@
 ---
-import { intro } from '../data/site';
+import { intro, brand } from '../data/site';
+import { upper } from '../data/lang';
+// the film's six words, in capitals: the name read as two words (the first alone, then both), then the motto's four
+const words = [intro.film.split(' ')[0], intro.film, ...brand.motto.split(/(?<=\.)\s+/)].map(upper);
 ---
 <!-- The opening intro (src/scripts/intro.ts; its picture is src/scripts/reel.ts, drawn on the canvas). The head
      script in Base.astro decides, before the first paint, whether it plays: in full once per session, as a still
      logo with reduced motion, otherwise not at all. Without script it never shows, so the page underneath is
      always there to read. It plays on the hero's own dark ground, in the colours the header gives the logo there
-     (ivory, the arc cobalt): the logo lands on itself, and the page it opens onto is the same ground. Once the
-     symbol is made the ground lifts and the rest plays in the top left corner over a page that is already the
-     reader's, so from then on the overlay takes no clicks. -->
-<div class="ohl" id="ohl">
+     (ivory, the arc cobalt): the logo lands on itself, and the page it opens onto is the same ground. It opens
+     with the film (src/scripts/film.ts), whose words are given here (data-words) so that no word lives in a
+     script. Once the symbol is made the ground lifts and the rest plays in the top left corner over a page that
+     is already the reader's, so from then on the overlay takes no clicks. -->
+<div class="ohl" id="ohl" data-words={JSON.stringify(words)}>
   <div class="ohl-bg"></div>
   <canvas class="ohl-stage" aria-hidden="true"></canvas>
   <button class="ohl-skip" type="button">{intro.skip}</button>

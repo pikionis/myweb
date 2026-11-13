@@ -1,12 +1,14 @@
 import { symbolBox, wordBox } from '../data/logo';
 import { drawReel, drawLockup, REEL, type Landing } from './reel';
+import { filmFit, type Frame, type Look } from './film';
 
 /*
- * The opening intro, "Everything meets at one point": a rising line and its baseline become the two curves of
- * the symbol, spin and lock into it, over the whole screen; then the page is given back (the intro's ground lifts
- * off it) and the symbol flies to the top left, where the wordmark rises beside it at twice the header's size
- * before the lockup shrinks into the header's logo. The picture is src/scripts/reel.ts, a function of time drawn
- * on one canvas; this file owns the overlay: when it plays, the clock, the skip, the hand-off.
+ * The opening intro, "Everything meets at one point": the film plays over the whole screen (twelve seconds: a
+ * point, the words, a disc, rings, a globe, a dashboard whose line and baseline become the two curves of the
+ * symbol, spin and lock into it); then the page is given back (the intro's ground lifts off it) and the symbol
+ * flies to the top left, where the wordmark rises beside it at twice the header's size before the lockup shrinks
+ * into the header's logo. The picture is src/scripts/reel.ts (the film: film.ts), a function of time drawn on
+ * one canvas; this file owns the overlay: when it plays, the clock, the skip, the hand-off.
  *
  * It plays on the hero's own dark ground, in the header's colours there, so the page it hands over to is the same
  * ground (and a phone that waits for the script waits on the site's own colour, not a blank one).
@@ -21,8 +23,11 @@ import { drawReel, drawLockup, REEL, type Landing } from './reel';
 const SEEN = 'ohl-intro';
 const STILL_HOLD = 600;
 const SCROLL_KEYS = new Set([' ', 'ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End']);
-// the scene is 1920 × 1080 around its middle; this much of it must always fit the screen
-const FIT = { w: 1280, h: 900 };
+// the scene is drawn around its middle; this much of it must always fit the screen while the still lockup shows
+// (the film says how much it needs: filmFit)
+const FIT_STILL = { w: 1280, h: 900 };
+// how long the film waits for its typeface before it starts with the page's fallback
+const FONT_WAIT = 1200;
 
 export type IntroHandle = {
   /** resolves when the page starts to show (the hand-off, a skip, or no intro at all) */
@@ -115,6 +120,18 @@ export function logoIntro(): IntroHandle {
   const ivory = css.getPropertyValue('--ivory').trim() || '#f8f4e6';
   const cobalt = css.getPropertyValue('--cobalt').trim() || '#2d49ad';
   let vw = 0, vh = 0, scale = 1, now = 0, still = false;
+  // how much of the scene shows on this screen, in scene units
+  let shown: Frame = { w: 1920, h: 1080 };
+  // the film's look: the header's colours on the hero, the page's own typeface at its heaviest, the words the
+  // component gives (LogoIntro.astro)
+  let words: string[] = [];
+  try { words = JSON.parse(el.dataset.words || '[]'); } catch { /* no words: the slabs stay empty */ }
+  const groundEl = el.querySelector<HTMLElement>('.ohl-bg');
+  const look: Look = {
+    ink: ivory, cobalt, words,
+    ground: (groundEl && getComputedStyle(groundEl).backgroundColor) || '#0a0b0a',
+    font: getComputedStyle(document.body).fontFamily || 'sans-serif', weight: 700,
+  };
   let landing: Landing | null = null;
   // after the hand-off the logo takes the header's colour, which turns to ink if the reader scrolls onto the
   // light page while it plays; read only while a scroll is recent (the header's colour change takes 0.3s)
@@ -123,7 +140,9 @@ export function logoIntro(): IntroHandle {
   function scrolled() { lastScroll = performance.now(); }
   function fit() {
     vw = window.innerWidth; vh = window.innerHeight;
-    scale = Math.min(vw / FIT.w, vh / FIT.h, 1);
+    const need = still ? FIT_STILL : filmFit(vw, vh);
+    scale = Math.min(vw / need.w, vh / need.h, 1);
+    shown = { w: vw / scale, h: vh / scale };
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas!.width = Math.round(vw * dpr); canvas!.height = Math.round(vh * dpr);
     if (landing) landing = land();
@@ -136,7 +155,7 @@ export function logoIntro(): IntroHandle {
     c!.clearRect(0, 0, canvas!.width, canvas!.height);
     c!.setTransform(dpr * scale, 0, 0, dpr * scale, dpr * (vw / 2 - 960 * scale), dpr * (vh / 2 - 540 * scale));
     if (still) drawLockup(c!, ivory, cobalt);
-    else drawReel(c!, t, ink, cobalt, landing);
+    else drawReel(c!, t, shown, look, ink, landing);
   }
   /** The header's logo, in scene units, and how large the corner can show it. */
   function land(): Landing {
@@ -172,14 +191,19 @@ export function logoIntro(): IntroHandle {
     return { handoff, done, playing: true };
   }
 
-  // it starts after the page's first picture: setting up never holds that back
-  painted().then(() => {
+  // it starts after the page's first picture: setting up never holds that back; the film's words wait for their
+  // typeface (preloaded, so it is usually there), but not for long
+  painted().then(() => Promise.race([
+    document.fonts.load(`${look.weight} 100px ${look.font}`, words.join(' ')).catch(() => undefined),
+    new Promise((r) => window.setTimeout(r, FONT_WAIT)),
+  ])).then(() => {
+    if (over) return;
     fit();
     paint(0);
     el.classList.add('run');
     window.addEventListener('resize', fit);
     listen(() => fadeOut(250));
-    const ground = el.querySelector<HTMLElement>('.ohl-bg');
+    const ground = groundEl;
     const skipBtn = el.querySelector<HTMLElement>('.ohl-skip');
     let start = 0, last = 0;
     const tick = (ms: number) => {
