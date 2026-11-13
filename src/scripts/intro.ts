@@ -3,10 +3,10 @@ import { drawReel, drawLockup, REEL, type Landing } from './reel';
 import { filmFit, type Frame, type Look } from './film';
 
 /*
- * The opening intro, "Everything meets at one point": the film plays over the whole screen (twelve seconds: a
- * point, the words, a disc, rings, a globe, a dashboard whose line and baseline become the two curves of the
- * symbol, spin and lock into it); then the page is given back (the intro's ground lifts off it) and the symbol
- * flies to the top left, where the wordmark rises beside it at twice the header's size before the lockup shrinks
+ * The opening intro, "Everything meets at one point": the film plays over the whole screen (six seconds: a
+ * point, the words on a slab, then a rising line and its baseline that become the two curves of the symbol,
+ * spin and lock into it); then the page is given back (the intro's ground lifts off it) and the symbol flies
+ * to the top left, where the wordmark rises beside it at twice the header's size before the lockup shrinks
  * into the header's logo. The picture is src/scripts/reel.ts (the film: film.ts), a function of time drawn on
  * one canvas; this file owns the overlay: when it plays, the clock, the skip, the hand-off.
  *
