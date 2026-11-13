@@ -5,24 +5,26 @@ import { drawFilm, symbolScale, FILM, type Frame, type Look } from './film';
 /*
  * The opening intro's picture, "Everything meets at one point": a pure function of time, drawn on a canvas.
  *
- *   0–12s      the film (film.ts), over the whole screen: a point, a line, a slab that says the words, a disc,
- *              a triangle, three rings, a gyroscope, a globe, a grid, a dashboard; the dashboard's line becomes
- *              the bean and its baseline the teardrop, each turned away in space; both spin, faster and faster,
- *              and stop dead as the symbol
- *   12.0       lock: the top loop is struck ivory over the cobalt, the symbol swells a little and settles
- *   12.6       hand-off: the page is given back and the symbol flies to the top left, onto the header's logo
+ *   0–6s       the film (film.ts), over the whole screen: a point, a line, a slab that says the words; the
+ *              slab closes onto a rising line whose baseline draws itself under it; the rising line becomes the
+ *              bean and the baseline the teardrop, each turned away in space; both spin, faster and faster, and
+ *              stop dead as the symbol
+ *   6.0        lock: the top loop is struck ivory over the cobalt, the symbol swells a little and settles
+ *   6.6        hand-off: the page is given back and the symbol flies to the top left, onto the header's logo
  *              shown larger (up to REEL.zoom times), anchored at its top left corner (intro.ts gives the place
  *              and how large it fits beside what else is in the bar)
- *   13.3–14.7  there, o n e h u b rise beside it, a letter every 0.22 s
- *   15.3–16.1  the lockup shrinks into the header's logo
+ *   7.3–8.7    there, o n e h u b rise beside it, a letter every 0.22 s
+ *   9.3–10.1   the lockup shrinks into the header's logo
  *
  * Everything is drawn in a scene around (960, 540); intro.ts fits it to the screen and says how much of it
  * shows (`frame`): a screen taller than wide gets the film's vertical composition. No state is kept between
  * frames, so a frame can be drawn at any time. The still version (reduced motion) is drawLockup().
  */
 
-/** The moments, in seconds; `zoom` = at most how much larger than the header's logo the corner shows it. */
-export const REEL = { lock: FILM.lock, handoff: 12.6, fly: 0.9, letters: 13.3, shrink: 15.3, end: 16.1, zoom: 2.2 };
+/** The moments, in seconds, counted from the film's end; `zoom` = at most how much larger than the header's logo
+ * the corner shows it. */
+const T = FILM.lock;
+export const REEL = { lock: T, handoff: T + 0.6, fly: 0.9, letters: T + 1.3, shrink: T + 3.3, end: T + 4.1, zoom: 2.2 };
 
 /** Where the header's logo is, in scene units (each box's top left corner and the size of one of its units), and
  * how much larger the corner shows it. */
